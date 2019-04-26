@@ -3,14 +3,14 @@
 const ACTIONS_DEFINED_BY_CIVICASE = ['Delete', 'File on Case', 'Edit'];
 
 /**
- * Activity.GetActionLinks API specification (optional)
+ * Activity.getactionlinks API specification (optional)
  * This is used for documentation and validation.
  *
  * @param array $spec description of fields supported by this API call
  * @return void
  * @see http://wiki.civicrm.org/confluence/display/CRMDOC/API+Architecture+Standards
  */
-function _civicrm_api3_activity_GetActionLinks_spec(&$spec) {
+function _civicrm_api3_activity_getactionlinks_spec(&$spec) {
   $spec['activity_type_id']['api.required'] = 1;
   $spec['source_record_id']['api.required'] = 1;
   $spec['activity_id']['api.required'] = 1;
@@ -18,7 +18,7 @@ function _civicrm_api3_activity_GetActionLinks_spec(&$spec) {
 }
 
 /**
- * Activity.GetActionLinks API
+ * Activity.getactionlinks API
  * This API returns the activity action links for an activity record.
  * Basically it adds the action links added by core plus the action links
  * added by various extensions via hooks. Action links differ per activity
@@ -28,7 +28,7 @@ function _civicrm_api3_activity_GetActionLinks_spec(&$spec) {
  *
  * @return array
  */
-function civicrm_api3_activity_GetActionLinks($params) {
+function civicrm_api3_activity_getactionlinks($params) {
   return _civicrm_api3_activity_getActivityActionLinks($params);
 }
 
