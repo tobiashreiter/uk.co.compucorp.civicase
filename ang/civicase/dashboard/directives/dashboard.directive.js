@@ -19,6 +19,7 @@
     $scope.activityFilters = {
       case_filter: {'case_type_id.is_active': 1, contact_is_deleted: 0}
     };
+    $scope.newCaseWebformUrl = CRM.civicase.newCaseWebformUrl;
 
     (function init () {
       bindRouteParamsToScope();
