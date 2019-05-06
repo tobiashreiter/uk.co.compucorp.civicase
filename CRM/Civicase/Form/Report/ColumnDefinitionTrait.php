@@ -179,6 +179,7 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
             'title' => ts('Case ID'),
             'name' => 'id',
             'is_fields' => TRUE,
+            'is_filters' => TRUE,
           ],
           'subject' => [
             'title' => ts('Case Subject'),

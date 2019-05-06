@@ -43,12 +43,34 @@ class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Repo
       }
 
     }
-    $this->add('select', 'aggregate_column_headers', ts('Aggregate Report Column Headers'), $aggregateColumnHeaderFields, FALSE,
-      ['id' => 'aggregate_column_headers', 'title' => ts('- select -')]
+
+    $this->addSelect(
+      'aggregate_column_headers',
+      [
+        'entity' => '',
+        'option_url' => NULL,
+        'label' => ts('Aggregate Report Column Headers'),
+        'options' => $aggregateColumnHeaderFields,
+        'id' => 'aggregate_column_headers',
+        'placeholder' => ts('- select -'),
+        'class' => 'huge',
+      ],
+      FALSE
     );
-    $this->add('select', 'aggregate_row_headers', ts('Row Fields'), $aggregateRowHeaderFields, FALSE,
-      ['id' => 'aggregate_row_headers', 'title' => ts('- select -')]
+    $this->addSelect(
+      'aggregate_row_headers',
+      [
+        'entity' => '',
+        'option_url' => NULL,
+        'label' => ts('Row Fields'),
+        'options' => $aggregateRowHeaderFields,
+        'id' => 'aggregate_row_headers',
+        'placeholder' => ts('- select -'),
+        'class' => 'huge',
+      ],
+      FALSE
     );
+
     $this->_columns[$this->_baseTable]['fields']['include_null'] = [
       'title' => 'Show column for unknown',
       'pseudofield' => TRUE,
