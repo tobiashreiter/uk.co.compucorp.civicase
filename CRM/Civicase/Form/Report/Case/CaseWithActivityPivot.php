@@ -17,9 +17,12 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
   protected $_noFields = TRUE;
   protected $_potentialCriteria = [];
   protected $tempCaseActivityTableName = '';
+  protected $tempCaseRelationshipTableName;
+  protected $caseRoleContactMetaData = [];
 
 
   public function __construct() {
+    $this->setCaseRolesContactMetaData();
     $this->_customGroupExtended['civicrm_case'] = [
       'extends' => ['Case'],
       'filters' => TRUE,
@@ -31,9 +34,12 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
       'title' => ts('Activity'),
     ];
 
-    $this->_columns = $this->getColumns('Case', ['fields' => FALSE])
-      + $this->getColumns('Contact', array('prefix_label' => 'Case Client - ', 'group_title' => 'Case Client Contact'))
-      + $this->_columns = $this->getColumns('Activity', ['fields' => FALSE]);
+    $caseColumns = $this->getColumns('Case', ['fields' => FALSE]);
+    $caseClientContactColumns = $this->getColumns('Contact', ['prefix_label' => 'Case Client - ', 'group_title' => 'Case Client Contact']);
+    $activityColumns = $this->_columns = $this->getColumns('Activity', ['fields' => FALSE]);
+    $caseRolesContactColumns = $this->getCaseRolesContactColumns();
+
+    $this->_columns = $caseColumns + $caseClientContactColumns + $activityColumns + $caseRolesContactColumns;
     $this->_columns['civicrm_case']['fields']['id']['required'] = TRUE;
     $this->_columns['civicrm_contact']['fields']['id']['required'] = TRUE;
     $this->_columns['civicrm_case']['fields']['id']['title'] = 'Case';
@@ -52,18 +58,23 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
    *
    * @return array
    */
-  function fromClauses() {
+  public function fromClauses() {
     return [
       'contact_from_case',
       'activity_from_case',
+      'relationship_from_case',
+      'case_role_contact'
     ];
   }
 
-
   /**
    * SQl query to join the to activity table from the case table
+   * Overrides the one in Extended class because this allows us to
+   * Join to a temporary table where we have unique case Id's linked
+   * linked to just one activity rather than multiple activities when the
+   * unique cases parameter is checked.
    */
-  function joinActivityFromCase() {
+  public function joinActivityFromCase() {
     $caseActivityTable = $this->_caseActivityTable;
     if (!empty($this->_params['unique_cases'])) {
       $this->generateTempCaseActivityTable();
@@ -76,7 +87,42 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
   }
 
   /**
-   * Temp table for unique case IDs with activity
+   * SQL condition to JOIN to the relationship table.
+   * It takes into consideration active relationships and only
+   * joins to a relationship that is still active.
+   */
+  public function joinRelationshipFromCase() {
+    $today = date('Y-m-d');
+    $this->_from .= "
+      LEFT JOIN civicrm_relationship crt 
+      ON (
+        {$this->_aliases['civicrm_case']}.id = crt.case_id AND
+        {$this->_aliases['civicrm_contact']}.id = crt.contact_id_a AND
+        crt.is_active = 1 AND
+        (crt.start_date IS NULL OR crt.start_date <= '{$today}') AND 
+        (crt.end_date IS NULL OR crt.end_date >= '{$today}')
+       )";
+  }
+
+  /**
+   * SQL query condition to JOIN to the contact table for each of
+   * the case roles contacts based on the relationship the role
+   * has with the case client.
+   */
+  protected function joinCaseRolesContact() {
+    foreach ($this->caseRoleContactMetaData as $data) {
+      $tableAlias = $data['table_prefix'].'civicrm_contact';
+      $this->_from .= "
+      LEFT JOIN civicrm_contact $tableAlias 
+      ON (
+         crt.contact_id_b = {$tableAlias}.id AND
+         crt.relationship_type_id = {$data['relationship_type_id']}
+      )";
+    }
+  }
+
+  /**
+   * Generate Temp table for unique case IDs with activity
    */
   protected function generateTempCaseActivityTable() {
     $tempTable = 'civicrm_unique_case_activity' . date('d_H_I') . rand(1, 10000);
@@ -89,11 +135,48 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
     COLLATE='utf8_unicode_ci'
     ENGINE=HEAP;";
     CRM_Core_DAO::executeQuery($sql);
+
     $sql = "
       INSERT INTO $tempTable
       SELECT DISTINCT case_id, activity_id FROM civicrm_case_activity GROUP BY case_id;";
     CRM_Core_DAO::executeQuery($sql);
+
     $this->tempCaseActivityTableName = $tempTable;
+  }
+
+  /**
+   * Adds some meta information for Case Roles contacts for case types.
+   * This information will be used to build the columns and add the tables
+   * needed to Join to the contact records for the contacts having these case role
+   * relationship with the case client.
+   */
+  protected function setCaseRolesContactMetaData() {
+    $result = civicrm_api3('CaseType', 'get', [
+      'sequential' => 1,
+      'return' => ['definition', 'id'],
+    ]);
+
+    $caseRoleData = [];
+    foreach ($result['values'] as $value) {
+      if (empty($value['definition']['caseRoles'])) {
+        continue;
+      }
+
+      $caseRoles = $value['definition']['caseRoles'];
+      foreach ($caseRoles as $caseRole) {
+        $data = civicrm_api3('RelationshipType', 'getsingle', [
+          'label_b_a' => $caseRole['name'],
+        ]);
+        $tablePrefix = $this->getDbPrefixFromRoleName($caseRole['name']);
+        $caseRoleData[$tablePrefix] = [
+          'relationship_type_id' => $data['id'],
+          'relationship_name' => $caseRole['name'],
+          'table_prefix' => $tablePrefix
+        ];
+      }
+    }
+
+    $this->caseRoleContactMetaData = $caseRoleData;
   }
 
   /**
@@ -107,5 +190,49 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
       'tpl' => 'Results',
       'div_label' => 'set-results',
     ];
+  }
+
+  /**
+   * Returns the Db prefix that will be used for Case Roles contact table.
+   *
+   * @param string $roleName
+   *
+   * @return string
+   */
+  private function getDbPrefixFromRoleName($roleName) {
+    $stringArray = explode(' ', $roleName);
+
+    $prefix = '';
+    foreach ($stringArray as $value) {
+      $prefix .= strtolower($value)."_";
+    }
+
+    return $prefix;
+  }
+
+  /**
+   * Returns the contact columns meta data for the case roles for all
+   * case types. This allows to join to the contact table to get contact
+   * and custom field information for contacts having relationships with
+   * a case client for.
+   *
+   * Each case role data is added once and is not duplicated.
+   *
+   * @return array
+   */
+  private function getCaseRolesContactColumns() {
+    $contactColumns = [];
+    foreach($this->caseRoleContactMetaData as $data) {
+      $contactColumns += $this->getColumns(
+        'Contact',
+        [
+          'prefix_label' => "{$data['relationship_name']} - ",
+          'group_title' => "{$data['relationship_name']} Contact",
+          'prefix' => $data['table_prefix']
+        ]
+      );
+    }
+
+    return $contactColumns;
   }
 }

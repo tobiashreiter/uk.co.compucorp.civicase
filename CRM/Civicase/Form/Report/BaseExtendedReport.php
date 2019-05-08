@@ -3,13 +3,10 @@
 class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Report_ExtendedReport {
 
   /**
-   * {@inheritdoc}
+   *  Add the fields to select the aggregate fields to the report.
    *
    * This function is overridden because of a bug that does not allow the custom fields to
    * appear in the Filters tab in the base class.
-   */
-  /**
-   * Add the fields to select the aggregate fields to the report.
    */
   protected function addAggregateSelectorsToForm() {
     if (!$this->isPivot) {
@@ -83,5 +80,89 @@ class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Repo
     ];
 
     $this->assignTabs();
+  }
+
+  /**
+   * This function is overridden because of a bug that selects wrong data for custom fields
+   * extending an entity when there are multiple instances of the Entity in columns.
+   * For example, there are more than one Contact Entity columns, for Case client contact, and also
+   * Case roles contacts, the custom field value for the other Contact custom fields is selected
+   * wrongly because the db alias of the first Contact entity is used in all case. This is fixed
+   * by using the table key to form the alias rather than the original table name which is same for
+   * all Contact entity data.
+   *
+   * @param string $field
+   * @param string $prefixLabel
+   * @param string $prefix
+   *
+   * @return mixed
+   */
+  protected function getCustomFieldMetadata($field, $prefixLabel, $prefix = '') {
+    $field = array_merge($field, [
+      'name' => $field['column_name'],
+      'title' => $prefixLabel . $field['label'],
+      'dataType' => $field['data_type'],
+      'htmlType' => $field['html_type'],
+      'operatorType' => $this->getOperatorType($this->getFieldType($field), [], []),
+      'is_fields' => TRUE,
+      'is_filters' => TRUE,
+      'is_group_bys' => FALSE,
+      'is_order_bys' => FALSE,
+      'is_join_filters' => FALSE,
+      'type' => $this->getFieldType($field),
+      'dbAlias' => $prefix . $field['table_key'] . '.' . $field['column_name'],
+      'alias' => $prefix . $field['table_name'] . '_' . 'custom_' . $field['id'],
+    ]);
+    $field['is_aggregate_columns'] = in_array($field['html_type'], ['Select', 'Radio']);
+
+    if (!empty($field['option_group_id'])) {
+      if (in_array($field['html_type'], [
+        'Multi-Select',
+        'AdvMulti-Select',
+        'CheckBox',
+      ])) {
+        $field['operatorType'] = CRM_Report_Form::OP_MULTISELECT_SEPARATOR;
+      }
+      else {
+        $field['operatorType'] = CRM_Report_Form::OP_MULTISELECT;
+      }
+
+      $ogDAO = CRM_Core_DAO::executeQuery("SELECT ov.value, ov.label FROM civicrm_option_value ov WHERE ov.option_group_id = %1 ORDER BY ov.weight", [
+        1 => [$field['option_group_id'], 'Integer'],
+      ]);
+      while ($ogDAO->fetch()) {
+        $field['options'][$ogDAO->value] = $ogDAO->label;
+      }
+    }
+
+    if ($field['type'] === CRM_Utils_Type::T_BOOLEAN) {
+      $field['options'] = [
+        '' => ts('- select -'),
+        1 => ts('Yes'),
+        0 => ts('No'),
+      ];
+    }
+    return $field;
+  }
+
+  /**
+   * This function is overridden because of custom JOINs for the
+   * Case activity pivot report that are not available in base class.
+   *
+   * @return array
+   */
+  public function getAvailableJoins() {
+    $availableJoins = parent::getAvailableJoins();
+
+    $joins = [
+      'relationship_from_case' => [
+        'callback' => 'joinRelationshipFromCase',
+      ],
+      'case_role_contact' => [
+        'callback' => 'joinCaseRolesContact',
+      ]
+    ];
+
+    return array_merge($availableJoins, $joins);
   }
 }
