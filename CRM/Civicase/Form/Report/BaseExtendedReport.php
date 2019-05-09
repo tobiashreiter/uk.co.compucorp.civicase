@@ -146,6 +146,41 @@ class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Repo
   }
 
   /**
+   * This function is overridden because there is an issue with the naming for the
+   * custom group panel labels on the filter section in the UI. The group title for the
+   * custom groups can not be passed in when defining the fields hence the need to override
+   * this function.
+   *
+   * @param string $field
+   * @param string $currentTable
+   * @param string $prefix
+   * @param string $prefixLabel
+   * @param string $tableKey
+   */
+  protected function addCustomTableToColumns($field, $currentTable, $prefix, $prefixLabel, $tableKey) {
+    $entity = $field['extends'];
+    if (in_array($entity, ['Individual', 'Organization', 'Household'])) {
+      $entity = 'Contact';
+    }
+    if (!isset($this->_columns[$tableKey])) {
+      $this->_columns[$tableKey]['extends'] = $field['extends'];
+      $this->_columns[$tableKey]['grouping'] = $prefix . $field['table_name'];
+      $this->_columns[$tableKey]['group_title'] = $field['table_label'];
+      $this->_columns[$tableKey]['name'] = $field['table_name'];
+      $this->_columns[$tableKey]['fields'] = [];
+      $this->_columns[$tableKey]['filters'] = [];
+      $this->_columns[$tableKey]['join_filters'] = [];
+      $this->_columns[$tableKey]['group_bys'] = [];
+      $this->_columns[$tableKey]['order_bys'] = [];
+      $this->_columns[$tableKey]['aggregates'] = [];
+      $this->_columns[$tableKey]['prefix'] = $prefix;
+      $this->_columns[$tableKey]['table_name'] = $currentTable;
+      $this->_columns[$tableKey]['alias'] = $prefix . $currentTable;
+      $this->_columns[$tableKey]['extends_table'] = $prefix . CRM_Core_DAO_AllCoreTables::getTableForClass(CRM_Core_DAO_AllCoreTables::getFullName($entity));
+    }
+  }
+
+  /**
    * This function is overridden because of custom JOINs for the
    * Case activity pivot report that are not available in base class.
    *

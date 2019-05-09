@@ -227,8 +227,8 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
         'Contact',
         [
           'prefix_label' => "{$data['relationship_name']} - ",
-          'group_title' => "{$data['relationship_name']} Contact",
-          'prefix' => $data['table_prefix']
+          'group_title' => "Contacts",
+          'prefix' => $data['table_prefix'],
         ]
       );
     }
