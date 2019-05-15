@@ -930,7 +930,7 @@ class CRM_Civicase_Form_Report_ExtendedReport extends CRM_Report_Form {
   /**
    * @param $fieldName
    */
-  function addAggregateTotal($fieldName) {
+  function addAggregateTotal($fieldName, $dbAlias) {
     $fieldAlias = "{$fieldName}_total";
     $this->_columnHeaders[$fieldAlias] = [
       'title' => ts('Total'),
