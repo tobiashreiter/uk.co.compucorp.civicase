@@ -261,7 +261,7 @@
       role.role = relType.label_b_a;
       role.contact_type = relType.contact_type_b;
       role.contact_sub_type = relType.contact_sub_type_b;
-      role.description = (role.manager ? (ts('Case Manager.') + ' ') : '') + (relType.description || '');
+      role.description = (role.manager === '1' ? (ts('Case Manager.') + ' ') : '') + (relType.description || '');
       role.relationship_type_id = relType.id;
     }
 
