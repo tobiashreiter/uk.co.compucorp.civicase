@@ -9,6 +9,12 @@ class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Repo
     'year' => "%Y"
   ];
 
+  public $dataFunctions = [
+    'COUNT' => 'COUNT',
+    'COUNT UNIQUE' => 'COUNT UNIQUE',
+    'SUM' => 'SUM'
+  ];
+
   /**
    *  Add the fields to select the aggregate fields to the report.
    *
@@ -40,9 +46,9 @@ class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Repo
         $this->metaData['metadata'][$fieldName]['table_alias'] = $this->_columns[$tableKey]['alias'];
         $this->metaData['aggregate_columns'][$fieldName] = $this->metaData['metadata'][$fieldName];
         $this->metaData['filters'][$fieldName] = $this->metaData['metadata'][$fieldName];
-        $aggregateRowHeaderFields[$prefix . 'custom_' . $customField['id']] = $customField['prefix_label'] . $customField['label'];
+        $aggregateRowHeaderFields[$fieldName] = $customField['prefix_label'] . $customField['label'];
         if (in_array($customField['html_type'], ['Select', 'CheckBox'])) {
-          $aggregateColumnHeaderFields[$prefix . 'custom_' . $customField['id']] = $customField['prefix_label'] . $customField['label'];
+          $aggregateColumnHeaderFields[$fieldName] = $customField['prefix_label'] . $customField['label'];
         }
       }
 
@@ -85,7 +91,35 @@ class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Repo
         'id' => 'aggregate_column_date_grouping',
         'placeholder' => ts('- select -'),
       ],
-      FALSE
+      TRUE
+    );
+
+    $this->addSelect(
+      'data_function_field',
+      [
+        'entity' => '',
+        'option_url' => NULL,
+        'label' => ts('Data Function Fields'),
+        'options' => $aggregateRowHeaderFields,
+        'id' => 'data_function_fields',
+        'placeholder' => ts('- select -'),
+        'class' => 'huge',
+      ],
+      TRUE
+    );
+
+    $this->addSelect(
+      'data_function',
+      [
+        'entity' => '',
+        'option_url' => NULL,
+        'label' => ts('Data Functions'),
+        'options' => $this->dataFunctions,
+        'id' => 'data_functions',
+        'placeholder' => ts('- select -'),
+        'class' => 'huge',
+      ],
+      TRUE
     );
 
     $this->_columns[$this->_baseTable]['fields']['include_null'] = [
@@ -294,10 +328,7 @@ class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Repo
         }
         $groupedValue = $groupByLabels[$valueIndex];
         if (!($nextRow) || $nextRow[$groupedValue] != $row[$groupedValue]) {
-          //we set altered because we are started from the lowest grouping & working up & if both have changed only want to act on the lowest
-          //(I think)
           $altered[$rowNumber] = TRUE;
-//          $row[$groupedValue] = "<span class= 'report-label'> {$row[$groupedValue]} (Subtotal)</span> ";
           $this->updateRollupRow($row, $fieldsToUnSetForSubtotalLines);
         }
       }
@@ -325,7 +356,6 @@ class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Repo
    * @throws Exception
    */
   function addColumnAggregateSelect($fieldName, $dbAlias, $spec) {
-    $me = 'ddd';
     if (empty($fieldName)) {
       $this->addAggregateTotal($fieldName, $dbAlias);
       return;
@@ -350,6 +380,7 @@ class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Repo
       }
     }
 
+    $aggregates = [];
     foreach ($options as $optionValue => $optionLabel) {
       $fieldAlias = str_replace([
         '-',
@@ -360,46 +391,138 @@ class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Repo
         '(',
       ], '_', "{$fieldName}_" . strtolower(str_replace(' ', '', $optionValue)));
 
-      // htmlType is set for custom data and tells us the field will be stored using hex(01) separators.
-      if (!empty($spec['htmlType']) && in_array($spec['htmlType'], [
-          'CheckBox',
-          'MultiSelect',
-        ])
-      ) {
-        $this->_select .= " , SUM( CASE WHEN {$dbAlias} LIKE '%" . CRM_Core_DAO::VALUE_SEPARATOR . $optionValue . CRM_Core_DAO::VALUE_SEPARATOR . "%' THEN 1 ELSE 0 END ) AS $fieldAlias ";
-      }
-      else if (!empty($spec['html']['type']) && $spec['html']['type'] == 'Select Date') {
-        $dateGrouping = $this->_params['aggregate_column_date_grouping'];
-        $this->_select .= " , SUM( CASE DATE_FORMAT({$dbAlias}, '{$this->dateSqlGrouping[$dateGrouping]}') WHEN '{$optionValue}' THEN 1 ELSE 0 END ) AS $fieldAlias ";
-      }
-      else {
-        $this->_select .= " , SUM( CASE {$dbAlias} WHEN '{$optionValue}' THEN 1 ELSE 0 END ) AS $fieldAlias ";
-      }
+      $selectSql = $this->getColumnSqlAggregateExpression($spec, $dbAlias, $fieldAlias, $optionValue, $optionLabel);
+      $aggregateExpression = rtrim($selectSql , "AS {$fieldAlias} ");
+      $aggregateExpression = ltrim($aggregateExpression, " , ");
+
+      $aggregates[] =  $aggregateExpression;
+      $this->_select .= $selectSql ;
       $this->_columnHeaders[$fieldAlias] = [
         'title' => !empty($optionLabel) ? $optionLabel : 'NULL',
         'type' => CRM_Utils_Type::T_INT,
       ];
       $this->_statFields[] = $fieldAlias;
     }
-    if ($this->_aggregatesIncludeNULL && !empty($this->_params['fields']['include_null'])) {
-      $fieldAlias = "{$fieldName}_null";
-      $this->_columnHeaders[$fieldAlias] = [
-        'title' => ts('Unknown'),
-        'type' => CRM_Utils_Type::T_INT,
-      ];
-      $this->_select .= " , SUM( IF (({$dbAlias} IS NULL OR {$dbAlias} = ''), 1, 0)) AS $fieldAlias ";
-      $this->_statFields[] = $fieldAlias;
-    }
+
     if ($this->_aggregatesAddTotal) {
-      $this->addAggregateTotal($fieldName, $dbAlias);
+      $this->addAggregateTotal($fieldName, $aggregates);
     }
   }
 
   /**
-   * @param $spec
+   * Returns the SQL aggregate expression for a selected column field. The overral expression will depend on
+   * the data aggregate function used, the field to aggregate on (if applicable).
+   *
+   * @param array $spec
+   * @param string $dbAlias
+   * @param string $fieldAlias
+   * @param mixed $optionValue
+   *
+   * @return string
+   */
+  private function getColumnSqlAggregateExpression($spec, $dbAlias, $fieldAlias, $optionValue, $optionLabel) {
+    $dataFunction = $this->_params['data_function'];
+    $field = $dbAlias;
+    $value = $optionValue;
+    $operator = '=';
+
+    if (!empty($spec['htmlType']) && in_array($spec['htmlType'], ['CheckBox', 'MultiSelect'])){
+      $value = "'%" . CRM_Core_DAO::VALUE_SEPARATOR . $optionValue . CRM_Core_DAO::VALUE_SEPARATOR . "%'";
+      $operator = 'LIKE';
+    }
+
+    if (!empty($spec['html']['type']) && $spec['html']['type'] == 'Select Date') {
+      $dateGrouping = $this->_params['aggregate_column_date_grouping'];
+      $field = "DATE_FORMAT({$dbAlias}, '{$this->dateSqlGrouping[$dateGrouping]}')";
+    }
+
+    if (is_null($optionLabel)) {
+      $operator = 'IS NULL';
+      $value = '';
+    }
+
+    if ($dataFunction === 'COUNT') {
+      return $this->getSqlAggregateForCount($field, $value, $operator, $fieldAlias);
+    }
+
+    if ($dataFunction === 'COUNT UNIQUE') {
+      return $this->getSqlAggregateForCountUnique($field, $value, $operator, $fieldAlias);
+    }
+
+    if ($dataFunction === 'SUM') {
+      return $this->getSqlAggregateForSum($field, $value, $operator, $fieldAlias);
+    }
+  }
+
+  /**
+   * Returns the SQL expression for COUNT aggregate
+   *
+   * @param string $field
+   * @param mixed $value
+   * @param string $operator
+   * @param string $fieldAlias
+   *
+   * @return string
+   */
+  protected function getSqlAggregateForCount($field, $value, $operator, $fieldAlias) {
+    $value = !empty($value) ? "'{$value}'" : '';
+    return " , SUM( CASE WHEN {$field} {$operator} $value THEN 1 ELSE 0 END ) AS $fieldAlias ";
+  }
+
+  /**
+   * Returns the SQL expression for COUNT UNIQUE aggregate
+   *
+   * @param string $field
+   * @param mixed $value
+   * @param string $operator
+   * @param string $fieldAlias
+   *
+   * @return string
+   */
+  protected function getSqlAggregateForCountUnique($field, $value, $operator, $fieldAlias) {
+    $value = !empty($value) ? "'{$value}'" : '';
+    $dataFunctionFieldAlias = $this->getDbAliasForAggregateOnField();
+
+    return " , COUNT( DISTINCT CASE WHEN {$field} {$operator} $value THEN {$dataFunctionFieldAlias} END ) AS $fieldAlias ";
+  }
+
+  /**
+   * Returns the SQL expression for SUM aggregate
+   *
+   * @param string $field
+   * @param mixed $value
+   * @param string $operator
+   * @param string $fieldAlias
+   *
+   * @return string
+   */
+  protected function getSqlAggregateForSum($field, $value, $operator, $fieldAlias) {
+    $value = !empty($value) ? "'{$value}'" : '';
+    $dataFunctionFieldAlias = $this->getDbAliasForAggregateOnField();
+
+    return  " , SUM( CASE WHEN {$field} {$operator} $value THEN {$dataFunctionFieldAlias} ELSE 0 END ) AS $fieldAlias ";
+  }
+
+  /**
+   * Returns the db Alias for the field on which to aggregate on.
+   *
+   * @return string
+   */
+  private function getDbAliasForAggregateOnField() {
+    $dataFunctionField = $this->_params['data_function_field'];
+    $meta = $this->getMetadataByType('metadata');
+    $specs = $this->getMetadataByType('metadata')[$dataFunctionField];
+
+    return $specs['dbAlias'];
+  }
+
+  /**
+   *  This function is overridden because we need to extend the functionality by providing a
+   * function to fetch options when a date field is selected as a column header field.
+   *
+   * @param array $spec
    *
    * @return array
-   * @throws \Exception
    */
   protected function getCustomFieldOptions($spec) {
     $options = [];
@@ -438,9 +561,17 @@ class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Repo
         'option_group_id' => $spec['option_group_id'],
       ]);
     }
+
     return $options['values'];
   }
 
+  /**
+   * Returns options for a date field when selected as a column header.
+   *
+   * @param array $spec
+   *
+   * @return array
+   */
   public function getDateColumnOptions($spec) {
     $this->from();
     $this->where();
@@ -461,18 +592,37 @@ class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Repo
   }
 
   /**
-   * @param $fieldName
+   * Adds the SQl expression for the total aggregate for the column fields for each row in the
+   * result set.
+   *
+   * @param string $fieldName
+   * @param array $aggregates
    */
-  function addAggregateTotal($fieldName, $dbAlias) {
+  function addAggregateTotal($fieldName, $aggregates) {
     $fieldAlias = "{$fieldName}_total";
+    $sumOfAggregates =  implode(' + ', $aggregates);
+    $this->_select .= ', ' . "{$sumOfAggregates} as {$fieldAlias}";
     $this->_columnHeaders[$fieldAlias] = [
       'title' => ts('Total'),
       'type' => CRM_Utils_Type::T_INT,
     ];
-    $this->_select .= " , SUM( IF ({$dbAlias}, 1, 0)) AS $fieldAlias ";
+
     $this->_statFields[] = $fieldAlias;
   }
 
+  /**
+   * This function is overridden to allow date fields to be part of fields to be selected in the
+   * column header fields which is not possible in the original function in base class.
+   *
+   * @param array $specs
+   * @param string $tableName
+   * @param string|null $daoName
+   * @param string|null $tableAlias
+   * @param array $defaults
+   * @param array $options
+   *
+   * @return array
+   */
   protected function buildColumns($specs, $tableName, $daoName = NULL, $tableAlias = NULL, $defaults = [], $options = []) {
 
     if (!$tableAlias) {
@@ -574,6 +724,14 @@ class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Repo
     return $columns;
   }
 
+  /**
+   * Function is overrridden to allow row total to be re-calculated since the
+   * SQL WITH ROLLUP Group function does not yield reliable results for the row totals based
+   * on new Data aggregate functions introduced.
+   *
+   * @param array $rows
+   * @param bool $pager
+   */
   public function formatDisplay(&$rows, $pager = TRUE) {
     // set pager based on if any limit was applied in the query.
     if ($pager) {
@@ -599,18 +757,9 @@ class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Repo
     // build array of section totals
     $this->sectionTotals();
 
-    end($rows);         // move the internal pointer to the end of the array
-    $rollup_row_key = key($rows);
-    reset($rows);
-    $rollup_row = $rows[$rollup_row_key];
-    unset($rows[$rollup_row_key]);
-    $array_keys = array_keys($rollup_row);
-    $final_rollup = [];
-    foreach ($array_keys as $key) {
-      $final_rollup[$key] =  array_sum(array_column($rows, "$key"));
-    }
+    //adjust row total
+    $this->adjustRowTotal($rows);
 
-    $rows[$rollup_row_key] =  $final_rollup;
     // process grand-total row
     $this->grandTotal($rows);
 
@@ -620,5 +769,82 @@ class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Repo
 
     // use this method for formatting custom rows for display purpose.
     $this->alterCustomDataDisplay($rows);
+  }
+
+  /**
+   * Since we have introduced other data aggregate functions like COUNT UNIQUE, SUM,
+   * the SQL WITH ROLLUP Group function does not yield reliable results for the row totals.
+   * This function sums the individual column totals and adjusts the total accordingly.
+   *
+   * @param array $rows
+   */
+  private function adjustRowTotal(&$rows) {
+    //the rollup row is the last row.
+    end($rows);
+    $rollupRowKey = key($rows);
+    reset($rows);
+    $rollupRow = $rows[$rollupRowKey];
+    unset($rows[$rollupRowKey]);
+    $adjustedRollup = [];
+    foreach ($rollupRow as $key => $value) {
+      $adjustedRollup[$key] =  array_sum(array_column($rows, $key));
+    }
+
+    $rows[$rollupRowKey] = $adjustedRollup;
+  }
+
+  /**
+   * Overriden so we can add some more default values.
+   *
+   * @param bool $freeze
+   *
+   * @return array
+   */
+  public function setDefaultValues($freeze = TRUE) {
+    parent::setDefaultValues();
+    $this->_defaults['data_function'] = 'COUNT';
+    $this->_defaults['aggregate_column_date_grouping'] = 'month';
+    $this->_defaults['data_function_field'] = 'case_civireport_id';
+
+    return $this->_defaults;
+  }
+
+  /**
+   * Overridden so that when custom fields are selected to be aggregated on,
+   * the SQL joins for the custom field table will be included in the overral query.
+   *
+   * @param string $table
+   *
+   * @return bool
+   */
+  protected function isCustomTableSelected($table) {
+    $selected = array_merge(
+      $this->getSelectedFilters(),
+      $this->getSelectedFields(),
+      $this->getSelectedOrderBys(),
+      $this->getSelectedAggregateRows(),
+      $this->getSelectedDataFunctionField(),
+      $this->getSelectedAggregateColumns(),
+      $this->getSelectedGroupBys()
+    );
+    foreach ($selected as $spec) {
+      if ($spec['table_name'] == $table) {
+        return TRUE;
+      }
+    }
+    return FALSE;
+  }
+
+  /**
+   * Returns the metadata for the selected data function field.
+   *
+   * @return array
+   */
+  protected function getSelectedDataFunctionField() {
+    $metadata = $this->getMetadataByType('metadata');
+    if (empty($this->_params['data_function_field']) || !isset($metadata[$this->_params['data_function_field']])) {
+      return [];
+    }
+    return [$this->_params['data_function_field'] => $metadata[$this->_params['data_function_field']]];
   }
 }
