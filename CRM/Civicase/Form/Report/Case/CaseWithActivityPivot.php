@@ -68,25 +68,6 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
   }
 
   /**
-   * SQl query to join the to activity table from the case table
-   * Overrides the one in Extended class because this allows us to
-   * Join to a temporary table where we have unique case Id's linked
-   * linked to just one activity rather than multiple activities when the
-   * unique cases parameter is checked.
-   */
-  public function joinActivityFromCase() {
-    $caseActivityTable = $this->_caseActivityTable;
-    if (!empty($this->_params['unique_cases'])) {
-      $this->generateTempCaseActivityTable();
-      $caseActivityTable = $this->tempCaseActivityTableName;
-    }
-
-    $this->_from .= "
-      LEFT JOIN {$caseActivityTable} cca ON cca.case_id = {$this->_aliases['civicrm_case']}.id
-      LEFT JOIN civicrm_activity {$this->_aliases['civicrm_activity']} ON {$this->_aliases['civicrm_activity']}.id = cca.activity_id";
-  }
-
-  /**
    * SQL condition to JOIN to the relationship table.
    * It takes into consideration active relationships and only
    * joins to a relationship that is still active.
@@ -119,29 +100,6 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
          crt.relationship_type_id = {$data['relationship_type_id']}
       )";
     }
-  }
-
-  /**
-   * Generate Temp table for unique case IDs with activity
-   */
-  protected function generateTempCaseActivityTable() {
-    $tempTable = 'civicrm_unique_case_activity' . date('d_H_I') . rand(1, 10000);
-    $sql = "CREATE {$this->_temporary} TABLE $tempTable
-    (`case_id` INT(10) UNSIGNED NULL DEFAULT '0',
-    `activity_id` INT(10) UNSIGNED NULL DEFAULT '0',
-    INDEX `case_id` (`case_id`),
-    INDEX `activity_id` (`activity_id`)
-    )
-    COLLATE='utf8_unicode_ci'
-    ENGINE=HEAP;";
-    CRM_Core_DAO::executeQuery($sql);
-
-    $sql = "
-      INSERT INTO $tempTable
-      SELECT DISTINCT case_id, activity_id FROM civicrm_case_activity GROUP BY case_id;";
-    CRM_Core_DAO::executeQuery($sql);
-
-    $this->tempCaseActivityTableName = $tempTable;
   }
 
   /**
@@ -184,7 +142,6 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
    * unique case Ids when checked.
    */
   protected function addResultsTab() {
-    $this->add('advcheckbox', 'unique_cases', ts('Include Only Unique Cases?'));
     $this->tabs['Results'] = [
       'title' => ts('Results'),
       'tpl' => 'Results',
