@@ -129,8 +129,8 @@ class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Repo
     ];
     $this->tabs['Aggregate'] = [
       'title' => ts('Pivot table'),
-      'tpl' => 'Aggregate',
-      'div_label' => 'set-aggregate',
+      'tpl' => 'Aggregates',
+      'div_label' => 'set-aggregates',
     ];
 
     $this->assign('aggregateDateFields', json_encode(array_flip($this->aggregateDateFields)));

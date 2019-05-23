@@ -1,9 +1,9 @@
-<div id="report-tab-set-aggregate" class="civireport-criteria">
+<div id="report-tab-set-aggregates" class="civireport-criteria">
   <table class="report-layout">
     <tr class="crm-report crm-report-criteria-aggregate">
       <td>
         <div id='crm-custom_fields'>
-          <label>{ts}Select Row Fields{/ts}</label>
+          <label>{ts}Select Row Fields 2{/ts}</label>
           {$form.aggregate_row_headers.html}
         </div>
       </td>
