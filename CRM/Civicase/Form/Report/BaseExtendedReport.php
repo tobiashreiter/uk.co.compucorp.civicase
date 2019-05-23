@@ -847,4 +847,25 @@ class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Repo
     }
     return [$this->_params['data_function_field'] => $metadata[$this->_params['data_function_field']]];
   }
+
+  /**
+   * Overridden so that the template file name is gotten from the extended report class within
+   * Civicase.
+   *
+   * @return string
+   */
+  function getTemplateFileName() {
+    $defaultTpl = parent::getTemplateFileName();
+
+    if (in_array($this->_outputMode, ['print', 'pdf'])) {
+      if ($this->_params['templates']) {
+        $defaultTpl = 'CRM/Civicase/Form/Report/CustomTemplates/' . $this->_params['templates'] . '.tpl';
+      }
+    }
+
+    if (!CRM_Utils_File::isIncludable('templates/' . $defaultTpl)) {
+      $defaultTpl = 'CRM/Report/Form.tpl';
+    }
+    return $defaultTpl;
+  }
 }
