@@ -11,7 +11,7 @@
     </a>
     <a ng-if="checkPerm('add cases') && newCaseWebformUrl"
        class="btn-primary btn"
-       ng-href="{{ newCaseWebformUrl | civicaseCrmUrl:{cid: contactId} }}">
+       ng-href="{{ newCaseWebformUrl | civicaseCrmUrl:{[newCaseWebformClient]: contactId} }}">
       <i class="material-icons">add_circle</i>
       {{ ts('Add case') }}
     </a>
