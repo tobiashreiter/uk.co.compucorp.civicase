@@ -2306,7 +2306,7 @@ LEFT JOIN civicrm_contact {$field['alias']} ON {$field['alias']}.id = {$this->_a
    * @param string $fieldAlias
    * @param string $title
    */
-  private function addRowHeader($tableAlias, $selectedField, $fieldAlias, $title = '') {
+  protected function addRowHeader($tableAlias, $selectedField, $fieldAlias, $title = '') {
     if (empty($tableAlias)) {
       $this->_select = 'SELECT 1 '; // add a fake value just to save lots of code to calculate whether a comma is required later
       $this->_rollup = NULL;

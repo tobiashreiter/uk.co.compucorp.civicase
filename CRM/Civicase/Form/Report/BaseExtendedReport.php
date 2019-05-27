@@ -2,18 +2,20 @@
 
 class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Report_ExtendedReport {
 
-  public $aggregateDateFields;
+  protected $aggregateDateFields;
 
-  public $dateSqlGrouping = [
+  protected $dateSqlGrouping = [
     'month' => "%Y-%m",
     'year' => "%Y"
   ];
 
-  public $dataFunctions = [
+  protected $dataFunctions = [
     'COUNT' => 'COUNT',
     'COUNT UNIQUE' => 'COUNT UNIQUE',
     'SUM' => 'SUM'
   ];
+
+  protected $dateGroupingOptions = ['month' => 'Month', 'year' => 'Year'];
 
   /**
    *  Add the fields to select the aggregate fields to the report.
@@ -87,11 +89,24 @@ class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Repo
         'entity' => '',
         'option_url' => NULL,
         'label' => ts('Date Grouping'),
-        'options' => ['month' => 'Month', 'year' => 'Year'],
+        'options' => $this->dateGroupingOptions,
         'id' => 'aggregate_column_date_grouping',
         'placeholder' => ts('- select -'),
       ],
       TRUE
+    );
+
+    $this->addSelect(
+      'aggregate_row_date_grouping',
+      [
+        'entity' => '',
+        'option_url' => NULL,
+        'label' => ts('Date Grouping'),
+        'options' => $this->dateGroupingOptions,
+        'id' => 'aggregate_row_date_grouping',
+        'placeholder' => ts('- select -'),
+      ],
+      FALSE
     );
 
     $this->addSelect(
@@ -510,7 +525,6 @@ class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Repo
    */
   private function getDbAliasForAggregateOnField() {
     $dataFunctionField = $this->_params['data_function_field'];
-    $meta = $this->getMetadataByType('metadata');
     $specs = $this->getMetadataByType('metadata')[$dataFunctionField];
 
     return $specs['dbAlias'];
@@ -854,7 +868,7 @@ class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Repo
    *
    * @return string
    */
-  function getTemplateFileName() {
+  public function getTemplateFileName() {
     $defaultTpl = parent::getTemplateFileName();
 
     if (in_array($this->_outputMode, ['print', 'pdf'])) {
@@ -867,5 +881,40 @@ class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Repo
       $defaultTpl = 'CRM/Report/Form.tpl';
     }
     return $defaultTpl;
+  }
+
+  /**
+   * Overridden to allow date row date fields to be grouped on month/year.
+   *
+   * @param string $tableAlias
+   * @param array $selectedField
+   * @param string $fieldAlias
+   * @param string $title
+   */
+  protected function addRowHeader($tableAlias, $selectedField, $fieldAlias, $title = '') {
+    if (empty($tableAlias)) {
+      $this->_select = 'SELECT 1 '; // add a fake value just to save lots of code to calculate whether a comma is required later
+      $this->_rollup = NULL;
+      $this->_noGroupBY = TRUE;
+      return;
+    }
+
+    $this->_select = "SELECT {$selectedField['dbAlias']} as $fieldAlias ";
+    if (!empty($selectedField['html']['type']) && $selectedField['html']['type'] == 'Select Date') {
+      $dateGrouping = $this->_params['aggregate_row_date_grouping'];
+      if (!empty($dateGrouping)) {
+        $this->_select = "SELECT DATE_FORMAT({$selectedField['dbAlias']}, '{$this->dateSqlGrouping[$dateGrouping]}') as $fieldAlias";
+      }
+    }
+
+    if (!in_array($fieldAlias, $this->_groupByArray)) {
+      $this->_groupByArray[] = $fieldAlias;
+    }
+    $this->_groupBy = "GROUP BY $fieldAlias " . $this->_rollup;
+    $this->_columnHeaders[$fieldAlias] = ['title' => $title,];
+    $key = array_search($fieldAlias, $this->_noDisplay);
+    if (is_int($key)) {
+      unset($this->_noDisplay[$key]);
+    }
   }
 }
