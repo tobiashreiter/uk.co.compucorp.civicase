@@ -26,6 +26,7 @@
     $scope.caseDetailsLoaded = false;
     $scope.contactId = Contact.getContactIDFromUrl();
     $scope.newCaseWebformUrl = CRM.civicase.newCaseWebformUrl;
+    $scope.newCaseWebformClient = CRM.civicase.newCaseWebformClient;
     $scope.casesListConfig = [
       {
         'name': 'opened',
