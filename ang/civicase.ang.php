@@ -201,13 +201,9 @@ if (isset($webformsToDisplay)) {
       if (!in_array($webform['nid'], $allowedWebforms)) {
         continue;
       }
-      $node = node_load($webform['nid']);
-      $data = $node->webform_civicrm['data'];
-      $client = 0;
-      if (isset($data['case'][1]['case'][1]['client_id'])) {
-        $clients = $data['case'][1]['case'][1]['client_id'];
-        $client = reset($clients);
-      }
+
+      $client = getClientDeltaFromWebform($webform['nid']);
+
       $items[] = array(
         'title' => $webform['title'],
         'action' => 'gotoWebform(cases[0], "' . $webform['path'] . '", '.$client.')',
@@ -238,6 +234,15 @@ $options['allowCaseLocks'] = (bool) Civi::settings()->get('civicaseAllowCaseLock
 // Retrieve civicase webform URL
 $allowCaseWebform = Civi::settings()->get('civicaseAllowCaseWebform');
 $options['newCaseWebformUrl'] = $allowCaseWebform ? Civi::settings()->get('civicaseWebformUrl') : NULL;
+$options['newCaseWebformClient'] = 'cid';
+if ($options['newCaseWebformUrl']) {
+  $path = explode('/', $options['newCaseWebformUrl']);
+  $nid = array_pop($path);
+  $client = getClientDeltaFromWebform($nid);
+  if ($client) {
+    $options['newCaseWebformClient'] = 'cid' . $client;
+  }
+}
 
 if (!function_exists('glob_recursive')) {
   /**
@@ -254,6 +259,24 @@ if (!function_exists('glob_recursive')) {
 
     return $files;
   }
+}
+
+/**
+ * Returns the contact number which is configured as client for a given webform id.
+ *
+ * @param {int} $webform_id
+ * @return int
+ */
+function getClientDeltaFromWebform($webform_id) {
+  $node = node_load($webform_id);
+  $data = $node->webform_civicrm['data'];
+  $client = 0;
+  if (isset($data['case'][1]['case'][1]['client_id'])) {
+    $clients = $data['case'][1]['case'][1]['client_id'];
+    $client = reset($clients);
+  }
+
+  return $client;
 }
 
 /**
