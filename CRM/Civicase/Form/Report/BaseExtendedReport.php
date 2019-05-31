@@ -793,6 +793,9 @@ class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Repo
    * @param array $rows
    */
   private function adjustRowTotal(&$rows) {
+    if (empty($rows)) {
+      return;
+    }
     //the rollup row is the last row.
     end($rows);
     $rollupRowKey = key($rows);
@@ -916,5 +919,79 @@ class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Repo
     if (is_int($key)) {
       unset($this->_noDisplay[$key]);
     }
+  }
+
+  /**
+   * This function is overridden so that we can a report class can define additional extra filters
+   * and modify the where clause.
+   */
+  public function storeWhereHavingClauseArray() {
+    $filters = $this->getSelectedFilters();
+    foreach ($filters as $filterName => $field) {
+      if (!empty($field['pseudofield'])) {
+        continue;
+      }
+      $clause = NULL;
+      $clause = $this->generateFilterClause($field, $filterName);
+      if (!empty($clause)) {
+        $this->whereClauses[$filterName] = $clause;
+        if (CRM_Utils_Array::value('having', $field)) {
+          $this->_havingClauses[$filterName] = $clause;
+        }
+        else {
+          $this->_whereClauses[] = $clause;
+        }
+      }
+    }
+
+    $this->processAdditionalFilters();
+  }
+
+  /**
+   * This function is overridden so that the additional filters provided by
+   * report class extending this class will be part of the statistics filter
+   * array and the label and values will be visible on the report UI.
+   *
+   * Also data function and data aggregate field are added to the groups statistics array.
+   *
+   * @return array
+   */
+  public function statistics(&$rows) {
+    $stats = parent::statistics($rows);
+
+    foreach ($this->getAdditionalFilterFields() as $key => $value) {
+      if (!empty($this->_params[$key])) {
+        $stats['filters'][] = [
+          'title' => $value['label'],
+          'value' => 'is equal to ' . $this->_params[$key]
+        ];
+      }
+    }
+
+    $stats['groups'][] = [
+      'title' => 'Aggregate Function',
+      'value' => $this->_params['data_function']
+    ];
+
+    if ($this->_params['data_function'] !== 'COUNT') {
+      $stats['groups'][] = [
+        'title' => 'Aggregate Field On',
+        'value' => $this->getTitleForAggregateOnField()
+      ];
+    }
+
+    return $stats;
+  }
+
+  /**
+   * Returns the field title for the aggregate on field
+   *
+   * @return string
+   */
+  private function getTitleForAggregateOnField() {
+    $dataFunctionField = $this->_params['data_function_field'];
+    $specs = $this->getMetadataByType('metadata')[$dataFunctionField];
+
+    return $specs['title'];
   }
 }
