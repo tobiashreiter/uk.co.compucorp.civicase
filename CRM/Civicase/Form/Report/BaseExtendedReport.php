@@ -17,6 +17,23 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
 
   protected $dateGroupingOptions = ['month' => 'Month', 'year' => 'Year'];
 
+
+  public function __construct() {
+    parent::__construct();
+    $this->addResultsTab();
+  }
+
+  /**
+   * Add the results tab to the tabs list.
+   */
+  protected function addResultsTab() {
+    $this->tabs['Results'] = [
+      'title' => ts('Results'),
+      'tpl' => 'Results',
+      'div_label' => 'set-results',
+    ];
+  }
+
   /**
    * Function that allows additional filter fields provided by extending class to be added to the
    * where clause for the report.
@@ -846,7 +863,8 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
     parent::setDefaultValues();
     $this->_defaults['data_function'] = 'COUNT';
     $this->_defaults['aggregate_column_date_grouping'] = 'month';
-    $this->_defaults['data_function_field'] = 'case_civireport_id';
+    $suffix = $this->_aliases[$this->_baseTable] == 'civicrm_contact' ? '_contact_id' : '_id';
+    $this->_defaults['data_function_field'] = $this->_aliases[$this->_baseTable] . $suffix;
 
     return $this->_defaults;
   }
