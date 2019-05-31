@@ -216,7 +216,7 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
    * Function that allows additional filter fields provided by this class to be added to the
    * where clause for the report.
    */
-  protected function processAdditionalFilters() {
+  protected function addAdditionalFiltersToWhereClause() {
     if (!empty($this->_params['as_at_date'])) {
       $asAtDate = $this->_params['as_at_date'];
       $this->_whereClauses[] =
@@ -238,5 +238,14 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
     ];
 
     return $fields;
+  }
+
+  /**
+   * Returns the name of template file to use for the filters for this report class.
+   *
+   * @return string
+   */
+  protected function getFiltersTemplateName() {
+    return 'FiltersCiviCase';
   }
 }

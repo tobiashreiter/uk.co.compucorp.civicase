@@ -1,6 +1,6 @@
 <?php
 
-class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Report_ExtendedReport {
+abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Report_ExtendedReport {
 
   protected $aggregateDateFields;
 
@@ -16,6 +16,31 @@ class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Repo
   ];
 
   protected $dateGroupingOptions = ['month' => 'Month', 'year' => 'Year'];
+
+  /**
+   * Function that allows additional filter fields provided by extending class to be added to the
+   * where clause for the report.
+   */
+  abstract protected function addAdditionalFiltersToWhereClause();
+
+  /**
+   * Returns additional filter fields provided by extending report class.
+   *
+   * @return array
+   */
+  abstract protected function getAdditionalFilterFields();
+
+
+  /**
+   * This function provides the template name to use for the filter fields. Overriding
+   * this will allow extending class to provide its own default filter template in case
+   * it needs to provide additional filter fields.
+   * q
+   * @return string
+   */
+  protected function getFiltersTemplateName() {
+    return 'Filters';
+  }
 
   /**
    *  Add the fields to select the aggregate fields to the report.
@@ -944,7 +969,7 @@ class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Repo
       }
     }
 
-    $this->processAdditionalFilters();
+    $this->addAdditionalFiltersToWhereClause();
   }
 
   /**
