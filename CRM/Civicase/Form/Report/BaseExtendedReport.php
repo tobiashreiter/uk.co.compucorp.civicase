@@ -973,6 +973,39 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   }
 
   /**
+   * This function is overridden so as to allow the extending report class to provide the
+   * filters template to use for the filters.
+   */
+  public function addFilters() {
+    foreach (['filters', 'join_filters'] as $filterString) {
+      $filters = $filterGroups = [];
+      $count = 1;
+      foreach ($this->getMetadataByType($filterString) as $fieldName => $field) {
+        $table = $field['table_name'];
+        if ($filterString === 'filters') {
+          $filterGroups[$table] = [
+            'group_title' => $this->_columns[$field['table_key']]['group_title'],
+            'use_accordian_for_field_selection' => TRUE,
+          ];
+        }
+        $prefix = ($filterString === 'join_filters') ? 'join_filter_' : '';
+        $filters[$table][$prefix . $fieldName] = $field;
+        $this->addFilterFieldsToReport($field, $fieldName, $table, $count, $prefix);
+      }
+
+      if (!empty($filters) && $filterString == 'filters') {
+        $this->tabs['Filters'] = [
+          'title' => ts('Filters'),
+          'tpl' => $this->getFiltersTemplateName(),
+          'div_label' => 'set-filters',
+        ];
+        $this->assign('filterGroups', $filterGroups);
+      }
+      $this->assign($filterString, $filters);
+    }
+  }
+
+  /**
    * This function is overridden so that the additional filters provided by
    * report class extending this class will be part of the statistics filter
    * array and the label and values will be visible on the report UI.
