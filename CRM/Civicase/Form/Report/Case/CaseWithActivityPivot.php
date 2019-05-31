@@ -50,6 +50,7 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
     $this->_groupFilter = TRUE;
     $this->addResultsTab();
     parent::__construct();
+    $this->addAdditionFilterFields();
   }
 
 
@@ -71,17 +72,21 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
    * SQL condition to JOIN to the relationship table.
    * It takes into consideration active relationships and only
    * joins to a relationship that is still active.
+   *
+   * The as at date parameter when present will only join to case roles that with the as at date
+   * between the case roles start and end dates.
    */
   public function joinRelationshipFromCase() {
-    $today = date('Y-m-d');
+    $date = !empty($this->_params['as_at_date']) ? $this->_params['as_at_date'] :date('Y-m-d');
+    $activeStatus = !empty($this->_params['as_at_date']) ? "0, 1" : "1";
     $this->_from .= "
       LEFT JOIN civicrm_relationship crt 
       ON (
         {$this->_aliases['civicrm_case']}.id = crt.case_id AND
         {$this->_aliases['civicrm_contact']}.id = crt.contact_id_a AND
-        crt.is_active = 1 AND
-        (crt.start_date IS NULL OR crt.start_date <= '{$today}') AND 
-        (crt.end_date IS NULL OR crt.end_date >= '{$today}')
+        crt.is_active IN({$activeStatus}) AND
+        (crt.start_date IS NULL OR crt.start_date <= '{$date}') AND 
+        (crt.end_date IS NULL OR crt.end_date >= '{$date}')
        )";
   }
 
@@ -150,6 +155,20 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
   }
 
   /**
+   * Adds additional filter fields
+   */
+  protected function addAdditionFilterFields() {
+    $this->add(
+      'datepicker',
+      'as_at_date',
+      ts('As At Date'),
+      ['size' => 35],
+      FALSE,
+      ['time' => FALSE]
+    );
+  }
+
+  /**
    * Returns the Db prefix that will be used for Case Roles contact table.
    *
    * @param string $roleName
@@ -191,5 +210,33 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
     }
 
     return $contactColumns;
+  }
+
+  /**
+   * Function that allows additional filter fields provided by this class to be added to the
+   * where clause for the report.
+   */
+  protected function processAdditionalFilters() {
+    if (!empty($this->_params['as_at_date'])) {
+      $asAtDate = $this->_params['as_at_date'];
+      $this->_whereClauses[] =
+        " {$this->_aliases['civicrm_case']}.start_date <= '{$asAtDate}' AND
+         ({$this->_aliases['civicrm_case']}.end_date >= '{$asAtDate}' OR {$this->_aliases['civicrm_case']}.end_date IS NULL) ";
+    }
+  }
+
+  /**
+   * Returns additional filter fields provided by this report class.
+   *
+   * @return array
+   */
+  protected function getAdditionalFilterFields() {
+    $fields = [
+      'as_at_date' => [
+        'label' => 'As At Date'
+      ]
+    ];
+
+    return $fields;
   }
 }
