@@ -48,7 +48,6 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
 
     $this->_tagFilter = TRUE;
     $this->_groupFilter = TRUE;
-    $this->addResultsTab();
     parent::__construct();
     $this->addAdditionFilterFields();
   }
@@ -140,18 +139,6 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
     }
 
     $this->caseRoleContactMetaData = $caseRoleData;
-  }
-
-  /**
-   * Add the results tab to the tabs list. Also add the unique_cases checkbox to return
-   * unique case Ids when checked.
-   */
-  protected function addResultsTab() {
-    $this->tabs['Results'] = [
-      'title' => ts('Results'),
-      'tpl' => 'Results',
-      'div_label' => 'set-results',
-    ];
   }
 
   /**
