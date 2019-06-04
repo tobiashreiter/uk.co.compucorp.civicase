@@ -179,7 +179,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
       ],
       TRUE
     );
-
+    $this->add('hidden', 'charts');
     $this->_columns[$this->_baseTable]['fields']['include_null'] = [
       'title' => 'Show column for unknown',
       'pseudofield' => TRUE,
@@ -866,6 +866,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
     $this->_defaults['aggregate_column_date_grouping'] = 'month';
     $suffix = $this->_aliases[$this->_baseTable] == 'civicrm_contact' ? '_contact_id' : '_id';
     $this->_defaults['data_function_field'] = $this->_aliases[$this->_baseTable] . $suffix;
+    $this->_defaults['charts'] = TRUE;
 
     return $this->_defaults;
   }
