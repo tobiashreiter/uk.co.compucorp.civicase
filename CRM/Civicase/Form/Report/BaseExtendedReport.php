@@ -90,9 +90,10 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
         $this->metaData['metadata'][$fieldName]['table_alias'] = $this->_columns[$tableKey]['alias'];
         $this->metaData['aggregate_columns'][$fieldName] = $this->metaData['metadata'][$fieldName];
         $this->metaData['filters'][$fieldName] = $this->metaData['metadata'][$fieldName];
-        $aggregateRowHeaderFields[$fieldName] = $customField['prefix_label'] . $customField['label'];
+        $customFieldTitle = $customField['prefix_label'] . $customField['title'] . ' - ' . $customField['label'];
+        $aggregateRowHeaderFields[$fieldName] = $customFieldTitle;
         if (in_array($customField['html_type'], ['Select', 'CheckBox'])) {
-          $aggregateColumnHeaderFields[$fieldName] = $customField['prefix_label'] . $customField['label'];
+          $aggregateColumnHeaderFields[$fieldName] = $customFieldTitle;
         }
       }
 
