@@ -271,6 +271,7 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
       $options['prefix'] . 'display_name' => [
         'name' => 'display_name',
         'title' => ts($options['prefix_label'] . 'Contact Name'),
+        'label' => ts('Contact Name'),
         'is_fields' => TRUE,
         'is_filters' => TRUE,
         'is_order_bys' => TRUE,
@@ -278,6 +279,7 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
       $options['prefix'] . 'contact_id' => [
         'name' => 'id',
         'title' => ts($options['prefix_label'] . 'Contact ID'),
+        'label' => ts('Contact ID'),
         'alter_display' => 'alterContactID',
         'type' => CRM_Utils_Type::T_INT,
         'is_order_bys' => TRUE,
@@ -289,18 +291,21 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
       $options['prefix'] . 'external_identifier' => [
         'name' => 'external_identifier',
         'title' => ts($options['prefix_label'] . 'External ID'),
+        'label' => ts('External ID'),
         'type' => CRM_Utils_Type::T_INT,
         'is_fields' => TRUE,
       ],
       $options['prefix'] . 'sort_name' => [
         'name' => 'sort_name',
         'title' => ts($options['prefix_label'] . 'Contact Name (in sort format)'),
+        'label' => ts('Contact Name (in sort format)'),
         'is_fields' => TRUE,
         'is_filters' => TRUE,
         'is_order_bys' => TRUE,
       ],
       $options['prefix'] . 'contact_type' => [
         'title' => ts($options['prefix_label'] . 'Contact Type'),
+        'label' => ts('Contact Type'),
         'name' => 'contact_type',
         'operatorType' => CRM_Report_Form::OP_MULTISELECT,
         'options' => CRM_Contact_BAO_Contact::buildOptions('contact_type'),
@@ -310,6 +315,7 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
       ],
       $options['prefix'] . 'contact_sub_type' => [
         'title' => ts($options['prefix_label'] . 'Contact Sub Type'),
+        'label' => ts('Contact Sub Type'),
         'name' => 'contact_sub_type',
         'operatorType' => CRM_Report_Form::OP_MULTISELECT,
         'options' => CRM_Contact_BAO_Contact::buildOptions('contact_sub_type'),
@@ -322,6 +328,7 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
       $options['prefix'] . 'first_name' => [
         'name' => 'first_name',
         'title' => ts($options['prefix_label'] . 'First Name'),
+        'label' => ts('First Name'),
         'is_fields' => TRUE,
         'is_filters' => TRUE,
         'is_order_bys' => TRUE,
@@ -329,11 +336,13 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
       $options['prefix'] . 'middle_name' => [
         'name' => 'middle_name',
         'title' => ts($options['prefix_label'] . 'Middle Name'),
+        'label' => ts('Middle Name'),
         'is_fields' => TRUE,
       ],
       $options['prefix'] . 'last_name' => [
         'name' => 'last_name',
         'title' => ts($options['prefix_label'] . 'Last Name'),
+        'label' => ts('Last Name'),
         'is_fields' => TRUE,
         'is_filters' => TRUE,
         'is_order_bys' => TRUE,
@@ -341,6 +350,7 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
       $options['prefix'] . 'nick_name' => [
         'name' => 'nick_name',
         'title' => ts($options['prefix_label'] . 'Nick Name'),
+        'label' => ts('Nick Name'),
         'is_fields' => TRUE,
         'is_filters' => TRUE,
         'is_order_bys' => TRUE,
@@ -348,6 +358,7 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
       $options['prefix'] . 'gender_id' => [
         'name' => 'gender_id',
         'title' => ts($options['prefix_label'] . 'Gender'),
+        'label' => ts('Gender'),
         'options' => CRM_Contact_BAO_Contact::buildOptions('gender_id'),
         'operatorType' => CRM_Report_Form::OP_MULTISELECT,
         'alter_display' => 'alterGenderID',
@@ -356,6 +367,7 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
       ],
       'birth_date' => [
         'title' => ts($options['prefix_label'] . 'Birth Date'),
+        'label' => ts('Birth Date'),
         'operatorType' => CRM_Report_Form::OP_DATE,
         'type' => CRM_Utils_Type::T_DATE,
         'is_fields' => TRUE,
@@ -363,6 +375,7 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
       ],
       'age' => [
         'title' => ts($options['prefix_label'] . 'Age'),
+        'label' => ts('Age'),
         'dbAlias' => 'TIMESTAMPDIFF(YEAR, ' . $tableAlias . '.birth_date, CURDATE())',
         'type' => CRM_Utils_Type::T_INT,
         'is_fields' => TRUE,

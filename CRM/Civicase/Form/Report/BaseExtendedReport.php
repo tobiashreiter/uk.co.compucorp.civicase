@@ -286,6 +286,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
       $this->_columns[$tableKey]['group_bys'] = [];
       $this->_columns[$tableKey]['order_bys'] = [];
       $this->_columns[$tableKey]['aggregates'] = [];
+      $this->_columns[$tableKey]['prefix_label'] = $field['prefix_label'];
       $this->_columns[$tableKey]['prefix'] = $prefix;
       $this->_columns[$tableKey]['table_name'] = $currentTable;
       $this->_columns[$tableKey]['alias'] = $prefix . $currentTable;
@@ -995,21 +996,42 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   /**
    * This function is overridden so as to allow the extending report class to provide the
    * filters template to use for the filters.
+   *
+   * Also overridden to allow fields extending contacts, i.e custom fields and contact fields
+   * to be sorted into a separate array so that when more than one contact entity is joined to
+   * the report, the filter fields can be organized and displayed per contact entity.
    */
   public function addFilters() {
     foreach (['filters', 'join_filters'] as $filterString) {
       $filters = $filterGroups = [];
+      $filterExtendsContactGroup = [];
+      $filtersGroupedByTableKeys = [];
       $count = 1;
       foreach ($this->getMetadataByType($filterString) as $fieldName => $field) {
         $table = $field['table_name'];
+        $filterExtendsContact = FALSE;
         if ($filterString === 'filters') {
+          $filterExtendsContact = (!empty($field['extends']) && in_array($field['extends'], ['Individual', 'Household', 'Organization'])) ||
+            $field['table_name'] == 'civicrm_contact';
           $filterGroups[$table] = [
             'group_title' => $this->_columns[$field['table_key']]['group_title'],
             'use_accordian_for_field_selection' => TRUE,
+            'group_extends_contact' => $filterExtendsContact
           ];
+
+          if ($filterExtendsContact) {
+            $filterExtendsContactGroup[$field['table_key']] = [
+              'group_field_label' => !empty($this->_columns[$field['table_key']]['prefix_label']) ?
+                $this->_columns[$field['table_key']]['prefix_label'] : '',
+            ];
+          }
         }
         $prefix = ($filterString === 'join_filters') ? 'join_filter_' : '';
         $filters[$table][$prefix . $fieldName] = $field;
+        if ($filterExtendsContact) {
+          $filtersGroupedByTableKeys[$table][$field['table_key']][$prefix . $fieldName] = $field;
+        }
+
         $this->addFilterFieldsToReport($field, $fieldName, $table, $count, $prefix);
       }
 
@@ -1020,6 +1042,8 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
           'div_label' => 'set-filters',
         ];
         $this->assign('filterGroups', $filterGroups);
+        $this->assign('filterExtendsContactGroup', $filterExtendsContactGroup);
+        $this->assign('filtersGroupedByTableSets', $filtersGroupedByTableKeys);
       }
       $this->assign($filterString, $filters);
     }
