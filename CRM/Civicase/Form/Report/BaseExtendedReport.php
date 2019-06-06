@@ -315,6 +315,12 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
     return array_merge($availableJoins, $joins);
   }
 
+  /**
+   * Function  overridden to allow NULL values in the results rows to show as 'NULL'
+   * rather than as an empty string.
+   *
+   * @param array $rows
+   */
   public function alterRollupRows(&$rows) {
     if (count($rows) === 1) {
       // If the report only returns one row there is no rollup.
@@ -346,7 +352,6 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
 
     $statLayers = count($this->_groupByArray);
 
-    //I don't know that this precaution is required?          $this->fixSubTotalDisplay($rows[$rowNum], $this->_statFields);
     if (count($this->_statFields) == 0) {
       return;
     }
@@ -363,15 +368,19 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   }
 
   /**
-   * @param $row
-   * @param $nextRow
-   * @param $groupBys
-   * @param $rowNumber
-   * @param $statLayers
+   * Overridden to allow the alterRollupRows function use this function since the
+   * original function in base class is private and the `alterRollupRows` won't work
+   * without this.
    *
-   * @param $groupByLabels
-   * @param $altered
-   * @param $fieldsToUnSetForSubtotalLines
+   * @param array $row
+   * @param array $nextRow
+   * @param array $groupBys
+   * @param mixed $rowNumber
+   * @param mixed $statLayers
+   *
+   * @param mixed $groupByLabels
+   * @param mixed $altered
+   * @param mixed $fieldsToUnSetForSubtotalLines
    *
    * @return mixed
    */
@@ -394,6 +403,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
       $groupBys[$field] = $row[$field];
     }
   }
+
   /**
    * Replace NULL row values with the 'NULL' keyword
    */
@@ -416,7 +426,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    */
   function addColumnAggregateSelect($fieldName, $dbAlias, $spec) {
     if (empty($fieldName)) {
-      $this->addAggregateTotal($fieldName, $dbAlias);
+      $this->addAggregateTotal($fieldName);
       return;
     }
     $spec['dbAlias'] = $dbAlias;
@@ -464,7 +474,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
     }
 
     if ($this->_aggregatesAddTotal) {
-      $this->addAggregateTotal($fieldName, $aggregates);
+      $this->addAggregateTotalField($fieldName, $aggregates);
     }
   }
 
@@ -656,7 +666,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * @param string $fieldName
    * @param array $aggregates
    */
-  function addAggregateTotal($fieldName, $aggregates) {
+  protected function addAggregateTotalField($fieldName, $aggregates) {
     $fieldAlias = "{$fieldName}_total";
     $sumOfAggregates =  implode(' + ', $aggregates);
     $this->_select .= ', ' . "{$sumOfAggregates} as {$fieldAlias}";
@@ -745,7 +755,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
       if (!empty($spec['is_filters']) && !empty($spec['statistics']) && !empty($options) && !empty($options['group_by'])) {
         foreach ($spec['statistics'] as $statisticName => $statisticLabel) {
           $columns[$tableName]['filters'][$fieldAlias . '_' . $statisticName] = array_merge($spec, [
-            'title' => E::ts('Aggregate filter : ') . $statisticLabel,
+            'title' => ts('Aggregate filter : ') . $statisticLabel,
             'having' => TRUE,
             'dbAlias' => $tableName . '_' . $fieldAlias . '_' . $statisticName,
             'selectAlias' => "{$statisticName}({$tableAlias}.{$spec['name']})",
@@ -774,11 +784,11 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
       $groupTitle = $options['group_title'];
     }
     else {
-
       // We can make one up but it won't be translated....
       $groupTitle = ucfirst(str_replace('_', ' ', str_replace('civicrm_', '', $tableName)));
     }
     $columns[$tableName]['group_title'] = $groupTitle;
+
     return $columns;
   }
 
@@ -895,6 +905,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
         return TRUE;
       }
     }
+
     return FALSE;
   }
 
@@ -908,6 +919,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
     if (empty($this->_params['data_function_field']) || !isset($metadata[$this->_params['data_function_field']])) {
       return [];
     }
+
     return [$this->_params['data_function_field'] => $metadata[$this->_params['data_function_field']]];
   }
 
@@ -929,6 +941,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
     if (!CRM_Utils_File::isIncludable('templates/' . $defaultTpl)) {
       $defaultTpl = 'CRM/Report/Form.tpl';
     }
+
     return $defaultTpl;
   }
 
