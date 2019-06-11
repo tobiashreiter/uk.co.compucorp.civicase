@@ -46,8 +46,6 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
     $this->_columns['civicrm_contact']['fields']['gender_id']['no_display'] = TRUE;
     $this->_columns['civicrm_contact']['fields']['gender_id']['title'] = 'Gender';
 
-    $this->_tagFilter = TRUE;
-    $this->_groupFilter = TRUE;
     parent::__construct();
     $this->addAdditionFilterFields();
   }
