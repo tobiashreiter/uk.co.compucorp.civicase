@@ -1098,6 +1098,46 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
     return $stats;
   }
 
+
+  /**
+   * A function that allows the case type field to be altered and the case type ID replaced
+   * with the case type label for display in the results set.
+   *
+   * @param mixed $value
+   * @param array $row
+   * @param string $selectedField
+   * @param array $fieldAlterMap
+   * @param array $fieldSpecs
+   *
+   * @return mixed
+   */
+  protected function alterCaseType($value, $row, $selectedField, $fieldAlterMap, $fieldSpecs) {
+    return $this->alterRowFieldDisplay($value, $fieldSpecs);
+  }
+
+  protected function alterCaseStatus($value, $row, $selectedField, $fieldAlterMap, $fieldSpecs) {
+    return $this->alterRowFieldDisplay($value, $fieldSpecs);
+  }
+
+  /**
+   * A function that allows the a field to be altered and the field ID replaced
+   * with the field label for display in the results set.
+   *
+   * @param mixed $value
+   * @param array $fieldSpecs
+   *
+   * @return mixed
+   */
+  private function alterRowFieldDisplay($value, $fieldSpecs) {
+    if (empty($fieldSpecs['options'])) {
+      return;
+    }
+
+    $options = $fieldSpecs['options'];
+
+    return CRM_Utils_Array::value($value, $options);
+  }
+
   /**
    * Returns the field title for the aggregate on field
    *
