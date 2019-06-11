@@ -322,11 +322,11 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * @param array $rows
    */
   public function alterRollupRows(&$rows) {
+    array_walk($rows, [$this, 'replaceNullRowValues']);
     if (count($rows) === 1) {
       // If the report only returns one row there is no rollup.
       return;
     }
-    array_walk($rows, [$this, 'replaceNullRowValues']);
     $groupBys = array_reverse(array_fill_keys(array_keys($this->_groupByArray), NULL));
     $firstRow = reset($rows);
     foreach ($groupBys as $field => $groupBy) {
