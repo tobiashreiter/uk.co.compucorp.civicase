@@ -143,7 +143,7 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
         'operatorType' => CRM_Report_Form::OP_SELECT,
         'title' => ts("Current Revision"),
         'name' => 'is_current_revision',
-        'options' => ['1' => 'Yes', '0' => 'No',],
+        'options' => ['' => '- select -', '1' => 'Yes', '0' => 'No',],
         'is_filters' => TRUE,
       ],
       'is_deleted' => [
@@ -151,7 +151,7 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
         'operatorType' => CRM_Report_Form::OP_SELECT,
         'title' => ts("Is activity deleted"),
         'name' => 'is_deleted',
-        'options' => ['0' => 'No', '1' => 'Yes',],
+        'options' => ['' => '- select -', '0' => 'No', '1' => 'Yes',],
         'is_filters' => TRUE,
       ],
 
