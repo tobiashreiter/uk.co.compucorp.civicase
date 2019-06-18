@@ -48,8 +48,9 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
         'is_fields' => TRUE,
       ],
       'source_record_id' => [
-        'no_display' => TRUE,
-        'required' => FALSE,
+        'name' => 'source_record_id',
+        'title' => ts('Source Record ID'),
+        'is_fields' => TRUE,
       ],
       'activity_type_id' => [
         'title' => ts('Activity Type'),
