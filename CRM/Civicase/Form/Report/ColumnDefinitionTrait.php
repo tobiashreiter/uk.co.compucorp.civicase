@@ -401,7 +401,7 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
         'type' => CRM_Utils_Type::T_INT,
         'is_fields' => TRUE,
       ],
-      $options['prefix'] .'do_not_email' => [
+      $options['prefix'] . 'do_not_email' => [
         'name' => 'do_not_email',
         'title' => ts($options['prefix_label'] . 'Do Not Email'),
         'label' => ts('Do Not Email'),
