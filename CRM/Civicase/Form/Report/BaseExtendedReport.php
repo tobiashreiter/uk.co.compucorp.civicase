@@ -969,7 +969,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
     }
 
     $this->_select = "SELECT {$selectedField['dbAlias']} as $fieldAlias ";
-    if (!empty($selectedField['html']['type']) && $selectedField['html']['type'] == 'Select Date') {
+    if ($selectedField['type'] == CRM_Report_Form::OP_DATE) {
       $dateGrouping = $this->_params['aggregate_row_date_grouping'];
       if (!empty($dateGrouping)) {
         $this->_select = "SELECT DATE_FORMAT({$selectedField['dbAlias']}, '{$this->dateSqlGrouping[$dateGrouping]}') as $fieldAlias";
@@ -1132,12 +1132,12 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    */
   private function alterRowFieldDisplay($value, $fieldSpecs) {
     if (empty($fieldSpecs['options'])) {
-      return;
+      return 'NULL';
     }
 
     $options = $fieldSpecs['options'];
-
-    return CRM_Utils_Array::value($value, $options);
+    $value = trim($value, CRM_Core_DAO::VALUE_SEPARATOR);
+    return CRM_Utils_Array::value($value, $options, 'NULL');
   }
 
   /**
