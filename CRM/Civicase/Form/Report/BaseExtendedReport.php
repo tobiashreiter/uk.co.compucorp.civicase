@@ -436,6 +436,9 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
       $options['values'] = array_intersect_key($options, array_flip($this->_params[$fieldName . '_value']));
     }
 
+    if (empty($options)) {
+      return;
+    }
     $filterSpec = [
       'field' => ['name' => $fieldName],
       'table' => ['alias' => $spec['table_name']],
@@ -451,6 +454,10 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
 
     $aggregates = [];
     foreach ($options as $optionValue => $optionLabel) {
+      if ($optionLabel == '- select -') {
+        continue;
+      }
+
       $fieldAlias = str_replace([
         '-',
         '+',
@@ -534,7 +541,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * @return string
    */
   protected function getSqlAggregateForCount($field, $value, $operator, $fieldAlias) {
-    $value = !empty($value) ? "'{$value}'" : '';
+    $value = (!empty($value) || $value == 0) ? "'{$value}'" : '';
     return " , SUM( CASE WHEN {$field} {$operator} $value THEN 1 ELSE 0 END ) AS $fieldAlias ";
   }
 
@@ -549,7 +556,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * @return string
    */
   protected function getSqlAggregateForCountUnique($field, $value, $operator, $fieldAlias) {
-    $value = !empty($value) ? "'{$value}'" : '';
+    $value = (!empty($value) || $value === 0) ? "'{$value}'" : '';
     $dataFunctionFieldAlias = $this->getDbAliasForAggregateOnField();
 
     return " , COUNT( DISTINCT CASE WHEN {$field} {$operator} $value THEN {$dataFunctionFieldAlias} END ) AS $fieldAlias ";
@@ -566,7 +573,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * @return string
    */
   protected function getSqlAggregateForSum($field, $value, $operator, $fieldAlias) {
-    $value = !empty($value) ? "'{$value}'" : '';
+    $value = (!empty($value) || $value == 0) ? "'{$value}'" : '';
     $dataFunctionFieldAlias = $this->getDbAliasForAggregateOnField();
 
     return  " , SUM( CASE WHEN {$field} {$operator} $value THEN {$dataFunctionFieldAlias} ELSE 0 END ) AS $fieldAlias ";
