@@ -322,11 +322,11 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * @param array $rows
    */
   public function alterRollupRows(&$rows) {
+    array_walk($rows, [$this, 'replaceNullRowValues']);
     if (count($rows) === 1) {
       // If the report only returns one row there is no rollup.
       return;
     }
-    array_walk($rows, [$this, 'replaceNullRowValues']);
     $groupBys = array_reverse(array_fill_keys(array_keys($this->_groupByArray), NULL));
     $firstRow = reset($rows);
     foreach ($groupBys as $field => $groupBy) {
@@ -436,6 +436,9 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
       $options['values'] = array_intersect_key($options, array_flip($this->_params[$fieldName . '_value']));
     }
 
+    if (empty($options)) {
+      return;
+    }
     $filterSpec = [
       'field' => ['name' => $fieldName],
       'table' => ['alias' => $spec['table_name']],
@@ -451,6 +454,10 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
 
     $aggregates = [];
     foreach ($options as $optionValue => $optionLabel) {
+      if ($optionLabel == '- select -') {
+        continue;
+      }
+
       $fieldAlias = str_replace([
         '-',
         '+',
@@ -534,7 +541,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * @return string
    */
   protected function getSqlAggregateForCount($field, $value, $operator, $fieldAlias) {
-    $value = !empty($value) ? "'{$value}'" : '';
+    $value = (!empty($value) || $value == 0) ? "'{$value}'" : '';
     return " , SUM( CASE WHEN {$field} {$operator} $value THEN 1 ELSE 0 END ) AS $fieldAlias ";
   }
 
@@ -549,7 +556,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * @return string
    */
   protected function getSqlAggregateForCountUnique($field, $value, $operator, $fieldAlias) {
-    $value = !empty($value) ? "'{$value}'" : '';
+    $value = (!empty($value) || $value === 0) ? "'{$value}'" : '';
     $dataFunctionFieldAlias = $this->getDbAliasForAggregateOnField();
 
     return " , COUNT( DISTINCT CASE WHEN {$field} {$operator} $value THEN {$dataFunctionFieldAlias} END ) AS $fieldAlias ";
@@ -566,7 +573,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * @return string
    */
   protected function getSqlAggregateForSum($field, $value, $operator, $fieldAlias) {
-    $value = !empty($value) ? "'{$value}'" : '';
+    $value = (!empty($value) || $value == 0) ? "'{$value}'" : '';
     $dataFunctionFieldAlias = $this->getDbAliasForAggregateOnField();
 
     return  " , SUM( CASE WHEN {$field} {$operator} $value THEN {$dataFunctionFieldAlias} ELSE 0 END ) AS $fieldAlias ";
@@ -962,7 +969,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
     }
 
     $this->_select = "SELECT {$selectedField['dbAlias']} as $fieldAlias ";
-    if (!empty($selectedField['html']['type']) && $selectedField['html']['type'] == 'Select Date') {
+    if ($selectedField['type'] == CRM_Report_Form::OP_DATE) {
       $dateGrouping = $this->_params['aggregate_row_date_grouping'];
       if (!empty($dateGrouping)) {
         $this->_select = "SELECT DATE_FORMAT({$selectedField['dbAlias']}, '{$this->dateSqlGrouping[$dateGrouping]}') as $fieldAlias";
@@ -1096,6 +1103,41 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
     }
 
     return $stats;
+  }
+
+  /**
+   * A function that allows the selected field to be altered and the ID replaced
+   * with the field option label for display in the results set.
+   *
+   * @param mixed $value
+   * @param array $row
+   * @param string $selectedField
+   * @param array $fieldAlterMap
+   * @param array $fieldSpecs
+   *
+   * @return mixed
+   */
+  protected function alterGenericSelect($value, $row, $selectedField, $fieldAlterMap, $fieldSpecs) {
+    return $this->alterRowFieldDisplay($value, $fieldSpecs);
+  }
+
+  /**
+   * A function that allows the a field to be altered and the field ID replaced
+   * with the field label for display in the results set.
+   *
+   * @param mixed $value
+   * @param array $fieldSpecs
+   *
+   * @return mixed
+   */
+  private function alterRowFieldDisplay($value, $fieldSpecs) {
+    if (empty($fieldSpecs['options'])) {
+      return 'NULL';
+    }
+
+    $options = $fieldSpecs['options'];
+    $value = trim($value, CRM_Core_DAO::VALUE_SEPARATOR);
+    return CRM_Utils_Array::value($value, $options, 'NULL');
   }
 
   /**
