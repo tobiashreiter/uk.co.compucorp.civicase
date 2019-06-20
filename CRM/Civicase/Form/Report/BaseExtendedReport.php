@@ -1105,10 +1105,9 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
     return $stats;
   }
 
-
   /**
-   * A function that allows the case type field to be altered and the case type ID replaced
-   * with the case type label for display in the results set.
+   * A function that allows the selected field to be altered and the ID replaced
+   * with the field option label for display in the results set.
    *
    * @param mixed $value
    * @param array $row
@@ -1118,11 +1117,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    *
    * @return mixed
    */
-  protected function alterCaseType($value, $row, $selectedField, $fieldAlterMap, $fieldSpecs) {
-    return $this->alterRowFieldDisplay($value, $fieldSpecs);
-  }
-
-  protected function alterCaseStatus($value, $row, $selectedField, $fieldAlterMap, $fieldSpecs) {
+  protected function alterGenericSelect($value, $row, $selectedField, $fieldAlterMap, $fieldSpecs) {
     return $this->alterRowFieldDisplay($value, $fieldSpecs);
   }
 
