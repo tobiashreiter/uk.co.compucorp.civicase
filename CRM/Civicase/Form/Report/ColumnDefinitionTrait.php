@@ -103,18 +103,10 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
         ],
       ],
       'duration' => [
-        'title' => ts('Duration (sum for all contacts)'),
-        'type' => CRM_Utils_Type::T_INT,
-        'statistics' => [
-          'sum' => ts('Total Duration'),
-        ],
-        'is_fields' => TRUE,
-      ],
-      'duration_each' => [
-        'title' => ts('Duration (for each contact)'),
+        'title' => ts('Activity Duration'),
         'name' => 'duration',
-        'type' => CRM_Utils_Type::T_INT,
         'is_fields' => TRUE,
+        'is_filters' => TRUE,
       ],
       'details' => [
         'title' => ts('Activity Details'),
