@@ -90,7 +90,6 @@ function civicase_civicrm_install() {
   _civicase_civix_civicrm_install();
 }
 
-
 /**
  * Implements hook_civicrm_postInstall().
  *
@@ -197,9 +196,6 @@ function civicase_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
 
 /**
  * Implements hook_civicrm_buildForm().
- *
- * @param string $formName
- * @param CRM_Core_Form $form
  */
 function civicase_civicrm_buildForm($formName, &$form) {
   $hooks = [
@@ -351,6 +347,7 @@ function civicase_civicrm_buildForm($formName, &$form) {
 
 /**
  * Implements hook_civicrm_alterContent().
+ *
  * Adds extra settings fields to the Civicase Admin Settings form.
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_alterContent/
@@ -373,12 +370,6 @@ function civicase_civicrm_alterContent (&$content, $context, $templateName, $for
 
 /**
  * Implements hook_civicrm_validateForm().
- *
- * @param string $formName
- * @param array $fields
- * @param array $files
- * @param CRM_Core_Form $form
- * @param array $errors
  */
 function civicase_civicrm_validateForm($formName, &$fields, &$files, &$form, &$errors) {
   // Save draft feature
@@ -426,9 +417,6 @@ function civicase_civicrm_validateForm($formName, &$fields, &$files, &$form, &$e
 
 /**
  * Implements hook_civicrm_postProcess().
- * @param string $formName
- * @param CRM_Core_Form $form
- * @throws \CiviCRM_API3_Exception
  */
 function civicase_civicrm_postProcess($formName, &$form) {
   if (!empty($form->civicase_reload)) {
@@ -447,20 +435,17 @@ function civicase_civicrm_postProcess($formName, &$form) {
 }
 
 /**
- * Implements hook_civicrm_permission()
- *
- * @param array $permissions
- *   Array of permissions defined on extensions
+ * Implements hook_civicrm_permission().
  */
 function civicase_civicrm_permission(&$permissions) {
   $permissions['basic case information'] = array(
     'Civicase: basic case information',
-    ts('Allows a user to view only basic information of cases.')
+    ts('Allows a user to view only basic information of cases.'),
   );
 }
 
 /**
- * Implements hook_civicrm_apiWrappers
+ * Implements hook_civicrm_apiWrappers().
  */
 function civicase_civicrm_apiWrappers(&$wrappers, $apiRequest) {
   if ($apiRequest['entity'] == 'Case') {
@@ -484,7 +469,7 @@ function civicase_civicrm_alterAPIPermissions($entity, $action, &$params, &$perm
       'access my cases and activities',
       'access all cases and activities',
       'basic case information',
-    )
+    ),
   );
 
   $permissions['case']['getcount'] = array(
@@ -492,7 +477,7 @@ function civicase_civicrm_alterAPIPermissions($entity, $action, &$params, &$perm
       'access my cases and activities',
       'access all cases and activities',
       'basic case information',
-    )
+    ),
   );
 
   $permissions['case_type']['get'] = $permissions['casetype']['getcount'] = array(
@@ -500,7 +485,7 @@ function civicase_civicrm_alterAPIPermissions($entity, $action, &$params, &$perm
       'access my cases and activities',
       'access all cases and activities',
       'basic case information',
-    )
+    ),
   );
 }
 
@@ -531,7 +516,7 @@ function civicase_civicrm_pageRun(&$page) {
   }
 
   // Adds simplescrollbarjs
-  if ($page instanceof CRM_Civicase_Page_CaseAngular ) {
+  if ($page instanceof CRM_Civicase_Page_CaseAngular) {
     CRM_Core_Resources::singleton()->addScriptFile('uk.co.compucorp.civicase', 'packages/simplebar.min.js');
     CRM_Core_Resources::singleton()->addStyleFile('uk.co.compucorp.civicase', 'packages/simplebar.min.css', 1000, 'html-header');
   }
@@ -573,19 +558,19 @@ function civicase_civicrm_navigationMenu(&$menu) {
   $menu_items = array();
   CRM_Core_BAO_Navigation::retrieve($menu_item_search, $menu_items);
 
-  if ( ! empty($menu_items) ) {
+  if (!empty($menu_items)) {
     return;
   }
 
   $navId = CRM_Core_DAO::singleValueQuery("SELECT max(id) FROM civicrm_navigation");
-  if (is_integer($navId)) {
+  if (is_int($navId)) {
     $navId++;
   }
   // Find the Civicase menu
   $caseID = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_Navigation', 'CiviCase', 'id', 'name');
   $administerID = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_Navigation', 'Administer', 'id', 'name');
   $menu[$administerID]['child'][$caseID]['child'][$navId] = array(
-    'attributes' => array (
+    'attributes' => array(
       'label' => ts('CiviCase Webforms'),
       'name' => 'CiviCase Webforms',
       'url' => 'civicrm/case/webforms',
@@ -594,7 +579,7 @@ function civicase_civicrm_navigationMenu(&$menu) {
       'separator' => 1,
       'parentID' => $caseID,
       'navID' => $navId,
-      'active' => 1
+      'active' => 1,
     ),
   );
 }
@@ -637,6 +622,8 @@ function civicase_civicrm_entityTypes(&$entityTypes) {
     'class' => 'CRM_Civicase_DAO_CaseContactLock',
     'table' => 'civicase_contactlock',
   );
+
+  _civicase_update_case_type_entity($entityTypes);
 }
 
 /**
@@ -668,4 +655,33 @@ function civicase_civicrm_preProcess($formName, &$form) {
 
     $form->setVar('_settings', $settings);
   }
+}
+
+/**
+ * Adds Case Type Category field to the Case Type entity DAO
+ *
+ * @param Array $entityTypes
+ */
+function _civicase_update_case_type_entity (&$entityTypes) {
+  $entityTypes['CRM_Case_DAO_CaseType']['fields_callback'][] = function ($class, &$fields) {
+    $fields['case_type_category'] = [
+      'name' => 'case_type_category',
+      'type' => CRM_Utils_Type::T_INT,
+      'title' => ts('Case Type Category'),
+      'description' => ts('FK to a civicrm_option_value (case_type_categories)'),
+      'required' => FALSE,
+      'where' => 'civicrm_case_type.case_type_category',
+      'table_name' => 'civicrm_case_type',
+      'entity' => 'CaseType',
+      'bao' => 'CRM_Case_BAO_CaseType',
+      'localizable' => 1,
+      'html' => [
+        'type' => 'Select',
+      ],
+      'pseudoconstant' => [
+        'optionGroupName' => 'case_type_categories',
+        'optionEditPath' => 'civicrm/admin/options/case_type_categories',
+      ],
+    ];
+  };
 }
