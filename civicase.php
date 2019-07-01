@@ -623,7 +623,7 @@ function civicase_civicrm_entityTypes(&$entityTypes) {
     'table' => 'civicase_contactlock',
   );
 
-  _civicase_update_case_type_entity($entityTypes);
+  _civicase_add_case_category_case_type_entity($entityTypes);
 }
 
 /**
@@ -662,7 +662,7 @@ function civicase_civicrm_preProcess($formName, &$form) {
  *
  * @param Array $entityTypes
  */
-function _civicase_update_case_type_entity (&$entityTypes) {
+function _civicase_add_case_category_case_type_entity (&$entityTypes) {
   $entityTypes['CRM_Case_DAO_CaseType']['fields_callback'][] = function ($class, &$fields) {
     $fields['case_type_category'] = [
       'name' => 'case_type_category',

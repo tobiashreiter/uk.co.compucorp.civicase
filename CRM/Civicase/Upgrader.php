@@ -405,28 +405,94 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
   }
 
   /**
-   * Adds case lock table to existing installations.
+   * @inheritdoc
    */
-  public function upgrade_0001() {
-    $this->executeSqlFile('sql/auto_install.sql');
+  public function hasPendingRevisions() {
+    $revisions = $this->getRevisions();
+    $currentRevisionNum = $this->getCurrentRevision();
+    if (empty($revisions)) {
+      return FALSE;
+    }
+    if (empty($currentRevisionNum)) {
+      return TRUE;
+    }
+    return ($currentRevisionNum < max(array_keys($revisions)));
+  }
 
+  /**
+   * @inheritdoc
+   */
+  public function enqueuePendingRevisions(CRM_Queue_Queue $queue) {
+    $currentRevisionNum = (int) $this->getCurrentRevision();
+    foreach ($this->getRevisions() as $revisionNum => $revisionClass) {
+      if ($revisionNum < $currentRevisionNum) {
+        continue;
+      }
+      $tsParams = [1 => $this->extensionName, 2 => $revisionNum];
+      $title = ts('Upgrade %1 to revision %2', $tsParams);
+      $upgradeTask = new CRM_Queue_Task(
+        [get_class($this), 'runStepUpgrade'],
+        [(new $revisionClass())],
+        $title
+      );
+      $queue->createItem($upgradeTask);
+      $setRevisionTask = new CRM_Queue_Task(
+        [get_class($this), '_queueAdapter'],
+        ['setCurrentRevision', $revisionNum],
+        $title
+      );
+      $queue->createItem($setRevisionTask);
+    }
+  }
+
+  /**
+   * This is a callback for running step upgraders from the queue
+   *
+   * @param CRM_Queue_TaskContext $context
+   * @param \object $step
+   *
+   * @return true
+   *   The queue requires that true is returned on successful upgrade, but we
+   *   use exceptions to indicate an error instead.
+   */
+  public static function runStepUpgrade($context, $step) {
+    $step->apply();
     return TRUE;
   }
 
   /**
-   * Adds "Case Type Categories" field to the `civicrm_case_type` table
+   * Get a list of revisions.
+   *
+   * @return array
+   *   An array of revision classes sorted numerically by their key
    */
-  public function upgrade_0002() {
-    CRM_Core_DAO::executeQuery('ALTER TABLE civicrm_case_type
-      ADD COLUMN case_type_category INT(10)');
+  public function getRevisions() {
+    $extensionRoot = __DIR__;
+    $stepClassFiles = glob($extensionRoot . '/Upgrader/Steps/Step*.php');
+    $sortedKeyedClasses = [];
+    foreach ($stepClassFiles as $file) {
+      $class = $this->getUpgraderClassnameFromFile($file);
+      $numberPrefix = 'Steps_Step';
+      $startPos = strpos($class, $numberPrefix) + strlen($numberPrefix);
+      $revisionNum = (int) substr($class, $startPos);
+      $sortedKeyedClasses[$revisionNum] = $class;
+    }
+    ksort($sortedKeyedClasses, SORT_NUMERIC);
+    return $sortedKeyedClasses;
+  }
 
-    CRM_Core_BAO_OptionGroup::ensureOptionGroupExists([
-      'name' => 'case_type_categories',
-      'title' => ts('Case Type Categories'),
-      'is_reserved' => 1,
-    ]);
-
-    return TRUE;
+  /**
+   * Gets the PEAR style classname from an upgrader file
+   *
+   * @param $file
+   *
+   * @return string
+   */
+  private function getUpgraderClassnameFromFile($file) {
+    $file = str_replace(realpath(__DIR__ . '/../../'), '', $file);
+    $file = str_replace('.php', '', $file);
+    $file = str_replace('/', '_', $file);
+    return ltrim($file, '_');
   }
 
 }
