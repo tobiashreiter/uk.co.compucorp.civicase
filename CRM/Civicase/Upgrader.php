@@ -61,6 +61,7 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
 
     $steps = [
       new CaseTypeCategorySupport(),
+      new CreateCasesOptionValue(),
     ];
     foreach ($steps as $step) {
       $step->apply();
