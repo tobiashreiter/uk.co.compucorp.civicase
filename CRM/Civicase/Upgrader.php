@@ -1,5 +1,7 @@
 <?php
 
+use CRM_Civicase_Setup_CaseTypeCategorySupport as CaseTypeCategorySupport;
+
 /**
  * Collection of upgrade steps.
  */
@@ -55,55 +57,14 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
       ));
     }
 
-    // Create activity types
-    $this->addOptionValue(array(
-      'option_group_id' => 'activity_type',
-      'label' => ts('Alert'),
-      'name' => 'Alert',
-      'grouping' => 'alert',
-      'is_reserved' => 0,
-      'description' => ts('Alerts to display in cases'),
-      'component_id' => 'CiviCase',
-      'icon' => 'fa-exclamation',
-    ));
-    $this->addOptionValue(array(
-      'option_group_id' => 'activity_type',
-      'label' => ts('File Upload'),
-      'name' => 'File Upload',
-      // 'grouping' => '',
-      'is_reserved' => 0,
-      'description' => ts('Add files to a case'),
-      'component_id' => 'CiviCase',
-      'icon' => 'fa-file',
-    ));
-    $this->addOptionValue(array(
-      'option_group_id' => 'activity_type',
-      'label' => ts('Remove Client From Case'),
-      'name' => 'Remove Client From Case',
-      'grouping' => 'system',
-      'is_reserved' => 0,
-      'description' => ts('Client removed from multi-client case'),
-      'component_id' => 'CiviCase',
-      'icon' => 'fa-user-times',
-    ));
+    $this->addAllOptionValues();
 
-    // Create activity statuses
-    $this->addOptionValue(array(
-      'option_group_id' => 'activity_status',
-      'label' => ts('Unread'),
-      'name' => 'Unread',
-      'grouping' => 'communication',
-      'is_reserved' => 0,
-      'color' => '#d9534f',
-    ));
-    $this->addOptionValue(array(
-      'option_group_id' => 'activity_status',
-      'label' => ts('Draft'),
-      'name' => 'Draft',
-      'grouping' => 'communication',
-      'is_reserved' => 0,
-      'color' => '#c2cfd8',
-    ));
+    $steps = [
+      new CaseTypeCategorySupport(),
+    ];
+    foreach ($steps as $step) {
+      $step->apply();
+    }
 
     // Set grouping for existing statuses
     $allowedStatuses = array(
@@ -300,6 +261,61 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
   }
 
   /**
+   * Adds all the necessary Option Values
+   */
+  private function addAllOptionValues () {
+    // Create activity types
+    $this->addOptionValue(array(
+      'option_group_id' => 'activity_type',
+      'label' => ts('Alert'),
+      'name' => 'Alert',
+      'grouping' => 'alert',
+      'is_reserved' => 0,
+      'description' => ts('Alerts to display in cases'),
+      'component_id' => 'CiviCase',
+      'icon' => 'fa-exclamation',
+    ));
+    $this->addOptionValue(array(
+      'option_group_id' => 'activity_type',
+      'label' => ts('File Upload'),
+      'name' => 'File Upload',
+      // 'grouping' => '',
+      'is_reserved' => 0,
+      'description' => ts('Add files to a case'),
+      'component_id' => 'CiviCase',
+      'icon' => 'fa-file',
+    ));
+    $this->addOptionValue(array(
+      'option_group_id' => 'activity_type',
+      'label' => ts('Remove Client From Case'),
+      'name' => 'Remove Client From Case',
+      'grouping' => 'system',
+      'is_reserved' => 0,
+      'description' => ts('Client removed from multi-client case'),
+      'component_id' => 'CiviCase',
+      'icon' => 'fa-user-times',
+    ));
+
+    // Create activity statuses
+    $this->addOptionValue(array(
+      'option_group_id' => 'activity_status',
+      'label' => ts('Unread'),
+      'name' => 'Unread',
+      'grouping' => 'communication',
+      'is_reserved' => 0,
+      'color' => '#d9534f',
+    ));
+    $this->addOptionValue(array(
+      'option_group_id' => 'activity_status',
+      'label' => ts('Draft'),
+      'name' => 'Draft',
+      'grouping' => 'communication',
+      'is_reserved' => 0,
+      'color' => '#c2cfd8',
+    ));
+  }
+
+  /**
    * @param array $menuItem
    */
   public function addNav($menuItem) {
@@ -484,7 +500,7 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
   /**
    * Gets the PEAR style classname from an upgrader file
    *
-   * @param $file
+   * @param string $file
    *
    * @return string
    */

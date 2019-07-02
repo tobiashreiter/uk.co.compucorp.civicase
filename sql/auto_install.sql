@@ -15,12 +15,3 @@ CREATE TABLE `civicase_contactlock` (
   CONSTRAINT FK_civicase_contactlock_case_id FOREIGN KEY (`case_id`) REFERENCES `civicrm_case`(`id`) ON DELETE CASCADE,
   CONSTRAINT FK_civicase_contactlock_contact_id FOREIGN KEY (`contact_id`) REFERENCES `civicrm_contact`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
--- /*******************************************************
--- *
--- * case_type_category
--- *
--- * This new column, stores the case type category
--- *
--- *******************************************************/
-ALTER TABLE `civicrm_case_type` ADD COLUMN `case_type_category` INT(10);
