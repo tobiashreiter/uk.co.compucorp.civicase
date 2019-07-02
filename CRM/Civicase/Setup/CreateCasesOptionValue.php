@@ -9,7 +9,7 @@ class CRM_Civicase_Setup_CreateCasesOptionValue {
       'option_group_id' => 'case_type_categories',
       'name' => 'Cases',
       'label' => 'Cases',
-      'is_default' => $option['is_default'],
+      'is_default' => TRUE,
       'is_active' => TRUE,
       'is_reserved' => TRUE,
     ]);
