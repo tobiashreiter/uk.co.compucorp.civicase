@@ -1,5 +1,7 @@
 <?php
 
+use CRM_Civicase_Setup_CaseTypeCategorySupport as CaseTypeCategorySupport;
+
 /**
  * Collection of upgrade steps.
  */
@@ -55,55 +57,14 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
       ));
     }
 
-    // Create activity types
-    $this->addOptionValue(array(
-      'option_group_id' => 'activity_type',
-      'label' => ts('Alert'),
-      'name' => 'Alert',
-      'grouping' => 'alert',
-      'is_reserved' => 0,
-      'description' => ts('Alerts to display in cases'),
-      'component_id' => 'CiviCase',
-      'icon' => 'fa-exclamation',
-    ));
-    $this->addOptionValue(array(
-      'option_group_id' => 'activity_type',
-      'label' => ts('File Upload'),
-      'name' => 'File Upload',
-      // 'grouping' => '',
-      'is_reserved' => 0,
-      'description' => ts('Add files to a case'),
-      'component_id' => 'CiviCase',
-      'icon' => 'fa-file',
-    ));
-    $this->addOptionValue(array(
-      'option_group_id' => 'activity_type',
-      'label' => ts('Remove Client From Case'),
-      'name' => 'Remove Client From Case',
-      'grouping' => 'system',
-      'is_reserved' => 0,
-      'description' => ts('Client removed from multi-client case'),
-      'component_id' => 'CiviCase',
-      'icon' => 'fa-user-times',
-    ));
+    $this->addAllOptionValues();
 
-    // Create activity statuses
-    $this->addOptionValue(array(
-      'option_group_id' => 'activity_status',
-      'label' => ts('Unread'),
-      'name' => 'Unread',
-      'grouping' => 'communication',
-      'is_reserved' => 0,
-      'color' => '#d9534f',
-    ));
-    $this->addOptionValue(array(
-      'option_group_id' => 'activity_status',
-      'label' => ts('Draft'),
-      'name' => 'Draft',
-      'grouping' => 'communication',
-      'is_reserved' => 0,
-      'color' => '#c2cfd8',
-    ));
+    $steps = [
+      new CaseTypeCategorySupport(),
+    ];
+    foreach ($steps as $step) {
+      $step->apply();
+    }
 
     // Set grouping for existing statuses
     $allowedStatuses = array(
@@ -203,7 +164,8 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
         'api.OptionValue.delete' => array(),
       ));
     }
-    catch (Exception $e) {}
+    catch (Exception $e) {
+    }
     try {
       civicrm_api3('OptionGroup', 'get', array(
         'return' => array('id'),
@@ -211,7 +173,8 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
         'api.OptionGroup.delete' => array(),
       ));
     }
-    catch (Exception $e) {}
+    catch (Exception $e) {
+    }
     // Delete unused activity types
     foreach (array('File', 'Alert') as $type) {
       try {
@@ -227,7 +190,8 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
           ));
         }
       }
-      catch (Exception $e) {}
+      catch (Exception $e) {
+      }
     }
     // Delete unused activity statuses
     foreach (array('Unread', 'Draft') as $status) {
@@ -244,7 +208,8 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
           ));
         }
       }
-      catch (Exception $e) {}
+      catch (Exception $e) {
+      }
     }
 
     $this->removeNav('Manage Cases');
@@ -296,6 +261,61 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
   }
 
   /**
+   * Adds all the necessary Option Values
+   */
+  private function addAllOptionValues () {
+    // Create activity types
+    $this->addOptionValue(array(
+      'option_group_id' => 'activity_type',
+      'label' => ts('Alert'),
+      'name' => 'Alert',
+      'grouping' => 'alert',
+      'is_reserved' => 0,
+      'description' => ts('Alerts to display in cases'),
+      'component_id' => 'CiviCase',
+      'icon' => 'fa-exclamation',
+    ));
+    $this->addOptionValue(array(
+      'option_group_id' => 'activity_type',
+      'label' => ts('File Upload'),
+      'name' => 'File Upload',
+      // 'grouping' => '',
+      'is_reserved' => 0,
+      'description' => ts('Add files to a case'),
+      'component_id' => 'CiviCase',
+      'icon' => 'fa-file',
+    ));
+    $this->addOptionValue(array(
+      'option_group_id' => 'activity_type',
+      'label' => ts('Remove Client From Case'),
+      'name' => 'Remove Client From Case',
+      'grouping' => 'system',
+      'is_reserved' => 0,
+      'description' => ts('Client removed from multi-client case'),
+      'component_id' => 'CiviCase',
+      'icon' => 'fa-user-times',
+    ));
+
+    // Create activity statuses
+    $this->addOptionValue(array(
+      'option_group_id' => 'activity_status',
+      'label' => ts('Unread'),
+      'name' => 'Unread',
+      'grouping' => 'communication',
+      'is_reserved' => 0,
+      'color' => '#d9534f',
+    ));
+    $this->addOptionValue(array(
+      'option_group_id' => 'activity_status',
+      'label' => ts('Draft'),
+      'name' => 'Draft',
+      'grouping' => 'communication',
+      'is_reserved' => 0,
+      'color' => '#c2cfd8',
+    ));
+  }
+
+  /**
    * @param array $menuItem
    */
   public function addNav($menuItem) {
@@ -310,6 +330,8 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
   /**
    * @param string $name
    *   The name of the item in `civicrm_navigation`.
+   * @param boolean $isActive
+   *   Whether to enable/disable the nav
    */
   protected function toggleNav($name, $isActive) {
     CRM_Core_DAO::executeQuery("UPDATE `civicrm_navigation` SET is_active = %2 WHERE name IN (%1)", array(
@@ -399,75 +421,94 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
   }
 
   /**
-   * Adds case lock table to existing installations.
+   * @inheritdoc
    */
-  public function upgrade_0001() {
-    $this->executeSqlFile('sql/auto_install.sql');
-
-    return TRUE;
-  }
-
-  /**
-   * Example: Run a couple simple queries.
-   *
-   * @return TRUE on success
-   * @throws Exception
-   *
-  public function upgrade_4200() {
-    $this->ctx->log->info('Applying update 4200');
-    CRM_Core_DAO::executeQuery('UPDATE foo SET bar = "whiz"');
-    CRM_Core_DAO::executeQuery('DELETE FROM bang WHERE willy = wonka(2)');
-    return TRUE;
-  } // */
-
-
-  /**
-   * Example: Run a slow upgrade process by breaking it up into smaller chunk.
-   *
-   * @return TRUE on success
-   * @throws Exception
-  public function upgrade_4202() {
-    $this->ctx->log->info('Planning update 4202'); // PEAR Log interface
-
-    $this->addTask(ts('Process first step'), 'processPart1', $arg1, $arg2);
-    $this->addTask(ts('Process second step'), 'processPart2', $arg3, $arg4);
-    $this->addTask(ts('Process second step'), 'processPart3', $arg5);
-    return TRUE;
-  }
-  public function processPart1($arg1, $arg2) { sleep(10); return TRUE; }
-  public function processPart2($arg3, $arg4) { sleep(10); return TRUE; }
-  public function processPart3($arg5) { sleep(10); return TRUE; }
-  // */
-
-
-  /**
-   * Example: Run an upgrade with a query that touches many (potentially
-   * millions) of records by breaking it up into smaller chunks.
-   *
-   * @return TRUE on success
-   * @throws Exception
-  public function upgrade_4203() {
-    $this->ctx->log->info('Planning update 4203'); // PEAR Log interface
-
-    $minId = CRM_Core_DAO::singleValueQuery('SELECT coalesce(min(id),0) FROM civicrm_contribution');
-    $maxId = CRM_Core_DAO::singleValueQuery('SELECT coalesce(max(id),0) FROM civicrm_contribution');
-    for ($startId = $minId; $startId <= $maxId; $startId += self::BATCH_SIZE) {
-      $endId = $startId + self::BATCH_SIZE - 1;
-      $title = ts('Upgrade Batch (%1 => %2)', array(
-        1 => $startId,
-        2 => $endId,
-      ));
-      $sql = '
-        UPDATE civicrm_contribution SET foobar = whiz(wonky()+wanker)
-        WHERE id BETWEEN %1 and %2
-      ';
-      $params = array(
-        1 => array($startId, 'Integer'),
-        2 => array($endId, 'Integer'),
-      );
-      $this->addTask($title, 'executeSql', $sql, $params);
+  public function hasPendingRevisions() {
+    $revisions = $this->getRevisions();
+    $currentRevisionNum = $this->getCurrentRevision();
+    if (empty($revisions)) {
+      return FALSE;
     }
+    if (empty($currentRevisionNum)) {
+      return TRUE;
+    }
+    return ($currentRevisionNum < max(array_keys($revisions)));
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function enqueuePendingRevisions(CRM_Queue_Queue $queue) {
+    $currentRevisionNum = (int) $this->getCurrentRevision();
+    foreach ($this->getRevisions() as $revisionNum => $revisionClass) {
+      if ($revisionNum < $currentRevisionNum) {
+        continue;
+      }
+      $tsParams = [1 => $this->extensionName, 2 => $revisionNum];
+      $title = ts('Upgrade %1 to revision %2', $tsParams);
+      $upgradeTask = new CRM_Queue_Task(
+        [get_class($this), 'runStepUpgrade'],
+        [(new $revisionClass())],
+        $title
+      );
+      $queue->createItem($upgradeTask);
+      $setRevisionTask = new CRM_Queue_Task(
+        [get_class($this), '_queueAdapter'],
+        ['setCurrentRevision', $revisionNum],
+        $title
+      );
+      $queue->createItem($setRevisionTask);
+    }
+  }
+
+  /**
+   * This is a callback for running step upgraders from the queue
+   *
+   * @param CRM_Queue_TaskContext $context
+   * @param \object $step
+   *
+   * @return true
+   *   The queue requires that true is returned on successful upgrade, but we
+   *   use exceptions to indicate an error instead.
+   */
+  public static function runStepUpgrade($context, $step) {
+    $step->apply();
     return TRUE;
-  } // */
+  }
+
+  /**
+   * Get a list of revisions.
+   *
+   * @return array
+   *   An array of revision classes sorted numerically by their key
+   */
+  public function getRevisions() {
+    $extensionRoot = __DIR__;
+    $stepClassFiles = glob($extensionRoot . '/Upgrader/Steps/Step*.php');
+    $sortedKeyedClasses = [];
+    foreach ($stepClassFiles as $file) {
+      $class = $this->getUpgraderClassnameFromFile($file);
+      $numberPrefix = 'Steps_Step';
+      $startPos = strpos($class, $numberPrefix) + strlen($numberPrefix);
+      $revisionNum = (int) substr($class, $startPos);
+      $sortedKeyedClasses[$revisionNum] = $class;
+    }
+    ksort($sortedKeyedClasses, SORT_NUMERIC);
+    return $sortedKeyedClasses;
+  }
+
+  /**
+   * Gets the PEAR style classname from an upgrader file
+   *
+   * @param string $file
+   *
+   * @return string
+   */
+  private function getUpgraderClassnameFromFile($file) {
+    $file = str_replace(realpath(__DIR__ . '/../../'), '', $file);
+    $file = str_replace('.php', '', $file);
+    $file = str_replace('/', '_', $file);
+    return ltrim($file, '_');
+  }
 
 }
