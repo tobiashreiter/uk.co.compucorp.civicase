@@ -1,6 +1,7 @@
 <?php
 
 use CRM_Civicase_Setup_CaseTypeCategorySupport as CaseTypeCategorySupport;
+use CRM_Civicase_Setup_CreateCasesOptionValue as CreateCasesOptionValue;
 
 /**
  * Collection of upgrade steps.
