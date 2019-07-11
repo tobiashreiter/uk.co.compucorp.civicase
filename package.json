@@ -10,7 +10,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "precommit": "lint-staged",
-    "postinstall": "chmod +x ./bin/install-php-linter && ./bin/install-php-linter"
+    "postinstall": "cd bin && chmod +x ./install-php-linter && ./install-php-linter"
   },
   "lint-staged": {
     "*.js": [
@@ -22,7 +22,7 @@
       "git add"
     ],
     "*.php": [
-      "./bin/phpcs.phar --standard= bin/drupal/coder/coder_sniffer/Drupal"
+      "./bin/phpcs.phar --standard=bin/drupal/coder/coder_sniffer/Drupal"
     ]
   },
   "semistandard": {
