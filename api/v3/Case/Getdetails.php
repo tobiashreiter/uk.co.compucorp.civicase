@@ -37,20 +37,6 @@ function _civicrm_api3_case_getdetails_spec(&$spec) {
 }
 
 /**
- * Adds contacts involved param clause
- *
- * @param array $params
- * @param object $sql
- * @throws API_Exception
- * @return void
- */
-function _civicrm_api3_case_add_contact_involved_clause($params, &$sql) {
-  $caseClient = CRM_Core_DAO::createSQLFilter('contact_id', $params['contact_involved']);
-  $nonCaseClient = CRM_Core_DAO::createSQLFilter('involved.id', $params['contact_involved']);
-  $sql->where("a.id IN (SELECT case_id FROM civicrm_case_contact WHERE ($nonCaseClient OR $caseClient))");
-}
-
-/**
  * Case.getdetails API
  * This is provided by the CiviCase extension. It gives more robust output than the regular get action.
  *
@@ -74,11 +60,7 @@ function civicrm_api3_case_getdetails($params) {
 
   // Add clause to search by manager
   if (!empty($params['case_manager'])) {
-    if (!is_array($params['case_manager'])) {
-      $params['case_manager'] = array('=' => $params['case_manager']);
-    }
-    \Civi\CCase\Utils::joinOnRelationship($sql, 'manager');
-    $sql->where(CRM_Core_DAO::createSQLFilter('manager.id', $params['case_manager']));
+    CRM_Civicase_APIHelpers_CasesByManager::filter($sql, $params['case_manager']);
   }
 
   if (!empty($params['has_role'])) {
@@ -87,11 +69,7 @@ function civicrm_api3_case_getdetails($params) {
 
   // Add clause to search by non manager role and non client
   if (!empty($params['contact_involved'])) {
-    if (!is_array($params['contact_involved'])) {
-      $params['contact_involved'] = array('=' => $params['contact_involved']);
-    }
-    \Civi\CCase\Utils::joinOnRelationship($sql, 'involved');
-    _civicrm_api3_case_add_contact_involved_clause($params, $sql);
+    CRM_Civicase_APIHelpers_CasesByContactInvolved::filter($sql, $params['contact_involved']);
   }
 
   // Filter deleted contacts from results

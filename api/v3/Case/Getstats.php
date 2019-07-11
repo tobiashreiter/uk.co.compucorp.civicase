@@ -7,6 +7,16 @@
  * @return void
  */
 function _civicrm_api3_case_getstats_spec(&$spec) {
+  $spec['case_manager'] = array(
+    'title' => 'Case Manager',
+    'description' => 'Contact id of the case manager',
+    'type' => CRM_Utils_Type::T_INT,
+  );
+  $spec['contact_involved'] = array(
+    'title' => 'Contact Involved',
+    'description' => 'Id of the contact involved as case roles',
+    'type' => CRM_Utils_Type::T_INT,
+  );
   $spec['my_cases'] = array(
     'title' => 'My Cases',
     'description' => 'Limit stats to only my cases',
@@ -30,6 +40,14 @@ function civicrm_api3_case_getstats($params) {
   if (!empty($params['my_cases'])) {
     \Civi\CCase\Utils::joinOnRelationship($query, 'manager');
     $query->where('manager.id = ' . CRM_Core_Session::getLoggedInContactID());
+  }
+
+  if (!empty($params['case_manager'])) {
+    CRM_Civicase_APIHelpers_CasesByManager::filter($query, $params['case_manager']);
+  }
+
+  if (!empty($params['contact_involved'])) {
+    CRM_Civicase_APIHelpers_CasesByContactInvolved::filter($query, $params['contact_involved']);
   }
 
   $query->groupBy('a.case_type_id, a.status_id');
