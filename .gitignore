@@ -1,5 +1,6 @@
 .DS_Store
 node_modules/
+bin/
 *.css.map
 tests/backstop_data/cookies
 tests/backstop_data/screenshots
