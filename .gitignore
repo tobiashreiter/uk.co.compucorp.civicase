@@ -1,6 +1,7 @@
 .DS_Store
 node_modules/
-bin/
+bin/*
+!bin/install-php-linter
 *.css.map
 tests/backstop_data/cookies
 tests/backstop_data/screenshots
