@@ -443,7 +443,7 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
   public function enqueuePendingRevisions(CRM_Queue_Queue $queue) {
     $currentRevisionNum = (int) $this->getCurrentRevision();
     foreach ($this->getRevisions() as $revisionNum => $revisionClass) {
-      if ($revisionNum < $currentRevisionNum) {
+      if ($revisionNum <= $currentRevisionNum) {
         continue;
       }
       $tsParams = [1 => $this->extensionName, 2 => $revisionNum];
