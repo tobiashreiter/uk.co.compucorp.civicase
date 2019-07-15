@@ -5,10 +5,12 @@ class CRM_Civicase_APIHelpers_CasesByManager {
    * Adds joins and conditions to the given query in order to filter cases by
    * manager.
    *
-   * @param CRM_Utils_SQL_Select $query the SQL object reference.
-   * @param Int|Array $caseManager the ID of the case manager.
+   * @param CRM_Utils_SQL_Select $query
+   *   The SQL object reference.
+   * @param Int|Array $caseManager
+   *   The ID of the case manager.
    */
-  static function filter($query, $caseManager) {
+  public static function filter($query, $caseManager) {
     if (!is_array($caseManager)) {
       $caseManager = ['=' => $caseManager];
     }
