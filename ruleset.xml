@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<ruleset name="PHP Custom Ruleset">
+  <description>Drupal Coder Ruleset with some exclusions</description>
+  <rule ref="bin/drupal/coder/coder_sniffer/Drupal">
+    <exclude name="Drupal.NamingConventions.ValidClassName.NoUnderscores"/>
+    <exclude name="Drupal.Classes.ClassFileName.NoMatch"/>
+  </rule>
+</ruleset>

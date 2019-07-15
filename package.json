@@ -22,7 +22,7 @@
       "git add"
     ],
     "*.php": [
-      "./bin/phpcs.phar --standard=bin/drupal/coder/coder_sniffer/Drupal"
+      "./bin/phpcs.phar --standard=ruleset.xml"
     ]
   },
   "semistandard": {
