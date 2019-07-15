@@ -22,7 +22,7 @@
       "git add"
     ],
     "*.php": [
-      "./bin/phpcs.phar --standard=ruleset.xml"
+      "./bin/phpcs.phar --standard=phpcs-ruleset.xml"
     ]
   },
   "semistandard": {
