@@ -24,6 +24,7 @@ $options = [
   'caseStatuses' => 'case_status',
   'priority' => 'priority',
   'activityCategories' => 'activity_category',
+  'caseTypeCategories' => 'case_type_categories',
 ];
 
 set_option_values_to_js_vars($options);
@@ -146,7 +147,9 @@ function get_js_files() {
  */
 function set_case_types_to_js_vars(&$options) {
   $caseTypes = civicrm_api3('CaseType', 'get', [
-    'return' => ['name', 'title', 'description', 'definition'],
+    'return' => [
+      'name', 'title', 'description', 'definition', 'case_type_category',
+    ],
     'options' => ['limit' => 0, 'sort' => 'weight'],
     'is_active' => 1,
   ]);
@@ -194,7 +197,7 @@ function set_option_values_to_js_vars(&$options) {
     $option = [];
     foreach ($result['values'] as $item) {
       $key = $item['value'];
-      CRM_Utils_Array::remove($item, 'id', 'value');
+      CRM_Utils_Array::remove($item, 'id');
       $option[$key] = $item;
     }
   }
