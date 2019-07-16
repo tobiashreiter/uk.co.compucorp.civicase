@@ -419,6 +419,14 @@ function civicase_civicrm_validateForm($formName, &$fields, &$files, &$form, &$e
  * Implements hook_civicrm_postProcess().
  */
 function civicase_civicrm_postProcess($formName, &$form) {
+  $hooks = [
+    new CRM_Civicase_Hook_PostProcess_CaseCategoryCustomFieldsSaver(),
+  ];
+
+  foreach ($hooks as $hook) {
+    $hook->run($formName, $form);
+  }
+
   if (!empty($form->civicase_reload)) {
     $api = civicrm_api3('Case', 'getdetails', array('check_permissions' => 1) + $form->civicase_reload);
     $form->ajaxResponse['civicase_reload'] = $api['values'];
@@ -647,6 +655,17 @@ function civicase_civicrm_permission_check($permission, &$granted) {
  * Implements hook_civicrm_preProcess().
  */
 function civicase_civicrm_preProcess($formName, &$form) {
+  $hooks = [
+    new CRM_Civicase_Hook_PreProcess_CaseCategoryCustomFieldsAdder(),
+    new CRM_Civicase_Hook_PreProcess_CaseCategoryCustomFieldsSetDefaultValues(),
+  ];
+
+  foreach ($hooks as $hook) {
+    $hook->run($formName, $form);
+  }
+
+  # TODO: We need to move this function into it's own class and implement as above.
+
   if ($formName == 'CRM_Admin_Form_Setting_Case') {
     $settings = $form->getVar('_settings');
     $settings['civicaseAllowCaseLocks'] = CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME;
