@@ -664,6 +664,8 @@ function civicase_civicrm_preProcess($formName, &$form) {
     $hook->run($formName, $form);
   }
 
+  # TODO: We need to move this function into it's own class and implement as above.
+
   if ($formName == 'CRM_Admin_Form_Setting_Case') {
     $settings = $form->getVar('_settings');
     $settings['civicaseAllowCaseLocks'] = CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME;
