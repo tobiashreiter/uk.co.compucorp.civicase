@@ -9,7 +9,7 @@ class CRM_Civicase_Hook_BuildForm_CaseClientPopulator {
    *
    * @param CRM_Core_Form $form
    */
-  public function run(&$form) {
+  public function run(CRM_Core_Form &$form, $formName) {
     $clientId = CRM_Utils_Request::retrieve('civicase_cid', 'Positive');
 
     if (!$this->shouldRun($form, $clientId)) {
