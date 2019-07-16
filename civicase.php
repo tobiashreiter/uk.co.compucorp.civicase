@@ -200,10 +200,11 @@ function civicase_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
 function civicase_civicrm_buildForm($formName, &$form) {
   $hooks = [
     new CRM_Civicase_Hook_BuildForm_CaseClientPopulator(),
+    new CRM_Civicase_Hook_BuildForm_FilterCaseTypeByCategory(),
   ];
 
   foreach ($hooks as $hook) {
-    $hook->run($form);
+    $hook->run($form, $formName);
   }
 
   // Display category option for activity types and activity statuses
