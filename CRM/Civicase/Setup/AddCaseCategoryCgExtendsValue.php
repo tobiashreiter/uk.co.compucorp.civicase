@@ -1,12 +1,12 @@
 <?php
 
-
+/**
+ * CRM_Civicase_Setup_AddCaseCategoryCgExtendsValue class.
+ */
 class CRM_Civicase_Setup_AddCaseCategoryCgExtendsValue {
 
   /**
    * Add the CaseCategory as a valid Entity that a custom group can extend.
-   *
-   * @return bool
    */
   public function apply() {
     $caseCategoryLabel = 'CaseCategory';
@@ -20,4 +20,5 @@ class CRM_Civicase_Setup_AddCaseCategoryCgExtendsValue {
       'is_reserved' => TRUE,
     ]);
   }
+
 }
