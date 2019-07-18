@@ -267,6 +267,28 @@
     }
 
     /**
+     * Returns case types filtered by given category
+     *
+     * @param {String} categoryName
+     * @return {Array}
+     */
+    function getCaseTypesFilteredByCategory (categoryName) {
+      var filteredCaseTypes = [];
+
+      var caseTypeCategory = _.find(caseTypeCategories, function (category) {
+        return category.name.toLowerCase() === $scope.filters.case_type_category.toLowerCase();
+      });
+
+      if (caseTypeCategory) {
+        filteredCaseTypes = _.filter(caseTypes, function (caseType) {
+          return caseType.case_type_category === caseTypeCategory.value;
+        });
+      }
+
+      return filteredCaseTypes;
+    }
+
+    /**
      * All subscribers are initiated here
      */
     function initSubscribers () {
@@ -328,21 +350,9 @@
      * Sets the Case Types Based on Case Type Category
      */
     function setCaseTypesBasedOnCategory () {
-      var filteredCaseTypes = caseTypes;
-
-      if ($scope.filters.case_type_category) {
-        var caseTypeCategory = _.find(caseTypeCategories, function (category) {
-          return category.name.toLowerCase() === $scope.filters.case_type_category.toLowerCase();
-        });
-      }
-
-      if ($scope.filters.case_type_category) {
-        filteredCaseTypes = _.chain(caseTypes)
-          .filter(function (caseType) {
-            return caseType.case_type_category === caseTypeCategory.value;
-          })
-          .value();
-      }
+      var filteredCaseTypes = $scope.filters.case_type_category
+        ? getCaseTypesFilteredByCategory($scope.filters.case_type_category)
+        : caseTypes;
 
       $scope.caseTypeOptions = _.map(filteredCaseTypes, mapSelectOptions);
     }
