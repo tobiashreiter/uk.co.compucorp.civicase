@@ -1,30 +1,32 @@
 <?php
 
+/**
+ * CRM_Civicase_Hook_Helper_CaseTypeCategory class.
+ */
 class CRM_Civicase_Hook_Helper_CaseTypeCategory {
 
   /**
-   * Returns the case category for a case.
+   * Checks if the case type category is valid or not.
    *
-   * @param int $caseTypeId
+   * @param string $caseCategoryName
+   *   Category Name.
    *
-   * @return int|null
+   * @return bool
+   *   return value.
    */
-  public function getCategory($caseTypeId) {
-    $caseCategory = NULL;
-
-    if (empty($caseTypeId)) {
-      return $caseCategory;
+  public static function isValidCategory($caseCategoryName) {
+    if ($caseCategoryName == 'cases') {
+      return TRUE;
     }
 
-    $result = civicrm_api3('CaseType', 'getsingle', [
-      'return' => ['case_type_category'],
-      'id' => $caseTypeId,
-    ]);
+    $caseCategoryOptions = CRM_Case_BAO_CaseType::buildOptions('case_type_category', 'validate');
+    $caseCategoryOptions = array_map('strtolower', $caseCategoryOptions);
 
-    if (!empty($result['case_type_category'])) {
-      $caseCategory = $result['case_type_category'];
+    if (!in_array($caseCategoryName, $caseCategoryOptions)) {
+      return FALSE;
     }
 
-    return $caseCategory;
+    return TRUE;
   }
+
 }
