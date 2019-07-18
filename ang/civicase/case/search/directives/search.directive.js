@@ -273,19 +273,17 @@
      * @return {Array}
      */
     function getCaseTypesFilteredByCategory (categoryName) {
-      var filteredCaseTypes = [];
-
       var caseTypeCategory = _.find(caseTypeCategories, function (category) {
-        return category.name.toLowerCase() === $scope.filters.case_type_category.toLowerCase();
+        return category.name.toLowerCase() === categoryName.toLowerCase();
       });
 
-      if (caseTypeCategory) {
-        filteredCaseTypes = _.filter(caseTypes, function (caseType) {
-          return caseType.case_type_category === caseTypeCategory.value;
-        });
+      if (!caseTypeCategory) {
+        return [];
       }
 
-      return filteredCaseTypes;
+      return _.filter(caseTypes, function (caseType) {
+        return caseType.case_type_category === caseTypeCategory.value;
+      });
     }
 
     /**
