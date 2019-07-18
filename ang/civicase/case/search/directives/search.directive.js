@@ -24,47 +24,23 @@
     var ts = $scope.ts = CRM.ts('civicase');
     var caseTypes = CRM.civicase.caseTypes;
     var caseStatuses = CRM.civicase.caseStatuses;
+    var caseTypeCategories = CRM.civicase.caseTypeCategories;
     var allSearchFields = {
-      id: {
-        label: ts('Case ID'),
-        html_type: 'Number'
-      },
-      has_role: {
-        label: ts('Contact Search')
-      },
-      case_manager: {
-        label: ts('Case Manager')
-      },
-      start_date: {
-        label: ts('Start Date')
-      },
-      end_date: {
-        label: ts('End Date')
-      },
-      is_deleted: {
-        label: ts('Deleted Cases')
-      },
-      tag_id: {
-        label: ts('Tags')
-      }
+      id: { label: ts('Case ID'), html_type: 'Number' },
+      has_role: { label: ts('Contact Search') },
+      case_manager: { label: ts('Case Manager') },
+      start_date: { label: ts('Start Date') },
+      end_date: { label: ts('End Date') },
+      is_deleted: { label: ts('Deleted Cases') },
+      tag_id: { label: ts('Tags') }
     };
     var caseRelationshipConfig = [
-      {
-        'text': 'All Cases',
-        'id': 'all'
-      },
-      {
-        'text': 'My cases',
-        'id': 'is_case_manager'
-      },
-      {
-        'text': 'Cases I am involved',
-        'id': 'is_involved'
-      }
+      { 'text': 'All Cases', 'id': 'all' },
+      { 'text': 'My cases', 'id': 'is_case_manager' },
+      { 'text': 'Cases I am involved', 'id': 'is_involved' }
     ];
 
     $scope.pageTitle = '';
-    $scope.caseTypeOptions = _.map(caseTypes, mapSelectOptions);
     $scope.caseStatusOptions = _.map(caseStatuses, mapSelectOptions);
     $scope.customGroups = CRM.civicase.customSearchFields;
     $scope.caseRelationshipOptions = caseRelationshipConfig;
@@ -82,6 +58,7 @@
 
     (function init () {
       bindRouteParamsToScope();
+      setCaseTypesBasedOnCategory();
       initiateWatchers();
       initSubscribers();
       setCustomSearchFieldsAsSearchFilters();
@@ -282,9 +259,31 @@
      * Only works when dropdown is unexpanded
      */
     function filtersWatcher () {
+      setCaseTypesBasedOnCategory();
+
       if (!$scope.expanded) {
         $scope.doSearch();
       }
+    }
+
+    /**
+     * Returns case types filtered by given category
+     *
+     * @param {String} categoryName
+     * @return {Array}
+     */
+    function getCaseTypesFilteredByCategory (categoryName) {
+      var caseTypeCategory = _.find(caseTypeCategories, function (category) {
+        return category.name.toLowerCase() === categoryName.toLowerCase();
+      });
+
+      if (!caseTypeCategory) {
+        return [];
+      }
+
+      return _.filter(caseTypes, function (caseType) {
+        return caseType.case_type_category === caseTypeCategory.value;
+      });
     }
 
     /**
@@ -300,6 +299,7 @@
     function initiateWatchers () {
       $scope.$watch('expanded', expandedWatcher);
       $scope.$watch('relationshipType', relationshipTypeWatcher);
+      $scope.$watch('caseTypeCategory', setCaseTypesBasedOnCategory);
       $scope.$watchCollection('filters', filtersWatcher);
       $scope.$watchCollection('contactRoleFilter', caseRoleWatcher);
     }
@@ -342,6 +342,17 @@
         .then(function (caseRolesResponse) {
           return caseRolesResponse.values;
         });
+    }
+
+    /**
+     * Sets the Case Types Based on Case Type Category
+     */
+    function setCaseTypesBasedOnCategory () {
+      var filteredCaseTypes = $scope.filters.case_type_category
+        ? getCaseTypesFilteredByCategory($scope.filters.case_type_category)
+        : caseTypes;
+
+      $scope.caseTypeOptions = _.map(filteredCaseTypes, mapSelectOptions);
     }
 
     /**

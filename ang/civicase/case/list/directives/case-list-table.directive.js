@@ -319,7 +319,9 @@
       var params = {'case_type_id.is_active': 1};
       _.each(filters, function (val, filter) {
         if (val || typeof val === 'boolean') {
-          if (typeof val === 'number' || typeof val === 'boolean') {
+          if (filter === 'case_type_category') {
+            params['case_type_id.case_type_category'] = val;
+          } else if (typeof val === 'number' || typeof val === 'boolean') {
             params[filter] = val;
           } else if (typeof val === 'object' && !$.isArray(val)) {
             params[filter] = val;
