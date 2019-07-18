@@ -2,7 +2,7 @@
 
 use CRM_Civicase_Setup_CaseTypeCategorySupport as CaseTypeCategorySupport;
 use CRM_Civicase_Setup_CreateCasesOptionValue as CreateCasesOptionValue;
-use CRM_Civicase_Setup_AddCaseCategoryCgExtendsValue as AddCaseCategoryCgExtendsValue;
+use CRM_Civicase_Setup_AddProspectCategoryCgExtendsValue as AddProspectCategoryCgExtendsValue;
 
 /**
  * Collection of upgrade steps.
@@ -64,7 +64,7 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
     $steps = [
       new CaseTypeCategorySupport(),
       new CreateCasesOptionValue(),
-      new AddCaseCategoryCgExtendsValue(),
+      new AddProspectCategoryCgExtendsValue(),
     ];
     foreach ($steps as $step) {
       $step->apply();
