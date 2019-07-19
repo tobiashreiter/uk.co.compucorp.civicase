@@ -14,26 +14,26 @@ class Utils {
    *   [caseTypeId => relationshipTypeId]
    */
   public static function getRelationshipTypesListByCaseRole($roleName) {
-    $ret = array();
-    $caseTypes = civicrm_api3('CaseType', 'get', array(
-      'options' => array('limit' => 0),
-      'return' => array('name', 'definition'),
-    ));
-    $relationshipTypes = civicrm_api3('RelationshipType', 'get', array(
-      'options' => array('limit' => 0),
-      'return' => array('name_b_a', 'name_a_b'),
-    ));
+    $ret = [];
+    $caseTypes = civicrm_api3('CaseType', 'get', [
+      'options' => ['limit' => 0],
+      'return' => ['name', 'definition'],
+    ]);
+    $relationshipTypes = civicrm_api3('RelationshipType', 'get', [
+      'options' => ['limit' => 0],
+      'return' => ['name_b_a', 'name_a_b'],
+    ]);
     $relationshipTypes = $relationshipTypes['values'];
 
     foreach ($caseTypes['values'] as $caseType) {
-      $caseTypeToCaseRolesList = array();
+      $caseTypeToCaseRolesList = [];
 
       foreach ($caseType['definition']['caseRoles'] as $role) {
         if ($roleName == 'involved' || !empty($role[$roleName])) {
-          foreach ($relationshipTypes as $key => $value) {
-            if ($value['name_b_a'] == $role['name']
-              || $value['name_a_b'] == $role['name']) {
-              $caseTypeToCaseRolesList[] = $value['id'];
+          foreach ($relationshipTypes as  $relationshipType) {
+            if ($relationshipType['name_b_a'] == $role['name']
+              || $relationshipType['name_a_b'] == $role['name']) {
+              $caseTypeToCaseRolesList[] = $relationshipType['id'];
             }
           }
         }
