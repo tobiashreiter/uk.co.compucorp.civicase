@@ -21,18 +21,20 @@ class Utils {
     ));
     $relationshipTypes = civicrm_api3('RelationshipType', 'get', array(
       'options' => array('limit' => 0),
-      'return' => array('name_b_a'),
+      'return' => array('name_b_a', 'name_a_b'),
     ));
-    $relationshipTypes = \CRM_Utils_Array::rekey($relationshipTypes['values'], 'name_b_a');
+    $relationshipTypes = $relationshipTypes['values'];
 
     foreach ($caseTypes['values'] as $caseType) {
       $caseTypeToCaseRolesList = array();
+
       foreach ($caseType['definition']['caseRoles'] as $role) {
-        if ($roleName == 'involved') {
-          $caseTypeToCaseRolesList[] =  $relationshipTypes[$role['name']]['id'];
-        } else {
-          if (!empty($role[$roleName])) {
-            $caseTypeToCaseRolesList[] = $relationshipTypes[$role['name']]['id'];
+        if ($roleName == 'involved' || !empty($role[$roleName])) {
+          foreach ($relationshipTypes as $key => $value) {
+            if ($value['name_b_a'] == $role['name']
+              || $value['name_a_b'] == $role['name']) {
+              $caseTypeToCaseRolesList[] = $value['id'];
+            }
           }
         }
       }
