@@ -1,12 +1,16 @@
 <?php
 
+use CRM_Civicase_Hook_Helper_CaseTypeCategory as CaseTypeCategoryHelper;
+
 /**
- * CRM_Civicase_Hook_BuildForm_FilterCaseTypeByCategory class.
+ * CRM_Civicase_Hook_BuildForm_CaseCategoryCustomFieldsProcessing class.
  */
-class CRM_Civicase_Hook_BuildForm_FilterCaseTypeByCategory {
+class CRM_Civicase_Hook_BuildForm_CaseCategoryCustomFieldsProcessing {
 
   /**
    * Filters the options for the case type select element based on the category.
+   *
+   * Updates the onchange attribute for the case type element.
    *
    * @param CRM_Core_Form $form
    *   Form Class object.
@@ -14,12 +18,18 @@ class CRM_Civicase_Hook_BuildForm_FilterCaseTypeByCategory {
    *   Form Name.
    */
   public function run(CRM_Core_Form &$form, $formName) {
-    $caseCategoryName = CRM_Utils_Request::retrieve('category', 'String');
+    $caseCategoryName = $this->getCaseCategoryName($form);
+
     if (!$this->shouldRun($formName, $caseCategoryName)) {
       return;
     }
 
+    if (!CaseTypeCategoryHelper::isValidCategory($caseCategoryName)) {
+      return;
+    }
+
     $this->filterCaseTypeOptionValues($form, $caseCategoryName);
+    $this->updateCaseTypeFieldOnChangeValue($form, $caseCategoryName);
   }
 
   /**
@@ -47,7 +57,25 @@ class CRM_Civicase_Hook_BuildForm_FilterCaseTypeByCategory {
       }
     }
 
+    sort($options);
     $caseTypeIdElement->_options = $options;
+  }
+
+  /**
+   * Updates the onchange attribute for the case type element.
+   *
+   * @param CRM_Core_Form $form
+   *   Form class object.
+   * @param string $caseCategoryName
+   *   Case category name.
+   */
+  private function updateCaseTypeFieldOnChangeValue(CRM_Core_Form $form, $caseCategoryName) {
+    if ($caseCategoryName == 'cases') {
+      return;
+    }
+    $caseTypeIdElement = &$form->getElement('case_type_id');
+    $caseTypeIdElement->updateAttributes(['onchange' => "CRM.buildCustomData('{$caseCategoryName}', this.value)"]);
+    $form->assign('customDataType', $caseCategoryName);
   }
 
   /**
@@ -74,7 +102,6 @@ class CRM_Civicase_Hook_BuildForm_FilterCaseTypeByCategory {
     }
     catch (Exception $e) {
     }
-
   }
 
   /**
@@ -89,9 +116,29 @@ class CRM_Civicase_Hook_BuildForm_FilterCaseTypeByCategory {
    *   returns a boolean to determine if hook will run or not.
    */
   private function shouldRun($formName, $caseCategoryName) {
+    if (!$caseCategoryName) {
+      return FALSE;
+    }
+
     $isCaseForm = $formName == CRM_Case_Form_Case::class;
 
     return $isCaseForm && $caseCategoryName;
+  }
+
+  /**
+   * Gets the Category Name for the case.
+   *
+   * @param CRM_Core_Form $form
+   *   Form name.
+   *
+   * @return string|null
+   *   case category name.
+   */
+  private function getCaseCategoryName(CRM_Core_Form $form) {
+    $urlParams = parse_url(htmlspecialchars_decode($form->controller->_entryURL), PHP_URL_QUERY);
+    parse_str($urlParams, $urlParams);
+
+    return !empty($urlParams['case_type_category']) ? $urlParams['case_type_category'] : 'cases';
   }
 
 }

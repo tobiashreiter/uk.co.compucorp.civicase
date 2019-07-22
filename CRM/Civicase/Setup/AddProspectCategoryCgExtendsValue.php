@@ -1,23 +1,24 @@
 <?php
 
-
-class CRM_Civicase_Setup_AddCaseCategoryCgExtendsValue {
+/**
+ * CRM_Civicase_Setup_AddProspectCategoryCgExtendsValue class.
+ */
+class CRM_Civicase_Setup_AddProspectCategoryCgExtendsValue {
 
   /**
    * Add the CaseCategory as a valid Entity that a custom group can extend.
-   *
-   * @return bool
    */
   public function apply() {
-    $caseCategoryLabel = 'CaseCategory';
+    $prospectCategoryLabel = 'prospecting';
 
     CRM_Core_BAO_OptionValue::ensureOptionValueExists([
       'option_group_id' => 'cg_extend_objects',
-      'name' => 'civicrm_case_type',
-      'label' => $caseCategoryLabel,
-      'value' => $caseCategoryLabel,
+      'name' => $prospectCategoryLabel,
+      'label' => 'Case (Prospects)',
+      'value' => $prospectCategoryLabel,
       'is_active' => TRUE,
       'is_reserved' => TRUE,
     ]);
   }
+
 }

@@ -207,7 +207,8 @@ function civicase_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
 function civicase_civicrm_buildForm($formName, &$form) {
   $hooks = [
     new CRM_Civicase_Hook_BuildForm_CaseClientPopulator(),
-    new CRM_Civicase_Hook_BuildForm_FilterCaseTypeByCategory(),
+    new CRM_Civicase_Hook_BuildForm_CaseCategoryCustomFieldsProcessing(),
+    new CRM_Civicase_Hook_BuildForm_DisableCaseCustomFieldValidations(),
   ];
 
   foreach ($hooks as $hook) {
@@ -680,7 +681,6 @@ function civicase_civicrm_permission_check($permission, &$granted) {
  */
 function civicase_civicrm_preProcess($formName, &$form) {
   $hooks = [
-    new CRM_Civicase_Hook_PreProcess_CaseCategoryCustomFieldsAdder(),
     new CRM_Civicase_Hook_PreProcess_CaseCategoryCustomFieldsSetDefaultValues(),
   ];
 
