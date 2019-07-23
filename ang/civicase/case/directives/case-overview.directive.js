@@ -7,7 +7,9 @@
       replace: true,
       templateUrl: '~/civicase/case/directives/case-overview.directive.html',
       controller: civicaseCaseOverviewController,
-      scope: {},
+      scope: {
+        caseFilter: '<'
+      },
       link: civicaseCaseOverviewLink
     };
 
@@ -54,8 +56,8 @@
         $scope.showBreakdown = false;
       }
 
+      $scope.$watch('caseFilter', loadStatsData, true);
       loadHiddenCaseStatuses();
-      loadStatsData();
     }());
 
     /**
@@ -131,7 +133,7 @@
     function loadStatsData () {
       var apiCalls = [];
 
-      apiCalls.push(['Case', 'getstats', {}]);
+      apiCalls.push(['Case', 'getstats', $scope.caseFilter || {}]);
       crmApi(apiCalls).then(function (response) {
         $scope.summaryData = response[0].values;
       });
