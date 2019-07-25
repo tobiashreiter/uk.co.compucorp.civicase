@@ -561,9 +561,33 @@ function civicase_civicrm_navigationMenu(&$menu) {
     'civicrm/case/search?reset=1' => 'civicrm/case/a/#/case/list?sx=1',
   );
 
-  _civicase_menu_walk($menu, function(&$item) use ($rewriteMap) {
-    if (isset($item['url']) && isset($rewriteMap[$item['url']])) {
+  /**
+   * For URLS that have hardcoded values that may change per system.
+   * or for adding dynamic menu url mappings.
+   *
+   * @var array
+   *   Array(string $oldUrl => string $newUrl).
+   */
+  $otherUrlsMap = [];
+  _civicase_addNewCaseUrlMap($otherUrlsMap);
+
+  _civicase_menu_walk($menu, function(&$item) use ($rewriteMap, $otherUrlsMap) {
+    if (!isset($item['url'])) {
+      return;
+    }
+
+    if (isset($rewriteMap[$item['url']])) {
       $item['url'] = $rewriteMap[$item['url']];
+
+      return;
+    }
+
+    foreach ($otherUrlsMap as $oldUrl => $newUrl) {
+      if (strpos($item['url'], $oldUrl) !== FALSE) {
+        $item['url'] = $newUrl;
+
+        return;
+      }
     }
   });
 
@@ -599,6 +623,21 @@ function civicase_civicrm_navigationMenu(&$menu) {
   );
 }
 
+/**
+ * Adds the add case URL mapping to the array depending on
+ * the case settings config for the system. IF an alternate add Case
+ * URL is set, the url mapping is added.
+ *
+ * @param array $urlMapArray
+ */
+function _civicase_addNewCaseUrlMap(&$urlMapArray) {
+  $allowCaseWebform = Civi::settings()->get('civicaseAllowCaseWebform');
+  $newCaseWebformUrl = $allowCaseWebform ? Civi::settings()->get('civicaseWebformUrl') : NULL;
+
+  if ($newCaseWebformUrl) {
+    $urlMapArray['civicrm/case/add?reset=1'] = $newCaseWebformUrl;
+  }
+}
 /**
  * Visit every link in the navigation menu, and alter it using $callback.
  *
