@@ -84,7 +84,7 @@
           status_id: 'Scheduled'
         },
         // Custom data
-        'api.CustomValue.gettree': {
+        'api.CustomValue.gettreevalues': {
           entity_id: '$value.id',
           entity_type: 'Case',
           return: customValuesReturnParams

@@ -297,8 +297,8 @@
       delete (item['api.Activity.get.nextActivitiesWhichIsNotMileStone']);
 
       // Custom fields
-      item.customData = item['api.CustomValue.gettree'].values || [];
-      delete (item['api.CustomValue.gettree']);
+      item.customData = item['api.CustomValue.gettreevalues'].values || [];
+      delete (item['api.CustomValue.gettreevalues']);
 
       return item;
     }
