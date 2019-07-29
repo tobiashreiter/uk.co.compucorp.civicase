@@ -277,7 +277,7 @@ function set_case_actions(&$options) {
     ],
     [
       'title' => ts('Edit Tags'),
-      'action' => 'editTags(cases[0])',
+      'action' => 'editTags',
       'icon' => 'fa-tags',
       'number' => 1,
     ],
