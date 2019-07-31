@@ -46,14 +46,6 @@
           (!isLockCaseAction && (!action.number || ((isBulkMode && action.number > 1) || (!isBulkMode && action.number === 1)))));
       };
 
-      function getCaseActionService (action) {
-        try {
-          return $injector.get(action + 'CaseAction');
-        } catch (e) {
-          return false;
-        }
-      }
-
       // Perform bulk actions
       $scope.doAction = function (action) {
         var caseActionService = getCaseActionService(action.action);
@@ -65,17 +57,25 @@
         var result = caseActionService.doAction($scope.cases, action, $scope.refresh);
         // Open popup if callback returns a path & query
         if (result) {
-          // Add refresh data
-          if ($scope.popupParams) {
-            result.query.civicase_reload = $scope.popupParams();
+          var url = '';
+          if (angular.isObject(result)) {
+            // Add refresh data
+            if ($scope.popupParams) {
+              result.query.civicase_reload = $scope.popupParams();
+            }
+
+            url = CRM.url(result.path, result.query);
+          } else {
+            url = result;
           }
 
           // Mimic the behavior of CRM.popup()
           var formData = false;
-          var dialog = CRM.loadForm(CRM.url(result.path, result.query))
+          var dialog = CRM.loadForm(url)
             // Listen for success events and buffer them so we only trigger once
             .on('crmFormSuccess crmPopupFormSuccess', function (e, data) {
               formData = data;
+              refreshDataForActions();
             })
             .on('dialogclose.crmPopup', function (e, data) {
               if (formData) {
@@ -101,7 +101,30 @@
             _.remove($scope.caseActions, { action: 'changeStatus(cases)' });
           }
         }
+        refreshDataForActions();
+      });
 
+      /**
+       * Get Case Action Service
+       *
+       * @param {String} action
+       * @return {Object/Boolean}
+       */
+      function getCaseActionService (action) {
+        try {
+          return $injector.get(action + 'CaseAction');
+        } catch (e) {
+          return false;
+        }
+      }
+
+      /**
+       * Get Case Action Service
+       *
+       * @param {String} action
+       * @return {Object/Boolean}
+       */
+      function refreshDataForActions () {
         _.each($scope.caseActions, function (action) {
           var caseActionService = getCaseActionService(action.action);
 
@@ -109,7 +132,7 @@
             caseActionService.refreshData($scope.cases);
           }
         });
-      });
+      }
     }
   });
 })(angular, CRM.$, CRM._);
