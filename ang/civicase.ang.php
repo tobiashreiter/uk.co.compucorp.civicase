@@ -272,45 +272,45 @@ function set_case_actions(&$options) {
   $options['caseActions'] = [
     [
       'title' => ts('Change Case Status'),
-      'action' => 'changeStatus(cases)',
+      'action' => 'ChangeStatus',
       'icon' => 'fa-pencil-square-o',
     ],
     [
       'title' => ts('Edit Tags'),
-      'action' => 'editTags',
+      'action' => 'EditTags',
       'icon' => 'fa-tags',
       'number' => 1,
     ],
     [
       'title' => ts('Print Case'),
-      'action' => 'print(cases[0])',
+      'action' => 'Print',
       'number' => 1,
       'icon' => 'fa-print',
     ],
     [
       'title' => ts('Email Case Manager'),
-      'action' => 'emailManagers(cases)',
+      'action' => 'EmailManagers',
       'icon' => 'fa-envelope-o',
     ],
     [
       'title' => ts('Print/Merge Document'),
-      'action' => 'printMerge(cases)',
+      'action' => 'PrintMerge',
       'icon' => 'fa-file-pdf-o',
     ],
     [
       'title' => ts('Export Cases'),
-      'action' => 'exportCases(cases)',
+      'action' => 'ExportCases',
       'icon' => 'fa-file-excel-o',
     ],
     [
       'title' => ts('Link Cases'),
-      'action' => 'linkCases(cases[0])',
+      'action' => 'LinkCases',
       'number' => 1,
       'icon' => 'fa-link',
     ],
     [
       'title' => ts('Link 2 Cases'),
-      'action' => 'linkCases(cases[0], cases[1])',
+      'action' => 'LinkCases',
       'number' => 2,
       'icon' => 'fa-link',
     ],
@@ -319,12 +319,12 @@ function set_case_actions(&$options) {
     $options['caseActions'][] = [
       'title' => ts('Merge 2 Cases'),
       'number' => 2,
-      'action' => 'mergeCases(cases)',
+      'action' => 'MergeCases',
       'icon' => 'fa-compress',
     ];
     $options['caseActions'][] = [
       'title' => ts('Lock Case'),
-      'action' => 'lockCases(cases[0])',
+      'action' => 'LockCases',
       'number' => 1,
       'icon' => 'fa-lock',
     ];
@@ -332,7 +332,7 @@ function set_case_actions(&$options) {
   if (CRM_Core_Permission::check('delete in CiviCase')) {
     $options['caseActions'][] = [
       'title' => ts('Delete Case'),
-      'action' => 'deleteCases(cases)',
+      'action' => 'DeleteCases',
       'icon' => 'fa-trash',
     ];
   }
@@ -363,7 +363,9 @@ function add_webforms_case_action(&$options) {
 
         $items[] = [
           'title' => $webform['title'],
-          'action' => 'gotoWebform(cases[0], "' . $webform['path'] . '", ' . $client . ')',
+          'action' => 'GoToWebform',
+          'path' => $webform['path'],
+          'clientID' => $client,
           'icon' => 'fa-link',
         ];
       }

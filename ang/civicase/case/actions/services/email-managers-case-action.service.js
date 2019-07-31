@@ -1,9 +1,9 @@
 (function (angular, $, _) {
   var module = angular.module('civicase');
 
-  module.service('PrintMergeCaseAction', PrintMergeCaseAction);
+  module.service('EmailManagersCaseAction', EmailManagersCaseAction);
 
-  function PrintMergeCaseAction () {
+  function EmailManagersCaseAction () {
     /**
      * Click event handler for the Action
      *
@@ -12,24 +12,28 @@
      * @param {Function} callbackFn
      */
     this.doAction = function (cases, action, callbackFn) {
-      var contactIds = [];
-      var caseIds = [];
+      var managers = [];
 
       _.each(cases, function (item) {
-        caseIds.push(item.id);
-        contactIds.push(item.client[0].contact_id);
+        if (item.manager) {
+          managers.push(item.manager.contact_id);
+        }
       });
 
-      return {
-        path: 'civicrm/activity/pdf/add',
+      var popupPath = {
+        path: 'civicrm/activity/email/add',
         query: {
           action: 'add',
           reset: 1,
-          context: 'standalone',
-          cid: contactIds.join(),
-          caseid: caseIds.join()
+          cid: _.uniq(managers).join(',')
         }
       };
+
+      if (cases.length === 1) {
+        popupPath.query.caseid = cases[0].id;
+      }
+
+      return popupPath;
     };
   }
 })(angular, CRM.$, CRM._);
