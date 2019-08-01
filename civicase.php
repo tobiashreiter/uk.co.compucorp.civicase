@@ -447,6 +447,7 @@ function civicase_civicrm_validateForm($formName, &$fields, &$files, &$form, &$e
 function civicase_civicrm_postProcess($formName, &$form) {
   $hooks = [
     new CRM_Civicase_Hook_PostProcess_CaseCategoryCustomFieldsSaver(),
+    new CRM_Civicase_Hook_PostProcess_ProcessCaseCategoryCustomFieldsForSave(),
   ];
 
   foreach ($hooks as $hook) {
@@ -682,6 +683,7 @@ function civicase_civicrm_permission_check($permission, &$granted) {
 function civicase_civicrm_preProcess($formName, &$form) {
   $hooks = [
     new CRM_Civicase_Hook_PreProcess_CaseCategoryCustomFieldsSetDefaultValues(),
+    new CRM_Civicase_Hook_PreProcess_ProcessCaseCategoryCustomFieldsForEdit(),
   ];
 
   foreach ($hooks as $hook) {
