@@ -38,7 +38,7 @@
         var isCaseLockAllowed = CRM.civicase.allowCaseLocks;
         var caseActionService = getCaseActionService(action.action);
 
-        if (caseActionService && caseActionService.isActionAllowed) {
+        if (caseActionService.isActionAllowed) {
           isActionAllowed = caseActionService.isActionAllowed(action, $scope.cases);
         }
 
@@ -56,6 +56,8 @@
 
         var result = caseActionService.doAction($scope.cases, action, $scope.refresh);
         // Open popup if callback returns a path & query
+        // TODO Move the following code into a service, and the Serivces which
+        // returns an URL, should call this newly created service directly.
         if (result) {
           var url = '';
           if (angular.isObject(result)) {
@@ -108,14 +110,10 @@
        * Get Case Action Service
        *
        * @param {String} action
-       * @return {Object/Boolean}
+       * @return {Object}
        */
       function getCaseActionService (action) {
-        try {
-          return $injector.get(action + 'CaseAction');
-        } catch (e) {
-          return false;
-        }
+        return $injector.get(action + 'CaseAction');
       }
 
       /**
@@ -128,7 +126,7 @@
         _.each($scope.caseActions, function (action) {
           var caseActionService = getCaseActionService(action.action);
 
-          if (caseActionService && caseActionService.refreshData) {
+          if (caseActionService.refreshData) {
             caseActionService.refreshData($scope.cases);
           }
         });
