@@ -9,6 +9,7 @@
       $provide = _$provide_;
 
       killDirective('civicaseActivitiesCalendar');
+      killDirective('civicaseCaseActions');
     }));
 
     beforeEach(inject(function ($q) {
