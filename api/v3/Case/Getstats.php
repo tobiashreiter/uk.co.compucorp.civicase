@@ -1,23 +1,30 @@
 <?php
 
 /**
- * Case.getstats API specification
- *
- * @param array $spec description of fields supported by this API call
- * @return void
+ * @file
+ * Case.getstats API file.
  */
-function _civicrm_api3_case_getstats_spec(&$spec) {
-  $spec['case_manager'] = array(
+
+use Civi\CCase\Utils;
+
+/**
+ * Case.getstats API specification.
+ *
+ * @param array $spec
+ *   description of fields supported by this API call.
+ */
+function _civicrm_api3_case_getstats_spec(array &$spec) {
+  $spec['case_manager'] = [
     'title' => 'Case Manager',
     'description' => 'Contact id of the case manager',
     'type' => CRM_Utils_Type::T_INT,
-  );
-  $spec['contact_involved'] = array(
+  ];
+  $spec['contact_involved'] = [
     'title' => 'Contact Involved',
     'description' => 'Id of the contact involved as case roles',
     'type' => CRM_Utils_Type::T_INT,
-  );
-  $spec['my_cases'] = array(
+  ];
+  $spec['my_cases'] = [
     'title' => 'My Cases',
     'description' => 'Limit stats to only my cases',
     'type' => CRM_Utils_Type::T_BOOLEAN,
@@ -34,15 +41,20 @@ function _civicrm_api3_case_getstats_spec(&$spec) {
 }
 
 /**
- * Case.getstats API
+ * Case.getstats API.
  *
- * This is provided by the CiviCase extension. It gives statistics for the case dashboard.
+ * This is provided by the CiviCase extension. It gives statistics for
+ * the case dashboard.
  *
  * @param array $params
- * @return array API result
+ *   Parameters.
+ *
+ * @return array
+ *   API result.
+ *
  * @throws API_Exception
  */
-function civicrm_api3_case_getstats($params) {
+function civicrm_api3_case_getstats(array $params) {
   $query = CRM_Utils_SQL_Select::from('civicrm_case a');
   $query->select(['a.case_type_id as case_type_id, a.status_id as status_id, COUNT(a.id) as count']);
   $caseTypesParams = [
@@ -53,7 +65,7 @@ function civicrm_api3_case_getstats($params) {
   $caseTypes = [];
 
   if (!empty($params['my_cases'])) {
-    \Civi\CCase\Utils::joinOnRelationship($query, 'manager');
+    Utils::joinOnRelationship($query, 'manager');
     $query->where('manager.id = ' . CRM_Core_Session::getLoggedInContactID());
   }
 
@@ -76,7 +88,7 @@ function civicrm_api3_case_getstats($params) {
     $permClauses = array_filter(CRM_Case_BAO_Case::getSelectWhereClause('a'));
     $query->where($permClauses);
   }
-  // Filter out deleted contacts
+  // Filter out deleted contacts.
   $query->where("a.id IN (SELECT case_id FROM civicrm_case_contact ccc, civicrm_contact cc WHERE ccc.contact_id = cc.id AND cc.is_deleted = 0)");
   $isDeleted = (int) CRM_Utils_Array::value('is_deleted', $params, 0);
   $query->where('a.is_deleted = ' . $isDeleted);
@@ -89,9 +101,10 @@ function civicrm_api3_case_getstats($params) {
   $tabulated['all'] = [];
   foreach ($result as $row) {
     $tabulated[$row['case_type_id']][$row['status_id']] = $row['count'];
-    $tabulated['all'] += array($row['status_id'] => 0);
+    $tabulated['all'] += [$row['status_id'] => 0];
     $tabulated['all'][$row['status_id']] += (int) $row['count'];
   }
+
   return civicrm_api3_create_success($tabulated, $params, 'Case', 'getstats');
 }
 
