@@ -10,10 +10,10 @@
         'is_overdue', 'case_id'
       ];
       var caseReturnParams = [
-        'subject', 'details', 'contact_id', 'case_type_id', 'status_id',
-        'contacts', 'start_date', 'end_date', 'is_deleted', 'activity_summary',
-        'activity_count', 'category_count', 'tag_id.name', 'tag_id.color',
-        'tag_id.description', 'tag_id.parent_id', 'related_case_ids'
+        'subject', 'details', 'contact_id', 'case_type_id', 'case_type_id.case_type_category',
+        'status_id', 'contacts', 'start_date', 'end_date', 'is_deleted',
+        'activity_summary', 'activity_count', 'category_count', 'tag_id.name',
+        'tag_id.color', 'tag_id.description', 'tag_id.parent_id', 'related_case_ids'
       ];
       var caseListReturnParams = ['case_type_id', 'start_date', 'end_date', 'status_id', 'contacts', 'subject'];
       var customValuesReturnParams = [

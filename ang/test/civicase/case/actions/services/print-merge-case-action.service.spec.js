@@ -17,7 +17,7 @@
       beforeEach(function () {
         caseObj = CasesMockData.get().values[0];
 
-        returnValue = PrintMergeCaseAction.getPath([caseObj]);
+        returnValue = PrintMergeCaseAction.doAction([caseObj]);
       });
 
       it('returns path for opening popup to print/merge document', function () {
