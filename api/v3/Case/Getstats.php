@@ -21,7 +21,16 @@ function _civicrm_api3_case_getstats_spec(&$spec) {
     'title' => 'My Cases',
     'description' => 'Limit stats to only my cases',
     'type' => CRM_Utils_Type::T_BOOLEAN,
-  );
+  ];
+  $spec['case_type_id.case_type_category'] = [
+    'title' => 'Case Type Category',
+    'description' => 'The Case Type Category ID or Name to use as filter',
+    'type' => CRM_Utils_Type::T_STRING,
+    'pseudoconstant' => [
+      'optionGroupName' => 'case_type_categories',
+      'optionEditPath' => 'civicrm/admin/options/case_type_categories',
+    ],
+  ];
 }
 
 /**
@@ -35,7 +44,13 @@ function _civicrm_api3_case_getstats_spec(&$spec) {
  */
 function civicrm_api3_case_getstats($params) {
   $query = CRM_Utils_SQL_Select::from('civicrm_case a');
-  $query->select(array('a.case_type_id as case_type_id, a.status_id as status_id, COUNT(a.id) as count'));
+  $query->select(['a.case_type_id as case_type_id, a.status_id as status_id, COUNT(a.id) as count']);
+  $caseTypesParams = [
+    'options' => ['limit' => 0],
+    'return' => 'id',
+  ];
+
+  $caseTypes = [];
 
   if (!empty($params['my_cases'])) {
     \Civi\CCase\Utils::joinOnRelationship($query, 'manager');
@@ -50,6 +65,12 @@ function civicrm_api3_case_getstats($params) {
     CRM_Civicase_APIHelpers_CasesByContactInvolved::filter($query, $params['contact_involved']);
   }
 
+  if (!empty($params['case_type_id.case_type_category'])) {
+    $caseTypesParams['case_type_category'] = _civicrm_api3_case_get_case_category_from_params($params);
+    $caseTypes = civicrm_api3('CaseType', 'get', $caseTypesParams);
+    _civicrm_api3_case_add_case_category_query_filter($query, $caseTypes);
+  }
+
   $query->groupBy('a.case_type_id, a.status_id');
   if (!empty($params['check_permissions'])) {
     $permClauses = array_filter(CRM_Case_BAO_Case::getSelectWhereClause('a'));
@@ -61,13 +82,56 @@ function civicrm_api3_case_getstats($params) {
   $query->where('a.is_deleted = ' . $isDeleted);
 
   $result = $query->execute()->fetchAll();
-  $caseTypes = civicrm_api3('CaseType', 'get', array('options' => array('limit' => 0), 'return' => 'id'));
-  $tabulated = array_fill_keys(array_keys($caseTypes['values']), array());
-  $tabulated['all'] = array();
+  if (empty($caseTypes)) {
+    $caseTypes = civicrm_api3('CaseType', 'get', $caseTypesParams);
+  }
+  $tabulated = array_fill_keys(array_keys($caseTypes['values']), []);
+  $tabulated['all'] = [];
   foreach ($result as $row) {
     $tabulated[$row['case_type_id']][$row['status_id']] = $row['count'];
     $tabulated['all'] += array($row['status_id'] => 0);
     $tabulated['all'][$row['status_id']] += (int) $row['count'];
   }
   return civicrm_api3_create_success($tabulated, $params, 'Case', 'getstats');
+}
+
+/**
+ * Builds the query for the case category filter.
+ *
+ * @param object $query
+ *   SQL query object.
+ * @param array $caseTypes
+ *   The CaseType array.
+ */
+function _civicrm_api3_case_add_case_category_query_filter($query, array $caseTypes) {
+  $caseTypeIds = array_column($caseTypes['values'], 'id');
+
+  if (empty($caseTypeIds)) {
+    return;
+  }
+  $query->join('ct', 'JOIN civicrm_case_type AS ct ON ct.id = a.case_type_id');
+  $query->where(CRM_Core_DAO::createSQLFilter('ct.id', [
+    'IN' => $caseTypeIds,
+  ]));
+}
+
+/**
+ * Gets the case categories from the $params array.
+ *
+ * Currently, we only support the IN operator for passing array of categories.
+ * it would not make sense to support operators like >= and <.
+ *
+ * @param array $params
+ *   The $params array passed to the API.
+ *
+ * @return array
+ *   Return Value.
+ */
+function _civicrm_api3_case_get_case_category_from_params(array $params) {
+  $caseTypeCategory = $params['case_type_id.case_type_category'];
+  if (is_array($caseTypeCategory) && !array_key_exists('IN', $caseTypeCategory)) {
+    throw new InvalidArgumentException('The case_type_category parameter only supports the IN operator');
+  }
+
+  return $caseTypeCategory;
 }
