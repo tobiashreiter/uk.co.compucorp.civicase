@@ -137,7 +137,7 @@ function _civicrm_api3_case_add_case_category_query_filter($query, array $caseTy
  * @param array $params
  *   The $params array passed to the API.
  *
- * @return array
+ * @return array|string
  *   Return Value.
  */
 function _civicrm_api3_case_get_case_category_from_params(array $params) {
