@@ -44,19 +44,20 @@
    */
   function civicaseCaseOverviewController ($scope, crmApi, BrowserCache) {
     var BROWSER_CACHE_IDENTIFIER = 'civicase.CaseOverview.hiddenCaseStatuses';
+    var caseTypes = CRM.civicase.caseTypes;
+    var caseTypeCategories = CRM.civicase.caseTypeCategories;
 
     $scope.caseStatuses = CRM.civicase.caseStatuses;
-    $scope.caseTypes = CRM.civicase.caseTypes;
-    $scope.caseTypesLength = _.size(CRM.civicase.caseTypes);
     $scope.summaryData = [];
 
     (function init () {
+      setCaseTypesBasedOnCategory();
       // We hide the breakdown when there's only one case type
       if ($scope.caseTypesLength < 2) {
         $scope.showBreakdown = false;
       }
 
-      $scope.$watch('caseFilter', loadStatsData, true);
+      $scope.$watch('caseFilter', caseFilterWatcher, true);
       loadHiddenCaseStatuses();
     }());
 
@@ -116,6 +117,14 @@
     };
 
     /**
+     * Watcher function for caseFilter
+     */
+    function caseFilterWatcher () {
+      setCaseTypesBasedOnCategory();
+      loadStatsData();
+    }
+
+    /**
      * Loads from the browser cache the ids of the case status that have been
      * previously hidden and marks them as such.
      */
@@ -136,6 +145,38 @@
       apiCalls.push(['Case', 'getstats', $scope.caseFilter || {}]);
       crmApi(apiCalls).then(function (response) {
         $scope.summaryData = response[0].values;
+      });
+    }
+
+    /**
+     * Sets the Case Types Based on Case Type Category
+     */
+    function setCaseTypesBasedOnCategory () {
+      var filteredCaseTypes = $scope.caseFilter['case_type_id.case_type_category']
+        ? getCaseTypesFilteredByCategory($scope.caseFilter['case_type_id.case_type_category'])
+        : caseTypes;
+
+      $scope.caseTypes = filteredCaseTypes;
+      $scope.caseTypesLength = _.size($scope.caseTypes);
+    }
+
+    /**
+     * Returns case types filtered by given category
+     *
+     * @param {String} categoryName
+     * @return {Array}
+     */
+    function getCaseTypesFilteredByCategory (categoryName) {
+      var caseTypeCategory = _.find(caseTypeCategories, function (category) {
+        return category.name.toLowerCase() === categoryName.toLowerCase();
+      });
+
+      if (!caseTypeCategory) {
+        return [];
+      }
+
+      return _.pick(caseTypes, function (caseType) {
+        return caseType.case_type_category === caseTypeCategory.value;
       });
     }
 
