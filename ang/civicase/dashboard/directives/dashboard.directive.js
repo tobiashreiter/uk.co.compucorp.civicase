@@ -65,17 +65,20 @@
     }
 
     /**
+     * Watcher for filters.caseTypeCategory
+     */
+    function caseTypeCategoryWatcher () {
+      if ($scope.filters.caseTypeCategory) {
+        $scope.activityFilters.case_filter['case_type_id.case_type_category'] = $scope.filters.caseTypeCategory;
+      }
+    }
+
+    /**
      * Initialise watchers
      */
     function initWatchers () {
       $scope.$watch('filters.caseRelationshipType', caseRelationshipTypeWatcher);
       $scope.$watch('filters.caseTypeCategory', caseTypeCategoryWatcher);
-    }
-
-    function caseTypeCategoryWatcher (newValue) {
-      if ($scope.filters.caseTypeCategory) {
-        $scope.activityFilters.case_filter['case_type_id.case_type_category'] = $scope.filters.caseTypeCategory;
-      }
     }
 
     /**

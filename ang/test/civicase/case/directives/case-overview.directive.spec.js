@@ -2,13 +2,14 @@
 (function ($, _) {
   describe('CaseOverview', function () {
     var $compile, $provide, $q, $rootScope, $scope, BrowserCache,
-      CasesOverviewStats, crmApi, element, targetElementScope;
+      CasesOverviewStats, crmApi, element, targetElementScope, CaseTypes,
+      caseTypeCategoriesMockData;
 
     beforeEach(module('civicase', 'civicase.data', 'civicase.templates', function (_$provide_) {
       $provide = _$provide_;
     }));
 
-    beforeEach(inject(function (_$compile_, _$q_, _$rootScope_, BrowserCacheMock, _crmApi_, _CasesOverviewStatsData_) {
+    beforeEach(inject(function (_$compile_, _$q_, _$rootScope_, BrowserCacheMock, _crmApi_, _CasesOverviewStatsData_, _CaseTypes_, _caseTypeCategoriesMockData_) {
       $compile = _$compile_;
       $q = _$q_;
       $rootScope = _$rootScope_;
@@ -16,6 +17,8 @@
       crmApi = _crmApi_;
       CasesOverviewStats = _CasesOverviewStatsData_.get();
       BrowserCache = BrowserCacheMock;
+      CaseTypes = _CaseTypes_;
+      caseTypeCategoriesMockData = _caseTypeCategoriesMockData_;
 
       BrowserCache.get.and.returnValue([1, 3]);
       $provide.value('BrowserCache', BrowserCache);
@@ -24,7 +27,6 @@
 
     beforeEach(function () {
       $scope.caseStatuses = CRM.civicase.caseStatuses;
-      $scope.caseTypes = CRM.civicase.caseTypes;
       $scope.caseTypesLength = _.size(CRM.civicase.caseTypes);
       $scope.summaryData = [];
     });
@@ -43,6 +45,35 @@
     describe('caseListLink', function () {
       it('checks the output of caseListLink function', function () {
         expect(element.isolateScope().caseListLink('type', 'status')).toEqual('#/case/list?cf=%7B%22case_type_id%22%3A%5B%22type%22%5D%2C%22status_id%22%3A%5B%22status%22%5D%7D');
+      });
+    });
+
+    describe('Case Types', function () {
+      describe('when case type category filter is not present', function () {
+        it('filters the case types using case type category', function () {
+          expect(element.isolateScope().caseTypes).toEqual(CaseTypes.get());
+        });
+      });
+
+      describe('when case type category filter is present', function () {
+        var expectedResult;
+        var caseTypeCategory = 'prospecting';
+
+        beforeEach(function () {
+          compileDirective(caseTypeCategory);
+          $scope.$digest();
+
+          var caseTypeCategoryID = _.find(caseTypeCategoriesMockData, function (category) {
+            return category.label.toLowerCase() === caseTypeCategory.toLowerCase();
+          }).value;
+          expectedResult = _.pick(CaseTypes.get(), function (caseType) {
+            return caseType.case_type_category === caseTypeCategoryID;
+          });
+        });
+
+        it('filters the case types using case type category', function () {
+          expect(element.isolateScope().caseTypes).toEqual(expectedResult);
+        });
       });
     });
 
@@ -128,8 +159,9 @@
     /**
      * Initialise directive
      */
-    function compileDirective () {
-      element = $compile('<civicase-case-overview></civicase-case-overview>')($scope);
+    function compileDirective (caseTypeCategory) {
+      $scope.caseFilter = { 'case_type_id.case_type_category': caseTypeCategory };
+      element = $compile('<civicase-case-overview case-filter="caseFilter"></civicase-case-overview>')($scope);
       $scope.$digest();
     }
 

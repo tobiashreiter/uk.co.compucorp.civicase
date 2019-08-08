@@ -77,6 +77,18 @@
       });
     });
 
+    describe('caseTypeCategoryWatcher watcher', function () {
+      beforeEach(function () {
+        initController();
+        $scope.filters.caseTypeCategory = 'case';
+        $scope.$digest();
+      });
+
+      it('filters the activities and cases with case type category', function () {
+        expect($scope.activityFilters.case_filter['case_type_id.case_type_category']).toBe('case');
+      });
+    });
+
     /**
      * Initializes the dashboard controller.
      */
