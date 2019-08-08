@@ -46,7 +46,7 @@
     function bindRouteParamsToScope () {
       $scope.$bindToRoute({ param: 'dtab', expr: 'activeTab', format: 'int', default: 0 });
       $scope.$bindToRoute({ param: 'drel', expr: 'filters.caseRelationshipType', format: 'raw', default: 'is_involved' });
-      $scope.$bindToRoute({ param: 'case_type_category', expr: 'filters.caseTypeCategory', format: 'raw', default: false });
+      $scope.$bindToRoute({ param: 'case_type_category', expr: 'activityFilters.case_filter["case_type_id.case_type_category"]', format: 'raw', default: null });
     }
 
     /**
@@ -65,20 +65,10 @@
     }
 
     /**
-     * Watcher for filters.caseTypeCategory
-     */
-    function caseTypeCategoryWatcher () {
-      if ($scope.filters.caseTypeCategory) {
-        $scope.activityFilters.case_filter['case_type_id.case_type_category'] = $scope.filters.caseTypeCategory;
-      }
-    }
-
-    /**
      * Initialise watchers
      */
     function initWatchers () {
       $scope.$watch('filters.caseRelationshipType', caseRelationshipTypeWatcher);
-      $scope.$watch('filters.caseTypeCategory', caseTypeCategoryWatcher);
     }
 
     /**

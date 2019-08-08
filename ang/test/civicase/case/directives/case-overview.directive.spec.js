@@ -50,7 +50,7 @@
 
     describe('Case Types', function () {
       describe('when case type category filter is not present', function () {
-        it('filters the case types using case type category', function () {
+        it('does not filter case types using case type category', function () {
           expect(element.isolateScope().caseTypes).toEqual(CaseTypes.get());
         });
       });
