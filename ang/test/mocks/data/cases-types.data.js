@@ -194,7 +194,8 @@
         ]
       },
       'icon': 'icon',
-      'color': 'color'
+      'color': 'color',
+      'case_type_category': '1'
     },
     '2': {
       'name': 'adult_day_care_referral',
@@ -320,7 +321,8 @@
             'name': 'Benefits Specialist'
           }
         ]
-      }
+      },
+      'case_type_category': '2'
     }
   };
 
