@@ -1,7 +1,7 @@
 (function (angular, $, _) {
   var module = angular.module('civicase');
 
-  module.directive('civicaseCaseActions', function ($window, $injector, dialogService, PrintMergeCaseAction) {
+  module.directive('civicaseCaseActions', function ($window, $rootScope, $injector, dialogService, PrintMergeCaseAction) {
     return {
       restrict: 'A',
       templateUrl: '~/civicase/case/actions/directives/case-actions.directive.html',
@@ -77,6 +77,7 @@
             // Listen for success events and buffer them so we only trigger once
             .on('crmFormSuccess crmPopupFormSuccess', function (e, data) {
               formData = data;
+              $rootScope.$broadcast('updateCaseData');
               refreshDataForActions();
             })
             .on('dialogclose.crmPopup', function (e, data) {
