@@ -164,7 +164,7 @@
 
     $scope.pushCaseData = function (data) {
       // If the user has already clicked through to another case by the time we get this data back, stop.
-      if ($scope.item && data.id === $scope.item.id) {
+      if ($scope.item && data && data.id === $scope.item.id) {
         // Maintain the reference to the variable in the parent scope.
         delete ($scope.item.tag_id);
         _.assign($scope.item, formatCaseDetails(data));
