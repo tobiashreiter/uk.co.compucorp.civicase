@@ -41,7 +41,7 @@ class CRM_Civicase_Hook_BuildForm_CaseCategoryCustomFieldsProcessing {
    *   Case category name.
    */
   private function filterCaseTypeOptionValues(CRM_Core_Form $form, $caseCategoryName) {
-    $caseTypesInCategory = $this->getCaseTypesForCategory($caseCategoryName);
+    $caseTypesInCategory = CaseTypeCategoryHelper::getCaseTypesForCategory($caseCategoryName);
 
     if (!$caseTypesInCategory) {
       return;
@@ -76,32 +76,6 @@ class CRM_Civicase_Hook_BuildForm_CaseCategoryCustomFieldsProcessing {
     $caseTypeIdElement = &$form->getElement('case_type_id');
     $caseTypeIdElement->updateAttributes(['onchange' => "CRM.buildCustomData('{$caseCategoryName}', this.value)"]);
     $form->assign('customDataType', $caseCategoryName);
-  }
-
-  /**
-   * Returns the case type ids for a case type category.
-   *
-   * @param string $caseCategoryName
-   *   Case category name.
-   *
-   * @return array|null
-   *   The case type id's e.g [1, 2, 3]
-   */
-  private function getCaseTypesForCategory($caseCategoryName) {
-    try {
-      $result = civicrm_api3('CaseType', 'get', [
-        'return' => ['id'],
-        'case_type_category' => $caseCategoryName,
-      ]);
-
-      if ($result['count'] == 0) {
-        return NULL;
-      }
-
-      return array_column($result['values'], 'id');
-    }
-    catch (Exception $e) {
-    }
   }
 
   /**
