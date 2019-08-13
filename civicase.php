@@ -209,6 +209,7 @@ function civicase_civicrm_buildForm($formName, &$form) {
     new CRM_Civicase_Hook_BuildForm_CaseClientPopulator(),
     new CRM_Civicase_Hook_BuildForm_CaseCategoryCustomFieldsProcessing(),
     new CRM_Civicase_Hook_BuildForm_DisableCaseCustomFieldValidations(),
+    new CRM_Civicase_Hook_BuildForm_FilterByCaseCategoryOnChangeCaseType(),
   ];
 
   foreach ($hooks as $hook) {
