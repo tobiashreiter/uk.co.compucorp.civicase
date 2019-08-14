@@ -29,4 +29,30 @@ class CRM_Civicase_Hook_Helper_CaseTypeCategory {
     return TRUE;
   }
 
+  /**
+   * Returns the case type ids for a case type category.
+   *
+   * @param string $caseCategoryName
+   *   Case category name.
+   *
+   * @return array|null
+   *   The case type id's e.g [1, 2, 3]
+   */
+  public static function getCaseTypesForCategory($caseCategoryName) {
+    try {
+      $result = civicrm_api3('CaseType', 'get', [
+        'return' => ['id'],
+        'case_type_category' => $caseCategoryName,
+      ]);
+
+      if ($result['count'] == 0) {
+        return NULL;
+      }
+
+      return array_column($result['values'], 'id');
+    } catch (Exception $e) {
+    }
+
+  }
+
 }
