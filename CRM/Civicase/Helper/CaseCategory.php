@@ -7,6 +7,8 @@ use CRM_Case_BAO_CaseType as CaseType;
  */
 class CRM_Civicase_Helper_CaseCategory {
 
+  const CASE_TYPE_CATEGORY_NAME = 'Cases';
+
   /**
    * Returns the case category name for the case Id.
    *
@@ -35,6 +37,22 @@ class CRM_Civicase_Helper_CaseCategory {
     }
 
     return NULL;
+  }
+
+  /**
+   * Returns the case types for the cases category.
+   *
+   * @return array
+   *   Array of Case Types indexed by Id.
+   */
+  public static function getCaseTypesForCase() {
+    $result = civicrm_api3('CaseType', 'get', [
+      'sequential' => 1,
+      'return' => ['title', 'id'],
+      'case_type_category' => self::CASE_TYPE_CATEGORY_NAME,
+    ]);
+
+    return array_column($result['values'], 'title', 'id');
   }
 
 }
