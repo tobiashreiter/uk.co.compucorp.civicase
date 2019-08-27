@@ -55,4 +55,39 @@ class CRM_Civicase_Helper_CaseCategory {
     return array_column($result['values'], 'title', 'id');
   }
 
+  /**
+   * Returns the case type category word replacements.
+   *
+   * @param string $caseTypeCategoryName
+   *   Case Category Name.
+   *
+   * @return array
+   *   The word to be replaced and replacement array.
+   */
+  public static function getWordReplacements($caseTypeCategoryName) {
+    $optionName = $caseTypeCategoryName . "_word_replacement";
+    try {
+      $result = civicrm_api3('OptionValue', 'getsingle', [
+        'option_group_id' => 'case_type_category_word_replacement_class',
+        'name' => $optionName,
+      ]);
+
+    } catch (Exception $e) {
+      return [];
+    }
+
+    if (empty($result['id'])) {
+      return [];
+    }
+
+    $replacementClass = $result['value'];
+    if (class_exists($replacementClass) && isset(class_implements($replacementClass)[CRM_Civicase_WordReplacement_BaseInterface::class])) {
+      $replacements = new $replacementClass();
+
+      return $replacements->get();
+    }
+
+    return [];
+  }
+
 }
