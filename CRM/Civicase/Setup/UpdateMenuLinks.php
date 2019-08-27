@@ -10,8 +10,6 @@ class CRM_Civicase_Setup_UpdateMenuLinks {
    */
   public function apply() {
     $this->updateManageCasesMenuLink();
-
-    return TRUE;
   }
 
   /**
@@ -21,12 +19,12 @@ class CRM_Civicase_Setup_UpdateMenuLinks {
    */
   private function updateManageCasesMenuLink() {
     $casesParentMenu = civicrm_api3('Navigation', 'getsingle', [
-      'name' => "cases",
+      'name' => 'cases',
     ]);
 
     if ($casesParentMenu['id']) {
       $manageCasesMenuItem = civicrm_api3('Navigation', 'getsingle', [
-        'name' => "Manage Cases",
+        'name' => 'Manage Cases',
         'parent_id' => $casesParentMenu['id'],
       ]);
     }
