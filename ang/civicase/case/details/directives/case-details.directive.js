@@ -19,10 +19,10 @@
   function civicaseCaseDetailsController ($location, $rootScope, $scope,
     $document, BulkActions, crmApi, formatActivity, formatCase,
     getActivityFeedUrl, getCaseQueryParams, $route, $timeout,
-    CasesUtils, PrintMergeCaseAction) {
+    CasesUtils, PrintMergeCaseAction, ts) {
     // The ts() and hs() functions help load strings for this module.
     // TODO: Move the common logic into a common controller (based on the usage of ContactCaseTabCaseDetails)
-    var ts = $scope.ts = CRM.ts('civicase');
+    $scope.ts = ts;
     var caseTypes = CRM.civicase.caseTypes;
     var caseStatuses = $scope.caseStatuses = CRM.civicase.caseStatuses;
     var activityTypes = $scope.activityTypes = CRM.civicase.activityTypes;

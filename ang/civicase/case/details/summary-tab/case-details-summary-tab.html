@@ -10,7 +10,7 @@
           <!-- <p crm-editable="item" data-field="details" data-type="textarea" data-placeholder="This case doesn't currently have a description. Click here to add now"></p> -->
         <!-- </div> -->
         <div>
-          <span class="civicase__summary-tab__last-updated">Case last updated: </span>
+          <span class="civicase__summary-tab__last-updated">{{ ts("Case last updated: ") }} </span>
           <span>{{formatDate(item.modified_date, 'DD MMMM YYYY' )}}</span>
         </div>
       </div>

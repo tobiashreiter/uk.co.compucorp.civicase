@@ -12,7 +12,8 @@
   module.controller('dashboardTabController', dashboardTabController);
 
   function dashboardTabController ($location, $rootScope, $route, $sce, $scope,
-    ContactsCache, crmApi, formatCase, formatActivity) {
+    ContactsCache, crmApi, formatCase, formatActivity, ts) {
+    $scope.ts = ts;
     var ACTIVITIES_QUERY_PARAMS_DEFAULTS = {
       'contact_id': 'user_contact_id',
       'is_current_revision': 1,
@@ -145,8 +146,9 @@
     }
 
     /**
-     * The common refresh callback logic triggered by the activity cards in the dashboard
-     * It reloads of the calendar and the panel(s) with the given name(s)
+     * The common refresh callback logic triggered by the activity cards in the
+     * dashboard It reloads of the calendar and the panel(s) with the given
+     * name(s)
      *
      * Unfortunately the activity card expects the callback to handle api calls
      * for it, hence the `apiCalls` param and the usage of `crmApi`
@@ -177,7 +179,8 @@
     }
 
     /**
-     * Get the processed list of query pars of the given collection (cases, milestones, etc)
+     * Get the processed list of query pars of the given collection (cases,
+     * milestones, etc)
      *
      * @param {String}
      * @return {Object{}}
@@ -267,9 +270,11 @@
     /**
      * Sets the range of the date of the entity (Case / Activity)
      *
-     * @param {String} property the property where the information about the date is stored
+     * @param {String} property the property where the information about the
+     *   date is stored
      * @param {String} format the date format
-     * @param {Boolean} useNowAsStart whether the starting point should be the current datetime
+     * @param {Boolean} useNowAsStart whether the starting point should be the
+     *   current datetime
      * @param {String} selectedRange the currently selected period range
      * @param {Object} queryParams
      */
@@ -282,11 +287,12 @@
     }
 
     /**
-     * Formats each results (whether a case or an entity) returned by the api call,
-     * and fetches the data of all the contacts referenced in the list
+     * Formats each results (whether a case or an entity) returned by the api
+     * call, and fetches the data of all the contacts referenced in the list
      *
      * @param {Function} formatFn the function that will do the formatting
-     * @param {String} contactsProp the property where the list of contacts is stored
+     * @param {String} contactsProp the property where the list of contacts is
+     *   stored
      * @param {Array} results the list of results
      */
     function resultsHandler (formatFn, contactsProp, results) {
@@ -306,8 +312,9 @@
     }
 
     /**
-     * Updates the action and count action for the given panel query data depending on the selected filter.
-     * When filtering by "My Activities" the action is "getcontactactivities" and "getcontactactivitiescount",
+     * Updates the action and count action for the given panel query data
+     * depending on the selected filter. When filtering by "My Activities" the
+     * action is "getcontactactivities" and "getcontactactivitiescount",
      * otherwise it's "get" and "getcount".
      *
      * @param {Object} panelQueryData
@@ -327,7 +334,8 @@
      * and the url of the link might change
      *
      * This function is being called directly on the view so that the object
-     * is updated automatically whenever the relationship type filter value changes
+     * is updated automatically whenever the relationship type filter value
+     * changes
      *
      * @return {Object}
      */
@@ -347,7 +355,8 @@
      *
      * The only query string parameter needed by the link is
      *   `cf.case_manager` if the relationship type filter is set on "My Cases"
-     *   `cf.contact_id` if the relationship type filter is set on "Cases I'm involved in""
+     *   `cf.contact_id` if the relationship type filter is set on "Cases I'm
+     * involved in""
      *
      * If the relationship type filter is set on "All Cases", then
      * no parameter is needed

@@ -47,7 +47,7 @@
 
   module.controller('CivicaseCaseListTableController', function ($rootScope,
     $scope, $window, BulkActions, crmApi, crmStatus, crmUiHelp,
-    crmThrottle, $timeout, formatCase, ContactsCache, CasesUtils) {
+    crmThrottle, $timeout, formatCase, ContactsCache, CasesUtils, ts) {
     var firstLoad = true;
     var allCases;
 
@@ -60,7 +60,7 @@
     $scope.isLoading = true;
     $scope.selectedCases = [];
     $scope.sort = {sortable: true};
-    $scope.ts = CRM.ts('civicase');
+    $scope.ts = ts;
     $scope.viewingCaseDetails = null;
 
     $scope.bulkAllowed = BulkActions.isAllowed();
@@ -113,7 +113,8 @@
      * Refresh the Case List View
      *
      * @param {array} apiCalls
-     * @param {boolean} backgroundLoading - if loading animation should not be shown
+     * @param {boolean} backgroundLoading - if loading animation should not be
+     *   shown
      */
     $scope.refresh = function (apiCalls, backgroundLoading) {
       backgroundLoading = backgroundLoading || false;
@@ -349,8 +350,8 @@
     }
 
     /**
-     * Asynchronously get all cases for the bulk actions select all functionality
-     * actions functionality
+     * Asynchronously get all cases for the bulk actions select all
+     * functionality actions functionality
      */
     function getAllCasesforSelectAll () {
       $scope.selectedCases = []; // Resets all selection.
