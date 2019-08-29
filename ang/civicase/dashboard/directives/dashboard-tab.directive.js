@@ -13,7 +13,6 @@
 
   function dashboardTabController ($location, $rootScope, $route, $sce, $scope,
     ContactsCache, crmApi, formatCase, formatActivity, ts) {
-    $scope.ts = ts;
     var ACTIVITIES_QUERY_PARAMS_DEFAULTS = {
       'contact_id': 'user_contact_id',
       'is_current_revision': 1,
@@ -58,6 +57,7 @@
       milestones: MILESTONES_QUERY_PARAMS_DEFAULTS
     };
 
+    $scope.ts = ts;
     $scope.caseIds = null;
     $scope.activitiesPanel = {
       name: 'activities',
@@ -97,7 +97,7 @@
     };
     $scope.newCasesPanel = {
       custom: {
-        itemName: 'cases',
+        itemName: ts('cases'),
         caseClick: casesCustomClick,
         viewCasesLink: viewCasesLink()
       },
@@ -345,8 +345,8 @@
       return {
         url: $sce.trustAsResourceUrl('#/case/list?' + $.param(queryParams)),
         label: $scope.filters.caseRelationshipType === 'all'
-          ? 'View all cases'
-          : 'View all my cases'
+          ? 'View all ' + ts('cases')
+          : 'View all my ' + ts('cases')
       };
     }
 
