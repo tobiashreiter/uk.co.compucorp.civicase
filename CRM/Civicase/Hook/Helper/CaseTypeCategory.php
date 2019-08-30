@@ -1,5 +1,7 @@
 <?php
 
+use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
+
 /**
  * CRM_Civicase_Hook_Helper_CaseTypeCategory class.
  */
@@ -53,6 +55,35 @@ class CRM_Civicase_Hook_Helper_CaseTypeCategory {
     } catch (Exception $e) {
     }
 
+  }
+
+  /**
+   * Adds the case category word replacements array to Civi's locale.
+   *
+   * @param string $caseCategoryName
+   *   Case category name.
+   */
+  public static function addWordReplacements($caseCategoryName) {
+    CRM_Core_Resources::singleton()->flushStrings()->resetCacheCode();
+
+    if (!$caseCategoryName) {
+      return;
+    }
+
+    $wordReplacements = CaseCategoryHelper::getWordReplacements($caseCategoryName);
+    if (empty($wordReplacements)) {
+      return;
+    }
+
+    $locale = CRM_Core_I18n::getLocale();
+    Civi::$statics[CRM_Core_I18n::class][$locale] = array_replace_recursive(
+      Civi::$statics[CRM_Core_I18n::class][$locale],
+      [
+        'enabled' => [
+          'wildcardMatch' => $wordReplacements,
+        ],
+      ]
+    );
   }
 
 }

@@ -18,7 +18,7 @@
       <span ng-if="!item.end_date">{{ ts('Ongoing') }}</span>
     </div>
     <div class="civicase__case-header__case-info">
-      <span>Case ID: </span>
+      <span> {{ ts("Case ID:") }} </span>
       <span class="civicase__case-header__case-id">{{ item.id }}</span>
       <span class="civicase__pipe"> | </span>
 
@@ -44,7 +44,7 @@
       </civicase-tags-container>
 
       <span class="pull-right">
-        <span>Case Manager:</span>
+        <span>{{ ts("Case Manager:") }}</span>
         <span><span class="civicase__contact-card civicase__contact-card--manager" civicase-contact-card contacts="[item.manager]"></span></span>
       </span>
     </div>

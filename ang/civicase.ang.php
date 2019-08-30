@@ -11,6 +11,9 @@
 use Civi\CCase\Utils as Utils;
 
 load_resources();
+$caseCategoryName = CRM_Utils_Request::retrieve('case_type_category', 'String');
+CRM_Civicase_Hook_Helper_CaseTypeCategory::addWordReplacements($caseCategoryName);
+
 
 // The following changes are only relevant to the full-page app.
 if (CRM_Utils_System::getUrlPath() == 'civicrm/case/a') {

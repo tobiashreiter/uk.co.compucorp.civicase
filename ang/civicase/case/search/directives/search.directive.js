@@ -19,9 +19,8 @@
    * Controller Function for civicase-search directive
    */
   module.controller('civicaseSearchController', function ($scope, $rootScope, $timeout,
-    crmApi, getSelect2Value) {
-    // The ts() functions help load strings for this module.
-    var ts = $scope.ts = CRM.ts('civicase');
+    crmApi, getSelect2Value, ts) {
+    $scope.ts = ts;
     var caseTypes = CRM.civicase.caseTypes;
     var caseStatuses = CRM.civicase.caseStatuses;
     var caseTypeCategories = CRM.civicase.caseTypeCategories;
@@ -35,9 +34,9 @@
       tag_id: { label: ts('Tags') }
     };
     var caseRelationshipConfig = [
-      { 'text': 'All Cases', 'id': 'all' },
-      { 'text': 'My cases', 'id': 'is_case_manager' },
-      { 'text': 'Cases I am involved', 'id': 'is_involved' }
+      {'text': ts('All Cases'), 'id': 'all'},
+      {'text': ts('My cases'), 'id': 'is_case_manager'},
+      {'text': ts('Cases I am involved'), 'id': 'is_involved'}
     ];
 
     $scope.pageTitle = '';
@@ -48,8 +47,8 @@
     $scope.filterDescription = buildDescription();
     $scope.filters = angular.extend({}, $scope.defaults);
     $scope.contactRoles = [
-      { id: 'all-case-roles', text: 'All Case Roles' },
-      { id: 'client', text: 'Client' }
+      {id: 'all-case-roles', text: ts('All Case Roles')},
+      {id: 'client', text: ts('Client')}
     ];
     $scope.contactRoleFilter = {
       selectedContacts: null,
@@ -124,7 +123,8 @@
     /**
      * Adds the given case roles to the list of contact roles.
      *
-     * @param {Array} caseRoles a list of relationship types as returned by the API.
+     * @param {Array} caseRoles a list of relationship types as returned by the
+     *   API.
      */
     function addCaseRolesToContactRoles (caseRoles) {
       _.chain(caseRoles)
@@ -150,7 +150,8 @@
     /**
      * Builds human readable filter description to be shown on the UI
      *
-     * @return {Array} des - Arrayed output to be shown as the fitler description with human readable key value pair
+     * @return {Array} des - Arrayed output to be shown as the fitler
+     *   description with human readable key value pair
      */
     function buildDescription () {
       var des = [];
@@ -331,7 +332,8 @@
     }
 
     /**
-     * Requests the list of relationship types that have been assigned to case types.
+     * Requests the list of relationship types that have been assigned to case
+     * types.
      *
      * @return {Promise} resolves to a list of relationship types.
      */
@@ -382,7 +384,7 @@
       }
 
       if (_.size(_.omit(filters, ['status_id', 'case_type_id']))) {
-        $scope.pageTitle = $scope.ts('Case Search Results');
+        $scope.pageTitle = ts('Case Search Results');
       } else {
         var status = [];
         if (filters.status_id && filters.status_id.length) {
@@ -390,7 +392,7 @@
             status.push(_.findWhere(caseStatuses, {name: s}).label);
           });
         } else {
-          status = [$scope.ts('All Open')];
+          status = [ts('All Open')];
         }
         var type = [];
         if (filters.case_type_id && filters.case_type_id.length) {
@@ -398,7 +400,7 @@
             type.push(_.findWhere(caseTypes, {name: t}).title);
           });
         }
-        $scope.pageTitle = status.join(' & ') + ' ' + type.join(' & ') + ' ' + $scope.ts('Cases');
+        $scope.pageTitle = status.join(' & ') + ' ' + type.join(' & ') + ' ' + ts('Cases');
       }
       if (typeof totalCount === 'number') {
         $scope.pageTitle += ' (' + totalCount + ')';
