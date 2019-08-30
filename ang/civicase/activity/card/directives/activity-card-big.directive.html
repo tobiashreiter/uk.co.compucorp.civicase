@@ -93,7 +93,9 @@
     <div ng-if="type === 'activity'" class="civicase__activity-no-result-icon civicase__activity-no-result-icon--activity"></div>
     <div class="civicase__activity-card--big--empty-title" ng-if="type === 'milestone'"> No upcoming milestones </div>
     <div class="civicase__activity-card--big--empty-title" ng-if="type === 'activity'"> No upcoming activities </div>
-    <div class="civicase__activity-card--big--empty-description" ng-if="type === 'milestone'"> Click on the button below to add a milestone to this case </div>
+      <div class="civicase__activity-card--big--empty-description" ng-if="type === 'milestone'">
+          {{ ts("Click on the button below to add a milestone to this case") }}
+      </div>
     <div class="civicase__activity-card--big--empty-description" ng-if="type === 'activity'"> Click the button below to add an activity </div>
     <span ng-if="type === 'milestone'" civicase-dropdown>
       <div class="civicase__activity-card--big--empty-button btn"
