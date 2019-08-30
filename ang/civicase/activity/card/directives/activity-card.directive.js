@@ -41,8 +41,8 @@
 
   module.controller('caseActivityCardController', caseActivityCardController);
 
-  function caseActivityCardController ($scope, dialogService, crmApi, crmBlocker, crmStatus, DateHelper) {
-    $scope.ts = CRM.ts('civicase');
+  function caseActivityCardController ($scope, dialogService, crmApi, crmBlocker, crmStatus, DateHelper, ts) {
+    $scope.ts = ts;
     $scope.formatDate = DateHelper.formatDate;
 
     /**

@@ -142,7 +142,7 @@
       <a ng-href="{{ 'civicrm/case/a/#/case/list' | civicaseCrmUrl:{ caseId: activity.case_id } }}">
         <div class="civicase__activity-card-row civicase__activity-card-row--case-info" >
           <span>
-            <span class="civicase__activity-card__case-id__label">Case ID:</span>
+            <span class="civicase__activity-card__case-id__label">{{ ts("Case ID:") }}</span>
             <span class="civicase__activity-card__case-id__value">{{activity.case_id}}</span>
           </span>
           <span class="civicase__pipe"> | </span>
