@@ -1,17 +1,20 @@
 <?php
 
-use CRM_Civicase_Setup_UpdateMenuLinks as UpdateMenuLinks;
+use CRM_Civicase_Setup_AddCaseCategoryWordReplacementOptionGroup as AddCaseCategoryWordReplacementOptionGroup;
 
 /**
- * Updates the Manage Cases Menu URLs.
+ * CRM_Civicase_Upgrader_Steps_Step005 class.
  */
 class CRM_Civicase_Upgrader_Steps_Step0005 {
 
   /**
-   * Updates the Manage Cases Menu URLs.
+   * Add the case type category word replacement option group.
+   *
+   * @return bool
+   *   Return value in boolean.
    */
   public function apply() {
-    $step = new UpdateMenuLinks();
+    $step = new AddCaseCategoryWordReplacementOptionGroup();
     $step->apply();
 
     return TRUE;

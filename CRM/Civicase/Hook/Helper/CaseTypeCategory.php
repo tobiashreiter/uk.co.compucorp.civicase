@@ -17,6 +17,7 @@ class CRM_Civicase_Hook_Helper_CaseTypeCategory {
    *   return value.
    */
   public static function isValidCategory($caseCategoryName) {
+    $caseCategoryName = strtolower($caseCategoryName);
     if ($caseCategoryName == 'cases') {
       return TRUE;
     }

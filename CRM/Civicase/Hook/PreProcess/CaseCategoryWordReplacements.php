@@ -18,7 +18,7 @@ class CRM_Civicase_Hook_PreProcess_CaseCategoryWordReplacements {
   public function run($formName, CRM_Core_Form &$form) {
     $caseCategoryName = $this->getCaseCategoryName($form);
 
-    if (!$this->shouldRun($formName, $caseCategoryName)) {
+    if (!$this->shouldRun($formName)) {
       return;
     }
 
@@ -46,6 +46,39 @@ class CRM_Civicase_Hook_PreProcess_CaseCategoryWordReplacements {
     // through the ts function.
     $pageTitle = $form->get_template_vars('activityType');
     CRM_Utils_System::setTitle(ts($pageTitle));
+    $this->updateBreadcrumbs($caseCategoryName);
+  }
+
+  /**
+   * Updates the New Case page breadcrumb.
+   *
+   * The breadcrumb is updated so that the necessary words can be replaced and
+   * also so that the dashboard leads to the case category dashboard page
+   * depending on the case category.
+   *
+   * @param string $caseCategoryName
+   *   Case category name.
+   */
+  private function updateBreadcrumbs($caseCategoryName) {
+    $caseCategoryName = strtolower($caseCategoryName);
+    CRM_Utils_System::resetBreadCrumb();
+    $breadcrumb = [
+      [
+        'title' => ts('Home'),
+        'url' => CRM_Utils_System::url(),
+      ],
+      [
+        'title' => ts('CiviCRM'),
+        'url' => CRM_Utils_System::url('civicrm', 'reset=1'),
+      ],
+      [
+        'title' => ts('Case Dashboard'),
+        'url' => CRM_Utils_System::url('civicrm/case/a/', ['case_type_category' => $caseCategoryName], TRUE,
+          "/case?case_type_category={$caseCategoryName}"),
+      ],
+    ];
+
+    CRM_Utils_System::appendBreadCrumb($breadcrumb);
   }
 
   /**
@@ -61,7 +94,7 @@ class CRM_Civicase_Hook_PreProcess_CaseCategoryWordReplacements {
     $urlParams = parse_url(htmlspecialchars_decode($form->controller->_entryURL), PHP_URL_QUERY);
     parse_str($urlParams, $urlParams);
 
-    return !empty($urlParams['case_type_category']) ? $urlParams['case_type_category'] : NULL;
+    return !empty($urlParams['case_type_category']) ? $urlParams['case_type_category'] : CRM_Civicase_Helper_CaseCategory::CASE_TYPE_CATEGORY_NAME;
   }
 
   /**
@@ -69,21 +102,12 @@ class CRM_Civicase_Hook_PreProcess_CaseCategoryWordReplacements {
    *
    * @param string $formName
    *   Form name.
-   * @param string $caseCategoryName
-   *   Case category name.
    *
    * @return bool
    *   returns a boolean to determine if hook will run or not.
    */
-  private function shouldRun($formName, $caseCategoryName) {
-    if (!$caseCategoryName) {
-      return FALSE;
-    }
-
-    $isCaseForm = $formName == CRM_Case_Form_Case::class;
-    $caseCategoryNameNotCase = $caseCategoryName != 'cases';
-
-    return $isCaseForm && $caseCategoryName && $caseCategoryNameNotCase;
+  private function shouldRun($formName) {
+    return $formName == CRM_Case_Form_Case::class;
   }
 
 }
