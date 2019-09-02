@@ -530,31 +530,14 @@ function civicase_civicrm_alterAPIPermissions($entity, $action, &$params, &$perm
  * Implements hook_civicrm_pageRun().
  */
 function civicase_civicrm_pageRun(&$page) {
-  if ($page instanceof CRM_Case_Page_Tab) {
-    // OLD: http://localhost/civicrm/contact/view/case?reset=1&action=view&cid=129&id=51
-    // NEW: http://localhost/civicrm/case/a/#/case/list?sf=contact_id.sort_name&sd=ASC&focus=0&cf=%7B%7D&caseId=51&tab=summary&sx=0
-    $caseId = CRM_Utils_Request::retrieve('id', 'Positive');
-    if ($caseId) {
-      $case = civicrm_api3('Case', 'getsingle', [
-        'id' => $caseId,
-        'return' => ['case_type_id.name', 'status_id.name'],
-      ]);
-      $url = CRM_Utils_System::url('civicrm/case/a/', NULL, TRUE,
-        "/case/list?sf=id&sd=DESC&caseId={$caseId}&cf=%7B%22status_id%22:%5B%22{$case['status_id.name']}%22%5D,%22case_type_id%22:%5B%22{$case['case_type_id.name']}%22%5D%7D",
-        FALSE);
+  $hooks = [
+    new CRM_Civicase_Hook_PageRun_ViewCasePageRedirect(),
+    new CRM_Civicase_Hook_PageRun_AddCaseAngularPageResources(),
+    new CRM_Civicase_Hook_PageRun_AddContactPageSummaryResources(),
+  ];
 
-      CRM_Utils_System::redirect($url);
-    }
-  }
-  // Adds Moment.js file to Civicase Angular Page.
-  if ($page instanceof CRM_Civicase_Page_CaseAngular || $page instanceof CRM_Contact_Page_View_Summary) {
-    CRM_Core_Resources::singleton()->addScriptFile('uk.co.compucorp.civicase', 'packages/moment.min.js');
-  }
-
-  // Adds simplescrollbarjs.
-  if ($page instanceof CRM_Civicase_Page_CaseAngular) {
-    CRM_Core_Resources::singleton()->addScriptFile('uk.co.compucorp.civicase', 'packages/simplebar.min.js');
-    CRM_Core_Resources::singleton()->addStyleFile('uk.co.compucorp.civicase', 'packages/simplebar.min.css', 1000, 'html-header');
+  foreach ($hooks as $hook) {
+    $hook->run($page);
   }
 }
 
