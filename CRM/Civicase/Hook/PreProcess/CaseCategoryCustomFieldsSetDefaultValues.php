@@ -25,7 +25,7 @@ class CRM_Civicase_Hook_PreProcess_CaseCategoryCustomFieldsSetDefaultValues {
   }
 
   /**
-   * Sets default values for Cae category custom fields.
+   * Sets default values for Case category custom fields.
    *
    * This function processes, set default values for the category custom fields,
    * these values are stored in cache and pre-populated on the add case form.
@@ -49,11 +49,11 @@ class CRM_Civicase_Hook_PreProcess_CaseCategoryCustomFieldsSetDefaultValues {
     }
 
     $qfKey = $form->get_template_vars('qfKey');
-    $beforeCachedCustomDataValues = CRM_Core_BAO_Cache::getItem('custom data', $qfKey);
+    $beforeCachedCustomDataValues = Civi::cache('customData')->get($qfKey);
     CRM_Custom_Form_CustomData::preProcess($form, NULL, $caseTypeId, 1, $caseCategoryName);
     CRM_Custom_Form_CustomData::buildQuickForm($form);
     CRM_Custom_Form_CustomData::setDefaultValues($form);
-    $afterCachedCustomDataValues = CRM_Core_BAO_Cache::getItem('custom data', $qfKey);
+    $afterCachedCustomDataValues = Civi::cache('customData')->get($qfKey);
     $this->unsetCaseCategoryCustomGroupFromGroupTree($form, $caseCategoryName);
 
     // We need to do this because the cached data for the custom values will be
@@ -61,7 +61,7 @@ class CRM_Civicase_Hook_PreProcess_CaseCategoryCustomFieldsSetDefaultValues {
     // we don't merge both data together.
     if ($beforeCachedCustomDataValues && $beforeCachedCustomDataValues != $afterCachedCustomDataValues) {
       $combinedCachedCustomDataValues = array_merge($beforeCachedCustomDataValues, $afterCachedCustomDataValues);
-      CRM_Core_BAO_Cache::setItem($combinedCachedCustomDataValues, 'custom data', $qfKey);
+      Civi::cache('customData')->set($qfKey, $combinedCachedCustomDataValues);
     }
   }
 
