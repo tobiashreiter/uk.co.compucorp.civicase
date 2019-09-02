@@ -6,7 +6,7 @@
 class CRM_Civicase_Hook_PageRun_AddCaseAngularPageResources {
 
   /**
-   * Add resources (CSS and JS)for this Page.
+   * Add resources (CSS and JS) for this Page.
    *
    * @param object $page
    *   Page Object.
