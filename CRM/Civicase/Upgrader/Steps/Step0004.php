@@ -5,7 +5,7 @@ use CRM_Civicase_Setup_AddCaseTypesForCustomGroupExtends as AddCaseTypesForCusto
 /**
  * CRM_Civicase_Upgrader_Steps_Step004 class.
  */
-class CRM_Civicase_Upgrader_Steps_Step004 {
+class CRM_Civicase_Upgrader_Steps_Step0004 {
 
   /**
    * Add the functionality for fetching case types for case category..
