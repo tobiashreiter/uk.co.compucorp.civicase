@@ -23,20 +23,31 @@ class CRM_Civicase_Helper_CaseCategory {
 
     $result = civicrm_api3('Case', 'getsingle', [
       'id' => $caseId,
-      'return' => ['case_type_id'],
-      'api.CaseType.getsingle' => [
-        'id' => '$value.case_type_id',
-        'return' => ['case_type_category'],
-      ],
+      'return' => ['case_type_id.case_type_category'],
     ]);
 
-    if (!empty($result['api.CaseType.getsingle']['case_type_category'])) {
-      $caseCategoryId = $result['api.CaseType.getsingle']['case_type_category'];
+    if (!empty($result['case_type_id.case_type_category'])) {
+      $caseCategoryId = $result['case_type_id.case_type_category'];
 
       return $caseTypeCategories[$caseCategoryId];
     }
 
     return NULL;
+  }
+
+  /**
+   * Returns the case type category name given the option value.
+   *
+   * @param mixed $caseCategoryValue
+   *   Category Option value.
+   *
+   * @return string
+   *   Case Category Name.
+   */
+  public static function getCaseCategoryNameFromOptionValue($caseCategoryValue) {
+    $caseTypeCategories = CaseType::buildOptions('case_type_category');
+
+    return $caseTypeCategories[$caseCategoryValue];
   }
 
   /**
