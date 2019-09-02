@@ -1,5 +1,7 @@
 <?php
 
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException as ServiceNotFoundException;
+
 /**
  * CRM_Civicase_Hook_PreProcess_CaseCategoryCustomFieldsSetDefaultValues class.
  */
@@ -49,11 +51,11 @@ class CRM_Civicase_Hook_PreProcess_CaseCategoryCustomFieldsSetDefaultValues {
     }
 
     $qfKey = $form->get_template_vars('qfKey');
-    $beforeCachedCustomDataValues = Civi::cache('customData')->get($qfKey);
+    $beforeCachedCustomDataValues = $this->getCustomDataCache($qfKey);
     CRM_Custom_Form_CustomData::preProcess($form, NULL, $caseTypeId, 1, $caseCategoryName);
     CRM_Custom_Form_CustomData::buildQuickForm($form);
     CRM_Custom_Form_CustomData::setDefaultValues($form);
-    $afterCachedCustomDataValues = Civi::cache('customData')->get($qfKey);
+    $afterCachedCustomDataValues = $this->getCustomDataCache($qfKey);
     $this->unsetCaseCategoryCustomGroupFromGroupTree($form, $caseCategoryName);
 
     // We need to do this because the cached data for the custom values will be
@@ -61,8 +63,53 @@ class CRM_Civicase_Hook_PreProcess_CaseCategoryCustomFieldsSetDefaultValues {
     // we don't merge both data together.
     if ($beforeCachedCustomDataValues && $beforeCachedCustomDataValues != $afterCachedCustomDataValues) {
       $combinedCachedCustomDataValues = array_merge($beforeCachedCustomDataValues, $afterCachedCustomDataValues);
-      Civi::cache('customData')->set($qfKey, $combinedCachedCustomDataValues);
+      $this->setCustomDataCache($qfKey, $combinedCachedCustomDataValues);
     }
+  }
+
+  /**
+   * Sets the Custom data in cache.
+   *
+   * This function is necessary because the `CRM_Core_BAO_Cache::setItem` will
+   * get deprecated soon and the Cache container will have to be used, however
+   * Some sites will run civicase on version < 5.17 and this needs to be
+   * supported.
+   *
+   * @param string $qfKey
+   *   QF key.
+   * @param mixed $data
+   *   Data to be stored.
+   */
+  private function setCustomDataCache($qfKey, $data) {
+    try {
+      Civi::cache('customData')->set($qfKey, $data);
+    } catch (ServiceNotFoundException $e) {
+      CRM_Core_BAO_Cache::setItem($data, 'custom data', $qfKey);
+    }
+
+  }
+
+  /**
+   * Gets the Custom data from cache.
+   *
+   * This function is necessary because the `CRM_Core_BAO_Cache::setItem` will
+   * get deprecated soon and the Cache container will have to be used,
+   * however Some sites will run civicase on version < 5.17 and this needs
+   * to be supported.
+   *
+   * @param string $qfKey
+   *   QF key.
+   *
+   * @return mixed
+   *   Custom data.
+   */
+  private function getCustomDataCache($qfKey) {
+    try {
+      return Civi::cache('customData')->get($qfKey);
+    } catch (ServiceNotFoundException $e) {
+      return CRM_Core_BAO_Cache::getItem('custom data', $qfKey);
+    }
+
   }
 
   /**
