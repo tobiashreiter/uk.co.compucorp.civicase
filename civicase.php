@@ -210,7 +210,8 @@ function civicase_civicrm_buildForm($formName, &$form) {
     new CRM_Civicase_Hook_BuildForm_CaseCategoryCustomFieldsProcessing(),
     new CRM_Civicase_Hook_BuildForm_DisableCaseCustomFieldValidations(),
     new CRM_Civicase_Hook_BuildForm_FilterByCaseCategoryOnChangeCaseType(),
-    new CRM_Civicase_Hook_BuildForm_CaseCategoryFormLabelTranslation(),
+    new CRM_Civicase_Hook_BuildForm_CaseCategoryFormLabelTranslationForNewCase(),
+    new CRM_Civicase_Hook_BuildForm_CaseCategoryFormLabelTranslationForChangeCase(),
   ];
 
   foreach ($hooks as $hook) {
@@ -669,7 +670,8 @@ function civicase_civicrm_preProcess($formName, &$form) {
   $hooks = [
     new CRM_Civicase_Hook_PreProcess_CaseCategoryCustomFieldsSetDefaultValues(),
     new CRM_Civicase_Hook_PreProcess_ProcessCaseCategoryCustomFieldsForEdit(),
-    new CRM_Civicase_Hook_PreProcess_CaseCategoryWordReplacements(),
+    new CRM_Civicase_Hook_PreProcess_CaseCategoryWordReplacementsForNewCase(),
+    new CRM_Civicase_Hook_PreProcess_CaseCategoryWordReplacementsForChangeCase(),
   ];
 
   foreach ($hooks as $hook) {
