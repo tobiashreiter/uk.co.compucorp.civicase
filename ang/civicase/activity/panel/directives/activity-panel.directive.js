@@ -20,9 +20,7 @@
      * @param {Object} $scope
      * @param {Object} element
      */
-    function civicaseActivityPanelLink (scope, element, attrs) {
-      var ts = CRM.ts('civicase');
-
+    function civicaseActivityPanelLink (scope, element, attrs, ts) {
       (function init () {
         $timeout(setPanelHeight);
         scope.$on('civicase::activity-feed::show-activity-panel', loadActivityForm);
