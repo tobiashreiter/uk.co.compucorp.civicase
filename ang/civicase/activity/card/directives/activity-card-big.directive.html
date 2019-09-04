@@ -62,14 +62,14 @@
             <span
               class="civicase__tooltip__ellipsis civicase__activity-type"
               ng-class="{'civicase__activity-type--completed': (activity.category.indexOf('task') > -1 && activity.is_completed)}">
-              {{ ts(activity.type) }}
+              {{ activity.type }}
             </span>
           </civicase-tooltip>
         </div>
         <!-- End - top section -->
         <span class="civicase__activity-date" ng-class="{'civicase__overdue-activity-icon': activity.is_overdue}"><i class="material-icons">event</i>{{formatDate(activity.activity_date_time, 'DD MMM YYYY') }}</span>
         <!-- Subject -->
-        <div class="civicase__activity-subject">{{ ts(activity.subject) }}</div>
+          <div class="civicase__activity-subject">{{ activity.subject }}</div>
         <!-- End - Subject -->
         <!-- Tags -->
         <civicase-tags-container
