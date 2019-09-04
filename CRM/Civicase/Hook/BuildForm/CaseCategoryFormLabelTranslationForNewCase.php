@@ -5,7 +5,7 @@ use CRM_Civicase_Hook_Helper_CaseTypeCategory as CaseTypeCategoryHelper;
 /**
  * Class CRM_Civicase_Hook_BuildForm_CaseCategoryFormLabelTranslation.
  */
-class CRM_Civicase_Hook_BuildForm_CaseCategoryFormLabelTranslation {
+class CRM_Civicase_Hook_BuildForm_CaseCategoryFormLabelTranslationForNewCase {
 
   /**
    * Translate some case form labels that Civi did not run translation for.

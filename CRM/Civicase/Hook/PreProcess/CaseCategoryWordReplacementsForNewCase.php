@@ -5,7 +5,7 @@ use CRM_Civicase_Hook_Helper_CaseTypeCategory as CaseTypeCategoryHelper;
 /**
  * Class CRM_Civicase_Hook_PreProcess_CaseCategoryWordReplacements.
  */
-class CRM_Civicase_Hook_PreProcess_CaseCategoryWordReplacements {
+class CRM_Civicase_Hook_PreProcess_CaseCategoryWordReplacementsForNewCase {
 
   /**
    * Adds the word replacements array to Civi's translation locale.
