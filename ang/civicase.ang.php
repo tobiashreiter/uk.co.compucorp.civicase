@@ -401,6 +401,7 @@ function set_contact_tasks(&$options) {
 function expose_settings(&$options) {
   $options['allowMultipleCaseClients'] = (bool) Civi::settings()->get('civicaseAllowMultipleClients');
   $options['allowCaseLocks'] = (bool) Civi::settings()->get('civicaseAllowCaseLocks');
+  $options['defaultCaseCategory'] = strtolower(CRM_Civicase_Helper_CaseCategory::CASE_TYPE_CATEGORY_NAME);
 }
 
 /**
