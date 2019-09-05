@@ -24,7 +24,8 @@
     };
   });
 
-  module.controller('CivicaseCaseCardController', function ($scope, getActivityFeedUrl, DateHelper) {
+  module.controller('CivicaseCaseCardController', function ($scope, getActivityFeedUrl, DateHelper, ts) {
+    $scope.ts = ts;
     $scope.getActivityFeedUrl = getActivityFeedUrl;
     $scope.formatDate = DateHelper.formatDate;
     $scope.otherCategories = _.map(_.filter(CRM.civicase.activityCategories, function (category) {

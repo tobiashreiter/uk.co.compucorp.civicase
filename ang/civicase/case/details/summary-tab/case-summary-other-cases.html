@@ -2,7 +2,7 @@
   <div class="panel-heading">
     <h3 class="panel-title">
       <span role="button" data-toggle="collapse" href="#collapse-one">
-        Other Cases ({{item.relatedCases.length}})
+        {{ ts("Other Cases") }} ({{item.relatedCases.length}})
       </span>
     </h3>
   </div>
@@ -31,7 +31,9 @@
           text-next="&rsaquo;"
           text-prev="&lsaquo;"
         ></paging>
-        <div>Showing {{relatedCasesPager.range.from}} to {{relatedCasesPager.range.to}} of {{item.relatedCases.length}} cases</div>
+        <div>Showing {{relatedCasesPager.range.from}} to {{relatedCasesPager.range.to}} of {{item.relatedCases.length}}
+          {{ ts("cases") }}
+        </div>
       </div>
     </div>
   </div>

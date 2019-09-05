@@ -27,10 +27,16 @@
             class="form-control civicase__dashboard__relation-filter"
             crm-ui-select="{allowClear: false, multiple: false, data: caseRelationshipOptions}"
             ng-model="filters.caseRelationshipType" />
-          <a ng-if="checkPerm('add cases')  && !newCaseWebformUrl"
-            ng-href="{{ url('civicrm/case/add', {reset: 1, action: 'add', context: 'standalone'}) }}"
-            class="btn btn-primary crm-popup civicase__dashboard__add-case"
-            crm-popup-form-success="refresh()">
+          <a ng-if="checkPerm('add cases') && caseTypeCategoryName == defaultCaseCategory && !newCaseWebformUrl"
+             ng-href="{{ url('civicrm/case/add', {reset: 1, action: 'add', context: 'standalone'}) }}"
+             class="btn btn-primary crm-popup civicase__dashboard__add-case"
+             crm-popup-form-success="refresh()">
+            <i class="material-icons">add_circle</i>{{ ts('Add Case') }}
+          </a>
+          <a ng-if="checkPerm('add cases') && caseTypeCategoryName != defaultCaseCategory && !newCaseWebformUrl"
+             ng-href="{{ url('civicrm/case/add', {reset: 1, action: 'add', case_type_category: caseTypeCategoryName, context: 'standalone'}) }}"
+             class="btn btn-primary crm-popup civicase__dashboard__add-case"
+             crm-popup-form-success="refresh()">
             <i class="material-icons">add_circle</i>{{ ts('Add Case') }}
           </a>
           <a ng-if="checkPerm('add cases') && newCaseWebformUrl"
@@ -38,6 +44,7 @@
              class="btn btn-primary civicase__dashboard__add-case">
             <i class="material-icons">add_circle</i>{{ ts('Add Case') }}
           </a>
+
         </div>
       </uib-tabset>
     </div>

@@ -5,12 +5,13 @@
 
   function PrintMergeCaseAction () {
     /**
-     * Get path object to print/merge
+     * Click event handler for the Action
      *
      * @param {Array} cases
-     * @return {Object} popup path object
+     * @param {Object} action
+     * @param {Function} callbackFn
      */
-    this.getPath = function (cases) {
+    this.doAction = function (cases, action, callbackFn) {
       var contactIds = [];
       var caseIds = [];
 

@@ -47,7 +47,7 @@
 
   module.controller('CivicaseCaseListTableController', function ($rootScope,
     $scope, $window, BulkActions, crmApi, crmStatus, crmUiHelp,
-    crmThrottle, $timeout, formatCase, ContactsCache, CasesUtils) {
+    crmThrottle, $timeout, formatCase, ContactsCache, CasesUtils, ts) {
     var firstLoad = true;
     var allCases;
 
@@ -60,7 +60,7 @@
     $scope.isLoading = true;
     $scope.selectedCases = [];
     $scope.sort = {sortable: true};
-    $scope.ts = CRM.ts('civicase');
+    $scope.ts = ts;
     $scope.viewingCaseDetails = null;
 
     $scope.bulkAllowed = BulkActions.isAllowed();
@@ -113,7 +113,8 @@
      * Refresh the Case List View
      *
      * @param {array} apiCalls
-     * @param {boolean} backgroundLoading - if loading animation should not be shown
+     * @param {boolean} backgroundLoading - if loading animation should not be
+     *   shown
      */
     $scope.refresh = function (apiCalls, backgroundLoading) {
       backgroundLoading = backgroundLoading || false;
@@ -319,7 +320,9 @@
       var params = {'case_type_id.is_active': 1};
       _.each(filters, function (val, filter) {
         if (val || typeof val === 'boolean') {
-          if (typeof val === 'number' || typeof val === 'boolean') {
+          if (filter === 'case_type_category') {
+            params['case_type_id.case_type_category'] = val;
+          } else if (typeof val === 'number' || typeof val === 'boolean') {
             params[filter] = val;
           } else if (typeof val === 'object' && !$.isArray(val)) {
             params[filter] = val;
@@ -347,8 +350,8 @@
     }
 
     /**
-     * Asynchronously get all cases for the bulk actions select all functionality
-     * actions functionality
+     * Asynchronously get all cases for the bulk actions select all
+     * functionality actions functionality
      */
     function getAllCasesforSelectAll () {
       $scope.selectedCases = []; // Resets all selection.

@@ -19,10 +19,10 @@
   function civicaseCaseDetailsController ($location, $rootScope, $scope,
     $document, BulkActions, crmApi, formatActivity, formatCase,
     getActivityFeedUrl, getCaseQueryParams, $route, $timeout,
-    CasesUtils, PrintMergeCaseAction) {
+    CasesUtils, PrintMergeCaseAction, ts) {
     // The ts() and hs() functions help load strings for this module.
     // TODO: Move the common logic into a common controller (based on the usage of ContactCaseTabCaseDetails)
-    var ts = $scope.ts = CRM.ts('civicase');
+    $scope.ts = ts;
     var caseTypes = CRM.civicase.caseTypes;
     var caseStatuses = $scope.caseStatuses = CRM.civicase.caseStatuses;
     var activityTypes = $scope.activityTypes = CRM.civicase.activityTypes;
@@ -164,7 +164,7 @@
 
     $scope.pushCaseData = function (data) {
       // If the user has already clicked through to another case by the time we get this data back, stop.
-      if ($scope.item && data.id === $scope.item.id) {
+      if ($scope.item && data && data.id === $scope.item.id) {
         // Maintain the reference to the variable in the parent scope.
         delete ($scope.item.tag_id);
         _.assign($scope.item, formatCaseDetails(data));
@@ -297,8 +297,8 @@
       delete (item['api.Activity.get.nextActivitiesWhichIsNotMileStone']);
 
       // Custom fields
-      item.customData = item['api.CustomValue.gettree'].values || [];
-      delete (item['api.CustomValue.gettree']);
+      item.customData = item['api.CustomValue.gettreevalues'].values || [];
+      delete (item['api.CustomValue.gettreevalues']);
 
       return item;
     }

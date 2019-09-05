@@ -11,8 +11,7 @@
 
   module.controller('civicaseDashboardController', civicaseDashboardController);
 
-  function civicaseDashboardController ($scope, crmApi, formatActivity, $timeout) {
-    $scope.ts = CRM.ts('civicase');
+  function civicaseDashboardController ($scope, crmApi, formatActivity, $timeout, ts) {
     $scope.checkPerm = CRM.checkPerm;
     $scope.url = CRM.url;
     $scope.filters = {};
@@ -25,6 +24,9 @@
       bindRouteParamsToScope();
       initWatchers();
       prepareCaseFilterOption();
+      $scope.caseTypeCategoryName = getCaseTypeCategoryName();
+      $scope.defaultCaseCategory = CRM.civicase.defaultCaseCategory;
+      $scope.ts = ts;
     }());
 
     $scope.caseListLink = function (type, status) {
@@ -47,6 +49,14 @@
     function bindRouteParamsToScope () {
       $scope.$bindToRoute({ param: 'dtab', expr: 'activeTab', format: 'int', default: 0 });
       $scope.$bindToRoute({ param: 'drel', expr: 'filters.caseRelationshipType', format: 'raw', default: 'is_involved' });
+      $scope.$bindToRoute({ param: 'case_type_category', expr: 'activityFilters.case_filter["case_type_id.case_type_category"]', format: 'raw', default: null });
+    }
+
+    /**
+     * Gets the case type category label.
+     */
+    function getCaseTypeCategoryName () {
+      return $scope.activityFilters.case_filter['case_type_id.case_type_category'];
     }
 
     /**
@@ -76,12 +86,12 @@
      */
     function prepareCaseFilterOption () {
       var options = [
-        { 'text': 'My cases', 'id': 'is_case_manager' },
-        { 'text': 'Cases I am involved in', 'id': 'is_involved' }
+        {'text': ts('My cases'), 'id': 'is_case_manager'},
+        {'text': ts('Cases I am involved in'), 'id': 'is_involved'}
       ];
 
       if (CRM.checkPerm('access all cases and activities')) {
-        options.push({ 'text': 'All Cases', 'id': 'all' });
+        options.push({'text': ts('All Cases'), 'id': 'all'});
       }
 
       $scope.caseRelationshipOptions = options;

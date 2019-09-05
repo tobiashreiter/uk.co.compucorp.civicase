@@ -22,13 +22,13 @@
    * @param {Object} crmApi
    */
 
-  function civicaseViewPeopleController ($scope, crmApi, DateHelper) {
+  function civicaseViewPeopleController ($scope, crmApi, DateHelper, ts) {
     // The ts() and hs() functions help load strings for this module.
     var clients = _.indexBy($scope.item.client, 'contact_id');
     var item = $scope.item;
     var relTypes = CRM.civicase.relationshipTypes;
     var relTypesByName = _.indexBy(relTypes, 'name_b_a');
-    var ts = $scope.ts = CRM.ts('civicase');
+    $scope.ts = ts;
 
     $scope.allowMultipleCaseClients = CRM.civicase.allowMultipleCaseClients;
     $scope.roles = [];

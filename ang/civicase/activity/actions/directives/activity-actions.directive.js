@@ -33,8 +33,8 @@
 
   module.controller('civicaseActivityActionsController', civicaseActivityActionsController);
 
-  function civicaseActivityActionsController ($window, $rootScope, $scope, crmApi, getActivityFeedUrl, MoveCopyActivityAction, TagsActivityAction) {
-    var ts = $scope.ts = CRM.ts('civicase');
+  function civicaseActivityActionsController ($window, $rootScope, $scope, crmApi, getActivityFeedUrl, MoveCopyActivityAction, TagsActivityAction, ts) {
+    $scope.ts = ts;
     $scope.getActivityFeedUrl = getActivityFeedUrl;
     $scope.deleteActivity = deleteActivity;
     $scope.moveCopyActivity = MoveCopyActivityAction.moveCopyActivities;
@@ -72,7 +72,8 @@
      * Delete activities
      *
      * @param {Array} activities
-     * @param {jQuery} dialog - the dialog which should be closed once deletion is over
+     * @param {jQuery} dialog - the dialog which should be closed once deletion
+     *   is over
      */
     function deleteActivity (activities, dialog) {
       CRM.confirm({

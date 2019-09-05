@@ -14,6 +14,9 @@ describe('Action', function () {
     var element;
 
     beforeEach(function () {
+      CRM.civicase.caseActions = [{
+        action: 'EditTags'
+      }];
       element = $compile('<div civicase-case-actions=[]></div>')($rootScope);
       $rootScope.$digest();
     });
