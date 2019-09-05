@@ -18,12 +18,14 @@
     $scope.activityFilters = {
       case_filter: {'case_type_id.is_active': 1, contact_is_deleted: 0}
     };
+    $scope.newCaseWebformUrl = CRM.civicase.newCaseWebformUrl;
 
     (function init () {
       bindRouteParamsToScope();
       initWatchers();
       prepareCaseFilterOption();
       $scope.caseTypeCategoryName = getCaseTypeCategoryName();
+      $scope.defaultCaseCategory = CRM.civicase.defaultCaseCategory;
       $scope.ts = ts;
     }());
 
