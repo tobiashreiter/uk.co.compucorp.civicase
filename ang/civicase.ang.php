@@ -9,10 +9,14 @@
  */
 
 use Civi\CCase\Utils as Utils;
+use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
 
 load_resources();
 $caseCategoryName = CRM_Utils_Request::retrieve('case_type_category', 'String');
 CRM_Civicase_Hook_Helper_CaseTypeCategory::addWordReplacements($caseCategoryName);
+
+$permissionService = new CaseCategoryPermission($caseCategoryName);
+$caseCategoryPermissions = $permissionService->get();
 
 
 // The following changes are only relevant to the full-page app.
@@ -37,7 +41,7 @@ set_file_categories_to_js_vars($options);
 set_activity_status_types_to_js_vars($options);
 set_custom_fields_info_to_js_vars($options);
 set_tags_to_js_vars($options);
-set_case_actions($options);
+set_case_actions($options, $caseCategoryPermissions);
 set_contact_tasks($options);
 expose_settings($options);
 retrieve_civicase_webform_url($options);
@@ -271,7 +275,7 @@ function set_custom_fields_info_to_js_vars(&$options) {
  *
  * We put this here so it can be modified by other extensions.
  */
-function set_case_actions(&$options) {
+function set_case_actions(&$options, $caseCategoryPermissions) {
   $options['caseActions'] = [
     [
       'title' => ts('Change Case Status'),
@@ -318,7 +322,7 @@ function set_case_actions(&$options) {
       'icon' => 'fa-link',
     ],
   ];
-  if (CRM_Core_Permission::check('administer CiviCase')) {
+  if (CRM_Core_Permission::check($caseCategoryPermissions['ADMINISTER_CASE_CATEGORY']['name'])) {
     $options['caseActions'][] = [
       'title' => ts('Merge 2 Cases'),
       'number' => 2,
@@ -332,7 +336,7 @@ function set_case_actions(&$options) {
       'icon' => 'fa-lock',
     ];
   }
-  if (CRM_Core_Permission::check('delete in CiviCase')) {
+  if (CRM_Core_Permission::check($caseCategoryPermissions['DELETE_IN_CASE_CATEGORY']['name'])) {
     $options['caseActions'][] = [
       'title' => ts('Delete Case'),
       'action' => 'DeleteCases',
