@@ -6,6 +6,8 @@
  */
 
 use Civi\Angular\AngularLoader;
+use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
+use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
 
 require_once 'civicase.civix.php';
 
@@ -476,9 +478,11 @@ function civicase_civicrm_postProcess($formName, &$form) {
  * Implements hook_civicrm_permission().
  */
 function civicase_civicrm_permission(&$permissions) {
-  $permissions['basic case information'] = [
-    'Civicase: basic case information',
-    ts('Allows a user to view only basic information of cases.'),
+  $permissionService = new CaseCategoryPermission(CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME);
+  $caseCategoryPermissions = $permissionService->get();
+  $permissions[$caseCategoryPermissions['BASIC_CASE_CATEGORY_INFO']['name']] = [
+    $caseCategoryPermissions['BASIC_CASE_CATEGORY_INFO']['label'],
+    ts($caseCategoryPermissions['BASIC_CASE_CATEGORY_INFO']['description']),
   ];
 }
 
@@ -497,34 +501,13 @@ function civicase_civicrm_apiWrappers(&$wrappers, $apiRequest) {
  * @link https://docs.civicrm.org/dev/en/master/hooks/hook_civicrm_alterAPIPermissions/
  */
 function civicase_civicrm_alterAPIPermissions($entity, $action, &$params, &$permissions) {
-  $permissions['case']['getfiles'] = [
-    ['access my cases and activities', 'access all cases and activities'],
-    'access uploaded files',
+  $hooks = [
+    new CRM_Civicase_Hook_APIPermissions_alterPermissions(),
   ];
 
-  $permissions['case']['get'] = [
-    [
-      'access my cases and activities',
-      'access all cases and activities',
-      'basic case information',
-    ],
-  ];
-
-  $permissions['case']['getcount'] = [
-    [
-      'access my cases and activities',
-      'access all cases and activities',
-      'basic case information',
-    ],
-  ];
-
-  $permissions['case_type']['get'] = $permissions['casetype']['getcount'] = [
-    [
-      'access my cases and activities',
-      'access all cases and activities',
-      'basic case information',
-    ],
-  ];
+  foreach ($hooks as $hook) {
+    $hook->run($entity, $action, $params, $permissions);
+  }
 }
 
 /**
@@ -629,13 +612,16 @@ function civicase_civicrm_navigationMenu(&$menu) {
 }
 
 /**
+ * Civicase URL map.
+ *
  * Adds the add case URL mapping to the array depending on
  * the case settings config for the system. IF an alternate add Case
  * URL is set, the url mapping is added.
  *
  * @param array $urlMapArray
+ *   URL Map array.
  */
-function _civicase_addNewCaseUrlMap(&$urlMapArray) {
+function _civicase_addNewCaseUrlMap(array &$urlMapArray) {
   $allowCaseWebform = Civi::settings()->get('civicaseAllowCaseWebform');
   $newCaseWebformUrl = $allowCaseWebform ? Civi::settings()
     ->get('civicaseWebformUrl') : NULL;
@@ -644,6 +630,7 @@ function _civicase_addNewCaseUrlMap(&$urlMapArray) {
     $urlMapArray['civicrm/case/add?reset=1'] = $newCaseWebformUrl;
   }
 }
+
 /**
  * Visit every link in the navigation menu, and alter it using $callback.
  *

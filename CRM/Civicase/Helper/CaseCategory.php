@@ -36,6 +36,32 @@ class CRM_Civicase_Helper_CaseCategory {
   }
 
   /**
+   * Returns the case category name for the case typeId.
+   *
+   * @param int $caseTypeId
+   *   The Case Type ID.
+   *
+   * @return string|null
+   *   The Case Category Name.
+   */
+  public static function getCategoryNameForCaseType($caseTypeId) {
+    $caseTypeCategories = CaseType::buildOptions('case_type_category');
+
+    $result = civicrm_api3('CaseType', 'getsingle', [
+      'id' => $caseTypeId,
+      'return' => ['case_type_category'],
+    ]);
+
+    if (!empty($result['case_type_category'])) {
+      $caseCategoryId = $result['case_type_category'];
+
+      return $caseTypeCategories[$caseCategoryId];
+    }
+
+    return NULL;
+  }
+
+  /**
    * Returns the case type category name given the option value.
    *
    * @param mixed $caseCategoryValue
