@@ -22,7 +22,8 @@ class CRM_Civicase_Service_CaseCategoryPermission {
    *   Case category name.
    */
   public function __construct($caseCategoryName) {
-    $this->caseCategoryName = $caseCategoryName;
+    $caseCategoryName = $caseCategoryName ? $caseCategoryName : CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME;
+    $this->caseCategoryName = strtolower($caseCategoryName);
   }
 
   /**
@@ -65,8 +66,8 @@ class CRM_Civicase_Service_CaseCategoryPermission {
       ],
       'BASIC_CASE_CATEGORY_INFO' => [
         'name' => $this->replaceWords('basic case information'),
-        'label' => $this->replaceWords('Civicase: basic case information'),
-        'description' => $this->replaceWords('Allows a user to view only basic information of cases'),
+        'label' => $this->replaceWords('CiviCase: basic case information'),
+        'description' => $this->replaceWords('Allows a user to view only basic information of cases.'),
       ],
     ];
   }
@@ -82,15 +83,15 @@ class CRM_Civicase_Service_CaseCategoryPermission {
    * @return string
    *   Word replaced strings.
    */
-  private function replaceWords($string) {
-    if ($this->caseCategoryName == CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME) {
+  public function replaceWords($string) {
+    if ($this->caseCategoryName == strtolower(CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME)) {
       return $string;
     }
 
     return str_replace(
       ['CiviCase', 'cases', 'case'],
       [
-        "Civi{$this->caseCategoryName}",
+        "Civi" . ucfirst($this->caseCategoryName),
         $this->caseCategoryName,
         $this->caseCategoryName,
       ],
