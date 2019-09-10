@@ -686,8 +686,14 @@ function civicase_civicrm_queryObjects(&$queryObjects, $type) {
  * Implements hook_civicrm_permission_check().
  */
 function civicase_civicrm_permission_check($permission, &$granted) {
-  $permissionsChecker = new CRM_Civicase_Hook_Permissions_Check();
-  $granted = $permissionsChecker->validatePermission($permission, $granted);
+  $hooks = [
+    new CRM_Civicase_Hook_Permissions_CheckForActivityPageView(),
+    new CRM_Civicase_Hook_Permissions_CaseCategoryPermissionCheck(),
+  ];
+
+  foreach ($hooks as $hook) {
+    $hook->run($permission, $granted);
+  }
 }
 
 /**
