@@ -8,25 +8,6 @@ use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 class CRM_Civicase_Service_CaseCategoryPermission {
 
   /**
-   * Case category name.
-   *
-   * @var string
-   *   Case Category Name.
-   */
-  private $caseCategoryName;
-
-  /**
-   * CRM_Civicase_Service_CaseCategoryPermission constructor.
-   *
-   * @param string $caseCategoryName
-   *   Case category name.
-   */
-  public function __construct($caseCategoryName) {
-    $caseCategoryName = $caseCategoryName ? $caseCategoryName : CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME;
-    $this->caseCategoryName = strtolower($caseCategoryName);
-  }
-
-  /**
    * Returns the permission set for a Civcase extension.
    *
    * This permission array is the original set of permissions defined in
@@ -34,68 +15,93 @@ class CRM_Civicase_Service_CaseCategoryPermission {
    * this same set of permissions but with proper word replacements
    * depending on the Case category.
    *
+   * @param string $caseCategoryName
+   *   Case category name.
+   *
    * @return array
    *   Array of Permissions.
    */
-  public function get() {
+  public function get($caseCategoryName = CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME) {
+    $caseCategoryName = $this->getCaseCategoryName($caseCategoryName);
+
     return [
       'DELETE_IN_CASE_CATEGORY' => [
-        'name' => $this->replaceWords('delete in CiviCase'),
-        'label' => $this->replaceWords('CiviCase: delete in CiviCase'),
-        'description' => $this->replaceWords('Delete cases'),
+        'name' => $this->replaceWords('delete in CiviCase', $caseCategoryName),
+        'label' => $this->replaceWords('CiviCase: delete in CiviCase', $caseCategoryName),
+        'description' => $this->replaceWords('Delete cases', $caseCategoryName),
       ],
       'ADD_CASE_CATEGORY' => [
-        'name' => $this->replaceWords('add cases'),
-        'label' => $this->replaceWords('CiviCase: add cases'),
-        'description' => $this->replaceWords('Open a new case'),
+        'name' => $this->replaceWords('add cases', $caseCategoryName),
+        'label' => $this->replaceWords('CiviCase: add cases', $caseCategoryName),
+        'description' => $this->replaceWords('Open a new case', $caseCategoryName),
       ],
       'ADMINISTER_CASE_CATEGORY' => [
-        'name' => $this->replaceWords('administer CiviCase'),
-        'label' => $this->replaceWords('CiviCase: administer CiviCase'),
-        'description' => $this->replaceWords('Define case types, access deleted cases'),
+        'name' => $this->replaceWords('administer CiviCase', $caseCategoryName),
+        'label' => $this->replaceWords('CiviCase: administer CiviCase', $caseCategoryName),
+        'description' => $this->replaceWords('Define case types, access deleted cases', $caseCategoryName),
       ],
       'ACCESS_CASE_CATEGORY_AND_ACTIVITIES' => [
-        'name' => $this->replaceWords('access all cases and activities'),
-        'label' => $this->replaceWords('CiviCase: access all cases and activities'),
-        'description' => $this->replaceWords('View and edit all cases (for visible contacts)'),
+        'name' => $this->replaceWords('access all cases and activities', $caseCategoryName),
+        'label' => $this->replaceWords('CiviCase: access all cases and activities', $caseCategoryName),
+        'description' => $this->replaceWords('View and edit all cases (for visible contacts)', $caseCategoryName),
       ],
       'ACCESS_MY_CASE_CATEGORY_AND_ACTIVITIES' => [
-        'name' => $this->replaceWords('access my cases and activities'),
-        'label' => $this->replaceWords('CiviCase: access my cases and activities'),
-        'description' => $this->replaceWords('View and edit only those cases managed by this user'),
+        'name' => $this->replaceWords('access my cases and activities', $caseCategoryName),
+        'label' => $this->replaceWords('CiviCase: access my cases and activities', $caseCategoryName),
+        'description' => $this->replaceWords('View and edit only those cases managed by this user', $caseCategoryName),
       ],
       'BASIC_CASE_CATEGORY_INFO' => [
-        'name' => $this->replaceWords('basic case information'),
-        'label' => $this->replaceWords('CiviCase: basic case information'),
-        'description' => $this->replaceWords('Allows a user to view only basic information of cases.'),
+        'name' => $this->replaceWords('basic case information', $caseCategoryName),
+        'label' => $this->replaceWords('CiviCase: basic case information', $caseCategoryName),
+        'description' => $this->replaceWords('Allows a user to view only basic information of cases.', $caseCategoryName),
       ],
     ];
   }
 
   /**
-   * Returns the appropriate string after proper word replacements.
+   * Returns the case category name.
    *
-   * The word replacements is based on the value of the case category name.
-   *
-   * @param string $string
-   *   String for word replacements.
+   * @param string $caseCategoryName
+   *   Case category name.
    *
    * @return string
-   *   Word replaced strings.
+   *   Case category name.
    */
-  public function replaceWords($string) {
-    if ($this->caseCategoryName == strtolower(CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME)) {
-      return $string;
+  private function getCaseCategoryName($caseCategoryName) {
+    $caseCategoryName = $caseCategoryName ? $caseCategoryName : CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME;
+
+    return strtolower($caseCategoryName);
+  }
+
+  /**
+   * Returns the appropriate permission after proper word replacements.
+   *
+   * The word replacements is based on the value of the case category name.
+   * It returns the equivalent case category permission based on the original
+   * case permission and the category name.
+   *
+   * @param string $casePermission
+   *   String for word replacements.
+   * @param string $caseCategoryName
+   *   Case category name.
+   *
+   * @return string
+   *   Word replaced string.
+   */
+  public function replaceWords($casePermission, $caseCategoryName) {
+    $caseCategoryName = $this->getCaseCategoryName($caseCategoryName);
+    if ($caseCategoryName == strtolower(CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME)) {
+      return $casePermission;
     }
 
     return str_replace(
       ['CiviCase', 'cases', 'case'],
       [
-        "Civi" . ucfirst($this->caseCategoryName),
-        $this->caseCategoryName,
-        $this->caseCategoryName,
+        "Civi" . ucfirst($caseCategoryName),
+        $caseCategoryName,
+        $caseCategoryName,
       ],
-      $string
+      $casePermission
     );
   }
 

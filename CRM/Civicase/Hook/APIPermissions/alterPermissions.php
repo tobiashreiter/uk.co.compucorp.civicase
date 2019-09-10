@@ -9,6 +9,14 @@ use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
 class CRM_Civicase_Hook_APIPermissions_alterPermissions {
 
   /**
+   * Case category name.
+   *
+   * @var string
+   *   Case Category Name.
+   */
+  private $caseCategoryName;
+
+  /**
    * Alters the API permissions.
    *
    * @param string $entity
@@ -25,7 +33,8 @@ class CRM_Civicase_Hook_APIPermissions_alterPermissions {
       return;
     }
 
-    $this->alterApiPermissions($entity, $action, $params, $permissions);
+    $this->caseCategoryName = $this->getCaseCategoryName($entity, $action, $params);
+    $this->alterApiPermissions($entity, $permissions);
   }
 
   /**
@@ -45,18 +54,12 @@ class CRM_Civicase_Hook_APIPermissions_alterPermissions {
    *
    * @param string $entity
    *   The API entity.
-   * @param string $action
-   *   The API action.
-   * @param array $params
-   *   The API parameters.
    * @param array $permissions
    *   The API permissions.
    */
-  private function alterApiPermissions($entity, $action, array $params, array &$permissions) {
-    $caseCategoryName = $this->getCaseCategoryName($entity, $action, $params);
-    $caseCategoryName = $caseCategoryName ? $caseCategoryName : CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME;
-    $permissionService = new CaseCategoryPermission($caseCategoryName);
-    $caseCategoryPermissions = $permissionService->get();
+  private function alterApiPermissions($entity, array &$permissions) {
+    $permissionService = new CaseCategoryPermission();
+    $caseCategoryPermissions = $permissionService->get($this->caseCategoryName);
     $basicCasePermissions = $this->getBasicCasePermissions($caseCategoryPermissions);
 
     $permissions['case']['getfiles'] = [
@@ -72,7 +75,7 @@ class CRM_Civicase_Hook_APIPermissions_alterPermissions {
     $permissions['case_type']['get'] = [$basicCasePermissions];
     $permissions['casetype']['getcount'] = [$basicCasePermissions];
 
-    $this->alterPermissionsForSpecificApis($entity, $action, $permissionService, $permissions);
+    $this->alterPermissionsForSpecificApis($entity, $permissionService, $permissions);
   }
 
   /**
@@ -86,19 +89,21 @@ class CRM_Civicase_Hook_APIPermissions_alterPermissions {
    *
    * @param string $entity
    *   The API entity.
-   * @param string $action
-   *   The API action.
    * @param \CRM_Civicase_Service_CaseCategoryPermission $permissionService
    *   Permission service object.
    * @param array $permissions
    *   The API permissions.
    */
-  private function alterPermissionsForSpecificApis($entity, $action, CaseCategoryPermission $permissionService, array &$permissions) {
+  private function alterPermissionsForSpecificApis($entity, CaseCategoryPermission $permissionService, array &$permissions) {
+    if ($entity != 'case') {
+      return;
+    }
+
     $specificCaseActions = ['create', 'delete'];
     foreach ($specificCaseActions as $actionName) {
       $permissionToChange = $permissions['case'][$actionName];
       foreach ($permissionToChange as $key => $permissionName) {
-        $permissions['case'][$actionName][$key] = $permissionService->replaceWords($permissionName);
+        $permissions['case'][$actionName][$key] = $permissionService->replaceWords($permissionName, $this->caseCategoryName);
       }
     }
   }
