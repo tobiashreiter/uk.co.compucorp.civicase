@@ -445,6 +445,19 @@ function civicase_civicrm_validateForm($formName, &$fields, &$files, &$form, &$e
 }
 
 /**
+ * Implements hook_civicrm_post().
+ */
+function civicase_civicrm_post($op, $objectName, $objectId, &$objectRef) {
+  $hooks = [
+    new CRM_Civicase_Hook_Post_PopulateCaseCategoryForCaseType(),
+  ];
+
+  foreach ($hooks as $hook) {
+    $hook->run($op, $objectName, $objectId, $objectRef);
+  }
+}
+
+/**
  * Implements hook_civicrm_postProcess().
  */
 function civicase_civicrm_postProcess($formName, &$form) {
@@ -629,13 +642,16 @@ function civicase_civicrm_navigationMenu(&$menu) {
 }
 
 /**
+ * Civicase Add new case URL map.
+ *
  * Adds the add case URL mapping to the array depending on
  * the case settings config for the system. IF an alternate add Case
  * URL is set, the url mapping is added.
  *
  * @param array $urlMapArray
+ *   URL Map array.
  */
-function _civicase_addNewCaseUrlMap(&$urlMapArray) {
+function _civicase_addNewCaseUrlMap(array &$urlMapArray) {
   $allowCaseWebform = Civi::settings()->get('civicaseAllowCaseWebform');
   $newCaseWebformUrl = $allowCaseWebform ? Civi::settings()
     ->get('civicaseWebformUrl') : NULL;
@@ -644,6 +660,7 @@ function _civicase_addNewCaseUrlMap(&$urlMapArray) {
     $urlMapArray['civicrm/case/add?reset=1'] = $newCaseWebformUrl;
   }
 }
+
 /**
  * Visit every link in the navigation menu, and alter it using $callback.
  *
