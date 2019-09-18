@@ -495,6 +495,8 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
   /**
    * This is a callback for running step upgraders from the queue.
    *
+   * #ToDO Removed Object Type hinting. Not compatible with PHP < 7.2.
+   *
    * @param CRM_Queue_TaskContext $context
    *   Context.
    * @param \object $step
@@ -504,7 +506,7 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
    *   The queue requires that true is returned on successful upgrade, but we
    *   use exceptions to indicate an error instead.
    */
-  public static function runStepUpgrade(CRM_Queue_TaskContext $context, object $step) {
+  public static function runStepUpgrade(CRM_Queue_TaskContext $context, $step) {
     $step->apply();
     return TRUE;
   }
