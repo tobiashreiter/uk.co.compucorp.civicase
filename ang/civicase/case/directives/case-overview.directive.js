@@ -47,11 +47,11 @@
     var caseTypes = CRM.civicase.caseTypes;
     var caseTypeCategories = CRM.civicase.caseTypeCategories;
 
+    $scope.summaryData = [];
     $scope.caseStatuses = _.chain(CRM.civicase.caseStatuses)
       .sortBy(function (status) { return status.weight; })
       .indexBy('weight')
       .value();
-    $scope.summaryData = [];
 
     (function init () {
       setCaseTypesBasedOnCategory();
