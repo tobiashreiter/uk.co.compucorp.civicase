@@ -80,7 +80,46 @@
      * @return {Array}
      */
     function prepareApiCalls (activitiesObject, operation, model) {
+      if (activitiesObject.selectedActivities.length === 1) {
+        return prepareAPICallsForSingleActivity(activitiesObject, operation, model);
+      } else {
+        return prepareAPICallsForMultipleActivities(activitiesObject, operation, model);
+      }
+    }
+
+    /**
+     * Prepare the API calls for the move/copy operation
+     *
+     * @param {Object} activitiesObject
+     * @param {String} operation
+     * @param {Object} model
+     * @return {Array}
+     */
+    function prepareAPICallsForSingleActivity (activitiesObject, operation, model) {
+      var activity = activitiesObject.selectedActivities[0];
       var apiCalls = [];
+
+      if (operation === 'copy') {
+        delete activity.id;
+      }
+
+      activity.subject = model.subject;
+      activity.case_id = model.case_id;
+      apiCalls = ['Activity', 'create', activity];
+
+      return apiCalls;
+    }
+
+    /**
+     * Prepare the API calls for the move/copy operation
+     *
+     * @param {Object} activitiesObject
+     * @param {String} operation
+     * @param {Object} model
+     * @return {Array}
+     */
+    function prepareAPICallsForMultipleActivities (activitiesObject, operation, model) {
+      var apiCalls;
       var action = operation === 'copy' ? 'copybyquery' : 'movebyquery';
 
       if (activitiesObject.isSelectAll) {
