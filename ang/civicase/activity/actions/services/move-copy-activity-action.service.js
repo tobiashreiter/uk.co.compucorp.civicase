@@ -105,7 +105,7 @@
 
       activity.subject = model.subject;
       activity.case_id = model.case_id;
-      apiCalls = ['Activity', 'create', activity];
+      apiCalls.push(['Activity', 'create', activity]);
 
       return apiCalls;
     }
@@ -119,22 +119,22 @@
      * @return {Array}
      */
     function prepareAPICallsForMultipleActivities (activitiesObject, operation, model) {
-      var apiCalls;
+      var apiCalls = [];
       var action = operation === 'copy' ? 'copybyquery' : 'movebyquery';
 
       if (activitiesObject.isSelectAll) {
-        apiCalls = ['Activity', action, {
+        apiCalls.push(['Activity', action, {
           params: activitiesObject.searchParams,
-          caseid: model.case_id
-        }];
+          case_id: model.case_id
+        }]);
       } else {
-        apiCalls = ['Activity', action, {
-          caseid: model.case_id,
+        apiCalls.push(['Activity', action, {
+          case_id: model.case_id,
           id: activitiesObject.selectedActivities.map(function (activity) {
             return activity.id;
           }),
           subject: model.subject
-        }];
+        }]);
       }
 
       return apiCalls;

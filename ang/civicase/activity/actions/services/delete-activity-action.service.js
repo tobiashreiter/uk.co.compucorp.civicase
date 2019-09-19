@@ -42,13 +42,15 @@
       var apiCalls = [];
 
       if (isSelectAll) {
-        apiCalls = ['Activity', 'deletebyquery', params];
+        apiCalls.push(['Activity', 'deletebyquery', {
+          params: params
+        }]);
       } else {
-        apiCalls = ['Activity', 'deletebyquery', {
+        apiCalls.push(['Activity', 'deletebyquery', {
           id: activities.map(function (activity) {
             return activity.id;
           })
-        }];
+        }]);
       }
 
       return apiCalls;
