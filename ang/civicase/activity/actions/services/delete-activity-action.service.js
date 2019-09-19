@@ -39,21 +39,15 @@
      * @return {Array}
      */
     function prepareApiCalls (activities, isSelectAll, params) {
-      var apiCalls = [];
-
       if (isSelectAll) {
-        apiCalls.push(['Activity', 'deletebyquery', {
-          params: params
-        }]);
+        return [['Activity', 'deletebyquery', { params: params }]];
       } else {
-        apiCalls.push(['Activity', 'deletebyquery', {
+        return [['Activity', 'deletebyquery', {
           id: activities.map(function (activity) {
             return activity.id;
           })
-        }]);
+        }]];
       }
-
-      return apiCalls;
     }
   }
 })(angular, CRM.$, CRM._);

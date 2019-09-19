@@ -97,7 +97,6 @@
      */
     function prepareAPICallsForSingleActivity (activitiesObject, operation, model) {
       var activity = activitiesObject.selectedActivities[0];
-      var apiCalls = [];
 
       if (operation === 'copy') {
         delete activity.id;
@@ -105,9 +104,8 @@
 
       activity.subject = model.subject;
       activity.case_id = model.case_id;
-      apiCalls.push(['Activity', 'create', activity]);
 
-      return apiCalls;
+      return [['Activity', 'create', activity]];
     }
 
     /**
@@ -119,25 +117,22 @@
      * @return {Array}
      */
     function prepareAPICallsForMultipleActivities (activitiesObject, operation, model) {
-      var apiCalls = [];
       var action = operation === 'copy' ? 'copybyquery' : 'movebyquery';
 
       if (activitiesObject.isSelectAll) {
-        apiCalls.push(['Activity', action, {
+        return [['Activity', action, {
           params: activitiesObject.searchParams,
           case_id: model.case_id
-        }]);
+        }]];
       } else {
-        apiCalls.push(['Activity', action, {
+        return [['Activity', action, {
           case_id: model.case_id,
           id: activitiesObject.selectedActivities.map(function (activity) {
             return activity.id;
           }),
           subject: model.subject
-        }]);
+        }]];
       }
-
-      return apiCalls;
     }
   }
 })(angular, CRM.$, CRM._);
