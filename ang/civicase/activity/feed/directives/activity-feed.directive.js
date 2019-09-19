@@ -61,6 +61,7 @@
 
     $scope.isMonthNavVisible = true;
     $scope.isLoading = true;
+    $scope.isSelectAll = false;
     $scope.activityTypes = CRM.civicase.activityTypes;
     $scope.activityStatuses = CRM.civicase.activityStatuses;
     $scope.activities = {};
@@ -115,6 +116,10 @@
      * Toggle Bulk Actions checkbox of the given activity
      */
     $scope.toggleSelected = function (activity) {
+      if ($scope.isSelectAll) {
+        deselectAllActivities();
+      }
+
       if (!$scope.findActivityById($scope.selectedActivities, activity.id)) {
         $scope.selectedActivities.push($scope.findActivityById($scope.activities, activity.id));
       } else {
@@ -224,6 +229,7 @@
      * Deselection of all activities
      */
     function deselectAllActivities () {
+      $scope.isSelectAll = false;
       $scope.selectedActivities = [];
     }
 
@@ -231,15 +237,15 @@
      * Select all Activity
      */
     function selectEveryActivity () {
-      // $scope.selectedActivities = [];
-      // $scope.selectedActivities = _.cloneDeep();
-      // selectDisplayedActivities(); // Update the UI model with displayed cases selected;
+      deselectAllActivities();
+      $scope.isSelectAll = true;
     }
 
     /**
      * Select All visible data.
      */
     function selectDisplayedActivities () {
+      $scope.isSelectAll = false;
       var isCurrentActivityInSelectedCases;
 
       _.each($scope.activities, function (activity) {
