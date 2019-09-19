@@ -52,10 +52,10 @@ function civicrm_api3_activity_copybyquery(array $params) {
 
   $activityIds = [];
   foreach ($activities as $activity) {
-    $activityIds[] = $activity['id'];
     unset($activity['id']);
     $activity['case_id'] = $params['case_id'];
-    civicrm_api3('Activity', 'create', $activity);
+    $result = civicrm_api3('Activity', 'create', $activity);
+    $activityIds[] = $result['id'];
   }
 
   return civicrm_api3_create_success($activityIds, $params, 'Activity', 'copybyquery');
