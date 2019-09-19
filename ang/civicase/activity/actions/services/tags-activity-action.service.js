@@ -131,26 +131,23 @@
      * @return {Array}
      */
     function prepareApiCalls (operation, activitiesObject, tagIds) {
-      var apiCalls = [];
       var action = operation === 'add' ? 'createByQuery' : 'deleteByQuery';
 
       if (activitiesObject.isSelectAll) {
-        apiCalls = ['EntityTag', action, {
+        return [['EntityTag', action, {
           entity_table: 'civicrm_activity',
           tag_id: tagIds,
           params: activitiesObject.searchParams
-        }];
+        }]];
       } else {
-        apiCalls = ['EntityTag', action, {
+        return [['EntityTag', action, {
           entity_table: 'civicrm_activity',
           tag_id: tagIds,
           entity_id: activitiesObject.selectedActivities.map(function (activity) {
             return activity.id;
           })
-        }];
+        }]];
       }
-
-      return apiCalls;
     }
 
     /**
