@@ -8,6 +8,7 @@
 use Civi\Angular\AngularLoader;
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
+use CRM_Case_BAO_CaseType as CaseType;
 
 require_once 'civicase.civix.php';
 
@@ -478,7 +479,24 @@ function civicase_civicrm_postProcess($formName, &$form) {
  * Implements hook_civicrm_permission().
  */
 function civicase_civicrm_permission(&$permissions) {
-  $permissionService = new CaseCategoryPermission(CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME);
+  // Add permissions for other civicase categories apart from `Cases` category.
+  $caseTypeCategories = CaseType::buildOptions('case_type_category', 'validate');
+  $permissionService = new CaseCategoryPermission();
+  foreach ($caseTypeCategories as $caseTypeCategory) {
+    if ($caseTypeCategory == CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME) {
+      continue;
+    }
+
+    $caseCategoryPermissions = $permissionService->get($caseTypeCategory);
+    foreach ($caseCategoryPermissions as $caseCategoryPermission) {
+      $permissions[$caseCategoryPermission['name']] = [
+        $caseCategoryPermission['label'],
+        ts($caseCategoryPermission['description']),
+      ];
+    }
+  }
+
+  // Add the permissions added by the civicase extension.
   $caseCategoryPermissions = $permissionService->get();
   $permissions[$caseCategoryPermissions['BASIC_CASE_CATEGORY_INFO']['name']] = [
     $caseCategoryPermissions['BASIC_CASE_CATEGORY_INFO']['label'],
