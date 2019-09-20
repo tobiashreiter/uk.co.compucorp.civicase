@@ -58,10 +58,10 @@
     var activityStartingOffset = 0;
     var caseId = $scope.params ? $scope.params.case_id : null;
     var pageNum = { down: 0, up: 0 };
-    var allActivities = [];
 
     $scope.isMonthNavVisible = true;
     $scope.isLoading = true;
+    $scope.isSelectAll = false;
     $scope.activityTypes = CRM.civicase.activityTypes;
     $scope.activityStatuses = CRM.civicase.activityStatuses;
     $scope.activities = {};
@@ -116,8 +116,12 @@
      * Toggle Bulk Actions checkbox of the given activity
      */
     $scope.toggleSelected = function (activity) {
+      if ($scope.isSelectAll) {
+        deselectAllActivities();
+      }
+
       if (!$scope.findActivityById($scope.selectedActivities, activity.id)) {
-        $scope.selectedActivities.push($scope.findActivityById(allActivities, activity.id));
+        $scope.selectedActivities.push($scope.findActivityById($scope.activities, activity.id));
       } else {
         _.remove($scope.selectedActivities, { id: activity.id });
       }
@@ -225,6 +229,7 @@
      * Deselection of all activities
      */
     function deselectAllActivities () {
+      $scope.isSelectAll = false;
       $scope.selectedActivities = [];
     }
 
@@ -232,22 +237,22 @@
      * Select all Activity
      */
     function selectEveryActivity () {
-      $scope.selectedActivities = [];
-      $scope.selectedActivities = _.cloneDeep(allActivities);
-      selectDisplayedActivities(); // Update the UI model with displayed cases selected;
+      deselectAllActivities();
+      $scope.isSelectAll = true;
     }
 
     /**
      * Select All visible data.
      */
     function selectDisplayedActivities () {
+      $scope.isSelectAll = false;
       var isCurrentActivityInSelectedCases;
 
       _.each($scope.activities, function (activity) {
         isCurrentActivityInSelectedCases = $scope.findActivityById($scope.selectedActivities, activity.id);
 
         if (!isCurrentActivityInSelectedCases) {
-          $scope.selectedActivities.push($scope.findActivityById(allActivities, activity.id));
+          $scope.selectedActivities.push($scope.findActivityById($scope.activities, activity.id));
         }
       });
     }
@@ -328,12 +333,11 @@
         return loadActivities(mode);
       }).then(function (result) {
         var newActivities = _.each(result[0].acts.values, formatActivity);
-        allActivities = result[0].all.values;
 
         buildActivitiesArray(mode, newActivities);
 
         $scope.activityGroups = groupActivities($scope.activities);
-        $scope.totalCount = allActivities.length;
+        $scope.totalCount = result[0].all;
         // reset viewingActivity to get latest data
         $scope.viewingActivity = {};
         $scope.viewActivity($scope.aid);
@@ -358,6 +362,7 @@
       var options = setActivityAPIOptions(mode);
       var isMyActivitiesFilter = $scope.filters['@involvingContact'] === 'myActivities';
       var apiAction = isMyActivitiesFilter ? 'getcontactactivities' : 'get';
+      var apiActionAll = isMyActivitiesFilter ? 'getcontactactivitiescount' : 'getcount';
       var returnParams = {
         sequential: 1,
         return: [
@@ -369,16 +374,16 @@
         options: options
       };
       var getActionLinksParams = {
-        activity_id :'$value.id',
-        activity_type_id :'$value.activity_type_id',
+        activity_id: '$value.id',
+        activity_type_id: '$value.activity_type_id',
         source_record_id: '$value.source_record_id',
-        case_id :'$value.case_id'
+        case_id: '$value.case_id'
       };
       var params = {
         is_current_revision: 1,
         is_deleted: 0,
         is_test: 0,
-        'api.Activity.getactionlinks' : getActionLinksParams,
+        'api.Activity.getactionlinks': getActionLinksParams,
         options: {}
       };
 
@@ -425,10 +430,7 @@
 
       return crmApi({
         acts: ['Activity', apiAction, $.extend(true, {}, returnParams, params)],
-        all: ['Activity', apiAction, $.extend(true, {
-          sequential: 1,
-          return: ['id'],
-          options: { limit: 0 }}, params)] // all activities, also used to get count
+        all: ['Activity', apiActionAll, params]
       }).then(function (result) {
         return $q.all([
           result,

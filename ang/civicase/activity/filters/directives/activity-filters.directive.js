@@ -13,7 +13,8 @@
         totalCount: '=',
         filters: '=civicaseActivityFilters',
         displayOptions: '=displayOptions',
-        selectedActivities: '='
+        selectedActivities: '=',
+        isSelectAll: '='
       },
       replace: true,
       templateUrl: '~/civicase/activity/filters/directives/activity-filters.directive.html',
@@ -30,6 +31,7 @@
     function activityFiltersLink ($scope, element) {
       var ts = $scope.ts = CRM.ts('civicase');
 
+      $scope.combinedFilterParams = {};
       $scope.activityCategories = prepareActivityCategories();
       $scope.availableFilters = prepareAvailableFilters();
       // Default exposed filters
@@ -42,6 +44,7 @@
       };
 
       (function init () {
+        $scope.$on('civicaseActivityFeed.query', feedQueryListener);
         // Ensure set filters are also exposed
         _.each($scope.filters, function (filter, key) {
           $scope.exposedFilters[key] = true;
@@ -106,6 +109,17 @@
 
         $rootScope.$broadcast('civicase::activity-filters::more-filters-toggled');
       };
+
+      /**
+       * Subscribe listener for civicaseActivityFeed.query
+       *
+       * @param {Object} event
+       * @param {Object} feedQueryParams
+       */
+      function feedQueryListener (event, feedQueryParams) {
+        $scope.combinedFilterParams = angular.extend({}, feedQueryParams.apiParams, feedQueryParams.filters);
+        delete $scope.combinedFilterParams['api.Activity.getactionlinks'];
+      }
 
       /**
        * Prepare Activity Filters

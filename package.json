@@ -9,7 +9,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "postinstall": "cd bin && ./install-php-linter"
   },
   "lint-staged": {
     "*.js": [
@@ -19,6 +20,9 @@
     "*.scss": [
       "stylelint --fix",
       "git add"
+    ],
+    "*.php": [
+      "./bin/phpcs.phar --standard=phpcs-ruleset.xml"
     ]
   },
   "semistandard": {

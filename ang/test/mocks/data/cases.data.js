@@ -512,7 +512,7 @@
               }
             ]
           },
-          'api.CustomValue.gettree': { 'values': [] },
+          'api.CustomValue.gettreevalues': { 'values': [] },
           'category_count': {
             'incomplete': {
               'task': 2,

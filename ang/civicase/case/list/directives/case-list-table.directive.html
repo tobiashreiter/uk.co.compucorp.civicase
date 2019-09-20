@@ -22,9 +22,10 @@
             ng-include="'~/civicase/case/list/directives/case-list-table-first-column-header.html'">
           </th>
           <th
-            ng-show="!viewingCase"
-            ng-repeat="header in headers"
-            civicase-case-list-sort-header="{{ header.sort }}">{{ header.label }}</th>
+                  ng-show="!viewingCase"
+                  ng-repeat="header in headers"
+                  civicase-case-list-sort-header="{{ header.sort }}">{{ ts(header.label) }}
+          </th>
         </tr>
         </thead>
         <tbody>

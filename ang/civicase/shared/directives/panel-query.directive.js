@@ -1,4 +1,4 @@
-(function (angular, _, ts) {
+(function (angular, _) {
   var module = angular.module('civicase');
 
   module.directive('civicasePanelQuery', function () {
@@ -32,9 +32,9 @@
 
   module.controller('panelQueryCtrl', panelQueryCtrl);
 
-  panelQueryCtrl.$inject = ['$log', '$q', '$rootScope', '$scope', 'crmApi'];
+  panelQueryCtrl.$inject = ['$log', '$q', '$rootScope', '$scope', 'crmApi', 'ts'];
 
-  function panelQueryCtrl ($log, $q, $rootScope, $scope, crmApi) {
+  function panelQueryCtrl ($log, $q, $rootScope, $scope, crmApi, ts) {
     var PAGE_SIZE = 5;
     var cacheByPage = [];
 
@@ -270,4 +270,4 @@
       }
     }
   }
-}(angular, CRM._, CRM.ts('civicase')));
+}(angular, CRM._));
