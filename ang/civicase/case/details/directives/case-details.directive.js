@@ -334,6 +334,10 @@
 
     function getAllowedCaseStatuses (definition) {
       var ret = _.cloneDeep(caseStatuses);
+      ret = _.chain(ret)
+        .sortBy(function (status) { return status.weight; })
+        .indexBy('weight')
+        .value();
       if (definition.statuses && definition.statuses.length) {
         _.each(_.cloneDeep(ret), function (status, id) {
           if (definition.statuses.indexOf(status.name) < 0) {
