@@ -39,6 +39,8 @@ The activities tab on the case has been redesigned to take its own tab, making m
 
 ![Screenshot](img/activities-tab.png)
 
+Users can also see an overall view of their activities from all cases allowing them to filter to see a few tasks or actions that they need to perform.
+
 ## Activity Categories 
 
 Activity Categories are sub-types of Activity type that determines how the activities are displayed to the user. There are 6 main types of activity category:
@@ -119,3 +121,18 @@ Link to extension: https://github.com/civicrm/org.civicrm.casetokens
 * Lots of improvements to the CiviCase API
 * Activity type icons
 * Case status now has a ‘Status class’ field to show cases which are incomplete, completed, or cancelled. 
+
+# Technical Requirements
+* Latest CiviCRM v4.7.x, preferrably the latest master
+* [Shoreditch](https://github.com/civicrm/org.civicrm.shoreditch)
+* (Recommended) Migrate from embedded activity revisions to full system logging ([CRM-21051](https://github.com/civicrm/org.civicrm.shoreditch))
+
+# Installation (git/cli)
+To install the extension on an existing CiviCRM site:
+
+mkdir sites/all/modules/civicrm/ext
+cd sites/all/modules/civicrm/ext
+git clone https://github.com/civicrm/org.civicrm.shoreditch shoreditch
+git clone https://github.com/compucorp/uk.co.compucorp.civicase civicase
+cv en shoreditch civicase
+
