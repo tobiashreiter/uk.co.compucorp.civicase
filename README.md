@@ -123,8 +123,8 @@ Link to extension: https://github.com/civicrm/org.civicrm.casetokens
 * Case status now has a ‘Status class’ field to show cases which are incomplete, completed, or cancelled. 
 
 # Technical Requirements
-* Latest CiviCRM v4.7.x, preferrably the latest master
-* [Shoreditch](https://github.com/civicrm/org.civicrm.shoreditch)
+* CiviCRM: version >= v5.8, preferably the latest version.
+* [Shoreditch](https://github.com/civicrm/org.civicrm.shoreditch): version >= v0.1-alpha32, preferably the latest version.
 * (Recommended) Migrate from embedded activity revisions to full system logging ([CRM-21051](https://issues.civicrm.org/jira/browse/CRM-21051))
 
 # Installation (git/cli)
