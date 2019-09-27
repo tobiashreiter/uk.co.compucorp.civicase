@@ -192,7 +192,9 @@ function set_tags_to_js_vars(&$options) {
 function set_option_values_to_js_vars(&$options) {
   foreach ($options as &$option) {
     $result = civicrm_api3('OptionValue', 'get', [
-      'return' => ['value', 'label', 'color', 'icon', 'name', 'grouping'],
+      'return' => [
+        'value', 'label', 'color', 'icon', 'name', 'grouping', 'weight',
+      ],
       'option_group_id' => $option,
       'is_active' => 1,
       'options' => ['limit' => 0, 'sort' => 'weight'],

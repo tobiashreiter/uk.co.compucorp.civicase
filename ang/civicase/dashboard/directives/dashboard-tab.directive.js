@@ -19,6 +19,7 @@
       'is_deleted': 0,
       'is_test': 0,
       'activity_type_id.grouping': { 'NOT LIKE': '%milestone%' },
+      'activity_type_id': { '!=': 'Bulk Email' },
       'status_id': { 'IN': CRM.civicase.activityStatusTypes.incomplete },
       'options': { 'sort': 'is_overdue DESC, activity_date_time ASC' },
       'return': [
