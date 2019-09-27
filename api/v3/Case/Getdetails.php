@@ -154,6 +154,7 @@ function civicrm_api3_case_getdetails(array $params) {
         'case_id' => ['IN' => $ids],
         'is_current_revision' => 1,
         'is_test' => 0,
+        'activity_type_id' => ['!=' => "Bulk Email"],
         'status_id.filter' => CRM_Activity_BAO_Activity::INCOMPLETE,
         'options' => [
           'limit' => 0,

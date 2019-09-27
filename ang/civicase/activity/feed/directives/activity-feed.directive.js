@@ -383,6 +383,7 @@
         is_current_revision: 1,
         is_deleted: 0,
         is_test: 0,
+        activity_type_id: { '!=': 'Bulk Email' },
         'api.Activity.getactionlinks': getActionLinksParams,
         options: {}
       };

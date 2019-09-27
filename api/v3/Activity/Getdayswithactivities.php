@@ -12,7 +12,9 @@
  *   Description of fields supported by this API call.
  */
 function _civicrm_api3_activity_getdayswithactivities_spec(array &$spec) {
-  $allowed = ['activity_date_time', 'activity_status_id', 'case_id'];
+  $allowed = [
+    'activity_date_time', 'activity_status_id', 'case_id', 'activity_type_id',
+  ];
   $all = civicrm_api3('Activity', 'getfields', ['api_action' => 'get'])['values'];
 
   $spec = array_filter($all, function ($name) use ($allowed) {
@@ -32,6 +34,10 @@ function _civicrm_api3_activity_getdayswithactivities_spec(array &$spec) {
 function civicrm_api3_activity_getdayswithactivities(array $params) {
   $query = CRM_Utils_SQL_Select::from('civicrm_activity a');
   $query->select(['a.activity_date_time']);
+
+  if (!empty($params['activity_type_id'])) {
+    _civicrm_api3_activity_getdayswithactivities_handle_id_param($params['activity_type_id'], 'a.activity_type_id', $query);
+  }
 
   if (!empty($params['activity_date_time'])) {
     _civicrm_api3_activity_getdayswithactivities_handle_id_param($params['activity_date_time'], 'a.activity_date_time', $query);
