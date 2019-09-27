@@ -132,7 +132,12 @@
             name: 'activity_type_id',
             label: ts('Activity type'),
             html_type: 'Select',
-            options: _.map(CRM.civicase.activityTypes, mapSelectOptions)
+            options: _.chain(CRM.civicase.activityTypes)
+              .filter(function (activity) {
+                return activity.name !== 'Bulk Email';
+              })
+              .map(mapSelectOptions)
+              .value()
           },
           {
             name: 'status_id',
