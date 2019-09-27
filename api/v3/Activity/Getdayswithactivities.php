@@ -67,14 +67,12 @@ function civicrm_api3_activity_getdayswithactivities(array $params) {
 /**
  * Creates a WHERE clause with the given API parameter and column name.
  *
- * @param array $param
- *   Parameters.
  * @param string $column
  *   Column.
  * @param CRM_Utils_SQL_Select $query
  *   Query.
  */
-function _civicrm_api3_activity_getdayswithactivities_handle_id_param(array $param, $column, CRM_Utils_SQL_Select $query) {
+function _civicrm_api3_activity_getdayswithactivities_handle_id_param($param, $column, CRM_Utils_SQL_Select $query) {
   $param = is_array($param) ? $param : ['=' => $param];
 
   $query->where(CRM_Core_DAO::createSQLFilter($column, $param));
