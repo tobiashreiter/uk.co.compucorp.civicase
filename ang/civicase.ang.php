@@ -31,7 +31,6 @@ $options = [
 ];
 
 set_option_values_to_js_vars($options);
-remove_bulk_email_activity_type($options['activityTypes']);
 set_case_types_to_js_vars($options);
 set_relationship_types_to_js_vars($options);
 set_file_categories_to_js_vars($options);
@@ -61,21 +60,6 @@ if (!function_exists('glob_recursive')) {
     return $files;
   }
 
-}
-
-/**
- * Removes the Bulk Email Activity Type.
- *
- * @param array $activityTypes
- *   Activity Types.
- */
-function remove_bulk_email_activity_type(array &$activityTypes) {
-  foreach ($activityTypes as $index => $activityType) {
-    if ($activityType['name'] === 'Bulk Email') {
-      unset($activityTypes[$index]);
-      break;
-    }
-  }
 }
 
 /**
