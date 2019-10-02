@@ -373,18 +373,11 @@
         ],
         options: options
       };
-      var getActionLinksParams = {
-        activity_id: '$value.id',
-        activity_type_id: '$value.activity_type_id',
-        source_record_id: '$value.source_record_id',
-        case_id: '$value.case_id'
-      };
       var params = {
         is_current_revision: 1,
         is_deleted: 0,
         is_test: 0,
         activity_type_id: { '!=': 'Bulk Email' },
-        'api.Activity.getactionlinks': getActionLinksParams,
         options: {}
       };
 
@@ -430,7 +423,7 @@
       );
 
       return crmApi({
-        acts: ['Activity', apiAction, $.extend(true, {}, returnParams, params)],
+        acts: ['Activity', apiAction, prepareActivityParams(returnParams, params)],
         all: ['Activity', apiActionAll, params]
       }).then(function (result) {
         return $q.all([
@@ -477,6 +470,26 @@
         direction: 'down',
         monthNavClicked: true
       });
+    }
+
+    /**
+     * Prepares Activity Params
+     * Adds Action Links chained Api call
+     *
+     * @param {Object} returnParams
+     * @param {Object} params
+     *
+     * @return {Array}
+     */
+    function prepareActivityParams (returnParams, params) {
+      var actionLinksParams = { 'api.Activity.getactionlinks': {
+        activity_id: '$value.id',
+        activity_type_id: '$value.activity_type_id',
+        source_record_id: '$value.source_record_id',
+        case_id: '$value.case_id'
+      }};
+
+      return $.extend(true, actionLinksParams, returnParams, params);
     }
 
     /**
