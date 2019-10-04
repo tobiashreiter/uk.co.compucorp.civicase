@@ -219,12 +219,11 @@
        * Maps Options to be used in the dropdown
        *
        * @param {Object} option
-       * @param {int/string} id
        * @return {Object}
        */
-      function mapSelectOptions (option, id) {
+      function mapSelectOptions (option) {
         return {
-          id: id,
+          id: option.value,
           text: option.label,
           color: option.color,
           icon: option.icon
