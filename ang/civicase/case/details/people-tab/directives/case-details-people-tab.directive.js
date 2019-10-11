@@ -187,6 +187,7 @@
             params = {
               relationship_type_id: role.relationship_type_id,
               start_date: 'now',
+              end_date: null,
               contact_id_b: val,
               case_id: item.id,
               description: desc
