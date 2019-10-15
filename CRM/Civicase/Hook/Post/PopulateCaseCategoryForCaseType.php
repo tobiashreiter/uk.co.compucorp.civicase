@@ -36,6 +36,15 @@ class CRM_Civicase_Hook_Post_PopulateCaseCategoryForCaseType {
    *   Case Type Id.
    */
   private function updateCaseTypeCategory($caseTypeId) {
+    $result = civicrm_api3('CaseType', 'getsingle', [
+      'return' => ['case_type_category'],
+      'id' => $caseTypeId,
+    ]);
+
+    if (!empty($result['case_type_category'])) {
+      return;
+    }
+
     civicrm_api3('CaseType', 'create', [
       'id' => $caseTypeId,
       'case_type_category' => CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME,
