@@ -33,10 +33,19 @@ function civicase_civicrm_tabset($tabsetName, &$tabs, $context) {
           ]);
         }
         if ($tab['id'] === 'activity') {
+          $activity_types = array_flip(CRM_Activity_BAO_Activity::buildOptions('activity_type_id', 'validate'));
           $useAng = TRUE;
           $tab['url'] = CRM_Utils_System::url('civicrm/case/contact-act-tab', [
             'cid' => $context['contact_id'],
           ]);
+          // Exclude bulk email activity type from the Activity count because
+          // there are issues with target contact for this activity type.
+          // To remove this code once issue is fixed from core.
+          $params = [
+            'activity_type_exclude_id' => $activity_types['Bulk Email'],
+            'contact_id' => $context['contact_id'],
+          ];
+          $tab['count'] = CRM_Activity_BAO_Activity::getActivitiesCount($params);
         }
       }
 
@@ -444,6 +453,19 @@ function civicase_civicrm_validateForm($formName, &$fields, &$files, &$form, &$e
       }
       CRM_Utils_System::redirect($url);
     }
+  }
+}
+
+/**
+ * Implements hook_civicrm_post().
+ */
+function civicase_civicrm_post($op, $objectName, $objectId, &$objectRef) {
+  $hooks = [
+    new CRM_Civicase_Hook_Post_PopulateCaseCategoryForCaseType(),
+  ];
+
+  foreach ($hooks as $hook) {
+    $hook->run($op, $objectName, $objectId, $objectRef);
   }
 }
 

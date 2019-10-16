@@ -13,7 +13,8 @@
         totalCount: '=',
         filters: '=civicaseActivityFilters',
         displayOptions: '=displayOptions',
-        selectedActivities: '='
+        selectedActivities: '=',
+        isSelectAll: '='
       },
       replace: true,
       templateUrl: '~/civicase/activity/filters/directives/activity-filters.directive.html',
@@ -30,6 +31,7 @@
     function activityFiltersLink ($scope, element) {
       var ts = $scope.ts = CRM.ts('civicase');
 
+      $scope.combinedFilterParams = {};
       $scope.activityCategories = prepareActivityCategories();
       $scope.availableFilters = prepareAvailableFilters();
       // Default exposed filters
@@ -42,6 +44,7 @@
       };
 
       (function init () {
+        $scope.$on('civicaseActivityFeed.query', feedQueryListener);
         // Ensure set filters are also exposed
         _.each($scope.filters, function (filter, key) {
           $scope.exposedFilters[key] = true;
@@ -108,6 +111,17 @@
       };
 
       /**
+       * Subscribe listener for civicaseActivityFeed.query
+       *
+       * @param {Object} event
+       * @param {Object} feedQueryParams
+       */
+      function feedQueryListener (event, feedQueryParams) {
+        $scope.combinedFilterParams = angular.extend({}, feedQueryParams.apiParams, feedQueryParams.filters);
+        delete $scope.combinedFilterParams['api.Activity.getactionlinks'];
+      }
+
+      /**
        * Prepare Activity Filters
        *
        * @return {Array}
@@ -118,7 +132,12 @@
             name: 'activity_type_id',
             label: ts('Activity type'),
             html_type: 'Select',
-            options: _.map(CRM.civicase.activityTypes, mapSelectOptions)
+            options: _.chain(CRM.civicase.activityTypes)
+              .filter(function (activity) {
+                return activity.name !== 'Bulk Email';
+              })
+              .map(mapSelectOptions)
+              .value()
           },
           {
             name: 'status_id',
@@ -200,12 +219,11 @@
        * Maps Options to be used in the dropdown
        *
        * @param {Object} option
-       * @param {int/string} id
        * @return {Object}
        */
-      function mapSelectOptions (option, id) {
+      function mapSelectOptions (option) {
         return {
-          id: id,
+          id: option.value,
           text: option.label,
           color: option.color,
           icon: option.icon

@@ -427,13 +427,14 @@
       }
 
       return crmApi('Activity', 'get', _.assign(params, {
-        'return': [
+        return: [
           'subject', 'details', 'activity_type_id', 'status_id',
           'source_contact_name', 'target_contact_name', 'assignee_contact_name',
           'activity_date_time', 'is_star', 'original_id', 'tag_id.name', 'tag_id.description',
           'tag_id.color', 'file_id', 'is_overdue', 'case_id', 'priority_id',
           'case_id.case_type_id', 'case_id.status_id', 'case_id.contacts'
         ],
+        activity_type_id: { '!=': 'Bulk Email' },
         sequential: 1,
         options: {
           // We try to get one activity more than the display limit, so we can
@@ -504,6 +505,7 @@
       var params = {};
       var dateMoment = moment(date);
 
+      params.activity_type_id = { '!=': 'Bulk Email' };
       params.status_id = status;
       params.activity_date_time = {
         BETWEEN: [
