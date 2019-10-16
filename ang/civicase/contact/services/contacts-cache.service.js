@@ -80,7 +80,7 @@
         return null;
       }
 
-      prepareContactPhoneNumbers(contact);
+      formatContactPhoneNumbers(contact);
 
       contact.groups = _.map(contact['api.GroupContact.get'].values, 'title').join(', ');
       contact.tags = (contact.tags + '').split(',').join(', '); // Adds spacing to the tags
@@ -116,7 +116,7 @@
      *
      * @param {Object} contact
      */
-    function prepareContactPhoneNumbers (contact) {
+    function formatContactPhoneNumbers (contact) {
       var phoneNumbers = [];
 
       _.each(contact['api.Phone.get'].values, function (numberObject) {
