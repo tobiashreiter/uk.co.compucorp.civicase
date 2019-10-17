@@ -501,9 +501,19 @@ function civicase_civicrm_postProcess($formName, &$form) {
  * Implements hook_civicrm_permission().
  */
 function civicase_civicrm_permission(&$permissions) {
+  $permissionService = new CaseCategoryPermission();
+  // Add the permissions added by the civicase extension.
+  $caseCategoryPermissions = $permissionService->get();
+  $permissions[$caseCategoryPermissions['BASIC_CASE_CATEGORY_INFO']['name']] = [
+    $caseCategoryPermissions['BASIC_CASE_CATEGORY_INFO']['label'],
+    ts($caseCategoryPermissions['BASIC_CASE_CATEGORY_INFO']['description']),
+  ];
+
   // Add permissions for other civicase categories apart from `Cases` category.
   $caseTypeCategories = CaseType::buildOptions('case_type_category', 'validate');
-  $permissionService = new CaseCategoryPermission();
+  if (empty($caseTypeCategories)) {
+    return;
+  }
   foreach ($caseTypeCategories as $caseTypeCategory) {
     if ($caseTypeCategory == CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME) {
       continue;
@@ -518,12 +528,6 @@ function civicase_civicrm_permission(&$permissions) {
     }
   }
 
-  // Add the permissions added by the civicase extension.
-  $caseCategoryPermissions = $permissionService->get();
-  $permissions[$caseCategoryPermissions['BASIC_CASE_CATEGORY_INFO']['name']] = [
-    $caseCategoryPermissions['BASIC_CASE_CATEGORY_INFO']['label'],
-    ts($caseCategoryPermissions['BASIC_CASE_CATEGORY_INFO']['description']),
-  ];
 }
 
 /**
