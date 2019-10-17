@@ -5,16 +5,20 @@ use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
 use CRM_Case_BAO_CaseType as CaseType;
 
 /**
- * Class CRM_Civicase_Hook_Permissions_CaseCategoryPermissionCheck
+ * Class CRM_Civicase_Hook_Permissions_CaseCategoryPermissionCheck.
  */
 class CRM_Civicase_Hook_Permissions_CaseCategoryPermissionCheck {
 
   /**
+   * Case category permission service.
+   *
    * @var CRM_Civicase_Service_CaseCategoryPermission
    */
   private $caseCategoryPermission;
 
   /**
+   * Whether the Ajax call is for entity Case.
+   *
    * @var bool
    */
   private $isCaseEntity;
@@ -57,9 +61,11 @@ class CRM_Civicase_Hook_Permissions_CaseCategoryPermissionCheck {
    * any of the equivalent civicase permissions.
    *
    * @param array $permission
+   *   Permission array.
    * @param bool $granted
+   *   Whether permission is granted or not.
    */
-  private function modifyPermissionCheckForAjaxRequest($permission, &$granted) {
+  private function modifyPermissionCheckForAjaxRequest(array $permission, &$granted) {
     $caseTypeCategories = CaseType::buildOptions('case_type_category', 'validate');
     foreach ($caseTypeCategories as $caseTypeCategory) {
       if ($caseTypeCategory == CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME) {
@@ -121,9 +127,6 @@ class CRM_Civicase_Hook_Permissions_CaseCategoryPermissionCheck {
   /**
    * Gets the case type category name if it exists.
    *
-   * @param bool $isViewCase
-   *   If the page is for View case.
-   *
    * @return string|null
    *   The case category name.
    */
@@ -150,6 +153,7 @@ class CRM_Civicase_Hook_Permissions_CaseCategoryPermissionCheck {
    * Gets the case category type from the URL.
    *
    * @return mixed|null
+   *   Category URL.
    */
   private function getCaseCategoryFromUrl() {
     $caseCategoryName = CRM_Utils_Request::retrieve('case_type_category', 'String');
@@ -169,7 +173,6 @@ class CRM_Civicase_Hook_Permissions_CaseCategoryPermissionCheck {
 
     return NULL;
   }
-
 
   /**
    * Get case category name for view case.
@@ -230,4 +233,5 @@ class CRM_Civicase_Hook_Permissions_CaseCategoryPermissionCheck {
 
     return CaseCategoryHelper::getCaseCategoryNameFromOptionValue($caseTypeCategory);
   }
+
 }
