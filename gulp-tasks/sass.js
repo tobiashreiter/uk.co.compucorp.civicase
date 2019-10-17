@@ -6,7 +6,7 @@
 'use strict';
 
 var autoprefixer = require('gulp-autoprefixer');
-var bulk = require('gulp-sass-bulk-import');
+var glob = require('gulp-sass-glob');
 var civicrmScssRoot = require('civicrm-scssroot')();
 var cssmin = require('gulp-cssmin');
 var gulp = require('gulp');
@@ -29,7 +29,7 @@ var OUTSIDE_NAMESPACE_REGEX = /^\.___outside-namespace/;
  */
 function sassTask () {
   return gulp.src('scss/civicase.scss')
-    .pipe(bulk())
+    .pipe(glob())
     .pipe(sourcemaps.init())
     .pipe(autoprefixer({
       browsers: ['last 2 versions'],
