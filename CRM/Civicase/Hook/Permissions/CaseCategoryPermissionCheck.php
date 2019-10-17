@@ -9,8 +9,14 @@ use CRM_Case_BAO_CaseType as CaseType;
  */
 class CRM_Civicase_Hook_Permissions_CaseCategoryPermissionCheck {
 
+  /**
+   * @var CRM_Civicase_Service_CaseCategoryPermission
+   */
   private $caseCategoryPermission;
 
+  /**
+   * @var bool
+   */
   private $isCaseEntity;
 
   /**
@@ -41,6 +47,18 @@ class CRM_Civicase_Hook_Permissions_CaseCategoryPermissionCheck {
 
   }
 
+  /**
+   * Modify permission check for Ajax requests when not case entity.
+   *
+   * When an AJAX request is not of the case entity, for example calls to
+   * Activity.get will still check the type of activity and the component it
+   * belongs to thereby invoking Civicase permission for activity types for the
+   * civicase component. To fix such issues, we check that the user has at least
+   * any of the equivalent civicase permissions.
+   *
+   * @param array $permission
+   * @param bool $granted
+   */
   private function modifyPermissionCheckForAjaxRequest($permission, &$granted) {
     $caseTypeCategories = CaseType::buildOptions('case_type_category', 'validate');
     foreach ($caseTypeCategories as $caseTypeCategory) {
@@ -177,7 +195,6 @@ class CRM_Civicase_Hook_Permissions_CaseCategoryPermissionCheck {
 
     if ($entity && strtolower($entity) == 'case') {
       $this->isCaseEntity = TRUE;
-//      return 'prospecting';
       if (isset($json['case_type_id.case_type_category'])) {
         return $this->getCaseTypeCategoryNameFromOptions($json['case_type_id.case_type_category']);
       }
@@ -189,7 +206,6 @@ class CRM_Civicase_Hook_Permissions_CaseCategoryPermissionCheck {
 
         if (strtolower($entityName) == 'case') {
           $this->isCaseEntity = TRUE;
-//          return 'prospecting';
           if (isset($params['case_type_id.case_type_category'])) {
             return $this->getCaseTypeCategoryNameFromOptions($params['case_type_id.case_type_category']);
           }
