@@ -524,7 +524,7 @@ function civicase_civicrm_alterAPIPermissions($entity, $action, &$params, &$perm
     'access uploaded files',
   ];
 
-  $permissions['case']['get'] = [
+  $permissions['case']['get'] = $permissions['custom_value']['gettreevalues'] = [
     [
       'access my cases and activities',
       'access all cases and activities',
