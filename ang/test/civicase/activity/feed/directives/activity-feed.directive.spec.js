@@ -4,7 +4,7 @@
   describe('civicaseActivityFeed', function () {
     describe('Activity Feed Controller', function () {
       var $provide, $controller, $rootScope, $scope, $q, crmApi, CaseTypes, activitiesMockData;
-      var activitiesInCurrentPage, allActivities;
+      var activitiesInCurrentPage, totalNumberOfActivities;
 
       beforeEach(module('civicase', 'civicase.data', function (_$provide_) {
         $provide = _$provide_;
@@ -25,7 +25,7 @@
       describe('loadActivities', function () {
         beforeEach(function () {
           activitiesInCurrentPage = [];
-          allActivities = [];
+          totalNumberOfActivities = 0;
 
           mockActivitiesAPICall();
           initController();
@@ -52,7 +52,7 @@
           it('requests the activities using the "get" api action', function () {
             expect(crmApi).toHaveBeenCalledWith({
               acts: ['Activity', 'get', jasmine.any(Object)],
-              all: ['Activity', 'get', jasmine.any(Object)]
+              all: ['Activity', 'getcount', jasmine.any(Object)]
             });
           });
 
@@ -73,7 +73,7 @@
           it('requests the activities using the "get contact activities" api action', function () {
             expect(crmApi).toHaveBeenCalledWith({
               acts: ['Activity', 'getcontactactivities', jasmine.any(Object)],
-              all: ['Activity', 'getcontactactivities', jasmine.any(Object)]
+              all: ['Activity', 'getcontactactivitiescount', jasmine.any(Object)]
             });
           });
         });
@@ -83,7 +83,7 @@
         describe('when total count of activities is 0', function () {
           beforeEach(function () {
             activitiesInCurrentPage = [];
-            allActivities = [];
+            totalNumberOfActivities = 0;
 
             mockActivitiesAPICall();
             initController();
@@ -91,7 +91,7 @@
           });
 
           it('does not show load more button', function () {
-            expect($scope.checkIfRecordsAvailableOnDirection()).toBe(false);
+            expect($scope.checkIfRecordsAvailableOnDirection('down')).toBe(false);
           });
         });
 
@@ -100,7 +100,7 @@
             describe('and less than 25', function () {
               beforeEach(function () {
                 activitiesInCurrentPage = activitiesMockData.getSentNoOfActivities(20);
-                allActivities = activitiesMockData.getSentNoOfActivities(20);
+                totalNumberOfActivities = 20;
 
                 mockActivitiesAPICall();
                 initController();
@@ -124,7 +124,7 @@
             describe('and total count is 26', function () {
               beforeEach(function () {
                 activitiesInCurrentPage = activitiesMockData.getSentNoOfActivities(26);
-                allActivities = activitiesMockData.getSentNoOfActivities(26);
+                totalNumberOfActivities = 26;
 
                 mockActivitiesAPICall();
                 initController();
@@ -148,7 +148,7 @@
             describe('and more than 25', function () {
               beforeEach(function () {
                 activitiesInCurrentPage = activitiesMockData.getSentNoOfActivities(30);
-                allActivities = activitiesMockData.getSentNoOfActivities(30);
+                totalNumberOfActivities = 30;
 
                 mockActivitiesAPICall();
                 initController();
@@ -173,7 +173,7 @@
           describe('starting offset is between 0 and total number of records', function () {
             beforeEach(function () {
               activitiesInCurrentPage = activitiesMockData.getSentNoOfActivities(60);
-              allActivities = activitiesMockData.getSentNoOfActivities(60);
+              totalNumberOfActivities = 60;
 
               mockActivitiesAPICall();
               initController();
@@ -199,7 +199,7 @@
       describe('when clicking load more button', function () {
         beforeEach(function () {
           activitiesInCurrentPage = activitiesMockData.getSentNoOfActivities(25);
-          allActivities = activitiesMockData.getSentNoOfActivities(26);
+          totalNumberOfActivities = 26;
 
           mockActivitiesAPICall();
           initController();
@@ -236,7 +236,7 @@
        'is not rendered on the screen', function () {
         beforeEach(function () {
           activitiesInCurrentPage = activitiesMockData.getSentNoOfActivities(60);
-          allActivities = activitiesMockData.getSentNoOfActivities(60);
+          totalNumberOfActivities = 60;
 
           mockActivitiesAPICall();
 
@@ -263,7 +263,7 @@
       describe('when activity panel show/hide', function () {
         beforeEach(function () {
           activitiesInCurrentPage = activitiesMockData.getSentNoOfActivities(25);
-          allActivities = activitiesMockData.getSentNoOfActivities(25);
+          totalNumberOfActivities = 25;
           mockActivitiesAPICall();
 
           initController();
@@ -320,13 +320,14 @@
           });
         });
       });
+
       /**
        * Mocks Activities API calls
        */
       function mockActivitiesAPICall () {
         crmApi.and.returnValue($q.resolve({
-          acts: {values: activitiesInCurrentPage},
-          all: {values: allActivities}
+          acts: { values: activitiesInCurrentPage },
+          all: totalNumberOfActivities
         }));
 
         $provide.factory('crmThrottle', function () {
@@ -337,7 +338,7 @@
 
             return $q.resolve([{
               acts: { values: activitiesInCurrentPage },
-              all: { values: allActivities }
+              all: totalNumberOfActivities
             }]);
           });
 
