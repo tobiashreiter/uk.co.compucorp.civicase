@@ -22,17 +22,18 @@ var transformSelectors = require('gulp-transform-selectors');
 var BOOTSTRAP_NAMESPACE = '#bootstrap-theme';
 var OUTSIDE_NAMESPACE_REGEX = /^\.___outside-namespace/;
 
-/*
+/**
  * The gulp task compiles and minifies scss/civicase.scss file into css/civicase.min.css.
  * Also prefix the output css selector with `#bootstrap-theme` selector except the output.
  * selector starts from either `body`, `page-civicrm-case` or `.___outside-namespace` classes.
+ *
+ * @returns {object} stream
  */
 function sassTask () {
   return gulp.src('scss/civicase.scss')
     .pipe(glob())
     .pipe(sourcemaps.init())
     .pipe(autoprefixer({
-      browsers: ['last 2 versions'],
       cascade: false
     }))
     .pipe(sass({
@@ -56,8 +57,8 @@ function sassTask () {
  * Deletes the special class that was used as marker for styles that should
  * not be nested inside the bootstrap namespace from the given selector
  *
- * @param  {String} selector
- * @return {String}
+ * @param  {string} selector selector
+ * @returns {string} replaced string
  */
 function removeOutsideNamespaceMarker (selector) {
   return selector.replace(OUTSIDE_NAMESPACE_REGEX, '');
