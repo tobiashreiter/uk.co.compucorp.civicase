@@ -30,6 +30,21 @@ $options = [
   'caseTypeCategories' => 'case_type_categories',
 ];
 
+$requires = [
+  'crmAttachment',
+  'crmUi',
+  'crmUtil',
+  'ngRoute',
+  'angularFileUpload',
+  'bw.paging',
+  'crmRouteBinder',
+  'crmResource',
+  'ui.bootstrap',
+  'uibTabsetClass',
+  'dialogService',
+];
+$requires = CRM_Civicase_Hook_addDependentAngularModules::invoke($requires);
+
 set_option_values_to_js_vars($options);
 set_case_types_to_js_vars($options);
 set_relationship_types_to_js_vars($options);
@@ -437,10 +452,6 @@ return [
     'ang/civicase',
   ],
   'settings' => $options,
-  'requires' => [
-    'crmAttachment', 'crmUi', 'crmUtil', 'ngRoute', 'angularFileUpload',
-    'bw.paging', 'crmRouteBinder', 'crmResource', 'ui.bootstrap',
-    'uibTabsetClass', 'dialogService',
-  ],
+  'requires' => $requires,
   'basePages' => [],
 ];
