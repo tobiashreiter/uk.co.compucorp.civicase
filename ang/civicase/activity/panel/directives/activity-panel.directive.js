@@ -17,10 +17,10 @@
     /**
      * Link function for civicaseActivityPanelLink
      *
-     * @param {object} scope scope
-     * @param {object} element element
-     * @param {object} attrs attrs
-     * @param {object} ts ts
+     * @param {object} scope scope object
+     * @param {object} element directive element
+     * @param {object} attrs attributes
+     * @param {object} ts ts service
      */
     function civicaseActivityPanelLink (scope, element, attrs, ts) {
       (function init () {
@@ -98,15 +98,15 @@
   /**
    * Activity Panel Controller
    *
-   * @param {object} $scope scope
-   * @param {object} $rootScope rootscope
+   * @param {object} $scope scope object
+   * @param {object} $rootScope rootscope object
    * @param {object} dialogService dialog service
-   * @param {object} crmApi crm api
-   * @param {object} crmBlocker crm blocker
-   * @param {object} crmStatus crm status
-   * @param {object} DateHelper date helper
-   * @param {object} Priority Priority
-   * @param {object} ActivityStatus ActivityStatus
+   * @param {object} crmApi crm api service
+   * @param {object} crmBlocker crm blocker service
+   * @param {object} crmStatus crm status service
+   * @param {object} DateHelper date helper service
+   * @param {object} Priority priority service
+   * @param {object} ActivityStatus activity status service
    */
   function civicaseActivityPanelController ($scope, $rootScope, dialogService,
     crmApi, crmBlocker, crmStatus, DateHelper, Priority, ActivityStatus) {

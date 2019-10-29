@@ -19,9 +19,9 @@
     /**
      * Link function for civicaseActivityFeed
      *
-     * @param {object} scope scope
-     * @param {object} element element
-     * @param {object} attrs attrs
+     * @param {object} scope scope object
+     * @param {object} element direcitve element
+     * @param {object} attrs attributes
      */
     function civicaseActivityFeedLink (scope, element, attrs) {
       (function init () {
@@ -52,19 +52,19 @@
 
   /**
    *
-   * @param {object} $scope scope
-   * @param {object} $q $q
-   * @param {object} BulkActions BulkActions
-   * @param {object} crmApi crmApi
-   * @param {object} crmUiHelp crmUiHelp
-   * @param {object} crmThrottle crmThrottle
-   * @param {object} formatActivity formatActivity
-   * @param {object} $rootScope rootScope
-   * @param {object} dialogService dialogService
-   * @param {object} ContactsCache ContactsCache
-   * @param {object} ActivityStatus ActivityStatus
-   * @param {object} ActivityType ActivityType
-   * @param {object} CaseType CaseType
+   * @param {object} $scope scope object
+   * @param {object} $q $q service
+   * @param {object} BulkActions bulk actions service
+   * @param {object} crmApi crm api service
+   * @param {object} crmUiHelp crm ui help service
+   * @param {object} crmThrottle crm throttle service
+   * @param {object} formatActivity format activity service
+   * @param {object} $rootScope root scope object
+   * @param {object} dialogService dialog service
+   * @param {object} ContactsCache contacts cache service
+   * @param {object} ActivityStatus activity status service
+   * @param {object} ActivityType activity type service
+   * @param {object} CaseType case type service
    */
   function civicaseActivityFeedController ($scope, $q, BulkActions, crmApi,
     crmUiHelp, crmThrottle, formatActivity, $rootScope, dialogService,

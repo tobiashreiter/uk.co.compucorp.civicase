@@ -6,8 +6,8 @@
   /**
    * Change Status Case Action
    *
-   * @param {object} CaseStatus CaseStatus
-   * @param {object} CaseType CaseType
+   * @param {object} CaseStatus case status service
+   * @param {object} CaseType case type service
    */
   function ChangeStatusCaseAction (CaseStatus, CaseType) {
     /**

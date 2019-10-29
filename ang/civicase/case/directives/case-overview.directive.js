@@ -16,9 +16,9 @@
     /**
      * Link function for civicaseCaseOverview
      *
-     * @param {object} $scope
-     * @param {jQuery} element
-     * @param {object} attrs
+     * @param {object} $scope scope object
+     * @param {object} element the directive element
+     * @param {object} attrs attributes of the directive
      */
     function civicaseCaseOverviewLink ($scope, element, attrs) {
       (function init () {
@@ -39,13 +39,12 @@
   /**
    * Controller for civicaseCaseOverview
    *
-   * @param crmApi
-   * @param BrowserCache
-   * @param CaseStatus
-   * @param CaseTypeCategory
-   * @param CaseType
-   * @param {object} $scope
-   * @param {crmApi} Object
+   * @param {object} $scope scope object
+   * @param {object} crmApi crm api service
+   * @param {object} BrowserCache browser cache service
+   * @param {object} CaseStatus case status service
+   * @param {object} CaseTypeCategory case type category service
+   * @param {object} CaseType case type
    */
   function civicaseCaseOverviewController ($scope, crmApi, BrowserCache, CaseStatus, CaseTypeCategory, CaseType) {
     var BROWSER_CACHE_IDENTIFIER = 'civicase.CaseOverview.hiddenCaseStatuses';
@@ -72,7 +71,7 @@
     /**
      * Checks if all statuses are hidden
      *
-     * @returns {boolean}
+     * @returns {boolean} if all statuses are hidden
      */
     $scope.areAllStatusesHidden = function () {
       return _.filter($scope.caseStatuses, function (status) {
@@ -83,8 +82,8 @@
     /**
      * Creates link to the filtered cases list
      *
-     * @param {string} type
-     * @param {string} status
+     * @param {string} type case type
+     * @param {string} status case status
      * @returns {string} link to the filtered list of cases
      */
     $scope.caseListLink = function (type, status) {
@@ -108,8 +107,7 @@
     /**
      * Toggle status view
      *
-     * @param $event
-     * @param {event} event object
+     * @param {object} $event event object
      * @param {number} index of the case status
      */
     $scope.toggleStatusVisibility = function ($event, index) {
@@ -172,8 +170,8 @@
     /**
      * Returns case types filtered by given category
      *
-     * @param {string} categoryName
-     * @returns {Array}
+     * @param {string} categoryName category name
+     * @returns {Array} case types filetered by the given category
      */
     function getCaseTypesFilteredByCategory (categoryName) {
       var caseTypeCategory = _.find(caseTypeCategories, function (category) {

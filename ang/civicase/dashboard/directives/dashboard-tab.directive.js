@@ -14,17 +14,17 @@
   /**
    * Dashboard Tab Controller
    *
-   * @param {*} $location $location
-   * @param {*} $rootScope $rootScope
-   * @param {*} $route $route
-   * @param {*} $sce $sce
-   * @param {*} $scope $scope
-   * @param {*} ContactsCache ContactsCache
-   * @param {*} crmApi crmApi
-   * @param {*} formatCase formatCase
-   * @param {*} formatActivity formatActivity
-   * @param {*} ts ts
-   * @param {*} ActivityStatusType ActivityStatusType
+   * @param {object} $location location service
+   * @param {object} $rootScope rootScope object
+   * @param {object} $route route object
+   * @param {object} $sce sce service
+   * @param {object} $scope scope object
+   * @param {object} ContactsCache contacts cache service
+   * @param {object} crmApi crm api service
+   * @param {object} formatCase format case service
+   * @param {object} formatActivity format activity service
+   * @param {object} ts ts
+   * @param {object} ActivityStatusType activity status type service
    */
   function dashboardTabController ($location, $rootScope, $route, $sce, $scope,
     ContactsCache, crmApi, formatCase, formatActivity, ts, ActivityStatusType) {

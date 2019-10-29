@@ -90,7 +90,7 @@
        * container. Also unbinds the mouseup event in order to reduce the amount
        * of active DOM event listeners.
        *
-       * @param {object} event DOM event triggered by the user mouse up action.
+       * @param {document#event:mouseup} event DOM event triggered by the user mouse up action.
        */
       function closeActivitiesDropdown (event) {
         // Note: it breaks when checking `popover.is(event.target)`.
@@ -153,16 +153,16 @@
   /**
    * Activities Calendar Controller
    *
-   * @param {*} $q $q
-   * @param {*} $rootScope $rootScope
-   * @param {*} $route $route
-   * @param {*} $sce $sce
-   * @param {*} $scope $scope
-   * @param {*} ContactsCache ContactsCache
-   * @param {*} crmApi crmApi
-   * @param {*} formatActivity formatActivity
-   * @param {*} getActivityFeedUrl getActivityFeedUrl
-   * @param {*} ActivityStatusType ActivityStatusType
+   * @param {*} $q $q service
+   * @param {*} $rootScope root scope object
+   * @param {*} $route route service
+   * @param {*} $sce sce service
+   * @param {*} $scope $scope scope object
+   * @param {*} ContactsCache contacts cache service
+   * @param {*} crmApi crm api service
+   * @param {*} formatActivity format activity service
+   * @param {*} getActivityFeedUrl get activity feed url service
+   * @param {*} ActivityStatusType activity status type service
    */
   function civicaseActivitiesCalendarController ($q, $rootScope, $route, $sce,
     $scope, ContactsCache, crmApi, formatActivity, getActivityFeedUrl, ActivityStatusType) {

@@ -7,8 +7,22 @@
    * CaseTypeCategory Service
    */
   function CaseTypeCategory () {
+    var allCaseTypeCategories = CRM['civicase-base'].caseTypeCategories;
+
     this.getAll = function () {
-      return CRM['civicase-base'].caseTypeCategories;
+      return allCaseTypeCategories;
+    };
+
+    /**
+     * Find case type category by value
+     *
+     * @param {string} name case type category name
+     * @returns {object} case type category object
+     */
+    this.findByName = function (name) {
+      return _.find(allCaseTypeCategories, function (category) {
+        return category.name === 'awards';
+      });
     };
   }
 })(angular, CRM.$, CRM._, CRM);

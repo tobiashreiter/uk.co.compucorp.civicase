@@ -8,6 +8,8 @@
  * http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_angularModules.
  */
 
+use CRM_Civicase_Helper_GlobRecursive as GlobRecursive;
+
 load_resources();
 $caseCategoryName = CRM_Utils_Request::retrieve('case_type_category', 'String');
 CRM_Civicase_Hook_Helper_CaseTypeCategory::addWordReplacements($caseCategoryName);
@@ -122,7 +124,7 @@ function get_js_files() {
     // deduped by resource manager.
     'assetBuilder://visual-bundle.js',
     'ang/civicase.js',
-  ], glob_recursive(dirname(__FILE__) . '/civicase/*.js'));
+  ], GlobRecursive::get(dirname(__FILE__) . '/civicase/*.js'));
 }
 
 /**

@@ -19,24 +19,24 @@
   /**
    * Case Details Controller
    *
-   * @param {object} $location $location
+   * @param {object} $location $location service
    * @param {object} $rootScope $rootScope
    * @param {object} $scope $scope
    * @param {object} $document $document
-   * @param {object} BulkActions BulkActions
-   * @param {object} crmApi crmApi
-   * @param {object} formatActivity formatActivity
-   * @param {object} formatCase formatCase
-   * @param {object} getActivityFeedUrl getActivityFeedUrl
-   * @param {object} getCaseQueryParams getCaseQueryParams
-   * @param {object} $route $route
-   * @param {object} $timeout $timeout
-   * @param {object} CasesUtils CasesUtils
-   * @param {object} PrintMergeCaseAction PrintMergeCaseAction
-   * @param {object} ts ts
-   * @param {object} ActivityType ActivityType
-   * @param {object} CaseStatus CaseStatus
-   * @param {object} CaseType CaseType
+   * @param {object} BulkActions bulk actions service
+   * @param {object} crmApi crm api service
+   * @param {object} formatActivity format activity service
+   * @param {object} formatCase format case service
+   * @param {object} getActivityFeedUrl get activity feed url service
+   * @param {object} getCaseQueryParams get case query params service
+   * @param {object} $route $route service
+   * @param {object} $timeout $timeout service
+   * @param {object} CasesUtils cases utils service
+   * @param {object} PrintMergeCaseAction print merge case action service
+   * @param {object} ts ts service
+   * @param {object} ActivityType activity type service
+   * @param {object} CaseStatus case status service
+   * @param {object} CaseType case type service
    */
   function civicaseCaseDetailsController ($location, $rootScope, $scope,
     $document, BulkActions, crmApi, formatActivity, formatCase,
@@ -393,7 +393,7 @@
      * to the case list. Also, If the case is loaded without its definition, it
      * will make a request to get the missing information.
      *
-     * @returns {*} params
+     * @returns {object|boolean} params
      */
     function itemWatcher () {
       var isCaseLocked = $scope.item && $scope.item.lock;

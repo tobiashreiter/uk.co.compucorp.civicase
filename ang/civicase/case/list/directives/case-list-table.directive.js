@@ -9,6 +9,7 @@
     };
 
     /**
+     * Case List table directive link function
      *
      * @param {object} scope scope
      */

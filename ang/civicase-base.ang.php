@@ -9,6 +9,8 @@
  */
 
 use Civi\CCase\Utils as Utils;
+use CRM_Civicase_Helper_OptionValues as OptionValuesHelper;
+use CRM_Civicase_Helper_GlobRecursive as GlobRecursive;
 
 $options = [
   'activityTypes' => 'activity_type',
@@ -19,7 +21,7 @@ $options = [
   'caseTypeCategories' => 'case_type_categories',
 ];
 
-set_option_values_to_js_vars($options);
+OptionValuesHelper::setToJsVariables($options);
 set_case_types_to_js_vars($options);
 set_relationship_types_to_js_vars($options);
 set_file_categories_to_js_vars($options);
@@ -27,24 +29,16 @@ set_activity_status_types_to_js_vars($options);
 set_custom_fields_info_to_js_vars($options);
 set_tags_to_js_vars($options);
 
-if (!function_exists('glob_recursive')) {
-
-  /**
-   * Recursive Glob function.
-   *
-   * Source: http://php.net/manual/en/function.glob.php#106595
-   * Does not support flag GLOB_BRACE.
-   */
-  function glob_recursive($pattern, $flags = 0) {
-    $files = glob($pattern, $flags);
-
-    foreach (glob(dirname($pattern) . '/*', GLOB_ONLYDIR | GLOB_NOSORT) as $dir) {
-      $files = array_merge($files, glob_recursive($dir . '/' . basename($pattern), $flags));
-    }
-
-    return $files;
-  }
-
+/**
+ * Get a list of JS files.
+ *
+ * @return array
+ *   list of js files
+ */
+function get_base_js_files() {
+  return array_merge([
+    'ang/civicase-base.js',
+  ], GlobRecursive::get(dirname(__FILE__) . '/civicase-base/*.js'));
 }
 
 /**
@@ -86,28 +80,6 @@ function set_tags_to_js_vars(&$options) {
     'used_for' => ['LIKE' => "%civicrm_case%"],
     'is_tagset' => 1,
   ]));
-}
-
-/**
- * Sets the option values to javascript global variable.
- */
-function set_option_values_to_js_vars(&$options) {
-  foreach ($options as &$option) {
-    $result = civicrm_api3('OptionValue', 'get', [
-      'return' => [
-        'value', 'label', 'color', 'icon', 'name', 'grouping', 'weight',
-      ],
-      'option_group_id' => $option,
-      'is_active' => 1,
-      'options' => ['limit' => 0, 'sort' => 'weight'],
-    ]);
-    $option = [];
-    foreach ($result['values'] as $item) {
-      $key = $item['value'];
-      CRM_Utils_Array::remove($item, 'id');
-      $option[$key] = $item;
-    }
-  }
 }
 
 /**
@@ -168,15 +140,6 @@ function set_custom_fields_info_to_js_vars(&$options) {
       }
     }
   }
-}
-
-/**
- * Get a list of JS files.
- */
-function get_base_js_files() {
-  return array_merge([
-    'ang/civicase-base.js',
-  ], glob_recursive(dirname(__FILE__) . '/civicase-base/*.js'));
 }
 
 return [
