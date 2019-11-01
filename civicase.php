@@ -6,9 +6,6 @@
  */
 
 use Civi\Angular\AngularLoader;
-use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
-use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
-use CRM_Case_BAO_CaseType as CaseType;
 
 require_once 'civicase.civix.php';
 
@@ -501,33 +498,8 @@ function civicase_civicrm_postProcess($formName, &$form) {
  * Implements hook_civicrm_permission().
  */
 function civicase_civicrm_permission(&$permissions) {
-  $permissionService = new CaseCategoryPermission();
-  // Add the permissions added by the civicase extension.
-  $caseCategoryPermissions = $permissionService->get();
-  $permissions[$caseCategoryPermissions['BASIC_CASE_CATEGORY_INFO']['name']] = [
-    $caseCategoryPermissions['BASIC_CASE_CATEGORY_INFO']['label'],
-    ts($caseCategoryPermissions['BASIC_CASE_CATEGORY_INFO']['description']),
-  ];
-
-  // Add permissions for other civicase categories apart from `Cases` category.
-  $caseTypeCategories = CaseType::buildOptions('case_type_category', 'validate');
-  if (empty($caseTypeCategories)) {
-    return;
-  }
-  foreach ($caseTypeCategories as $caseTypeCategory) {
-    if ($caseTypeCategory == CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME) {
-      continue;
-    }
-
-    $caseCategoryPermissions = $permissionService->get($caseTypeCategory);
-    foreach ($caseCategoryPermissions as $caseCategoryPermission) {
-      $permissions[$caseCategoryPermission['name']] = [
-        $caseCategoryPermission['label'],
-        ts($caseCategoryPermission['description']),
-      ];
-    }
-  }
-
+  $permissionHook = new CRM_Civicase_Hook_Permissions_CaseCategory($permissions);
+  $permissionHook->run();
 }
 
 /**
@@ -546,7 +518,7 @@ function civicase_civicrm_apiWrappers(&$wrappers, $apiRequest) {
  */
 function civicase_civicrm_alterAPIPermissions($entity, $action, &$params, &$permissions) {
   $hooks = [
-    new CRM_Civicase_Hook_APIPermissions_alterPermissions(),
+    new CRM_Civicase_Hook_alterAPIPermissions_Case(),
   ];
 
   foreach ($hooks as $hook) {
@@ -731,8 +703,8 @@ function civicase_civicrm_queryObjects(&$queryObjects, $type) {
  */
 function civicase_civicrm_permission_check($permission, &$granted) {
   $hooks = [
-    new CRM_Civicase_Hook_Permissions_CheckForActivityPageView(),
-    new CRM_Civicase_Hook_Permissions_CaseCategoryPermissionCheck(),
+    new CRM_Civicase_Hook_PermissionCheck_ActivityPageView(),
+    new CRM_Civicase_Hook_PermissionCheck_CaseCategory(),
   ];
 
   foreach ($hooks as $hook) {
