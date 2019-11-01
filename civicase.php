@@ -628,7 +628,7 @@ function civicase_civicrm_navigationMenu(&$menu) {
 }
 
 /**
- * Civicase URL map.
+ * Civicase Add new case URL map.
  *
  * Adds the add case URL mapping to the array depending on
  * the case settings config for the system. IF an alternate add Case

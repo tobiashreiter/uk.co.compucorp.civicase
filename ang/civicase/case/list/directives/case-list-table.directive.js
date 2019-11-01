@@ -8,6 +8,11 @@
       templateUrl: '~/civicase/case/list/directives/case-list-table.directive.html'
     };
 
+    /**
+     * Case List table directive link function
+     *
+     * @param {object} scope scope
+     */
     function civicaseCaseListTableLink (scope) {
       (function init () {
         scope.$watch('caseIsFocused', setCaseListHeight);
@@ -47,19 +52,20 @@
 
   module.controller('CivicaseCaseListTableController', function ($rootScope,
     $scope, $window, BulkActions, crmApi, crmStatus, crmUiHelp,
-    crmThrottle, $timeout, formatCase, ContactsCache, CasesUtils, ts) {
+    crmThrottle, $timeout, formatCase, ContactsCache, CasesUtils, ts,
+    ActivityCategory, ActivityType, CaseStatus) {
     var firstLoad = true;
     var allCases;
 
-    $scope.activityCategories = CRM.civicase.activityCategories;
-    $scope.activityTypes = CRM.civicase.activityTypes;
-    $scope.page = {total: 0};
+    $scope.activityCategories = ActivityCategory.getAll();
+    $scope.activityTypes = ActivityType.getAll();
+    $scope.page = { total: 0 };
     $scope.cases = [];
-    $scope.caseStatuses = CRM.civicase.caseStatuses;
+    $scope.caseStatuses = CaseStatus.getAll();
     $scope.CRM = CRM;
     $scope.isLoading = true;
     $scope.selectedCases = [];
-    $scope.sort = {sortable: true};
+    $scope.sort = { sortable: true };
     $scope.ts = ts;
     $scope.viewingCaseDetails = null;
 
@@ -91,7 +97,8 @@
      * Checks if selection is active on based of
      * the passed params.
      *
-     * @param {String} condition
+     * @param {string} condition condition
+     * @returns {boolean} if selection is active
      */
     $scope.isSelection = function (condition) {
       if (!$scope.cases) {
@@ -112,7 +119,7 @@
     /**
      * Refresh the Case List View
      *
-     * @param {array} apiCalls
+     * @param {Array} apiCalls api calls
      * @param {boolean} backgroundLoading - if loading animation should not be
      *   shown
      */
@@ -147,7 +154,7 @@
     };
 
     $scope.viewCase = function (id, $event) {
-      var currentCase = _.findWhere($scope.cases, {id: id});
+      var currentCase = _.findWhere($scope.cases, { id: id });
 
       if (!$scope.bulkAllowed || currentCase.lock) {
         return;
@@ -159,7 +166,7 @@
           $scope.viewingCase = null;
           $scope.viewingCaseDetails = null;
         } else {
-          $scope.viewingCaseDetails = _.findWhere($scope.cases, {id: id});
+          $scope.viewingCaseDetails = _.findWhere($scope.cases, { id: id });
           $scope.viewingCase = id;
           $scope.viewingCaseTab = 'summary';
         }
@@ -172,20 +179,20 @@
      * Binds all route parameters to scope
      */
     function bindRouteParamsToScope () {
-      $scope.$bindToRoute({expr: 'sort.field', param: 'sf', format: 'raw', default: 'contact_id.sort_name'});
-      $scope.$bindToRoute({expr: 'sort.dir', param: 'sd', format: 'raw', default: 'ASC'});
-      $scope.$bindToRoute({expr: 'caseIsFocused', param: 'focus', format: 'bool', default: false});
-      $scope.$bindToRoute({expr: 'viewingCase', param: 'caseId', format: 'raw'});
-      $scope.$bindToRoute({expr: 'viewingCaseTab', param: 'tab', format: 'raw', default: 'summary'});
-      $scope.$bindToRoute({expr: 'page.size', param: 'cps', format: 'int', default: 15});
-      $scope.$bindToRoute({expr: 'page.num', param: 'cpn', format: 'int', default: 1});
+      $scope.$bindToRoute({ expr: 'sort.field', param: 'sf', format: 'raw', default: 'contact_id.sort_name' });
+      $scope.$bindToRoute({ expr: 'sort.dir', param: 'sd', format: 'raw', default: 'ASC' });
+      $scope.$bindToRoute({ expr: 'caseIsFocused', param: 'focus', format: 'bool', default: false });
+      $scope.$bindToRoute({ expr: 'viewingCase', param: 'caseId', format: 'raw' });
+      $scope.$bindToRoute({ expr: 'viewingCaseTab', param: 'tab', format: 'raw', default: 'summary' });
+      $scope.$bindToRoute({ expr: 'page.size', param: 'cps', format: 'int', default: 15 });
+      $scope.$bindToRoute({ expr: 'page.num', param: 'cpn', format: 'int', default: 1 });
     }
 
     /**
      * Bulk Selection Event Listener
      *
-     * @params {Object} event
-     * @params {String} condition
+     * @param {object} event event
+     * @param {string} condition condition
      */
     function bulkSelectionsListener (event, condition) {
       if (condition === 'none') {
@@ -200,8 +207,8 @@
     /**
      * Bulk selection checkbox toggle Event Listener
      *
-     * @params {Object} event
-     * @params {Object} data case object
+     * @param {object} event event
+     * @param {object} data case object
      */
     function bulkSelectionCheckboxClickedListener (event, data) {
       if (data.selected) {
@@ -216,7 +223,7 @@
     /**
      * Case Watcher - Updates the checkbox if a case is selected
      *
-     * @params {array} cases
+     * @param {Array} cases cases
      */
     function casesWatcher (cases) {
       // if case is in selectedCases array update the UI model (checkbox)
@@ -257,13 +264,13 @@
 
           if ($scope.viewingCase) {
             if ($scope.viewingCaseDetails) {
-              var currentCase = _.findWhere(cases, {id: $scope.viewingCase});
+              var currentCase = _.findWhere(cases, { id: $scope.viewingCase });
 
               if (currentCase) {
                 _.assign(currentCase, $scope.viewingCaseDetails);
               }
             } else {
-              $scope.viewingCaseDetails = _.findWhere(cases, {id: $scope.viewingCase});
+              $scope.viewingCaseDetails = _.findWhere(cases, { id: $scope.viewingCase });
             }
           }
 
@@ -289,11 +296,11 @@
     /**
      * Get patameneters to load cases
      *
-     * @param {object} filters
-     * @param {object} sort
-     * @param {object} page
+     * @param {object} filters filters
+     * @param {object} sort sort
+     * @param {object} page page
      *
-     * @return {array}
+     * @returns {Array} api params
      */
     function getCaseApiParams (filters, sort, page) {
       var returnCaseParams = {
@@ -317,7 +324,7 @@
       if (sort.field !== 'id') {
         returnCaseParams.options.sort += ', id';
       }
-      var params = {'case_type_id.is_active': 1};
+      var params = { 'case_type_id.is_active': 1 };
       _.each(filters, function (val, filter) {
         if (val || typeof val === 'boolean') {
           if (filter === 'case_type_category') {
@@ -327,7 +334,7 @@
           } else if (typeof val === 'object' && !$.isArray(val)) {
             params[filter] = val;
           } else if (val.length) {
-            params[filter] = $.isArray(val) ? {IN: val} : {LIKE: '%' + val + '%'};
+            params[filter] = $.isArray(val) ? { IN: val } : { LIKE: '%' + val + '%' };
           }
         }
       });
@@ -393,7 +400,7 @@
     /**
      * Make Api call to load cases
      *
-     * @return {promise}
+     * @returns {Promise} promise
      */
     function makeApiCallToLoadCases () {
       var params = getCaseApiParams(angular.extend({}, $scope.filters, $scope.hiddenFilters), $scope.sort, $scope.page);
@@ -444,8 +451,8 @@
     /**
      * Update Cases when watch parameters has changed
      *
-     * @param {object} newValue
-     * @param {object} oldValue
+     * @param {object} newValue new value
+     * @param {object} oldValue old value
      */
     function updateCases (newValue, oldValue) {
       if (newValue !== oldValue) {
@@ -456,7 +463,7 @@
     /**
      * Returns the display name of a selected case
      *
-     * @return {String} display name to be used in page title
+     * @returns {string} display name to be used in page title
      */
     function getDisplayNameOfSelectedItem () {
       var viewingCase = $scope.viewingCase;
@@ -466,7 +473,7 @@
         return;
       }
 
-      var selectedCase = _.findWhere(cases, {id: viewingCase});
+      var selectedCase = _.findWhere(cases, { id: viewingCase });
 
       if (!selectedCase) {
         return false;
