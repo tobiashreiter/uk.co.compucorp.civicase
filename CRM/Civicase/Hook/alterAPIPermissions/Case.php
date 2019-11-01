@@ -6,7 +6,7 @@ use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
 /**
  * Class CRM_Civicase_Hook_APIPermissions_alterPermissions.
  */
-class CRM_Civicase_Hook_APIPermissions_alterPermissions {
+class CRM_Civicase_Hook_alterAPIPermissions_Case {
 
   /**
    * Case category name.
@@ -29,10 +29,6 @@ class CRM_Civicase_Hook_APIPermissions_alterPermissions {
    *   The API permissions.
    */
   public function run($entity, $action, array &$params, array &$permissions) {
-    if (!$this->shouldRun()) {
-      return;
-    }
-
     $this->caseCategoryName = $this->getCaseCategoryName($entity, $action, $params);
     $this->alterApiPermissions($entity, $permissions);
   }
@@ -75,11 +71,11 @@ class CRM_Civicase_Hook_APIPermissions_alterPermissions {
     $permissions['case_type']['get'] = [$basicCasePermissions];
     $permissions['casetype']['getcount'] = [$basicCasePermissions];
 
-    $this->alterPermissionsForSpecificApis($entity, $permissionService, $permissions);
+    $this->alterPermissionsForSpecificApiActions($entity, $permissionService, $permissions);
   }
 
   /**
-   * Alter permissions for specific APIs.
+   * Alter permissions for specific API actions.
    *
    * The Civicase extension completely overrides the permissions for some
    * API actions such as get, getcount, but some API actions are un-affected.
@@ -94,7 +90,7 @@ class CRM_Civicase_Hook_APIPermissions_alterPermissions {
    * @param array $permissions
    *   The API permissions.
    */
-  private function alterPermissionsForSpecificApis($entity, CaseCategoryPermission $permissionService, array &$permissions) {
+  private function alterPermissionsForSpecificApiActions($entity, CaseCategoryPermission $permissionService, array &$permissions) {
     if ($entity != 'case') {
       return;
     }
@@ -239,15 +235,4 @@ class CRM_Civicase_Hook_APIPermissions_alterPermissions {
 
     return CaseCategoryHelper::getCaseCategoryNameFromOptionValue($caseTypeCategory);
   }
-
-  /**
-   * Determines if the hook will run.
-   *
-   * @return bool
-   *   returns a boolean to determine if hook will run or not.
-   */
-  private function shouldRun() {
-    return TRUE;
-  }
-
 }
