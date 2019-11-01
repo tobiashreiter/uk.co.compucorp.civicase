@@ -70,6 +70,7 @@ class CRM_Civicase_Hook_alterAPIPermissions_Case {
     $permissions['case']['getcount'] = [$basicCasePermissions];
     $permissions['case_type']['get'] = [$basicCasePermissions];
     $permissions['casetype']['getcount'] = [$basicCasePermissions];
+    $permissions['custom_value']['gettreevalues'] = [$basicCasePermissions];
 
     $this->alterPermissionsForSpecificApiActions($entity, $permissionService, $permissions);
   }
