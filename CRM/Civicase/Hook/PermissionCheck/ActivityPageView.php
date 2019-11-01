@@ -3,7 +3,7 @@
 /**
  * Alters permissions checks.
  */
-class CRM_Civicase_Hook_Permissions_CheckForActivityPageView {
+class CRM_Civicase_Hook_PermissionCheck_ActivityPageView {
 
   /**
    * Permission checks for activity page view.
@@ -48,7 +48,7 @@ class CRM_Civicase_Hook_Permissions_CheckForActivityPageView {
    * @param bool $granted
    *   Whether permission is granted or not.
    */
-  public function validatePermission(&$granted) {
+  private function validatePermission(&$granted) {
     if ($this->isAccessingActivityPageView() && $this->isCurrentUserLockedOut()) {
       $granted = FALSE;
     }
@@ -60,7 +60,7 @@ class CRM_Civicase_Hook_Permissions_CheckForActivityPageView {
    * @return bool
    *   Return Value.
    */
-  public function isAccessingActivityPageView() {
+  private function isAccessingActivityPageView() {
     $action = CRM_Utils_Request::retrieveValue('action', 'String');
     $activityID = CRM_Utils_Request::retrieveValue('id', 'Integer');
 
@@ -80,7 +80,7 @@ class CRM_Civicase_Hook_Permissions_CheckForActivityPageView {
    * @return bool
    *   Return Value.
    */
-  public function isCurrentUserLockedOut() {
+  private function isCurrentUserLockedOut() {
     $loggedContactID = CRM_Core_Session::singleton()->getLoggedInContactID();
     $activityID = CRM_Utils_Request::retrieveValue('id', 'Integer');
 
