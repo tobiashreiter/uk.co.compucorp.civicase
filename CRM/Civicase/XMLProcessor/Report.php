@@ -97,7 +97,7 @@ AND    ac.case_id = %1
     $pageTitle = CRM_Utils_Array::value($activitySetName, $activitySetNames);
     $template->assign('pageTitle', $pageTitle);
 
-    if ($activitySetName) {
+    if ($activitySetName && !empty($activitySetNames[$activitySetName])) {
       $activityTypes = $report->getActivityTypes($xml, $activitySetName);
     }
     else {
