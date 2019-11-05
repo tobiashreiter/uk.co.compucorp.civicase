@@ -40,7 +40,8 @@
         title: 'Open Cases',
         filterParams: {
           'status_id.grouping': 'Opened',
-          contact_id: $scope.contactId
+          contact_id: $scope.contactId,
+          is_deleted: 0
         },
         showContactRole: false
       }, {
@@ -48,14 +49,16 @@
         title: 'Resolved cases',
         filterParams: {
           'status_id.grouping': 'Closed',
-          contact_id: $scope.contactId
+          contact_id: $scope.contactId,
+          is_deleted: 0
         },
         showContactRole: false
       }, {
         name: 'related',
         title: 'Other cases for this contact',
         filterParams: {
-          case_manager: $scope.contactId
+          case_manager: $scope.contactId,
+          is_deleted: 0
         },
         showContactRole: true
       }
