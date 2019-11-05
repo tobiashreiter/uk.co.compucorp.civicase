@@ -12,14 +12,21 @@
 
   module.controller('CivicaseContactCaseTabController', CivicaseContactCaseTabController);
 
+  /**
+   * @param $scope
+   * @param crmApi
+   * @param formatCase
+   * @param Contact
+   * @param ContactsCache
+   */
   function CivicaseContactCaseTabController ($scope, crmApi, formatCase, Contact, ContactsCache) {
     var commonConfigs = {
-      'isLoaded': false,
-      'showSpinner': false,
-      'isLoadMoreAvailable': false,
-      'page': {
-        'size': 3,
-        'num': 1
+      isLoaded: false,
+      showSpinner: false,
+      isLoadMoreAvailable: false,
+      page: {
+        size: 3,
+        num: 1
       }
     };
 
@@ -29,28 +36,28 @@
     $scope.newCaseWebformClient = CRM.civicase.newCaseWebformClient;
     $scope.casesListConfig = [
       {
-        'name': 'opened',
-        'title': 'Open Cases',
-        'filterParams': {
+        name: 'opened',
+        title: 'Open Cases',
+        filterParams: {
           'status_id.grouping': 'Opened',
-          'contact_id': $scope.contactId
+          contact_id: $scope.contactId
         },
-        'showContactRole': false
+        showContactRole: false
       }, {
-        'name': 'closed',
-        'title': 'Resolved cases',
-        'filterParams': {
+        name: 'closed',
+        title: 'Resolved cases',
+        filterParams: {
           'status_id.grouping': 'Closed',
-          'contact_id': $scope.contactId
+          contact_id: $scope.contactId
         },
-        'showContactRole': false
+        showContactRole: false
       }, {
-        'name': 'related',
-        'title': 'Other cases for this contact',
-        'filterParams': {
-          'case_manager': $scope.contactId
+        name: 'related',
+        title: 'Other cases for this contact',
+        filterParams: {
+          case_manager: $scope.contactId
         },
-        'showContactRole': true
+        showContactRole: true
       }
     ];
 
@@ -74,8 +81,8 @@
     /**
      * Watcher for civicase::contact-record-list::loadmore event
      *
-     * @param {Object} event
-     * @param {String} name of the list
+     * @param {object} event
+     * @param {string} name of the list
      */
     function contactRecordListLoadmoreWatcher (event, name) {
       var caseListIndex = _.findIndex($scope.casesListConfig, function (caseObj) {
@@ -93,6 +100,10 @@
      * @params {Object} event
      * @params {Object} caseObj case object of the list
      */
+    /**
+     * @param event
+     * @param caseObj
+     */
     function contactRecordListViewCaseWatcher (event, caseObj) {
       setCaseAsSelected(caseObj);
     }
@@ -101,7 +112,7 @@
      * Fetch additional information about the contacts
      *
      * @param {object} event
-     * @param {array} cases
+     * @param {Array} cases
      */
     function fetchContactsData (cases) {
       var contacts = [];
@@ -117,7 +128,7 @@
      * Get all the contacts of the given case
      *
      * @param {object} caseObj
-     * @return {array}
+     * @returns {Array}
      */
     function getAllContactIdsForCase (caseObj) {
       var contacts = [];
@@ -155,9 +166,10 @@
      * Get parameters to load cases
      *
      * @param {object} filters
+     * @param filter
      * @param {object} sort
      * @param {object} page
-     * @return {array}
+     * @returns {Array}
      */
     function getCaseApiParams (filter, page) {
       var caseReturnParams = [
@@ -175,7 +187,7 @@
           offset: page.size * (page.num - 1)
         }
       };
-      var params = {'case_type_id.is_active': 1};
+      var params = { 'case_type_id.is_active': 1 };
 
       return {
         cases: ['Case', 'getcaselist', $.extend(true, returnCaseParams, filter, params)],
@@ -186,8 +198,8 @@
     /**
      * Returns contact role for the currently viewing contact
      *
-     * @param {Object} caseObj
-     * @return {String} role
+     * @param {object} caseObj
+     * @returns {string} role
      */
     function getContactRole (caseObj) {
       var contact = _.find(caseObj.contacts, {
@@ -254,6 +266,7 @@
      * Sets passed case object as selected case
      *
      * @params {Object} caseObj
+     * @param caseObj
      */
     function setCaseAsSelected (caseObj) {
       $scope.selectedCase = caseObj;
@@ -271,7 +284,7 @@
     /**
      * Updates the list with new entries
      *
-     * @param {String} caseListIndex
+     * @param {string} caseListIndex
      * @param {Array} params
      */
     function updateCase (caseListIndex, params) {
