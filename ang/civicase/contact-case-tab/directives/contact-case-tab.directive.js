@@ -13,11 +13,11 @@
   module.controller('CivicaseContactCaseTabController', CivicaseContactCaseTabController);
 
   /**
-   * @param $scope
-   * @param crmApi
-   * @param formatCase
-   * @param Contact
-   * @param ContactsCache
+   * @param {object} $scope the controller scope
+   * @param {Function} crmApi the crm api service
+   * @param {Function} formatCase the format case service
+   * @param {object} Contact the contact service
+   * @param {object} ContactsCache the contacts cache service
    */
   function CivicaseContactCaseTabController ($scope, crmApi, formatCase, Contact, ContactsCache) {
     var commonConfigs = {
@@ -81,7 +81,7 @@
     /**
      * Watcher for civicase::contact-record-list::loadmore event
      *
-     * @param {object} event
+     * @param {object} event scope watch event reference
      * @param {string} name of the list
      */
     function contactRecordListLoadmoreWatcher (event, name) {
@@ -94,15 +94,11 @@
       updateCase(caseListIndex, params);
     }
 
-    /*
+    /**
      * Watcher for civicase::contact-record-list::view-case event
      *
-     * @params {Object} event
-     * @params {Object} caseObj case object of the list
-     */
-    /**
-     * @param event
-     * @param caseObj
+     * @param {object} event scope watch event reference
+     * @param {object} caseObj the data belonging to a case
      */
     function contactRecordListViewCaseWatcher (event, caseObj) {
       setCaseAsSelected(caseObj);
@@ -111,8 +107,7 @@
     /**
      * Fetch additional information about the contacts
      *
-     * @param {object} event
-     * @param {Array} cases
+     * @param {object[]} cases a list of cases
      */
     function fetchContactsData (cases) {
       var contacts = [];
@@ -125,10 +120,10 @@
     }
 
     /**
-     * Get all the contacts of the given case
+     * Returns all the contact ids for the given case
      *
-     * @param {object} caseObj
-     * @returns {Array}
+     * @param {object} caseObj the data belonging to a case
+     * @returns {number[]} a list of contact ids
      */
     function getAllContactIdsForCase (caseObj) {
       var contacts = [];
@@ -165,11 +160,9 @@
     /**
      * Get parameters to load cases
      *
-     * @param {object} filters
-     * @param filter
-     * @param {object} sort
-     * @param {object} page
-     * @returns {Array}
+     * @param {object} filter the filters to use when loading the cases
+     * @param {object} page the current page and the page size
+     * @returns {object} the parameters needed to load cases
      */
     function getCaseApiParams (filter, page) {
       var caseReturnParams = [
@@ -198,7 +191,7 @@
     /**
      * Returns contact role for the currently viewing contact
      *
-     * @param {object} caseObj
+     * @param {object} caseObj the data belonging to a case
      * @returns {string} role
      */
     function getContactRole (caseObj) {
@@ -212,7 +205,7 @@
     /**
      * Fetches count of all the cases a contact have
      *
-     * @param {Array} apiCall
+     * @param {Array|object} apiCall the api call parameters to use for counting cases
      */
     function getTotalCasesCount (apiCall) {
       var count = 0;
@@ -265,8 +258,7 @@
     /**
      * Sets passed case object as selected case
      *
-     * @params {Object} caseObj
-     * @param caseObj
+     * @param {object} caseObj the data belonging to a case
      */
     function setCaseAsSelected (caseObj) {
       $scope.selectedCase = caseObj;
@@ -274,6 +266,8 @@
 
     /**
      * Watcher function for cases collections
+     *
+     * @returns {boolean} true when all cases list have been loaded
      */
     function isAllCasesLoaded () {
       return _.reduce($scope.casesListConfig, function (memoriser, data) {
@@ -284,8 +278,8 @@
     /**
      * Updates the list with new entries
      *
-     * @param {string} caseListIndex
-     * @param {Array} params
+     * @param {string} caseListIndex the case list config index to update
+     * @param {Array} params the parameters to use when updating the case list
      */
     function updateCase (caseListIndex, params) {
       crmApi(params).then(function (response) {
