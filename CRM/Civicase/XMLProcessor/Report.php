@@ -113,7 +113,8 @@ AND    ac.case_id = %1
     $template->assign('pageTitle', $pageTitle);
 
     if ($activitySetName && !empty($activitySetNames[$activitySetName])) {
-      $activityTypes = $report->getActivityTypes($xml, $activitySetName);
+      $timelineActivities = $report->getActivityTypes($xml, $activitySetName);
+      $activityTypes = !empty($timelineActivities) ? $timelineActivities : CRM_Case_XMLProcessor::allActivityTypes();
     }
     else {
       $activityTypes = CRM_Case_XMLProcessor::allActivityTypes();
