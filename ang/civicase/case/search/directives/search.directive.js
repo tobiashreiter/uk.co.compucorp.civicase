@@ -390,8 +390,12 @@
       } else {
         var status = [];
         if (filters.status_id && filters.status_id.length) {
-          _.each(filters.status_id, function (s) {
-            status.push(_.findWhere(caseStatuses, { name: s }).label);
+          _.each(filters.status_id, function (statusNameOrId) {
+            var caseStatus = _.findWhere(caseStatuses, function (caseStatus) {
+              return caseStatus.name === statusNameOrId || caseStatus.id === statusNameOrId;
+            });
+
+            status.push(caseStatus.label);
           });
         } else {
           status = [ts('All Open')];
