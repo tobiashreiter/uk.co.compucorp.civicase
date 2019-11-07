@@ -38,51 +38,55 @@
   module.controller('civicaseActivityActionsController', civicaseActivityActionsController);
 
   /**
-   * @param {object} $window window object
-   * @param {object} $rootScope rootscope
-   * @param {object} $scope scope
-   * @param {object} crmApi crm api
-   * @param {object} getActivityFeedUrl service to get activity feed url
-   * @param {object} MoveCopyActivityAction move copy action service
-   * @param {object} TagsActivityAction tags action service
-   * @param {object} DeleteActivityAction delete activity service
+   * @param {object} $injector injector service
+   * @param {object} $scope scope object
    * @param {object} ts ts
-   * @param {object} ActivityType ActivityType service
+   * @param {Array} ActivityActions activity actions
    */
-  function civicaseActivityActionsController ($window, $rootScope, $scope, crmApi, getActivityFeedUrl, MoveCopyActivityAction, TagsActivityAction, DeleteActivityAction, ts, ActivityType) {
+  function civicaseActivityActionsController ($injector, $scope, ts, ActivityActions) {
     $scope.ts = ts;
-    $scope.getActivityFeedUrl = getActivityFeedUrl;
-    $scope.deleteActivity = DeleteActivityAction.deleteActivity;
-    $scope.moveCopyActivity = MoveCopyActivityAction.moveCopyActivities;
-    $scope.manageTags = TagsActivityAction.manageTags;
-    $scope.isActivityEditable = isActivityEditable;
-    $scope.printReport = printReport;
+    $scope.isActionEnabled = isActionEnabled;
+    $scope.doAction = doAction;
+    $scope.activityActions = ActivityActions;
 
     /**
-     * Print a report for the sent activities
+     * Get Case Action Service
      *
-     * @param {Array} selectedActivities selected activities
+     * @param {string} serviceName name of the service
+     * @returns {object/null} action service
      */
-    function printReport (selectedActivities) {
-      var url = $scope.getPrintActivityUrl(selectedActivities);
-
-      $window.open(url, '_blank').focus();
+    function getActionService (serviceName) {
+      try {
+        return $injector.get(serviceName);
+      } catch (e) {
+        return null;
+      }
     }
 
     /**
-     * Checks if the sent activity is enabled
+     * Check if action is enabled
      *
-     * @param {object} activity activity
-     * @returns {boolean} if activity is editable
+     * @param {object} action action object
+     * @returns {boolean} if action is enabled
      */
-    function isActivityEditable (activity) {
-      var activityType = ActivityType.getAll()[activity.activity_type_id].name;
-      var nonEditableActivityTypes = [
-        'Email',
-        'Print PDF Letter'
-      ];
+    function isActionEnabled (action) {
+      var service = getActionService(action.serviceName);
+      var isActionEnabledFn = service ? service.isActionEnabled : false;
 
-      return !_.includes(nonEditableActivityTypes, activityType) && $scope.getEditActivityUrl;
+      return isActionEnabledFn ? isActionEnabledFn($scope) : true;
+    }
+
+    /**
+     * Perform Action
+     *
+     * @param {object} action action object
+     */
+    function doAction (action) {
+      var service = getActionService(action.serviceName);
+
+      if (service) {
+        service.doAction($scope, action);
+      }
     }
   }
 })(CRM.$, CRM._, angular);
