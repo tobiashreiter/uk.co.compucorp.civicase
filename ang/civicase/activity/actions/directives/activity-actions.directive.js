@@ -49,15 +49,31 @@
     $scope.doAction = doAction;
     $scope.activityActions = ActivityActions;
 
+    (function init () {
+      setCustomActions();
+    }());
+
+    /**
+     * Fet and set custom actions for the current activity
+     */
+    function setCustomActions () {
+      try {
+        $scope.customActionsForActivity = $scope.selectedActivities[0]['api.Activity.getactionlinks'];
+
+        _.each($scope.customActionsForActivity, function (action) {
+          action.icon = 'filter_none';
+        });
+      } catch (e) {}
+    }
     /**
      * Get Case Action Service
      *
-     * @param {string} serviceName name of the service
+     * @param {string} actionName name of the action
      * @returns {object/null} action service
      */
-    function getActionService (serviceName) {
+    function getActionService (actionName) {
       try {
-        return $injector.get(serviceName);
+        return $injector.get(actionName + 'ActivityAction');
       } catch (e) {
         return null;
       }
@@ -70,7 +86,7 @@
      * @returns {boolean} if action is enabled
      */
     function isActionEnabled (action) {
-      var service = getActionService(action.serviceName);
+      var service = getActionService(action.name);
       var isActionEnabledFn = service ? service.isActionEnabled : false;
 
       return isActionEnabledFn ? isActionEnabledFn($scope) : true;
@@ -82,7 +98,7 @@
      * @param {object} action action object
      */
     function doAction (action) {
-      var service = getActionService(action.serviceName);
+      var service = getActionService(action.name);
 
       if (service) {
         service.doAction($scope, action);

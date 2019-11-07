@@ -3,46 +3,50 @@
 
   module.provider('ActivityActions', function () {
     var actions = [{
-      label: 'View in Feed',
+      title: 'Resume Draft',
+      icon: 'play_circle_filled',
+      name: 'ResumeDraft'
+    }, {
+      title: 'View in Feed',
       icon: 'pageview',
-      serviceName: 'ViewInFeedActivityAction'
+      name: 'ViewInFeed'
     }, {
-      label: 'Edit',
+      title: 'Edit',
       icon: 'edit',
-      serviceName: 'EditActivityAction'
+      name: 'Edit'
     }, {
-      label: 'Print Report',
+      title: 'Print Report',
       icon: 'print',
-      serviceName: 'PrintReportActivityAction'
+      name: 'PrintReport'
     }, {
-      label: 'Move to Case',
+      title: 'Move to Case',
       icon: 'next_week',
-      serviceName: 'MoveCopyActivityAction',
+      name: 'MoveCopy',
       operation: 'move'
     }, {
-      label: 'Copy to Case',
+      title: 'Copy to Case',
       icon: 'filter_none',
-      serviceName: 'MoveCopyActivityAction',
+      name: 'MoveCopy',
       operation: 'copy'
     }, {
-      label: 'Tag - add to activities',
+      title: 'Tag - add to activities',
       icon: 'add_circle',
-      serviceName: 'TagsActivityAction',
+      name: 'Tags',
       operation: 'add'
     }, {
-      label: 'Tag - remove from activities',
+      title: 'Tag - remove from activities',
       icon: 'remove_circle',
-      serviceName: 'TagsActivityAction',
+      name: 'Tags',
       operation: 'remove'
     }, {
-      label: 'Download All',
+      title: 'Download All',
       icon: 'file_download',
-      serviceName: 'DownloadAllActivityAction'
+      name: 'DownloadAll'
     }, {
       showDividerBeforeThisAction: true,
-      label: 'Delete',
+      title: 'Delete',
       icon: 'delete',
-      serviceName: 'DeleteActivityAction'
+      name: 'Delete'
     }];
 
     this.$get = function () {
