@@ -54,7 +54,7 @@
     }());
 
     /**
-     * Fet and set custom actions for the current activity
+     * Fetch and set custom actions for the current activity
      */
     function setCustomActions () {
       try {
