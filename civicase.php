@@ -435,7 +435,7 @@ function civicase_civicrm_validateForm($formName, &$fields, &$files, &$form, &$e
       }
       $newActivity = civicrm_api3('Activity', 'create', $params + $fields);
       $url = CRM_Utils_System::url('civicrm/contact/view/case',
-        "reset=1&action=view&cid={$form->_currentlyViewedContactId}&id={$caseId}&show=1"
+        "reset=1&action=view&cid={$form->getVar('_contactIds')[0]}&id={$caseId}&show=1"
       );
       $session = CRM_Core_Session::singleton();
       $session->pushUserContext($url);
