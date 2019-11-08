@@ -110,10 +110,14 @@
      * @param {object} activity activity object
      */
     $scope.viewInPopup = function ($event, activity) {
-      viewInPopup($event, activity)
-        .on('crmFormSuccess', function () {
-          $scope.refresh();
-        });
+      var response = viewInPopup($event, activity);
+
+      if (response) {
+        response
+          .on('crmFormSuccess', function () {
+            $scope.refresh();
+          });
+      }
     };
 
     /**
