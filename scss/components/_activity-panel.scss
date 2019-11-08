@@ -99,12 +99,35 @@
   position: static !important;
 
   /* stylelint-disable max-nesting-depth, selector-max-compound-selectors */
-  .help {
+  &:not(.civicase__activity-panel__core_container--draft) .help {
     display: none;
+  }
+
+  &.civicase__activity-panel__core_container--draft .help {
+    background: $crm-white;
+    border: 0;
+    margin: 0;
+
+    .button {
+      background-color: $brand-primary;
+      color: $crm-white;
+      float: none;
+
+      &:hover {
+        color: $crm-white;
+        opacity: 0.8 !important;
+        text-decoration: none;
+      }
+    }
   }
 
   .crm-activity-form-block-separation {
     display: none;
+  }
+
+  .crm-form-block {
+    overflow: auto;
+    padding-top: 20px;
   }
 
   .form-layout,
@@ -173,7 +196,7 @@
 
     .edit,
     .cancel {
-      @include button-variant($btn-primary-color, $btn-primary-bg, $btn-primary-border);
+      @include button-variant($btn-primary-color !important, $btn-primary-bg, $btn-primary-border);
     }
 
     .delete {
