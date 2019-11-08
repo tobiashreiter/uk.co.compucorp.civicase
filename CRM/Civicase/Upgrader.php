@@ -5,6 +5,7 @@ use CRM_Civicase_Setup_CreateCasesOptionValue as CreateCasesOptionValue;
 use CRM_Civicase_Setup_AddCaseTypesForCustomGroupExtends as AddCaseTypesForCustomGroupExtends;
 use CRM_Civicase_Setup_AddCaseCategoryWordReplacementOptionGroup as AddCaseCategoryWordReplacementOptionGroup;
 use CRM_Civicase_Setup_MoveCaseTypesToCasesCategory as MoveCaseTypesToCasesCategory;
+use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 
 /**
  * Collection of upgrade steps.
@@ -221,6 +222,7 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
     }
 
     $this->removeNav('Manage Cases');
+    $this->restoreCaseCustomGroupExtendClassToDefault();
   }
 
   /**
@@ -361,6 +363,50 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
   }
 
   /**
+   * Restores the Case Custom Group Extend Class To Default.
+   *
+   * When the civicase extension is installed, it modifies the class
+   * that returns the case types for cases to one that returns only the
+   * one in cases category. This function restores that original value.
+   */
+  private function restoreCaseCustomGroupExtendClassToDefault() {
+    $this->setCaseCustomGroupExtendClass('CRM_Case_PseudoConstant::caseType;');
+  }
+
+  /**
+   * Sets the Case Custom Group Extend Class For Case Type Category.
+   *
+   * Setting this class allows the case types when adding custom group
+   * that extend a case to return case types belonging only to the case
+   * category.
+   */
+  private function setCaseCustomGroupExtendClassForCaseTypeCategory() {
+    $this->setCaseCustomGroupExtendClass('CRM_Civicase_Helper_CaseCategory::getCaseTypesForCase;');
+  }
+
+  /**
+   * Sets the Case Custom Group Extend Class.
+   *
+   * @param string $caseTypeClass
+   *   Case Type class for retrieving case types.
+   */
+  private function setCaseCustomGroupExtendClass($caseTypeClass) {
+    $result = civicrm_api3('OptionValue', 'get', [
+      'option_group_id' => 'cg_extend_objects',
+      'label' => CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME,
+    ]);
+
+    if (empty($result['id'])) {
+      return;
+    }
+
+    civicrm_api3('OptionValue', 'create', [
+      'id' => $result['id'],
+      'description' => $caseTypeClass,
+    ]);
+  }
+
+  /**
    * Remove nav.
    *
    * @param string $name
@@ -379,6 +425,7 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
     $this->swapCaseMenuItems();
 
     $this->toggleNav('Manage Cases', TRUE);
+    $this->setCaseCustomGroupExtendClassForCaseTypeCategory();
   }
 
   /**
@@ -388,6 +435,7 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
     $this->swapCaseMenuItems();
 
     $this->toggleNav('Manage Cases', FALSE);
+    $this->restoreCaseCustomGroupExtendClassToDefault();
   }
 
   /**
