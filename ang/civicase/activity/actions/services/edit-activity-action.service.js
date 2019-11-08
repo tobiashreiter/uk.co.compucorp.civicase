@@ -17,13 +17,15 @@
      */
     this.isActionEnabled = function ($scope) {
       if ($scope.mode === 'case-summary') {
-        var activityType = ActivityType.getAll()[$scope.selectedActivities[0].activity_type_id].name;
+        var activityTypes = ActivityType.getAll();
+        var selectedActivityType = activityTypes[$scope.selectedActivities[0].activity_type_id];
+
         var nonEditableActivityTypes = [
           'Email',
           'Print PDF Letter'
         ];
 
-        return !_.includes(nonEditableActivityTypes, activityType) && !!$scope.getEditActivityUrl;
+        return !_.includes(nonEditableActivityTypes, selectedActivityType.name) && !!$scope.getEditActivityUrl;
       }
     };
 

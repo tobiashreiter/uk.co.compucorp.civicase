@@ -21,7 +21,8 @@
       var isBulkAction = $scope.mode === 'case-activity-bulk-action';
 
       if (!isBulkAction) {
-        var activityTypeName = ActivityType.findById($scope.selectedActivities[0].activity_type_id).name;
+        var activityTypeId = $scope.selectedActivities[0].activity_type_id;
+        var activityTypeName = ActivityType.findById(activityTypeId).name;
 
         var isDraftEmailOrPdfTypeActivity =
           (activityTypeName === 'Email' || activityTypeName === 'Print PDF Letter') &&

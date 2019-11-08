@@ -52,7 +52,8 @@
    * @param {object} ts ts service
    * @param {Function} viewInPopup factory to view an activity in a popup
    */
-  function caseActivityCardController ($scope, dialogService, crmApi, crmBlocker, crmStatus, DateHelper, ts, viewInPopup) {
+  function caseActivityCardController ($scope, dialogService, crmApi, crmBlocker,
+    crmStatus, DateHelper, ts, viewInPopup) {
     $scope.ts = ts;
     $scope.formatDate = DateHelper.formatDate;
 

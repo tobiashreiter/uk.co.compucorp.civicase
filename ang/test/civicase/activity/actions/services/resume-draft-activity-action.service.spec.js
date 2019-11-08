@@ -36,7 +36,7 @@
         describe('activity is from communication category and status is draft', () => {
           beforeEach(() => {
             $scope.selectedActivities = [{
-              category: ['communication'],
+              activity_type_id: 22,
               status_name: 'Draft'
             }];
           });
@@ -49,7 +49,7 @@
         describe('activity is not from communication category and status is draft', () => {
           beforeEach(() => {
             $scope.selectedActivities = [{
-              category: ['task'],
+              activity_type_id: 23,
               status_name: 'Draft'
             }];
           });
@@ -62,7 +62,7 @@
         describe('activity is from communication category and status is not draft', () => {
           beforeEach(() => {
             $scope.selectedActivities = [{
-              category: ['communication'],
+              activity_type_id: 22,
               status_name: 'not Draft'
             }];
           });
@@ -75,7 +75,7 @@
         describe('activity is not from communication category and status is not draft', () => {
           beforeEach(() => {
             $scope.selectedActivities = [{
-              category: ['task'],
+              activity_type_id: 23,
               status_name: 'not Draft'
             }];
           });

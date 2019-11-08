@@ -9,12 +9,26 @@
   function ActivityType () {
     var activityTypes = CRM['civicase-base'].activityTypes;
 
-    this.getAll = function () {
-      return activityTypes;
-    };
+    this.getAll = getAll;
+    this.findById = findById;
 
-    this.findById = function (id) {
+    /**
+     * Get all Activity types
+     *
+     * @returns {Array} all activity types
+     */
+    function getAll () {
+      return activityTypes;
+    }
+
+    /**
+     * Get Activity object by id
+     *
+     * @param {string/number} id activity id
+     * @returns {object} activity object matching sent id
+     */
+    function findById (id) {
       return activityTypes[id];
-    };
+    }
   }
 })(angular, CRM.$, CRM._, CRM);

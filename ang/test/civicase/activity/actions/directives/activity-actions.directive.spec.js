@@ -27,7 +27,7 @@
         });
       });
 
-      describe('custom action', () => {
+      describe('when selecting activity custom actions', () => {
         beforeEach(() => {
           $scope.selectedActivities = [{
             'api.Activity.getactionlinks': [
