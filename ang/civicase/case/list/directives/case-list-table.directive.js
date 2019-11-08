@@ -77,7 +77,6 @@
       $scope.casePlaceholders = _.range($scope.page.size);
       initiateWatchers();
       initSubscribers();
-      getAllCasesforSelectAll();
     }());
 
     $scope.applyAdvSearch = function (newFilters) {
@@ -364,7 +363,7 @@
       $scope.selectedCases = []; // Resets all selection.
       $scope.isSelectAllAvailable = false;
       var params = getCaseApiParams(angular.extend({}, $scope.filters, $scope.hiddenFilters), $scope.sort, $scope.page);
-      delete params[1];
+      params = params.splice(0, 1);
       params[0][2].return = ['case_type_id', 'status_id', 'is_deleted', 'contacts'];
       params[0][2].options.limit = 0;
 
@@ -381,7 +380,7 @@
       $scope.$watchCollection('sort', updateCases);
       $scope.$watchCollection('page.num', function () {
         $('.civicase__case-list-panel').scrollTop(0); // Scrolls the caselist to top once new data loads
-        updateCases(arguments);
+        updateCases.apply(null, arguments);
       });
       $scope.$watch('cases', casesWatcher, true);
     }

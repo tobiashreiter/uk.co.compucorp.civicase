@@ -8,7 +8,7 @@
 var autoprefixer = require('gulp-autoprefixer');
 var glob = require('gulp-sass-glob');
 var civicrmScssRoot = require('civicrm-scssroot')();
-var cssmin = require('gulp-cssmin');
+var cleanCSS = require('gulp-clean-css');
 var gulp = require('gulp');
 var postcss = require('gulp-postcss');
 var postcssDiscardDuplicates = require('postcss-discard-duplicates');
@@ -47,7 +47,7 @@ function sassTask () {
       exclude: [/^body/, /page-civicrm-case/, OUTSIDE_NAMESPACE_REGEX]
     }), postcssDiscardDuplicates]))
     .pipe(transformSelectors(removeOutsideNamespaceMarker, { splitOnCommas: true }))
-    .pipe(cssmin({ sourceMap: true }))
+    .pipe(cleanCSS({ sourceMap: true }))
     .pipe(rename({ suffix: '.min' }))
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('css/'));
