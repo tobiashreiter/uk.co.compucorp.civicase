@@ -19,8 +19,9 @@
     this.isActionEnabled = function ($scope) {
       var isBulkAction = $scope.mode === 'case-activity-bulk-action';
       if (!isBulkAction) {
-        var isDraftCommunicationTypeActivity = $scope.selectedActivities[0].category.indexOf('communication') >= 0 &&
-        $scope.selectedActivities[0].status_name === 'Draft';
+        var isDraftCommunicationTypeActivity =
+          $scope.selectedActivities[0].category.indexOf('communication') >= 0 &&
+          $scope.selectedActivities[0].status_name === 'Draft';
 
         return isDraftCommunicationTypeActivity;
       }

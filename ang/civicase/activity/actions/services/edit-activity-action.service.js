@@ -23,7 +23,7 @@
           'Print PDF Letter'
         ];
 
-        return !_.includes(nonEditableActivityTypes, activityType) && $scope.getEditActivityUrl;
+        return !_.includes(nonEditableActivityTypes, activityType) && !!$scope.getEditActivityUrl;
       }
     };
 
