@@ -5,8 +5,10 @@
 
   /**
    * View Activity Action
+   *
+   * @param {object} ActivityType activity type service
    */
-  function ViewActivityAction () {
+  function ViewActivityAction (ActivityType) {
     /**
      * Check if the Action is enabled
      *
@@ -15,10 +17,14 @@
      */
     this.isActionEnabled = function ($scope) {
       var isBulkAction = $scope.mode === 'case-activity-bulk-action';
-      var isDraftCommunicationTypeActivity = $scope.selectedActivities[0].category.indexOf('communication') >= 0 &&
+
+      var activityTypeName = ActivityType.findById($scope.selectedActivities[0].activity_type_id).name;
+
+      var isDraftEmailOrPdfTypeActivity =
+        (activityTypeName === 'Email' || activityTypeName === 'Print PDF Letter') &&
         $scope.selectedActivities[0].status_name === 'Draft';
 
-      return !isBulkAction && !isDraftCommunicationTypeActivity;
+      return !isBulkAction && !isDraftEmailOrPdfTypeActivity;
     };
   }
 })(angular);

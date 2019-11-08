@@ -108,7 +108,7 @@
       </div>
 
       <button
-        ng-if="activity.status_name === 'Draft' && activity.category.indexOf('communication') >= 0"
+        ng-if="checkIfDraftEmailOrPDFActivity(activity)"
         type="button" ng-click="viewInPopup(null, activity)"
         class="btn btn-primary civicase__activity-panel__resume-draft">
         Resume Draft
