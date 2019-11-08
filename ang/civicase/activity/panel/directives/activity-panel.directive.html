@@ -104,7 +104,15 @@
     </div>
     <div class="panel-body">
       <div
-        class="civicase__activity-panel__core_container civicase__activity-panel__core_container--{{ activity.status | lowercase }}"></div>
+        class="civicase__activity-panel__core_container civicase__activity-panel__core_container--{{ activity.status | lowercase }}">
+      </div>
+
+      <button
+        ng-if="activity.status_name === 'Draft' && activity.category.indexOf('communication') >= 0"
+        type="button" ng-click="viewInPopup(null, activity)"
+        class="btn btn-primary civicase__activity-panel__resume-draft">
+        Resume Draft
+      </button>
     </div>
   </div>
 </div>
