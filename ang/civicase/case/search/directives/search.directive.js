@@ -380,7 +380,7 @@
     function setPageTitle (event, displayNameOfSelectedItem, totalCount) {
       var filters = $scope.filters;
       var hasCaseTypeFilters = filters.case_type_id && filters.case_type_id.length;
-      var hasFiltersNotUsedForTitle = _.size(_.omit(filters, ['status_id', 'case_type_id']));
+      var hasFiltersNotUsedForTitle = _.size(_.omit(filters, ['status_id', 'case_type_category', 'case_type_id']));
       var hasStatusFilters = filters.status_id && filters.status_id.length;
       var hasTotalCount = typeof totalCount === 'number';
 

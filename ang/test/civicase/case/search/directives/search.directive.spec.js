@@ -247,6 +247,20 @@
           });
         });
 
+        describe('when cases are filtered by case type category', () => {
+          beforeEach(() => {
+            $scope.filters = {
+              case_type_category: '1'
+            };
+
+            $scope.$emit(updateTitleEventName);
+          });
+
+          it('displays an "all open cases" title', () => {
+            expect($scope.pageTitle).toEqual('All Open  Cases');
+          });
+        });
+
         describe('when there are filters not used for describing the title', () => {
           beforeEach(() => {
             $scope.filters = [{ case_manager: [1] }];
