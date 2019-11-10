@@ -1,5 +1,5 @@
 /* eslint-env jasmine */
-(function ($) {
+(function ($, _) {
   describe('civicaseSearch', function () {
     var $controller, $rootScope, $scope, CaseFilters, CaseStatuses, CaseTypes, crmApi, affixOriginalFunction,
       offsetOriginalFunction, originalDoSearch, orginalParentScope, affixReturnValue,
@@ -335,6 +335,18 @@
             });
           });
         });
+
+        describe('when a case count is provided', () => {
+          const randomCount = _.random(0, 1000);
+
+          beforeEach(() => {
+            $scope.$emit(updateTitleEventName, null, randomCount);
+          });
+
+          it('adds the count at the end of the title', () => {
+            expect($scope.pageTitle).toEqual(`All Open  Cases (${randomCount})`);
+          });
+        });
       });
     });
 
@@ -350,4 +362,4 @@
       });
     }
   });
-}(CRM.$));
+}(CRM.$, CRM._));
