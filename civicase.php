@@ -532,6 +532,9 @@ function civicase_civicrm_alterAPIPermissions($entity, $action, &$params, &$perm
     ],
   ];
 
+  $locationTypePermissions = array_merge($permissions['default']['default'], ['access CiviCRM']);
+  $permissions['location_type']['get'] = [$locationTypePermissions];
+
   $permissions['case']['getcount'] = [
     [
       'access my cases and activities',
