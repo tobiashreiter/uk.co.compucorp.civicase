@@ -32,7 +32,7 @@
     /**
      * Link function for caseActivityCard
      *
-     * @param {Object} scope
+     * @param {object} scope scope object of the controller
      */
     function caseActivityCardLink (scope) {
       scope.bootstrapThemeElement = $('#bootstrap-theme');
@@ -41,17 +41,30 @@
 
   module.controller('caseActivityCardController', caseActivityCardController);
 
-  function caseActivityCardController ($scope, dialogService, crmApi, crmBlocker, crmStatus, DateHelper, ts) {
+  /**
+   *
+   * @param {object} $scope scope object of the controller
+   * @param {object} dialogService service to open the dialog box
+   * @param {Function} crmApi service to interact with the civicrm api
+   * @param {object} crmBlocker crm blocker service
+   * @param {object} crmStatus crm status service
+   * @param {object} DateHelper date helper service
+   * @param {object} ts ts service
+   * @param {Function} viewInPopup factory to view an activity in a popup
+   */
+  function caseActivityCardController ($scope, dialogService, crmApi, crmBlocker,
+    crmStatus, DateHelper, ts, viewInPopup) {
     $scope.ts = ts;
     $scope.formatDate = DateHelper.formatDate;
 
     /**
      * Mark an activity as complete
      *
-     * @param {object} activity
+     * @param {object} activity activity object
+     * @returns {Promise} api call promise
      */
     $scope.markCompleted = function (activity) {
-      return crmApi([['Activity', 'create', {id: activity.id, status_id: activity.is_completed ? 'Scheduled' : 'Completed'}]])
+      return crmApi([['Activity', 'create', { id: activity.id, status_id: activity.is_completed ? 'Scheduled' : 'Completed' }]])
         .then(function (data) {
           if (!data[0].is_error) {
             activity.is_completed = !activity.is_completed;
@@ -63,21 +76,25 @@
     /**
      * Toggle an activity as favourite
      *
-     * @param {object} $event
-     * @param {object} activity
+     * @param {object} $event event object
+     * @param {object} activity activity object
      */
     $scope.toggleActivityStar = function ($event, activity) {
       $event.stopPropagation();
       activity.is_star = activity.is_star === '1' ? '0' : '1';
       // Setvalue api avoids messy revisioning issues
-      $scope.refresh([['Activity', 'setvalue', {id: activity.id, field: 'is_star', value: activity.is_star}]], true);
+      $scope.refresh([['Activity', 'setvalue', {
+        id: activity.id,
+        field: 'is_star',
+        value: activity.is_star
+      }]], true);
     };
 
     /**
      * Click handler for Activity Card
      *
-     * @param {object} $event
-     * @param {object} activity
+     * @param {object} $event event object
+     * @param {object} activity activity object
      */
     $scope.viewActivityDetails = function ($event, activity) {
       if ($scope.customClickEvent) {
@@ -90,36 +107,24 @@
     /**
      * View the sent activity details in the popup
      *
-     * @param {object} $event
-     * @param {object} activity
+     * @param {object} $event event object
+     * @param {object} activity activity object
      */
     $scope.viewInPopup = function ($event, activity) {
-      var activityFormUrl = 'civicrm/activity';
-      var activityFormParams = {
-        action: 'update',
-        id: activity.id,
-        reset: 1
-      };
+      var response = viewInPopup($event, activity);
 
-      if ($event && $($event.target).is('a, a *, input, button, button *')) {
-        return;
+      if (response) {
+        response
+          .on('crmFormSuccess', function () {
+            $scope.refresh();
+          });
       }
-
-      if (activity.case_id) {
-        activityFormUrl = 'civicrm/case/activity';
-        activityFormParams.caseid = activity.case_id;
-      }
-
-      CRM.loadForm(CRM.url(activityFormUrl, activityFormParams))
-        .on('crmFormSuccess', function () {
-          $scope.refresh();
-        });
     };
 
     /**
      * Gets attachments for an activity
      *
-     * @param {object} activity
+     * @param {object} activity activity object
      */
     $scope.getAttachments = function (activity) {
       if (!activity.attachments) {
@@ -137,15 +142,20 @@
       /**
        * Deletes file of an activity
        *
-       * @params {Object} activity
-       * @params {Object} file
+       * @param {object} activity activity object
+       * @param {object} file file object
+       * @returns {Promise} promise
        */
       $scope.deleteFile = function (activity, file) {
-        var p = crmApi('Attachment', 'delete', {id: file.id})
+        var promise = crmApi('Attachment', 'delete', { id: file.id })
           .then(function () {
             $scope.refresh();
           });
-        return crmBlocker(crmStatus({start: $scope.ts('Deleting...'), success: $scope.ts('Deleted')}, p));
+
+        return crmBlocker(crmStatus({
+          start: $scope.ts('Deleting...'),
+          success: $scope.ts('Deleted')
+        }, promise));
       };
     };
   }

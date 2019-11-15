@@ -54,7 +54,7 @@ module.exports = function (config) {
       return obj;
     })({}),
     ngHtml2JsPreprocessor: {
-      stripPrefix: extPath + '/ang',
+      stripPrefix: 'ext/uk.co.compucorp.civicase/ang',
       prependPrefix: '~',
       moduleName: 'civicase.templates'
     },

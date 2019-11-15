@@ -107,19 +107,37 @@
    * @param {object} DateHelper date helper service
    * @param {object} Priority priority service
    * @param {object} ActivityStatus activity status service
+   * @param {object} ActivityType activity type service
    */
   function civicaseActivityPanelController ($scope, $rootScope, dialogService,
-    crmApi, crmBlocker, crmStatus, DateHelper, Priority, ActivityStatus) {
+    crmApi, crmBlocker, crmStatus, DateHelper, Priority, ActivityStatus, ActivityType) {
     $scope.activityPriorties = Priority.getAll();
     $scope.allowedActivityStatuses = {};
     $scope.closeDetailsPanel = closeDetailsPanel;
     $scope.setStatusTo = setStatusTo;
     $scope.setPriorityTo = setPriorityTo;
+    $scope.checkIfDraftEmailOrPDFActivity = checkIfDraftEmailOrPDFActivity;
 
     (function init () {
       $scope.$watch('activity.id', showActivityDetails);
       $scope.$on('civicase::case-details::unfocused', closeDetailsPanel);
     }());
+
+    /**
+     * Checks if the given activity is in draft state and is of email of pdf type
+     *
+     * @param {object} activity activty object
+     * @returns {boolean} if email or pdf type and if in draft state
+     */
+    function checkIfDraftEmailOrPDFActivity (activity) {
+      var activityTypeName = ActivityType.findById(activity.activity_type_id).name;
+
+      var isDraftEmailOrPdfTypeActivity =
+        (activityTypeName === 'Email' || activityTypeName === 'Print PDF Letter') &&
+        activity.status_name === 'Draft';
+
+      return isDraftEmailOrPdfTypeActivity;
+    }
 
     /**
      * Close the activity details panel

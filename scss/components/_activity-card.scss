@@ -260,30 +260,37 @@
   }
 }
 
-.civicase__activity-card-menu.btn-group {
-  .btn {
-    border: 0;
-    height: 18px;
-    margin-left: 6px;
-    padding: 0;
-    top: 0;
-    width: 18px;
+.civicase__activity-card-menu {
+  .material-icons {
+    vertical-align: initial;
+  }
 
-    .material-icons {
-      font-size: 18px;
+  &.btn-group {
+    .btn {
+      border: 0;
+      height: 18px;
+      margin-left: 6px;
+      padding: 0;
+      top: 0;
+      width: 18px;
+
+      .material-icons {
+        font-size: 18px;
+      }
+
+      &.dropdown-toggle {
+        background: transparent;
+        box-shadow: none;
+      }
     }
 
-    &.dropdown-toggle {
-      background: transparent;
-      box-shadow: none;
+    > .dropdown-menu {
+      left: 50% !important; // important used to override incorrect inline styles
+      top: 150% !important; // important used to override incorrect inline styles
+      transform: translateX(-100%);
     }
   }
 
-  > .dropdown-menu {
-    left: 50% !important; // important used to override incorrect inline styles
-    top: 150% !important; // important used to override incorrect inline styles
-    transform: translateX(-100%);
-  }
 }
 
 .civicase__activity-attachment__file-icon {

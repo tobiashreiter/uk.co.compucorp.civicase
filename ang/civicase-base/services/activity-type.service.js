@@ -7,8 +7,28 @@
    * Activity Types Service
    */
   function ActivityType () {
-    this.getAll = function () {
-      return CRM['civicase-base'].activityTypes;
-    };
+    var activityTypes = CRM['civicase-base'].activityTypes;
+
+    this.getAll = getAll;
+    this.findById = findById;
+
+    /**
+     * Get all Activity types
+     *
+     * @returns {Array} all activity types
+     */
+    function getAll () {
+      return activityTypes;
+    }
+
+    /**
+     * Get Activity object by id
+     *
+     * @param {string/number} id activity id
+     * @returns {object} activity object matching sent id
+     */
+    function findById (id) {
+      return activityTypes[id];
+    }
   }
 })(angular, CRM.$, CRM._, CRM);
