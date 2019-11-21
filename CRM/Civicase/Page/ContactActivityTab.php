@@ -21,9 +21,6 @@ class CRM_Civicase_Page_ContactActivityTab extends CRM_Core_Page {
    */
   public function preProcess() {
     $this->_contactId = CRM_Utils_Request::retrieve('cid', 'Positive', $this, TRUE);
-    $this->assign('contactId', $this->_contactId);
-    // FIXME: need to fix this conflict.
-    $this->assign('contactID', $this->_contactId);
 
     // Check logged in url permission.
     CRM_Contact_Page_View::checkUserPermission($this);
