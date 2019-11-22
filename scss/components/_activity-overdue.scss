@@ -18,7 +18,7 @@
 
   &::before,
   &::after {
-    border-radius: 50%;
+    border-radius: 50% !important;
     font-size: 11px;
     height: 13px;
     line-height: 1em;
@@ -28,6 +28,7 @@
     top: 50%;
     transform: translateY(-50%);
     width: 13px;
+    z-index: 0 !important;
   }
 
   &.civicase__overdue-activity-icon--before {
