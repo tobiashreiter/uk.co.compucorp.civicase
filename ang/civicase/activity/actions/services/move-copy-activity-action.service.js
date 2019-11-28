@@ -3,24 +3,41 @@
 
   module.service('MoveCopyActivityAction', MoveCopyActivityAction);
 
+  /**
+   * Move Copy Activity Action Service
+   *
+   * @param {object} $rootScope rootscope object
+   * @param {object} crmApi service to call civicrm api
+   * @param {object} dialogService service for opening dialog box
+   */
   function MoveCopyActivityAction ($rootScope, crmApi, dialogService) {
     var ts = CRM.ts('civicase');
 
     /**
+     * Perform the action
+     *
+     * @param {object} $scope scope object
+     * @param {object} action action object
+     */
+    this.doAction = function ($scope, action) {
+      moveCopyActivities($scope.selectedActivities, action.operation, $scope.isSelectAll, $scope.params, $scope.totalCount);
+    };
+
+    /**
      * Move/Copy activities
      *
-     * @param {Array} activities
-     * @param {String} operation
-     * @param {Boolean} isSelectAll
-     * @param {Object} params
-     * @param {int} totalCount
+     * @param {Array} activities list of activities
+     * @param {string} operation move or copy operation
+     * @param {boolean} isSelectAll if select all checkbox is true
+     * @param {object} params search parameters for activities to be moved/copied
+     * @param {number} totalCount total number of activities, used when isSelectAll is true
      */
-    this.moveCopyActivities = function (activities, operation, isSelectAll, params, totalCount) {
+    function moveCopyActivities (activities, operation, isSelectAll, params, totalCount) {
       var activitiesCopy = _.cloneDeep(activities);
       var title = operation[0].toUpperCase() + operation.slice(1) +
         ((activities.length === 1)
-          ? ts(' %1Activity', {1: activities[0].type ? activities[0].type + ' ' : ''})
-          : ts(' %1 Activities', {1: isSelectAll ? totalCount : activities.length}));
+          ? ts(' %1Activity', { 1: activities[0].type ? activities[0].type + ' ' : '' })
+          : ts(' %1 Activities', { 1: isSelectAll ? totalCount : activities.length }));
       var model = {
         ts: ts,
         case_id: (activities.length > 1 || isSelectAll) ? '' : activitiesCopy[0].case_id,
@@ -35,7 +52,7 @@
         title: title,
         buttons: [{
           text: ts('Save'),
-          icons: {primary: 'fa-check'},
+          icons: { primary: 'fa-check' },
           click: function () {
             moveCopyConfirmationHandler.call(this, operation, model, {
               selectedActivities: activities,
@@ -45,14 +62,14 @@
           }
         }]
       });
-    };
+    }
 
     /**
      * Handles the click event when the move/copy operation is confirmed
      *
-     * @param {String} operation
-     * @param {Object} model
-     * @param {Object} activitiesObject
+     * @param {string} operation move or copy operation
+     * @param {object} model model object for dialog box
+     * @param {object} activitiesObject object containing configuration of activities
      */
     function moveCopyConfirmationHandler (operation, model, activitiesObject) {
       var isCaseIdNew = !_.find(activitiesObject.selectedActivities, function (activity) {
@@ -74,10 +91,10 @@
     /**
      * Prepare the API calls for the move/copy operation
      *
-     * @param {Object} activitiesObject
-     * @param {String} operation
-     * @param {Object} model
-     * @return {Array}
+     * @param {object} activitiesObject object containing configuration of activities
+     * @param {string} operation move or copy operation
+     * @param {object} model model object for dialog box
+     * @returns {Array} api call configuration
      */
     function prepareApiCalls (activitiesObject, operation, model) {
       if (activitiesObject.selectedActivities.length === 1) {
@@ -90,10 +107,10 @@
     /**
      * Prepare the API calls for the move/copy operation
      *
-     * @param {Object} activitiesObject
-     * @param {String} operation
-     * @param {Object} model
-     * @return {Array}
+     * @param {object} activitiesObject object containing configuration of activities
+     * @param {string} operation move or copy operation
+     * @param {object} model model object for dialog box
+     * @returns {Array} api call configuration
      */
     function prepareAPICallsForSingleActivity (activitiesObject, operation, model) {
       var activity = activitiesObject.selectedActivities[0];
@@ -111,10 +128,10 @@
     /**
      * Prepare the API calls for the move/copy operation
      *
-     * @param {Object} activitiesObject
-     * @param {String} operation
-     * @param {Object} model
-     * @return {Array}
+     * @param {object} activitiesObject object containing configuration of activities
+     * @param {string} operation move or copy operation
+     * @param {object} model model object for dialog box
+     * @returns {Array} api call configuration
      */
     function prepareAPICallsForMultipleActivities (activitiesObject, operation, model) {
       var action = operation === 'copy' ? 'copybyquery' : 'movebyquery';

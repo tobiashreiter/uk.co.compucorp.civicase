@@ -3,17 +3,44 @@
 
   module.service('TagsActivityAction', TagsActivityAction);
 
+  /**
+   * Tags Activity Action Service
+   *
+   * @param {object} $rootScope rootscope object
+   * @param {object} crmApi service to use civicrm api
+   * @param {object} dialogService service to open dialog box
+   */
   function TagsActivityAction ($rootScope, crmApi, dialogService) {
+    /**
+     * Check if the Action is enabled
+     *
+     * @param {object} $scope scope object
+     * @returns {boolean} if the action is enabled
+     */
+    this.isActionEnabled = function ($scope) {
+      return $scope.mode === 'case-activity-bulk-action';
+    };
+
+    /**
+     * Perform the action
+     *
+     * @param {object} $scope scope object
+     * @param {object} action action object
+     */
+    this.doAction = function ($scope, action) {
+      manageTags(action.operation, $scope.selectedActivities, $scope.isSelectAll, $scope.params, $scope.totalCount);
+    };
+
     /**
      * Add/Remove tags to activities
      *
-     * @param {String} operation
-     * @param {Array} activities
-     * @param {Boolean} isSelectAll
-     * @param {Object} params
-     * @param {int} totalCount
+     * @param {string} operation add or remove operation
+     * @param {Array} activities list of activities
+     * @param {boolean} isSelectAll if select all checkbox is true
+     * @param {object} params search parameters for activities to be moved/copied
+     * @param {number} totalCount total number of activities, used when isSelectAll is true
      */
-    this.manageTags = function (operation, activities, isSelectAll, params, totalCount) {
+    function manageTags (operation, activities, isSelectAll, params, totalCount) {
       var title, saveButtonLabel;
       title = saveButtonLabel = 'Tag Activities';
 
@@ -32,14 +59,14 @@
             searchParams: params
           });
         });
-    };
+    }
 
     /**
      * Set the model object to be used in the modal
      *
-     * @param {Array} tags
-     * @param {int} numberOfActivities
-     * @return {Object}
+     * @param {Array} tags tags
+     * @param {number} numberOfActivities number of activities
+     * @returns {object} model object for the dialog box
      */
     function setModelObjectForModal (tags, numberOfActivities) {
       var model = {};
@@ -57,8 +84,8 @@
     /**
      * Toggle the State of Generic tags
      *
-     * @param {Object} model
-     * @param {String} tagID
+     * @param {object} model model object for dialog box
+     * @param {string} tagID id of the tag
      */
     function toggleGenericTags (model, tagID) {
       if (model.selectedGenericTags.indexOf(tagID) === -1) {
@@ -73,11 +100,11 @@
     /**
      * Opens the modal for addition/removal of tags
      *
-     * @param {Object} model
-     * @param {String} title
-     * @param {String} saveButtonLabel
-     * @param {String} operation
-     * @param {Object} activitiesObject
+     * @param {object} model model object for dialog box
+     * @param {string} title title of the dialog box
+     * @param {string} saveButtonLabel label for the save button
+     * @param {string} operation name of the operation, add/ remove
+     * @param {object} activitiesObject object containing configuration of activities
      */
     function openTagsModal (model, title, saveButtonLabel, operation, activitiesObject) {
       dialogService.open('TagsActivityAction', '~/civicase/activity/actions/services/tags-activity-action.html', model, {
@@ -87,7 +114,7 @@
         title: title,
         buttons: [{
           text: saveButtonLabel,
-          icons: operation === 'add' ? {primary: 'fa-check'} : false,
+          icons: operation === 'add' ? { primary: 'fa-check' } : false,
           click: function () {
             addRemoveTagsConfirmationHandler.call(this, operation, activitiesObject, model);
           }
@@ -98,10 +125,9 @@
     /**
      * Add/Remove tags confirmation handler
      *
-     * @param {String} operation
-     * @param {Object} activitiesObject
-     * @param {Object} model
-     * @return {Promise}
+     * @param {string} operation name of the operation, add/ remove
+     * @param {object} activitiesObject object containing configuration of activities
+     * @param {object} model model object for dialog box
      */
     function addRemoveTagsConfirmationHandler (operation, activitiesObject, model) {
       var tagIds = model.selectedGenericTags;
@@ -125,10 +151,10 @@
     /**
      * Prepare the API calls for the Add/Remove operation
      *
-     * @param {String} operation
-     * @param {Object} activitiesObject
-     * @param {Array} tagIds
-     * @return {Array}
+     * @param {string} operation name of the operation, add/ remove
+     * @param {object} activitiesObject object containing configuration of activities
+     * @param {Array} tagIds list of tag ids
+     * @returns {Array} configuration for the api call
      */
     function prepareApiCalls (operation, activitiesObject, tagIds) {
       var action = operation === 'add' ? 'createByQuery' : 'deleteByQuery';
@@ -153,12 +179,12 @@
     /**
      * Get the tags for Activities from API end point
      *
-     * @return {Promise}
+     * @returns {Promise} api call promise
      */
     function getTags () {
       return crmApi('Tag', 'get', {
-        'sequential': 1,
-        'used_for': { 'LIKE': '%civicrm_activity%' }
+        sequential: 1,
+        used_for: { LIKE: '%civicrm_activity%' }
       }).then(function (data) {
         return data.values;
       });
@@ -167,10 +193,10 @@
     /**
      * Recursive function to prepare the generic tags
      *
-     * @param {Array} tags
-     * @param {String} parentID
-     * @param {int} level
-     * @return {Array}
+     * @param {Array} tags tags
+     * @param {string} parentID id of the parent tag
+     * @param {number} level level of tag
+     * @returns {Array} tags list
      */
     function prepareGenericTags (tags, parentID, level) {
       var returnArray = [];
@@ -198,8 +224,8 @@
     /**
      * Prepares the tag sets tree
      *
-     * @param {Array} tags
-     * @return {Array}
+     * @param {Array} tags list of tags
+     * @returns {Array} tags tree
      */
     function prepareTagSetsTree (tags) {
       var returnArray = [];

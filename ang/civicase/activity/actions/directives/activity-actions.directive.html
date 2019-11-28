@@ -1,52 +1,16 @@
-<li ng-if="mode === 'case-summary'">
-  <a ng-href="{{ getActivityFeedUrl({ caseId: selectedActivities[0].case_id, activityId: selectedActivities[0].id }) }}">
-    <i class="material-icons">pageview</i> {{ ts('View in Feed') }}
+<li ng-repeat="customAction in customActionsForActivity" ng-if="isActionEnabled(customAction)">
+  <a ng-href="{{ customAction.url }}">
+    <i class="material-icons">{{customAction.icon}}</i> {{ ts(customAction.title) }}
   </a>
 </li>
-<li ng-if="mode === 'case-summary' && isActivityEditable(selectedActivities[0])">
-  <a ng-href="{{ getEditActivityUrl(selectedActivities[0].id) }}" class="crm-popup">
-    <i class="material-icons">edit</i> {{ ts('Edit') }}
-  </a>
+
+<li
+  ng-repeat-start='action in activityActions'
+  ng-if="action.showDividerBeforeThisAction" class="divider">
 </li>
-<li ng-if="isCaseSummaryPage && mode === 'case-activity-bulk-action'">
-  <a href ng-click="printReport(selectedActivities)">
-    <i class="material-icons">print</i> {{ ts('Print Report') }}
-  </a>
-</li>
-<li>
-  <a href ng-click="moveCopyActivity(selectedActivities, 'move', isSelectAll, params, totalCount)">
-    <i class="material-icons">next_week</i> {{ ts('Move to Case') }}
-  </a>
-</li>
-<li>
-  <a href ng-click="moveCopyActivity(selectedActivities, 'copy', isSelectAll, params, totalCount)">
-    <i class="material-icons">filter_none</i> {{ ts('Copy to Case') }}
-  </a>
-</li>
-<li ng-if="mode !== 'case-activity-bulk-action'" ng-repeat="link in selectedActivities[0]['api.Activity.getactionlinks']">
-  <a ng-href="{{ link.url }}" class="{{ link.class }}">
-    <i class="material-icons">filter_none</i>{{ link.name }}
-  </a>
-</li>
-<li ng-if="mode === 'case-activity-bulk-action'">
-  <a href ng-click="manageTags('add', selectedActivities, isSelectAll, params, totalCount)">
-    <i class="material-icons">add_circle</i> {{ ts('Tag - add to activities') }}
-  </a>
-</li>
-<li ng-if="mode === 'case-activity-bulk-action'">
-  <a href ng-click="manageTags('remove', selectedActivities, isSelectAll, params, totalCount)">
-    <i class="material-icons">remove_circle</i> {{ ts('Tag - remove from activities') }}
-  </a>
-</li>
-<li ng-if="mode === 'case-activity-feed' && selectedActivities[0].type === 'File Upload'">
-  <a
-    ng-href="{{ 'civicrm/case/activity/download-all-files' | civicaseCrmUrl:{ activity_id: selectedActivities[0].id } }}">
-    <i class="material-icons">file_download</i> {{ ts('Download All') }}
-  </a>
-</li>
-<li class="divider"></li>
-<li>
-  <a href ng-click="deleteActivity(selectedActivities, isSelectAll, params, totalCount)">
-    <i class="material-icons">delete</i> {{ ts('Delete') }}
+
+<li ng-repeat-end ng-if="isActionEnabled(action)">
+  <a href ng-click="doAction(action)">
+    <i class="material-icons">{{action.icon}}</i> {{ ts(action.title) }}
   </a>
 </li>

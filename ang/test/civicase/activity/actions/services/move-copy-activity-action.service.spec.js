@@ -22,7 +22,8 @@
     }));
 
     describe('Copy Activities bulk action', function () {
-      var activities, modalOpenCall, model, selectedActivities;
+      var activities, modalOpenCall, model;
+      var $scope = {};
 
       beforeEach(function () {
         var caseId = _.uniqueId();
@@ -33,12 +34,12 @@
           activity.case_id = caseId;
         });
 
-        selectedActivities = _.sample(activities, 2);
+        $scope.selectedActivities = _.sample(activities, 2);
       });
 
       describe('when selecting some activities and then copy them to a new case', function () {
         beforeEach(function () {
-          MoveCopyActivityAction.moveCopyActivities(selectedActivities, 'copy');
+          MoveCopyActivityAction.doAction($scope, { operation: 'copy' });
 
           modalOpenCall = dialogServiceMock.open.calls.mostRecent().args;
           model = modalOpenCall[2];
@@ -81,14 +82,14 @@
             expectedActivitySavingCalls = [['Activity', 'copybyquery', {
               case_id: model.case_id,
               subject: model.subject,
-              id: selectedActivities.map(function (activity) {
+              id: $scope.selectedActivities.map(function (activity) {
                 return activity.id;
               })
             }]];
 
             spyOn($.fn, 'dialog');
             spyOn($rootScope, '$broadcast');
-            crmApiMock.and.returnValue($q.resolve([{ values: selectedActivities }]));
+            crmApiMock.and.returnValue($q.resolve([{ values: $scope.selectedActivities }]));
             saveMethod();
             $rootScope.$digest();
           });
@@ -109,11 +110,11 @@
         describe('when the selected case is the same as the current case', function () {
           beforeEach(function () {
             var saveMethod = modalOpenCall[3].buttons[0].click;
-            model.case_id = selectedActivities[0].case_id;
+            model.case_id = $scope.selectedActivities[0].case_id;
 
             spyOn($.fn, 'dialog');
             spyOn($rootScope, '$broadcast');
-            crmApiMock.and.returnValue($q.resolve([{ values: selectedActivities }]));
+            crmApiMock.and.returnValue($q.resolve([{ values: $scope.selectedActivities }]));
             saveMethod();
             $rootScope.$digest();
           });
@@ -134,9 +135,9 @@
 
       describe('when selecting a single activity and copying it to a new case', function () {
         beforeEach(function () {
-          selectedActivities = _.sample(activities, 1);
+          $scope.selectedActivities = _.sample(activities, 1);
 
-          MoveCopyActivityAction.moveCopyActivities(selectedActivities, 'copy');
+          MoveCopyActivityAction.doAction($scope, { operation: 'copy' });
 
           modalOpenCall = dialogServiceMock.open.calls.mostRecent().args;
           model = modalOpenCall[2];
@@ -149,7 +150,7 @@
 
         describe('the model', function () {
           it('defines the case id the same as the selected activity', function () {
-            expect(model.case_id).toBe(selectedActivities[0].case_id);
+            expect(model.case_id).toBe($scope.selectedActivities[0].case_id);
           });
 
           it('displays the subject', function () {
@@ -157,14 +158,15 @@
           });
 
           it('defines an empty subject', function () {
-            expect(model.subject).toBe(selectedActivities[0].subject);
+            expect(model.subject).toBe($scope.selectedActivities[0].subject);
           });
         });
       });
     });
 
     describe('Move Activities bulk action', function () {
-      var activities, modalOpenCall, model, selectedActivities;
+      var activities, modalOpenCall, model;
+      var $scope = {};
 
       beforeEach(function () {
         var caseId = _.uniqueId();
@@ -175,12 +177,12 @@
           activity.case_id = caseId;
         });
 
-        selectedActivities = _.sample(activities, 2);
+        $scope.selectedActivities = _.sample(activities, 2);
       });
 
       describe('when selecting some activities and then move them to a new case', function () {
         beforeEach(function () {
-          MoveCopyActivityAction.moveCopyActivities(selectedActivities, 'move');
+          MoveCopyActivityAction.doAction($scope, { operation: 'move' });
 
           modalOpenCall = dialogServiceMock.open.calls.mostRecent().args;
           model = modalOpenCall[2];
@@ -223,14 +225,14 @@
             expectedActivitySavingCalls = [['Activity', 'movebyquery', {
               case_id: model.case_id,
               subject: model.subject,
-              id: selectedActivities.map(function (activity) {
+              id: $scope.selectedActivities.map(function (activity) {
                 return activity.id;
               })
             }]];
 
             spyOn($.fn, 'dialog');
             spyOn($rootScope, '$broadcast');
-            crmApiMock.and.returnValue($q.resolve([{ values: selectedActivities }]));
+            crmApiMock.and.returnValue($q.resolve([{ values: $scope.selectedActivities }]));
             saveMethod();
             $rootScope.$digest();
           });
@@ -251,11 +253,11 @@
         describe('when the selected case is the same as the current case', function () {
           beforeEach(function () {
             var saveMethod = modalOpenCall[3].buttons[0].click;
-            model.case_id = selectedActivities[0].case_id;
+            model.case_id = $scope.selectedActivities[0].case_id;
 
             spyOn($.fn, 'dialog');
             spyOn($rootScope, '$broadcast');
-            crmApiMock.and.returnValue($q.resolve([{ values: selectedActivities }]));
+            crmApiMock.and.returnValue($q.resolve([{ values: $scope.selectedActivities }]));
             saveMethod();
             $rootScope.$digest();
           });
@@ -276,9 +278,9 @@
 
       describe('when selecting a single activity and moving it to a new case', function () {
         beforeEach(function () {
-          selectedActivities = _.sample(activities, 1);
+          $scope.selectedActivities = _.sample(activities, 1);
 
-          MoveCopyActivityAction.moveCopyActivities(selectedActivities, 'move');
+          MoveCopyActivityAction.doAction($scope, { operation: 'move' });
 
           modalOpenCall = dialogServiceMock.open.calls.mostRecent().args;
           model = modalOpenCall[2];
@@ -291,7 +293,7 @@
 
         describe('the model', function () {
           it('defines the case id the same as the selected activity', function () {
-            expect(model.case_id).toBe(selectedActivities[0].case_id);
+            expect(model.case_id).toBe($scope.selectedActivities[0].case_id);
           });
 
           it('displays the subject', function () {
@@ -299,7 +301,7 @@
           });
 
           it('defines an empty subject', function () {
-            expect(model.subject).toBe(selectedActivities[0].subject);
+            expect(model.subject).toBe($scope.selectedActivities[0].subject);
           });
         });
       });

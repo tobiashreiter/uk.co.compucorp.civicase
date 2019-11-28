@@ -27,10 +27,12 @@
 
     describe('Add Tags to Activities bulk action', function () {
       var modalOpenCall;
+      var $scope = {};
 
       beforeEach(function () {
         crmApiMock.and.returnValue($q.resolve({ values: TagsMockData.get() }));
-        TagsActivityAction.manageTags('add', activitiesMockData.get());
+        $scope.selectedActivities = activitiesMockData.get();
+        TagsActivityAction.doAction($scope, { operation: 'add' });
         $rootScope.$digest();
         modalOpenCall = dialogServiceMock.open.calls.mostRecent().args;
       });
@@ -194,10 +196,12 @@
 
     describe('Remove Tags to Activities bulk action', function () {
       var modalOpenCall;
+      var $scope = {};
 
       beforeEach(function () {
         crmApiMock.and.returnValue($q.resolve({ values: TagsMockData.get() }));
-        TagsActivityAction.manageTags('remove', activitiesMockData.get());
+        $scope.selectedActivities = activitiesMockData.get();
+        TagsActivityAction.doAction($scope, { operation: 'remove' });
         $rootScope.$digest();
         modalOpenCall = dialogServiceMock.open.calls.mostRecent().args;
       });

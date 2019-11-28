@@ -101,7 +101,7 @@
      * Opens the popup for Creating PDF letter
      */
     $scope.createPDFLetter = function () {
-      var pdfLetter = PrintMergeCaseAction.getPath([$scope.item]);
+      var pdfLetter = PrintMergeCaseAction.doAction([$scope.item]);
 
       CRM.loadForm(CRM.url(pdfLetter.path, pdfLetter.query));
     };

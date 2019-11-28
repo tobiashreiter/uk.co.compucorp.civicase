@@ -184,7 +184,8 @@
           // version of chromium, hence the following is used
           expect([
             `calc(-${popoverWidth}px + 100%)`,
-            `calc(100% + -${popoverWidth}px)`
+            `calc(100% + -${popoverWidth}px)`,
+            `calc(100% - ${popoverWidth}px)`
           ]).toContain(arrowCurrentPosition);
         });
       });
@@ -319,7 +320,7 @@
     /**
      * Returns the current position of the popover element.
      *
-     * @return {Object} with the top and left properties representing the popover position.
+     * @returns {object} with the top and left properties representing the popover position.
      */
     function getPopoverCurrentPosition () {
       var $popover = popover.find('.popover');
@@ -331,7 +332,9 @@
      * Returns the position the popover should have if positioned against the given
      * element.
      *
-     * @return {Object} with the top and left properties representing the popover position.
+     * @param {object} $element element
+     * @param {string} direction direction of popover
+     * @returns {object} with the top and left properties representing the popover position.
      */
     function getPopoverExpectedPositionUnderElement ($element, direction) {
       var $popover = popover.find('.popover');

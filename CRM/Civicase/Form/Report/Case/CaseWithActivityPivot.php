@@ -168,7 +168,7 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
       $prefix .= strtolower($value)."_";
     }
 
-    return $prefix;
+    return preg_replace("/[^A-Z0-9_-]/i", '', $prefix);
   }
 
   /**
