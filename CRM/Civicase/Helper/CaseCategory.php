@@ -20,16 +20,49 @@ class CRM_Civicase_Helper_CaseCategory {
    */
   public static function getCategoryName($caseId) {
     $caseTypeCategories = CaseType::buildOptions('case_type_category', 'validate');
+    try {
+      $result = civicrm_api3('Case', 'getsingle', [
+        'id' => $caseId,
+        'return' => ['case_type_id.case_type_category'],
+      ]);
 
-    $result = civicrm_api3('Case', 'getsingle', [
-      'id' => $caseId,
-      'return' => ['case_type_id.case_type_category'],
-    ]);
+      if (!empty($result['case_type_id.case_type_category'])) {
+        $caseCategoryId = $result['case_type_id.case_type_category'];
 
-    if (!empty($result['case_type_id.case_type_category'])) {
-      $caseCategoryId = $result['case_type_id.case_type_category'];
+        return $caseTypeCategories[$caseCategoryId];
+      }
+    } catch (Exception $e) {
+      return NULL;
+    }
 
-      return $caseTypeCategories[$caseCategoryId];
+    return NULL;
+  }
+
+  /**
+   * Returns the case category name for the case typeId.
+   *
+   * @param int $caseTypeId
+   *   The Case Type ID.
+   *
+   * @return string|null
+   *   The Case Category Name.
+   */
+  public static function getCategoryNameForCaseType($caseTypeId) {
+    $caseTypeCategories = CaseType::buildOptions('case_type_category');
+    try {
+      $result = civicrm_api3('CaseType', 'getvalue', [
+        'id' => $caseTypeId,
+        'return' => ['case_type_category'],
+      ]);
+
+      if (!empty($result['is_error'])) {
+        $caseCategoryId = $result['result'];
+
+        return $caseTypeCategories[$caseCategoryId];
+      }
+    }
+    catch(Exception $e) {
+      return NULL;
     }
 
     return NULL;

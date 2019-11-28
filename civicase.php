@@ -498,10 +498,8 @@ function civicase_civicrm_postProcess($formName, &$form) {
  * Implements hook_civicrm_permission().
  */
 function civicase_civicrm_permission(&$permissions) {
-  $permissions['basic case information'] = [
-    'Civicase: basic case information',
-    ts('Allows a user to view only basic information of cases.'),
-  ];
+  $permissionHook = new CRM_Civicase_Hook_Permissions_CaseCategory($permissions);
+  $permissionHook->run();
 }
 
 /**
@@ -519,38 +517,13 @@ function civicase_civicrm_apiWrappers(&$wrappers, $apiRequest) {
  * @link https://docs.civicrm.org/dev/en/master/hooks/hook_civicrm_alterAPIPermissions/
  */
 function civicase_civicrm_alterAPIPermissions($entity, $action, &$params, &$permissions) {
-  $permissions['case']['getfiles'] = [
-    ['access my cases and activities', 'access all cases and activities'],
-    'access uploaded files',
+  $hooks = [
+    new CRM_Civicase_Hook_alterAPIPermissions_Case(),
   ];
 
-  $permissions['case']['get'] = $permissions['custom_value']['gettreevalues'] = [
-    [
-      'access my cases and activities',
-      'access all cases and activities',
-      'basic case information',
-    ],
-  ];
-
-  $locationTypePermissions = array_merge($permissions['default']['default'], ['access CiviCRM']);
-  $permissions['location_type']['get'] = [$locationTypePermissions];
-  $permissions['relationship_type']['getcaseroles'] = $permissions['relationship_type']['get'];
-
-  $permissions['case']['getcount'] = [
-    [
-      'access my cases and activities',
-      'access all cases and activities',
-      'basic case information',
-    ],
-  ];
-
-  $permissions['case_type']['get'] = $permissions['casetype']['getcount'] = [
-    [
-      'access my cases and activities',
-      'access all cases and activities',
-      'basic case information',
-    ],
-  ];
+  foreach ($hooks as $hook) {
+    $hook->run($entity, $action, $params, $permissions);
+  }
 }
 
 /**
@@ -729,8 +702,14 @@ function civicase_civicrm_queryObjects(&$queryObjects, $type) {
  * Implements hook_civicrm_permission_check().
  */
 function civicase_civicrm_permission_check($permission, &$granted) {
-  $permissionsChecker = new CRM_Civicase_Hook_Permissions_Check();
-  $granted = $permissionsChecker->validatePermission($permission, $granted);
+  $hooks = [
+    new CRM_Civicase_Hook_PermissionCheck_ActivityPageView(),
+    new CRM_Civicase_Hook_PermissionCheck_CaseCategory(),
+  ];
+
+  foreach ($hooks as $hook) {
+    $hook->run($permission, $granted);
+  }
 }
 
 /**

@@ -9,11 +9,14 @@
  */
 
 use CRM_Civicase_Helper_GlobRecursive as GlobRecursive;
+use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
 
 load_resources();
 $caseCategoryName = CRM_Utils_Request::retrieve('case_type_category', 'String');
 CRM_Civicase_Hook_Helper_CaseTypeCategory::addWordReplacements($caseCategoryName);
 
+$permissionService = new CaseCategoryPermission();
+$caseCategoryPermissions = $permissionService->get($caseCategoryName);
 
 // The following changes are only relevant to the full-page app.
 if (CRM_Utils_System::getUrlPath() == 'civicrm/case/a') {
@@ -39,7 +42,7 @@ $requires = [
 ];
 $requires = CRM_Civicase_Hook_addDependentAngularModules::invoke($requires);
 
-set_case_actions($options);
+set_case_actions($options, $caseCategoryPermissions);
 set_contact_tasks($options);
 expose_settings($options);
 retrieve_civicase_webform_url($options);
@@ -132,7 +135,7 @@ function get_js_files() {
  *
  * We put this here so it can be modified by other extensions.
  */
-function set_case_actions(&$options) {
+function set_case_actions(&$options, $caseCategoryPermissions) {
   $options['caseActions'] = [
     [
       'title' => ts('Change Case Status'),
@@ -179,7 +182,7 @@ function set_case_actions(&$options) {
       'icon' => 'fa-link',
     ],
   ];
-  if (CRM_Core_Permission::check('administer CiviCase')) {
+  if (CRM_Core_Permission::check($caseCategoryPermissions['ADMINISTER_CASE_CATEGORY']['name'])) {
     $options['caseActions'][] = [
       'title' => ts('Merge 2 Cases'),
       'number' => 2,
@@ -193,7 +196,7 @@ function set_case_actions(&$options) {
       'icon' => 'fa-lock',
     ];
   }
-  if (CRM_Core_Permission::check('delete in CiviCase')) {
+  if (CRM_Core_Permission::check($caseCategoryPermissions['DELETE_IN_CASE_CATEGORY']['name'])) {
     $options['caseActions'][] = [
       'title' => ts('Delete Case'),
       'action' => 'DeleteCases',
