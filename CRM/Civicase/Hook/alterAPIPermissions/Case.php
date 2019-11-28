@@ -66,7 +66,10 @@ class CRM_Civicase_Hook_alterAPIPermissions_Case {
       'access uploaded files',
     ];
 
-    $permissions['case']['get'] = [$basicCasePermissions];
+    $permissions['case']['get'] = $permissions['custom_value']['gettreevalues'] = [$basicCasePermissions];
+    $locationTypePermissions = array_merge($permissions['default']['default'], ['access CiviCRM']);
+    $permissions['location_type']['get'] = [$locationTypePermissions];
+    $permissions['relationship_type']['getcaseroles'] = $permissions['relationship_type']['get'];
     $permissions['case']['getcount'] = [$basicCasePermissions];
     $permissions['case_type']['get'] = [$basicCasePermissions];
     $permissions['casetype']['getcount'] = [$basicCasePermissions];
