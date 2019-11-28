@@ -32,7 +32,7 @@ class CRM_Civicase_Helper_CaseCategory {
         return $caseTypeCategories[$caseCategoryId];
       }
     } catch (Exception $e) {
-
+      return NULL;
     }
 
     return NULL;
@@ -49,16 +49,20 @@ class CRM_Civicase_Helper_CaseCategory {
    */
   public static function getCategoryNameForCaseType($caseTypeId) {
     $caseTypeCategories = CaseType::buildOptions('case_type_category');
+    try {
+      $result = civicrm_api3('CaseType', 'getvalue', [
+        'id' => $caseTypeId,
+        'return' => ['case_type_category'],
+      ]);
 
-    $result = civicrm_api3('CaseType', 'getvalue', [
-      'id' => $caseTypeId,
-      'return' => ['case_type_category'],
-    ]);
+      if (!empty($result['is_error'])) {
+        $caseCategoryId = $result['result'];
 
-    if (!empty($result['is_error'])) {
-      $caseCategoryId = $result['result'];
-
-      return $caseTypeCategories[$caseCategoryId];
+        return $caseTypeCategories[$caseCategoryId];
+      }
+    }
+    catch(Exception $e) {
+      return NULL;
     }
 
     return NULL;
