@@ -17,7 +17,6 @@
         all: 1,
         redact: 0,
         cid: selectedCase.client[0].contact_id,
-        asn: 'standard_timeline',
         caseID: selectedCase.id
       });
       var win = window.open(url, '_blank');
