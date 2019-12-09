@@ -11,12 +11,21 @@
 
   module.controller('civicaseDashboardController', civicaseDashboardController);
 
-  function civicaseDashboardController ($scope, crmApi, formatActivity, $timeout, ts) {
+  /**
+   * @param $scope
+   * @param crmApi
+   * @param DashboardActionButtons
+   * @param formatActivity
+   * @param $timeout
+   * @param ts
+   */
+  function civicaseDashboardController ($scope, crmApi, DashboardActionButtons, formatActivity, $timeout, ts) {
     $scope.checkPerm = CRM.checkPerm;
+    $scope.actionButtons = DashboardActionButtons;
     $scope.url = CRM.url;
     $scope.filters = {};
     $scope.activityFilters = {
-      case_filter: {'case_type_id.is_active': 1, contact_is_deleted: 0}
+      case_filter: { 'case_type_id.is_active': 1, contact_is_deleted: 0 }
     };
     $scope.newCaseWebformUrl = CRM.civicase.newCaseWebformUrl;
 
@@ -40,7 +49,7 @@
       if ($scope.myCasesOnly) {
         cf.case_manager = CRM.config.user_contact_id;
       }
-      return '#/case/list?' + $.param({cf: JSON.stringify(cf)});
+      return '#/case/list?' + $.param({ cf: JSON.stringify(cf) });
     };
 
     /**
@@ -62,7 +71,7 @@
     /**
      * Watcher for caseRelationshipType
      *
-     * @param {String} newValue
+     * @param {string} newValue
      */
     function caseRelationshipTypeWatcher (newValue) {
       newValue === 'is_case_manager'
@@ -70,7 +79,7 @@
         : delete ($scope.activityFilters.case_filter.case_manager);
 
       newValue === 'is_involved'
-        ? $scope.activityFilters.case_filter.contact_involved = {'IN': [CRM.config.user_contact_id]}
+        ? $scope.activityFilters.case_filter.contact_involved = { IN: [CRM.config.user_contact_id] }
         : delete ($scope.activityFilters.case_filter.contact_involved);
     }
 
@@ -86,12 +95,12 @@
      */
     function prepareCaseFilterOption () {
       var options = [
-        {'text': ts('My cases'), 'id': 'is_case_manager'},
-        {'text': ts('Cases I am involved in'), 'id': 'is_involved'}
+        { text: ts('My cases'), id: 'is_case_manager' },
+        { text: ts('Cases I am involved in'), id: 'is_involved' }
       ];
 
       if (CRM.checkPerm('access all cases and activities')) {
-        options.push({'text': ts('All Cases'), 'id': 'all'});
+        options.push({ text: ts('All Cases'), id: 'all' });
       }
 
       $scope.caseRelationshipOptions = options;
