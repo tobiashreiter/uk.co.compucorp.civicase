@@ -22,12 +22,23 @@ $options = [
 ];
 
 OptionValuesHelper::setToJsVariables($options);
+expose_settings($options);
+retrieve_civicase_webform_url($options);
 set_case_types_to_js_vars($options);
 set_relationship_types_to_js_vars($options);
 set_file_categories_to_js_vars($options);
 set_activity_status_types_to_js_vars($options);
 set_custom_fields_info_to_js_vars($options);
 set_tags_to_js_vars($options);
+
+/**
+ * Expose settings.
+ */
+function expose_settings(&$options) {
+  $options['allowMultipleCaseClients'] = (bool) Civi::settings()->get('civicaseAllowMultipleClients');
+  $options['allowCaseLocks'] = (bool) Civi::settings()->get('civicaseAllowCaseLocks');
+  $options['defaultCaseCategory'] = strtolower(CRM_Civicase_Helper_CaseCategory::CASE_TYPE_CATEGORY_NAME);
+}
 
 /**
  * Get a list of JS files.
@@ -39,6 +50,28 @@ function get_base_js_files() {
   return array_merge([
     'ang/civicase-base.js',
   ], GlobRecursive::get(dirname(__FILE__) . '/civicase-base/*.js'));
+}
+
+/**
+ * Retrieve civicase webform url.
+ */
+function retrieve_civicase_webform_url(&$options) {
+  // Retrieve civicase webform URL.
+  $allowCaseWebform = Civi::settings()->get('civicaseAllowCaseWebform');
+  $options['newCaseWebformClient'] = 'cid';
+  $options['newCaseWebformUrl'] = $allowCaseWebform ?
+    Civi::settings()->get('civicaseWebformUrl')
+    : NULL;
+
+  if ($options['newCaseWebformUrl']) {
+    $path = explode('/', $options['newCaseWebformUrl']);
+    $nid = array_pop($path);
+    $client = get_client_delta_from_webform($nid);
+
+    if ($client) {
+      $options['newCaseWebformClient'] = 'cid' . $client;
+    }
+  }
 }
 
 /**
