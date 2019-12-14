@@ -12,14 +12,18 @@
   module.controller('civicaseDashboardController', civicaseDashboardController);
 
   /**
-   * @param $scope
-   * @param crmApi
-   * @param DashboardActionButtons
-   * @param formatActivity
-   * @param $timeout
-   * @param ts
+   * Civicase Dashboard Controller.
+   *
+   * @param {object} $scope controller's scope.
+   * @param {Function} crmApi CRM API service reference.
+   * @param {object[]} DashboardActionButtons Dashboard action buttons list.
+   * @param {string} defaultCaseCategory default case type category setting value.
+   * @param {Function} formatActivity Format Activity service reference.
+   * @param {Function} $timeout timeout service reference.
+   * @param {Function} ts translate service reference.
    */
-  function civicaseDashboardController ($scope, crmApi, DashboardActionButtons, formatActivity, $timeout, ts) {
+  function civicaseDashboardController ($scope, crmApi, DashboardActionButtons, defaultCaseCategory,
+    formatActivity, $timeout, ts) {
     $scope.checkPerm = CRM.checkPerm;
     $scope.actionButtons = DashboardActionButtons;
     $scope.url = CRM.url;
@@ -34,7 +38,7 @@
       initWatchers();
       prepareCaseFilterOption();
       $scope.caseTypeCategoryName = getCaseTypeCategoryName();
-      $scope.defaultCaseCategory = CRM['civicase-base'].defaultCaseCategory;
+      $scope.defaultCaseCategory = defaultCaseCategory;
       $scope.ts = ts;
     }());
 
@@ -63,15 +67,17 @@
 
     /**
      * Gets the case type category label.
+     *
+     * @returns {string} the case type category label.
      */
     function getCaseTypeCategoryName () {
       return $scope.activityFilters.case_filter['case_type_id.case_type_category'];
     }
 
     /**
-     * Watcher for caseRelationshipType
+     * Watcher for caseRelationshipType.
      *
-     * @param {string} newValue
+     * @param {string} newValue the new relationship value.
      */
     function caseRelationshipTypeWatcher (newValue) {
       newValue === 'is_case_manager'
