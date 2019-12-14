@@ -13,8 +13,6 @@
 
       $scope = $rootScope.$new();
       $scope.$bindToRoute = jasmine.createSpy('$bindToRoute');
-
-      spyOn(CRM, 'checkPerm');
     }));
 
     describe('on init', () => {
