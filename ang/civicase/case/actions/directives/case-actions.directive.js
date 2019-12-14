@@ -16,9 +16,9 @@
     /**
      * Angular JS's link function for civicaseCaseActions Directive
      *
-     * @param {Object} $scope
-     * @param {Object} element
-     * @param {Object} attributes
+     * @param {object} $scope
+     * @param {object} element
+     * @param {object} attributes
      */
     function civicaseCaseActionsLink ($scope, element, attributes) {
       var ts = CRM.ts('civicase');
@@ -35,7 +35,7 @@
       $scope.isActionAllowed = function (action) {
         var isActionAllowed = true;
         var isLockCaseAction = _.startsWith(action.action, 'lockCases');
-        var isCaseLockAllowed = CRM.civicase.allowCaseLocks;
+        var isCaseLockAllowed = CRM['civicase-base'].allowCaseLocks;
         var caseActionService = getCaseActionService(action.action);
 
         if (caseActionService && caseActionService.isActionAllowed) {
@@ -110,8 +110,8 @@
       /**
        * Get Case Action Service
        *
-       * @param {String} action
-       * @return {Object}
+       * @param {string} action
+       * @returns {object}
        */
       function getCaseActionService (action) {
         try {
@@ -124,8 +124,8 @@
       /**
        * Get Case Action Service
        *
-       * @param {String} action
-       * @return {Object/Boolean}
+       * @param {string} action
+       * @returns {object|boolean}
        */
       function refreshDataForActions () {
         _.each($scope.caseActions, function (action) {

@@ -34,7 +34,7 @@
       initWatchers();
       prepareCaseFilterOption();
       $scope.caseTypeCategoryName = getCaseTypeCategoryName();
-      $scope.defaultCaseCategory = CRM.civicase.defaultCaseCategory;
+      $scope.defaultCaseCategory = CRM['civicase-base'].defaultCaseCategory;
       $scope.ts = ts;
     }());
 

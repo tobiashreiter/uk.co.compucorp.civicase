@@ -32,7 +32,7 @@
     var relTypesByName = _.indexBy(relTypes, 'name_b_a');
     $scope.ts = ts;
 
-    $scope.allowMultipleCaseClients = CRM.civicase.allowMultipleCaseClients;
+    $scope.allowMultipleCaseClients = CRM['civicase-base'].allowMultipleCaseClients;
     $scope.roles = [];
     $scope.rolesFilter = '';
     $scope.rolesPage = 1;
