@@ -11,13 +11,13 @@
       $provide.value('crmApi', crmApi);
     }));
 
-    beforeEach(inject(function (_$controller_, $q, _$rootScope_, _CaseFilters_, _CaseStatuses_, _CaseTypes_) {
+    beforeEach(inject(function (_$controller_, $q, _$rootScope_, _CaseFilters_, _CaseStatuses_, _CaseTypesMockData_) {
       $controller = _$controller_;
       $rootScope = _$rootScope_;
       $scope = $rootScope.$new();
       CaseFilters = _CaseFilters_;
       CaseStatuses = _CaseStatuses_.values;
-      CaseTypes = _CaseTypes_.get();
+      CaseTypes = _CaseTypesMockData_.get();
 
       crmApi.and.returnValue($q.resolve({ values: [] }));
     }));
