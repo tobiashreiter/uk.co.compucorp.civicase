@@ -7,7 +7,7 @@
 
     beforeEach(() => {
       initSpyModule();
-      module('civicase', 'civicase.data', 'civicase.spy');
+      module('civicase-base', 'civicase.data', 'civicase.spy');
 
       // This will initialise the modules:
       inject();
