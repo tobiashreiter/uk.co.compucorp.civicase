@@ -12,7 +12,16 @@
 
   CRM.checkPerm = jasmine.createSpy('checkPerm');
   CRM.loadForm = jasmine.createSpy('loadForm');
-  CRM.url = jasmine.createSpy('url').and.callFake((url) => url);
+  CRM.url = jasmine.createSpy('url').and.callFake((url, searchParamsObject) => {
+    const searchParamsString = CRM._.chain(searchParamsObject)
+      .map((value, key) => {
+        return `${key}=${value}`;
+      })
+      .join('&')
+      .value();
+
+    return `${url}?${searchParamsString}`;
+  });
 
   // Common utility functions for tests
   CRM.testUtils = {
