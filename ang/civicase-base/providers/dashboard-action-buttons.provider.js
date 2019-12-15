@@ -8,7 +8,8 @@
     this.addButtons = addButtons;
 
     /**
-     * Provides the case types.
+     * Provides the dashboard action buttons. These include their services.
+     * The buttons are sorted by their weight.
      *
      * @param {object} $injector Angular's injector service.
      * @param {DashboardActionService} NoOpDashboardActionButton An action button service that does not execute any code.
@@ -16,6 +17,10 @@
      */
     function $get ($injector, NoOpDashboardActionButton) {
       var dashboardActionButtonsWithServices = getDashboardActionButtonsWithServices();
+      dashboardActionButtonsWithServices = _.sortBy(
+        dashboardActionButtonsWithServices,
+        'weight'
+      );
 
       return dashboardActionButtonsWithServices;
 
@@ -71,6 +76,7 @@
  * @property {string} iconClass
  * @property {string} identifier
  * @property {string} label
+ * @property {number} weight
  *
  * @typedef {ButtonConfig} ButtonConfigWithService
  * @property {DashboardActionService} service

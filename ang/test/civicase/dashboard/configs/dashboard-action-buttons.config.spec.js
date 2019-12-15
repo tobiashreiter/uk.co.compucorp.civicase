@@ -22,7 +22,8 @@
             buttonClass: 'btn btn-primary civicase__dashboard__action-btn',
             iconClass: 'add_circle',
             identifier: 'AddCase',
-            label: 'Add Case'
+            label: 'Add Case',
+            weight: 0
           }]));
       });
     });

@@ -28,19 +28,29 @@
         buttonClass: 'btn-1-class',
         iconClass: 'icon-1-class',
         identifier: 'Mock',
-        label: 'Button with service'
+        label: 'Button with service',
+        weight: 2
       };
       const actionButtonWithoutService = {
         buttonClass: 'btn-2-class',
         iconClass: 'icon-2-class',
         identifier: 'None',
-        label: 'Button without service'
+        label: 'Button without service',
+        weight: 3
+      };
+      const firstActionButton = {
+        buttonClass: 'btn-3-class',
+        iconClass: 'icon-3-class',
+        identifier: 'None',
+        label: 'Should be first',
+        weight: 1
       };
 
       beforeEach(() => {
         DashboardActionButtonsProvider.addButtons([
           actionButtonWithService,
-          actionButtonWithoutService
+          actionButtonWithoutService,
+          firstActionButton
         ]);
         injectDependencies();
       });
@@ -67,6 +77,14 @@
           .toContain(_.extend({}, actionButtonWithoutService, {
             service: NoOpDashboardActionButton
           }));
+      });
+
+      it('sorts the action buttons by weight', () => {
+        expect(DashboardActionButtons).toEqual([
+          jasmine.objectContaining(firstActionButton),
+          jasmine.objectContaining(actionButtonWithService),
+          jasmine.objectContaining(actionButtonWithoutService)
+        ]);
       });
     });
 
