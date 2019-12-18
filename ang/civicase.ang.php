@@ -9,6 +9,7 @@
  */
 
 use CRM_Civicase_Helper_GlobRecursive as GlobRecursive;
+use CRM_Civicase_Helper_NewCaseWebform as NewCaseWebform;
 
 load_resources();
 $caseCategoryName = CRM_Utils_Request::retrieve('case_type_category', 'String');
@@ -90,27 +91,6 @@ function update_breadcrumbs() {
     ],
   ];
   CRM_Utils_System::appendBreadCrumb($breadcrumb);
-}
-
-/**
- * Returns the contact number of the client for given webform id.
- *
- * @param int $webform_id
- *   Webform id.
- *
- * @return int
- *   Contact Number.
- */
-function get_client_delta_from_webform($webform_id) {
-  $node = node_load($webform_id);
-  $data = $node->webform_civicrm['data'];
-  $client = 0;
-  if (isset($data['case'][1]['case'][1]['client_id'])) {
-    $clients = $data['case'][1]['case'][1]['client_id'];
-    $client = reset($clients);
-  }
-
-  return $client;
 }
 
 /**
@@ -221,7 +201,7 @@ function add_webforms_case_action(&$options) {
           continue;
         }
 
-        $client = get_client_delta_from_webform($webform['nid']);
+        $client = NewCaseWebform::getCaseWebformClientId($webform['nid']);
 
         $items[] = [
           'title' => $webform['title'],

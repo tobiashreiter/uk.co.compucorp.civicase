@@ -11,6 +11,7 @@
 use Civi\CCase\Utils as Utils;
 use CRM_Civicase_Helper_OptionValues as OptionValuesHelper;
 use CRM_Civicase_Helper_GlobRecursive as GlobRecursive;
+use CRM_Civicase_Helper_NewCaseWebform as NewCaseWebform;
 
 $options = [
   'activityTypes' => 'activity_type',
@@ -23,7 +24,7 @@ $options = [
 
 OptionValuesHelper::setToJsVariables($options);
 expose_settings($options);
-retrieve_civicase_webform_url($options);
+NewCaseWebform::appendUrlToOptions($options);
 set_case_types_to_js_vars($options);
 set_relationship_types_to_js_vars($options);
 set_file_categories_to_js_vars($options);
@@ -50,28 +51,6 @@ function get_base_js_files() {
   return array_merge([
     'ang/civicase-base.js',
   ], GlobRecursive::get(dirname(__FILE__) . '/civicase-base/*.js'));
-}
-
-/**
- * Retrieve civicase webform url.
- */
-function retrieve_civicase_webform_url(&$options) {
-  // Retrieve civicase webform URL.
-  $allowCaseWebform = Civi::settings()->get('civicaseAllowCaseWebform');
-  $options['newCaseWebformClient'] = 'cid';
-  $options['newCaseWebformUrl'] = $allowCaseWebform ?
-    Civi::settings()->get('civicaseWebformUrl')
-    : NULL;
-
-  if ($options['newCaseWebformUrl']) {
-    $path = explode('/', $options['newCaseWebformUrl']);
-    $nid = array_pop($path);
-    $client = get_client_delta_from_webform($nid);
-
-    if ($client) {
-      $options['newCaseWebformClient'] = 'cid' . $client;
-    }
-  }
 }
 
 /**
