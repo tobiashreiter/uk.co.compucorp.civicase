@@ -2,14 +2,20 @@
 
 (($, loadForm, getCrmUrl) => {
   describe('AddCaseDashboardActionButton', () => {
-    let $rootScope, $location, AddCaseDashboardActionButton, defaultCaseCategory,
+    let $location, $window, AddCaseDashboardActionButton, defaultCaseCategory,
       mockedFormPopUp;
+
+    beforeEach(() => {
+      $window = { location: { href: '' } };
+    });
 
     describe('Button Visibility', () => {
       let isButtonVisible;
 
       beforeEach(module('civicase-base', 'civicase'));
-      beforeEach(injectDependencies);
+      beforeEach(() => {
+        injectDependencies();
+      });
 
       describe('when the user can add new cases', () => {
         beforeEach(() => {
@@ -38,40 +44,37 @@
 
     describe('click handler', () => {
       describe('when the new case web form url configuration value is defined', () => {
-        let expectedRedirectedUrl;
         const newCaseWebformUrl = 'http://example.com/';
 
         beforeEach(module('civicase', ($provide) => {
           $provide.constant('newCaseWebformUrl', newCaseWebformUrl);
+          $provide.value('$window', $window);
         }));
 
         beforeEach(() => {
-          expectedRedirectedUrl = getCrmUrl(newCaseWebformUrl);
-
           injectDependencies();
-          spyOn($location, 'url');
           AddCaseDashboardActionButton.clickHandler();
         });
 
         it('redirects the user to the configured web form url value', () => {
-          expect($location.url).toHaveBeenCalledWith(expectedRedirectedUrl);
+          expect($window.location.href).toBe(newCaseWebformUrl);
         });
       });
 
       describe('when the new case web form url configuration value is not defined', () => {
         beforeEach(module('civicase-base', 'civicase', ($provide) => {
           $provide.constant('newCaseWebformUrl', null);
+          $provide.value('$window', $window);
         }));
 
         beforeEach(() => {
           injectDependencies();
           mockFormPopUpDom();
-          spyOn($location, 'url');
           AddCaseDashboardActionButton.clickHandler();
         });
 
         it('does not redirect the user', () => {
-          expect($location.url).not.toHaveBeenCalled();
+          expect($window.location.href).toBe('');
         });
       });
 
@@ -85,7 +88,6 @@
           mockFormPopUpDom();
 
           spyOn($location, 'search').and.returnValue({});
-          spyOn($rootScope, '$emit');
         });
 
         describe('when creating a new case from the default cases dashboard', () => {
@@ -133,10 +135,10 @@
      * Injects and hoists the dependencies used by this spec file.
      */
     function injectDependencies () {
-      inject((_$location_, _$rootScope_, _AddCaseDashboardActionButton_,
+      inject((_$location_, _$window_, _AddCaseDashboardActionButton_,
         _defaultCaseCategory_) => {
         $location = _$location_;
-        $rootScope = _$rootScope_;
+        $window = _$window_;
         AddCaseDashboardActionButton = _AddCaseDashboardActionButton_;
         defaultCaseCategory = _defaultCaseCategory_;
       });

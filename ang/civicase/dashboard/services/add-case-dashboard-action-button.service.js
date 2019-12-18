@@ -7,11 +7,11 @@
    * Dashboard Action Button for adding new cases.
    *
    * @param {object} $location the location service.
-   * @param {object} $rootScope the root scope service.
+   * @param {object} $window the window service.
    * @param {string} defaultCaseCategory the default case type category configuration value.
    * @param {string} newCaseWebformUrl the new case web form url configuration value.
    */
-  function AddCaseDashboardActionButton ($location, $rootScope, defaultCaseCategory,
+  function AddCaseDashboardActionButton ($location, $window, defaultCaseCategory,
     newCaseWebformUrl) {
     this.clickHandler = clickHandler;
     this.isVisible = isVisible;
@@ -71,9 +71,7 @@
      * Redirects the user to the custom webform URL as defined in the configuration.
      */
     function redirectToCustomNewCaseWebformUrl () {
-      var url = getCrmUrl(newCaseWebformUrl);
-
-      $location.url(url);
+      $window.location.href = newCaseWebformUrl;
     }
   }
 })(CRM._, angular, CRM.checkPerm, CRM.loadForm, CRM.url);
