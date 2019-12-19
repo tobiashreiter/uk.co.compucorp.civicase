@@ -2,6 +2,16 @@
 
 (function (_) {
   describe('civicaseActivityMonthNav', function () {
+    beforeEach(function () {
+      jasmine.clock().install();
+      var today = moment('2019-05-05').toDate();
+      jasmine.clock().mockDate(today);
+    });
+
+    afterEach(function () {
+      jasmine.clock().uninstall();
+    });
+
     describe('Activity Month Nav Directive', function () {
       var $compile, $rootScope, $scope, $timeout,
         ActivityFeedMeasurements;
@@ -47,7 +57,7 @@
        * Initializes the civicaseActivityMonthNav directive
        */
       function initDirective () {
-        var html = `<div civicase-activity-month-nav></div>`;
+        var html = '<div civicase-activity-month-nav></div>';
 
         $compile(html)($scope);
         $scope.$digest();
@@ -57,7 +67,7 @@
        * Add aditional markup
        */
       function addAdditionalMarkup () {
-        var markup = `<div class='civicase__activity-feed__body__month-nav'></div>`;
+        var markup = '<div class=\'civicase__activity-feed__body__month-nav\'></div>';
 
         CRM.$(markup).appendTo('body');
       }
