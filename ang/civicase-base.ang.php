@@ -24,7 +24,7 @@ $options = [
 
 OptionValuesHelper::setToJsVariables($options);
 expose_settings($options);
-NewCaseWebform::appendUrlToOptions($options);
+NewCaseWebform::addWebformDataToOptions($options);
 set_case_types_to_js_vars($options);
 set_relationship_types_to_js_vars($options);
 set_file_categories_to_js_vars($options);

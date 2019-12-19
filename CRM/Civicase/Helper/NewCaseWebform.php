@@ -8,7 +8,7 @@ class CRM_Civicase_Helper_NewCaseWebform {
   /**
    * Retrieve civicase webform url.
    */
-  public static function appendUrlToOptions(&$options) {
+  public static function addWebformDataToOptions(&$options) {
     // Retrieve civicase webform URL.
     $allowCaseWebform = Civi::settings()->get('civicaseAllowCaseWebform');
     $options['newCaseWebformClient'] = 'cid';
