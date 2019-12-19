@@ -262,7 +262,7 @@
     });
 
     /**
-     *
+     * Compiles the directive
      */
     function compileDirective () {
       $scope.viewingCaseDetails = formatCase(CasesData.get().values[0]);
@@ -291,7 +291,7 @@
      * Mocks a directive
      * TODO: Have a more generic usage - Maybe create a service/factory
      *
-     * @param {string} directiveName
+     * @param {string} directiveName name of the directive
      */
     function killDirective (directiveName) {
       angular.mock.module(function ($compileProvider) {

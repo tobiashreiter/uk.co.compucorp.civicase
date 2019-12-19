@@ -281,7 +281,11 @@
      * @returns {string} url
      */
     function caseGetParams () {
-      return getCaseQueryParams($scope.item.id, panelLimit, $scope.caseTypeCategory);
+      return getCaseQueryParams({
+        caseId: $scope.item.id,
+        panelLimit: panelLimit,
+        caseTypeCategory: $scope.caseTypeCategory
+      });
     }
 
     /**
