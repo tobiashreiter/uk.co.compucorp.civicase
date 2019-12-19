@@ -102,6 +102,10 @@ function civicrm_api3_custom_value_gettreevalues(array $params) {
       $ret = ['subTypes' => strtolower($params['entity_type']) . '_type_id'];
       break;
 
+    case 'CaseType':
+      $ret = ['subTypes' => 'id'];
+      break;
+
     case 'Participant':
       // Todo.
   }
@@ -133,6 +137,10 @@ function civicrm_api3_custom_value_gettreevalues(array $params) {
     if ($caseCategoryName && $caseCategoryName != 'Cases') {
       $treeParams['entityType'] = $caseCategoryName;
     }
+  }
+
+  if ($treeParams['entityType'] == 'CaseType') {
+    $treeParams['entityType'] = 'AwardsCaseTypes';
   }
 
   $tree = CRM_Core_BAO_CustomGroup::getTree($treeParams['entityType'], $toReturn, $params['entity_id'], NULL, $treeParams['subTypes'], $treeParams['subName'], TRUE, NULL, FALSE, CRM_Utils_Array::value('check_permissions', $params, TRUE));
