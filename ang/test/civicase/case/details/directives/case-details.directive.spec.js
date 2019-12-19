@@ -127,6 +127,12 @@
         expect(element.isolateScope().item.category_count.incomplete.task).toBe(2);
       });
 
+      it('checks whether the user has permission to fetch case details', function () {
+        expect(crmApi).toHaveBeenCalledWith('Case', 'getdetails', jasmine.objectContaining({
+          'case_type_id.case_type_category': 'cases'
+        }));
+      });
+
       describe('Related Cases', function () {
         describe('related cases', function () {
           var relatedCasesByContact, linkedCases;
@@ -213,7 +219,7 @@
 
         controller.getPrintActivityUrl(activitiesMockData.get());
         selectedActivities = activitiesMockData.get().map(function (item) {
-          return item['id'];
+          return item.id;
         }).join(',');
       });
 
@@ -255,16 +261,20 @@
       });
     });
 
+    /**
+     *
+     */
     function compileDirective () {
       $scope.viewingCaseDetails = formatCase(CasesData.get().values[0]);
-      element = $compile('<div civicase-case-details="viewingCaseDetails"></div>')($scope);
+      $scope.caseTypeCategory = 'cases';
+      element = $compile('<div civicase-case-details="viewingCaseDetails" case-type-category="caseTypeCategory"></div>')($scope);
       $scope.$digest();
     }
 
     /**
      * Initializes the case details controller.
      *
-     * @param {Object} caseItem a case item to pass to the controller. Defaults to
+     * @param {object} caseItem a case item to pass to the controller. Defaults to
      * a case from the mock data.
      */
     function initController (caseItem) {
@@ -281,7 +291,7 @@
      * Mocks a directive
      * TODO: Have a more generic usage - Maybe create a service/factory
      *
-     * @param {String} directiveName
+     * @param {string} directiveName
      */
     function killDirective (directiveName) {
       angular.mock.module(function ($compileProvider) {
@@ -384,7 +394,7 @@
     /**
      * Initializes the case details controller.
      *
-     * @param {Object} caseItem a case item to pass to the controller. Defaults to
+     * @param {object} caseItem a case item to pass to the controller. Defaults to
      * a case from the mock data.
      */
     function initController (caseItem) {
