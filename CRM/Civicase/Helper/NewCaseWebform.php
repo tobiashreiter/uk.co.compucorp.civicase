@@ -6,7 +6,7 @@
 class CRM_Civicase_Helper_NewCaseWebform {
 
   /**
-   * Retrieve civicase webform url.
+   * Adds new case webform URL and client data to the options array.
    */
   public static function addWebformDataToOptions(&$options) {
     // Retrieve civicase webform URL.
