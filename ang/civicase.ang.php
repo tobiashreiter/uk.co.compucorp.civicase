@@ -9,6 +9,7 @@
  */
 
 use CRM_Civicase_Helper_GlobRecursive as GlobRecursive;
+use CRM_Civicase_Helper_NewCaseWebform as NewCaseWebform;
 
 load_resources();
 $caseCategoryName = CRM_Utils_Request::retrieve('case_type_category', 'String');
@@ -41,8 +42,6 @@ $requires = CRM_Civicase_Hook_addDependentAngularModules::invoke($requires);
 
 set_case_actions($options);
 set_contact_tasks($options);
-expose_settings($options);
-retrieve_civicase_webform_url($options);
 
 /**
  * Loads Resources.
@@ -92,27 +91,6 @@ function update_breadcrumbs() {
     ],
   ];
   CRM_Utils_System::appendBreadCrumb($breadcrumb);
-}
-
-/**
- * Returns the contact number of the client for given webform id.
- *
- * @param int $webform_id
- *   Webform id.
- *
- * @return int
- *   Contact Number.
- */
-function get_client_delta_from_webform($webform_id) {
-  $node = node_load($webform_id);
-  $data = $node->webform_civicrm['data'];
-  $client = 0;
-  if (isset($data['case'][1]['case'][1]['client_id'])) {
-    $clients = $data['case'][1]['case'][1]['client_id'];
-    $client = reset($clients);
-  }
-
-  return $client;
 }
 
 /**
@@ -223,7 +201,7 @@ function add_webforms_case_action(&$options) {
           continue;
         }
 
-        $client = get_client_delta_from_webform($webform['nid']);
+        $client = NewCaseWebform::getCaseWebformClientId($webform['nid']);
 
         $items[] = [
           'title' => $webform['title'],
@@ -252,33 +230,6 @@ function set_contact_tasks(&$options) {
   foreach (CRM_Contact_Task::$_tasks as $id => $value) {
     if (isset($contactTasks[$id]) && isset($value['url'])) {
       $options['contactTasks'][$id] = $value;
-    }
-  }
-}
-
-/**
- * Expose settings.
- */
-function expose_settings(&$options) {
-  $options['allowMultipleCaseClients'] = (bool) Civi::settings()->get('civicaseAllowMultipleClients');
-  $options['allowCaseLocks'] = (bool) Civi::settings()->get('civicaseAllowCaseLocks');
-  $options['defaultCaseCategory'] = strtolower(CRM_Civicase_Helper_CaseCategory::CASE_TYPE_CATEGORY_NAME);
-}
-
-/**
- * Retrieve civicase webform url.
- */
-function retrieve_civicase_webform_url(&$options) {
-  // Retrieve civicase webform URL.
-  $allowCaseWebform = Civi::settings()->get('civicaseAllowCaseWebform');
-  $options['newCaseWebformUrl'] = $allowCaseWebform ? Civi::settings()->get('civicaseWebformUrl') : NULL;
-  $options['newCaseWebformClient'] = 'cid';
-  if ($options['newCaseWebformUrl']) {
-    $path = explode('/', $options['newCaseWebformUrl']);
-    $nid = array_pop($path);
-    $client = get_client_delta_from_webform($nid);
-    if ($client) {
-      $options['newCaseWebformClient'] = 'cid' . $client;
     }
   }
 }
