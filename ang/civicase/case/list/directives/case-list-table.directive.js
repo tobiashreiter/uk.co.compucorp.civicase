@@ -323,7 +323,10 @@
       if (sort.field !== 'id') {
         returnCaseParams.options.sort += ', id';
       }
-      var params = { 'case_type_id.is_active': 1 };
+      var params = {
+        'case_type_id.is_active': 1,
+        'case_type_id.case_type_category': CRM.civicase.defaultCaseCategory
+      };
       _.each(filters, function (val, filter) {
         if (val || typeof val === 'boolean') {
           if (filter === 'case_type_category') {
