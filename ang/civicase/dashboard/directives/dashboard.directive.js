@@ -93,6 +93,7 @@
      * Initialise watchers
      */
     function initWatchers () {
+      $scope.$on('civicase::dashboard-filters::updated', updateFilterParams);
       $scope.$watch('filters.caseRelationshipType', caseRelationshipTypeWatcher);
     }
 
@@ -110,6 +111,16 @@
       }
 
       $scope.caseRelationshipOptions = options;
+    }
+
+    /**
+     * Update Filter Parameters
+     *
+     * @param {*} event event
+     * @param {*} data data sent from the broadcaster
+     */
+    function updateFilterParams (event, data) {
+      $scope.activityFilters.case_filter.case_type_id = data.case_type_id;
     }
   }
 })(angular, CRM.$);

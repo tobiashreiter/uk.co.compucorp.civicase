@@ -216,17 +216,13 @@
      * Initializes the controller watchers
      */
     function initWatchers () {
+      $scope.$on('civicase::dashboard-filters::updated', refresh);
       $scope.$watchCollection('filters.caseRelationshipType', function (newType, oldType) {
         if (newType === oldType) {
           return;
         }
 
-        $scope.activitiesPanel.query.params = getQueryParams('activities');
-        $scope.newMilestonesPanel.query.params = getQueryParams('milestones');
-        $scope.newCasesPanel.query.params = getQueryParams('cases');
-        $scope.newCasesPanel.custom.viewCasesLink = viewCasesLink();
-
-        loadCaseIds();
+        refresh();
       });
 
       // When the involvement filters change, broadcast the event that will be
@@ -261,6 +257,18 @@
           }
         );
       }, true);
+    }
+
+    /**
+     * Refresh all panels
+     */
+    function refresh () {
+      $scope.activitiesPanel.query.params = getQueryParams('activities');
+      $scope.newMilestonesPanel.query.params = getQueryParams('milestones');
+      $scope.newCasesPanel.query.params = getQueryParams('cases');
+      $scope.newCasesPanel.custom.viewCasesLink = viewCasesLink();
+
+      loadCaseIds();
     }
 
     /**
