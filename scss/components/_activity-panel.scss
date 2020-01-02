@@ -102,6 +102,9 @@
 }
 
 .civicase__activity-panel__core_container {
+  $civicase-activity-panel-form-item-width: 230px;
+  $civicase-activity-panel-form-date-item-width: 160px;
+
   min-height: 200px;
   position: static !important;
 
@@ -192,6 +195,44 @@
       @include button-variant($btn-danger-color, $btn-danger-bg, $btn-danger-border);
 
       background-color: $brand-danger !important;
+    }
+  }
+
+  .crm-form-date-wrapper {
+    display: inline-block;
+  }
+
+  // This special width is added to accomodate date picker icon
+  // Some how the final width applied is 168 - 42 to the input element
+  // and 34px to date picker icon = which counts to: 160px.
+  .crm-form-date {
+    width: $civicase-activity-panel-form-date-item-width + (42px - 34px);
+  }
+
+  // Remaining space (230 - 160px) = 70; - 10px of margin.
+  .crm-form-time {
+    margin-left: 10px;
+    width: $civicase-activity-panel-form-item-width - $civicase-activity-panel-form-date-item-width - 10px;
+  }
+
+  .crm-ajax-select {
+    width: $civicase-activity-panel-form-item-width;
+  }
+
+  // Specific fix for follow up activity subject div
+  // as civicrm doesn't proper classes to qualify for styles.
+  input[name='followup_activity_subject'] { /* stylelint-disable-line selector-no-qualifying-type */
+    width: $civicase-activity-panel-form-item-width;
+  }
+
+  .view-value {
+    > input,
+    > select {
+      width: $civicase-activity-panel-form-item-width;
+    }
+
+    .crm-form-date-wrapper {
+      margin-bottom: 10px;
     }
   }
   /* stylelint-enable max-nesting-depth */
