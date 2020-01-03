@@ -1,8 +1,8 @@
 /* eslint-env jasmine */
 
 (($, loadForm, getCrmUrl) => {
-  describe('AddCaseDashboardActionButton', () => {
-    let $location, $window, AddCaseDashboardActionButton, defaultCaseCategory,
+  describe('AddCaseDashboardActionButtonController', () => {
+    let $location, $window, $rootScope, $scope, $controller, defaultCaseCategory,
       mockedFormPopUp;
 
     beforeEach(() => {
@@ -21,7 +21,7 @@
         beforeEach(() => {
           CRM.checkPerm.and.returnValue(true);
 
-          isButtonVisible = AddCaseDashboardActionButton.isVisible();
+          isButtonVisible = $scope.isVisible();
         });
 
         it('displays the button', () => {
@@ -33,7 +33,7 @@
         beforeEach(() => {
           CRM.checkPerm.and.returnValue(false);
 
-          isButtonVisible = AddCaseDashboardActionButton.isVisible();
+          isButtonVisible = $scope.isVisible();
         });
 
         it('does not display the button', () => {
@@ -53,7 +53,7 @@
 
         beforeEach(() => {
           injectDependencies();
-          AddCaseDashboardActionButton.clickHandler();
+          $scope.clickHandler();
         });
 
         it('redirects the user to the configured web form url value', () => {
@@ -70,7 +70,7 @@
         beforeEach(() => {
           injectDependencies();
           mockFormPopUpDom();
-          AddCaseDashboardActionButton.clickHandler();
+          $scope.clickHandler();
         });
 
         it('does not redirect the user', () => {
@@ -99,7 +99,7 @@
               reset: 1
             });
 
-            AddCaseDashboardActionButton.clickHandler();
+            $scope.clickHandler();
           });
 
           it('opens the new case form for the default case type category', () => {
@@ -121,7 +121,7 @@
             $location.search.and.returnValue({
               case_type_category: caseTypeCategory
             });
-            AddCaseDashboardActionButton.clickHandler();
+            $scope.clickHandler();
           });
 
           it('opens the new case form for the custom case type category', () => {
@@ -132,15 +132,27 @@
     });
 
     /**
+     * Initializes the contact case tab case details controller.
+     */
+    function initController () {
+      $scope = $rootScope.$new();
+
+      $controller('AddCaseDashboardActionButtonController', { $scope: $scope });
+    }
+
+    /**
      * Injects and hoists the dependencies used by this spec file.
      */
     function injectDependencies () {
-      inject((_$location_, _$window_, _AddCaseDashboardActionButton_,
+      inject((_$location_, _$rootScope_, _$window_, _$controller_,
         _defaultCaseCategory_) => {
         $location = _$location_;
         $window = _$window_;
-        AddCaseDashboardActionButton = _AddCaseDashboardActionButton_;
+        $controller = _$controller_;
+        $rootScope = _$rootScope_;
         defaultCaseCategory = _defaultCaseCategory_;
+
+        initController();
       });
     }
 
