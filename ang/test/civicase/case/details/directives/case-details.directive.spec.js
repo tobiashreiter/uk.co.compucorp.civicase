@@ -279,7 +279,7 @@
     });
 
     /**
-     * Compiles the directive.
+     * Compiles the civicase-case-details directive.
      */
     function compileDirective () {
       $scope.viewingCaseDetails = formatCase(CasesData.get().values[0]);
