@@ -103,7 +103,7 @@
 
 .civicase__activity-panel__core_container {
   $civicase-activity-panel-form-item-width: 230px;
-  $civicase-activity-panel-form-date-item-width: 160px;
+  $civicase-activity-panel-form-date-item-width: 145px;
 
   min-height: 200px;
   position: static !important;
@@ -203,13 +203,13 @@
   }
 
   // This special width is added to accomodate date picker icon
-  // Some how the final width applied is 168 - 42 to the input element
-  // and 34px to date picker icon = which counts to: 160px.
+  // Some how the final width applied is 153 - 42 to the input element
+  // and 34px to date picker icon = which counts to: 145px.
   .crm-form-date {
     width: $civicase-activity-panel-form-date-item-width + (42px - 34px);
   }
 
-  // Remaining space (230 - 160px) = 70; - 10px of margin.
+  // Remaining space (230 - 145px) = 70; - 10px of margin.
   .crm-form-time {
     margin-left: 10px;
     width: $civicase-activity-panel-form-item-width - $civicase-activity-panel-form-date-item-width - 10px;
