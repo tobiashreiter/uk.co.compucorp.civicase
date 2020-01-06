@@ -855,6 +855,21 @@
           expect($scope.activitiesPanel.query.params.case_filter.foo).toEqual(newFilterValue);
         });
       });
+
+      describe('when the dashboard filters changed event is fired', function () {
+        var newFilterValue;
+
+        beforeEach(function () {
+          newFilterValue = 'new value';
+          $scope.activityFilters.case_filter.foo = newFilterValue;
+
+          $rootScope.$broadcast('civicase::dashboard-filters::updated');
+        });
+
+        it('reloads all panels', function () {
+          expect($scope.activitiesPanel.query.params.case_filter.foo).toEqual(newFilterValue);
+        });
+      });
     });
 
     /**

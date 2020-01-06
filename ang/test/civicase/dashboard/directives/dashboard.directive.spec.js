@@ -86,6 +86,17 @@
       });
     });
 
+    describe('when the dashboard filters changed event is fired', () => {
+      beforeEach(() => {
+        initController();
+        $rootScope.$broadcast('civicase::dashboard-filters::updated', { case_type_id: 2 });
+      });
+
+      it('reloads the data of the page', () => {
+        expect($scope.activityFilters.case_filter.case_type_id).toBe(2);
+      });
+    });
+
     /**
      * Initializes the dashboard controller.
      */
