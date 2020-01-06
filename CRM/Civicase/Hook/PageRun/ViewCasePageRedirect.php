@@ -37,14 +37,14 @@ class CRM_Civicase_Hook_PageRun_ViewCasePageRedirect {
       'id' => $caseId,
       'return' => [
         'case_type_id.name',
-        'status_id.name',
+        'status_id',
         'case_type_id.case_type_category',
       ],
     ]);
 
     $caseCategoryName = CaseCategoryHelper::getCaseCategoryNameFromOptionValue($case['case_type_id.case_type_category']);
     $url = CRM_Utils_System::url('civicrm/case/a/', ['case_type_category' => strtolower($caseCategoryName)], TRUE,
-      "/case/list?sf=id&sd=DESC&caseId={$caseId}&cf=%7B%22status_id%22:%5B%22{$case['status_id.name']}%22%5D,%22case_type_id%22:%5B%22{$case['case_type_id.name']}%22%5D%7D",
+      "/case/list?sf=id&sd=DESC&caseId={$caseId}&cf=%7B%22case_type_category%22:%22" . strtolower($caseCategoryName) . "%22,%22status_id%22:%5B%22{$case['status_id']}%22%5D,%22case_type_id%22:%5B%22{$case['case_type_id.name']}%22%5D%7D",
       FALSE);
 
     CRM_Utils_System::redirect($url);

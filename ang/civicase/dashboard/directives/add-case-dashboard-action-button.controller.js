@@ -1,20 +1,24 @@
 (function (_, angular, checkPerm, loadForm, getCrmUrl) {
   var module = angular.module('civicase');
 
-  module.service('AddCaseDashboardActionButton', AddCaseDashboardActionButton);
+  module.controller('AddCaseDashboardActionButtonController', AddCaseDashboardActionButtonController);
 
   /**
-   * Dashboard Action Button for adding new cases.
+   * Add Case Dashboard Action Button Controller
    *
+   * @param {object} $scope scope object
+   * @param {object} ts ts
    * @param {object} $location the location service.
    * @param {object} $window the window service.
    * @param {string} defaultCaseCategory the default case type category configuration value.
    * @param {string} newCaseWebformUrl the new case web form url configuration value.
    */
-  function AddCaseDashboardActionButton ($location, $window, defaultCaseCategory,
-    newCaseWebformUrl) {
-    this.clickHandler = clickHandler;
-    this.isVisible = isVisible;
+  function AddCaseDashboardActionButtonController ($scope, ts, $location, $window,
+    defaultCaseCategory, newCaseWebformUrl) {
+    $scope.ts = ts;
+
+    $scope.clickHandler = clickHandler;
+    $scope.isVisible = isVisible;
 
     /**
      * Displays a form to add a new case. If a custom "Add Case" webform url has been configured,

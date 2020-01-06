@@ -2,14 +2,14 @@
 
 (function (_) {
   describe('civicaseDashboardController', function () {
-    var $controller, $rootScope, $scope, DashboardActionButtons;
+    var $controller, $rootScope, $scope, DashboardActionItems;
 
     beforeEach(module('civicase', 'civicase.data'));
 
-    beforeEach(inject(function (_$controller_, _$rootScope_, _DashboardActionButtons_) {
+    beforeEach(inject(function (_$controller_, _$rootScope_, _DashboardActionItems_) {
       $controller = _$controller_;
       $rootScope = _$rootScope_;
-      DashboardActionButtons = _DashboardActionButtons_;
+      DashboardActionItems = _DashboardActionItems_;
 
       $scope = $rootScope.$new();
       $scope.$bindToRoute = jasmine.createSpy('$bindToRoute');
@@ -20,8 +20,8 @@
         initController();
       });
 
-      it('stores the dashboard action buttons', () => {
-        expect($scope.actionButtons).toBe(DashboardActionButtons);
+      it('stores the dashboard action items', () => {
+        expect($scope.actionBarItems).toBe(DashboardActionItems);
       });
     });
 
