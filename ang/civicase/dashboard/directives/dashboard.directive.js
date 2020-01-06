@@ -16,16 +16,16 @@
    *
    * @param {object} $scope controller's scope.
    * @param {Function} crmApi CRM API service reference.
-   * @param {object[]} DashboardActionButtons Dashboard action buttons list.
+   * @param {object[]} DashboardActionItems Dashboard action items list.
    * @param {string} defaultCaseCategory default case type category setting value.
    * @param {Function} formatActivity Format Activity service reference.
    * @param {Function} $timeout timeout service reference.
    * @param {Function} ts translate service reference.
    */
-  function civicaseDashboardController ($scope, crmApi, DashboardActionButtons, defaultCaseCategory,
+  function civicaseDashboardController ($scope, crmApi, DashboardActionItems, defaultCaseCategory,
     formatActivity, $timeout, ts) {
     $scope.checkPerm = CRM.checkPerm;
-    $scope.actionButtons = DashboardActionButtons;
+    $scope.actionBarItems = DashboardActionItems;
     $scope.url = CRM.url;
     $scope.filters = {};
     $scope.activityFilters = {
