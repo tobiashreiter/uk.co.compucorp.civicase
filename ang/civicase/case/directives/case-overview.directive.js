@@ -48,7 +48,7 @@
   function civicaseCaseOverviewController ($scope, crmApi, BrowserCache, CaseStatus, CaseType) {
     var BROWSER_CACHE_IDENTIFIER = 'civicase.CaseOverview.hiddenCaseStatuses';
 
-    $scope.getButtonsForCaseType = CaseType.getButtonsForCaseType;
+    $scope.getItemsForCaseType = CaseType.getItemsForCaseType;
     $scope.summaryData = [];
     $scope.caseStatuses = _.chain(CaseStatus.getAll())
       .sortBy(function (status) { return status.weight; })

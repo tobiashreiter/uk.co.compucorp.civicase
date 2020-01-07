@@ -1,47 +1,43 @@
 /* eslint-env jasmine */
 
 (function (_, angular) {
-  describe('DashboardCaseTypeButtons', () => {
-    let DashboardCaseTypeButtons, DashboardCaseTypeButtonsProvider;
+  describe('DashboardCaseTypeItems', () => {
+    let DashboardCaseTypeItems, DashboardCaseTypeItemsProvider;
 
     beforeEach(() => {
       initSpyModule('civicase.spy', ['civicase']);
       module('civicase', 'civicase.data', 'civicase.spy');
     });
 
-    beforeEach(inject((_DashboardCaseTypeButtons_) => {
-      DashboardCaseTypeButtons = _DashboardCaseTypeButtons_;
+    beforeEach(inject((_DashboardCaseTypeItems_) => {
+      DashboardCaseTypeItems = _DashboardCaseTypeItems_;
     }));
 
     describe('when no buttons have been defined', () => {
       it('returns an empty object', () => {
-        expect(DashboardCaseTypeButtons).toEqual({});
+        expect(DashboardCaseTypeItems).toEqual({});
       });
     });
 
     describe('when adding buttons to case types', () => {
       beforeEach(() => {
-        DashboardCaseTypeButtonsProvider.addButtons('housing_support', [{
-          icon: 'fa fa-cog',
-          url: 'http://housing_support.co.uk/'
+        DashboardCaseTypeItemsProvider.addItems('housing_support', [{
+          templateUrl: '~/civicase/mock-button-template.html'
         }]);
-        DashboardCaseTypeButtonsProvider.addButtons('adult_day_care_referral', [{
-          icon: 'fa fa-cog',
-          url: 'http://adult_day_care_referral.co.uk/'
+        DashboardCaseTypeItemsProvider.addItems('adult_day_care_referral', [{
+          templateUrl: '~/civicase/mock-button-template.html'
         }]);
       });
 
       it('adds the corresponding button to housing support', () => {
-        expect(DashboardCaseTypeButtons.housing_support).toEqual([{
-          icon: 'fa fa-cog',
-          url: 'http://housing_support.co.uk/'
+        expect(DashboardCaseTypeItems.housing_support).toEqual([{
+          templateUrl: '~/civicase/mock-button-template.html'
         }]);
       });
 
       it('adds the corresponding button to adult day care referral', () => {
-        expect(DashboardCaseTypeButtons.adult_day_care_referral).toEqual([{
-          icon: 'fa fa-cog',
-          url: 'http://adult_day_care_referral.co.uk/'
+        expect(DashboardCaseTypeItems.adult_day_care_referral).toEqual([{
+          templateUrl: '~/civicase/mock-button-template.html'
         }]);
       });
     });
@@ -54,8 +50,8 @@
      */
     function initSpyModule (spyModuleName, spyModuleRequirements) {
       angular.module(spyModuleName, spyModuleRequirements)
-        .config((_DashboardCaseTypeButtonsProvider_) => {
-          DashboardCaseTypeButtonsProvider = _DashboardCaseTypeButtonsProvider_;
+        .config((_DashboardCaseTypeItemsProvider_) => {
+          DashboardCaseTypeItemsProvider = _DashboardCaseTypeItemsProvider_;
         });
     }
   });

@@ -17,25 +17,25 @@
     /**
      * Returns an instance of the case type service.
      *
-     * @param {object} DashboardCaseTypeButtons the dashboard case type buttons.
+     * @param {object} DashboardCaseTypeItems the dashboard case type items.
      * @returns {object} the case type service.
      */
-    function $get (DashboardCaseTypeButtons) {
+    function $get (DashboardCaseTypeItems) {
       return {
         getAll: getAll,
-        getButtonsForCaseType: getButtonsForCaseType,
         getByCategory: getByCategory,
+        getItemsForCaseType: getItemsForCaseType,
         getTitlesForNames: getTitlesForNames
       };
 
       /**
-       * Returns the Dashboard buttons for the given case type.
+       * Returns the Dashboard items for the given case type.
        *
        * @param {string} caseTypeName the name of the case type to get the buttons for.
        * @returns {object[]} a list of buttons.
        */
-      function getButtonsForCaseType (caseTypeName) {
-        return DashboardCaseTypeButtons[caseTypeName] || [];
+      function getItemsForCaseType (caseTypeName) {
+        return DashboardCaseTypeItems[caseTypeName] || [];
       }
     }
 
