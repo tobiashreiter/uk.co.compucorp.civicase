@@ -48,7 +48,7 @@
   function civicaseCaseOverviewController ($scope, crmApi, BrowserCache, CaseStatus, CaseType) {
     var BROWSER_CACHE_IDENTIFIER = 'civicase.CaseOverview.hiddenCaseStatuses';
 
-    $scope.getButtonsForCaseType = CaseType.getButtonsForCaseType;
+    $scope.getItemsForCaseType = CaseType.getItemsForCaseType;
     $scope.summaryData = [];
     $scope.caseStatuses = _.chain(CaseStatus.getAll())
       .sortBy(function (status) { return status.weight; })
@@ -162,7 +162,8 @@
       var params = {
         sequential: 1,
         case_type_category: $scope.caseFilter['case_type_id.case_type_category'],
-        id: $scope.caseFilter.case_type_id
+        id: $scope.caseFilter.case_type_id,
+        is_active: 1
       };
 
       return crmApi('CaseType', 'get', params)

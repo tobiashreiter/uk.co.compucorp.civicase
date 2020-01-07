@@ -323,7 +323,7 @@
     function resultsHandler (formatFn, contactsProp, results) {
       // Flattened list of all the contact ids of all the contacts of all the cases
       var contactIds = _(results).pluck(contactsProp).flatten().pluck('contact_id').uniq().value();
-      var formattedResults = results.map(formatFn);
+      var formattedResults = _.map(results, formatFn);
       // The try/catch block is necessary because the service does not
       // return a Promise if it doesn't find any new contacts to fetch
       try {
