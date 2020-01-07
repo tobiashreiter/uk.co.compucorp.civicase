@@ -52,11 +52,12 @@
         compileDirective({ caseTypeCategory: 'cases', caseTypeID: [1, 2] });
       });
 
-      it('fetches the case types', function () {
+      it('fetches the active case types', function () {
         expect(crmApi).toHaveBeenCalledWith('CaseType', 'get', {
           sequential: 1,
           case_type_category: 'cases',
-          id: [1, 2]
+          id: [1, 2],
+          is_active: 1
         });
       });
     });
