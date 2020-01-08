@@ -30,10 +30,7 @@ var OUTSIDE_NAMESPACE_REGEX = /^\.___outside-namespace/;
  * @returns {object} stream
  */
 function sassTask () {
-  return gulp.src([
-    'scss/civicase.scss',
-    'scss/crm-dashboard.scss'
-  ])
+  return gulp.src('scss/civicase.scss')
     .pipe(glob())
     .pipe(sourcemaps.init())
     .pipe(autoprefixer({

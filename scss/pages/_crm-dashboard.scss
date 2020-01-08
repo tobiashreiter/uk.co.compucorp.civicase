@@ -1,0 +1,16 @@
+.___outside-namespace {
+  .page-civicrm-dashboard {
+    #page { /* stylelint-disable selector-max-id */
+      margin: 0;
+      padding-top: 0;
+    }
+
+    .page-title {
+      @include sr-only();
+    }
+
+    .block-civicrm > h2 { /* stylelint-disable selector-max-compound-selectors */
+      margin: 0;
+    }
+  }
+}

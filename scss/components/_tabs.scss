@@ -1,0 +1,21 @@
+.civicase__tabs {
+  &--dark {
+    background-color: $gray-dark;
+
+    li {
+      a {
+        color: $crm-white;
+      }
+
+      a:hover {
+        background-color: $crm-gray-matte;
+      }
+    }
+
+    .active {
+      a::after {
+        border-color: $crm-white;
+      }
+    }
+  }
+}
