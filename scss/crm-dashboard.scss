@@ -1,0 +1,31 @@
+@import 'SCSSROOT/org.civicrm.shoreditch/scss/bootstrap/overrides/variables';
+@import 'SCSSROOT/org.civicrm.shoreditch/scss/bootstrap/vendor/font-awesome/mixins';
+
+.___outside-namespace {
+  .page-civicrm-dashboard {
+    #page { /* stylelint-disable selector-max-id */
+      margin: 0;
+      padding-top: 0;
+    }
+
+    .page-title {
+      @include sr-only();
+    }
+
+    .block-civicrm > h2 { /* stylelint-disable selector-max-compound-selectors */
+      margin: 0;
+    }
+  }
+}
+
+.civicase__crm-dashboard {
+  &__tabs-nav {
+    background-color: $gray-dark;
+
+    li {
+      a:hover {
+        background-color: $crm-gray-matte;
+      }
+    }
+  }
+}
