@@ -40,4 +40,9 @@
     <page_callback>CRM_Civicase_XMLProcessor_Report::printCaseReport</page_callback>
     <access_arguments>access all cases and activities</access_arguments>
   </item>
+  <item>
+    <path>civicrm/dashboard</path>
+    <page_callback>CRM_Civicase_Page_DashboardTabs</page_callback>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
 </menu>
