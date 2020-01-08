@@ -1,5 +1,15 @@
 .civicase__crm-dashboard {
   &__tabs {
     position: relative;
+    width: 100%;
+
+    &.affix {
+      position: fixed;
+      z-index: 11;
+    }
+  }
+
+  &__myactivities-tab {
+    padding: 0;
   }
 }

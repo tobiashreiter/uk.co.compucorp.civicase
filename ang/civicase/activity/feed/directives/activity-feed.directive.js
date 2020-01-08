@@ -76,6 +76,7 @@
     var caseId = $scope.params ? $scope.params.case_id : null;
     var pageNum = { down: 0, up: 0 };
 
+    $scope.filters = {};
     $scope.isMonthNavVisible = true;
     $scope.isLoading = true;
     $scope.isSelectAll = false;
@@ -91,6 +92,10 @@
     $scope.showSpinner = { up: false, down: false };
 
     (function init () {
+      if ($scope.params && $scope.params.filters) {
+        angular.extend($scope.filters, $scope.params.filters);
+      }
+
       bindRouteParamsToScope();
       initiateWatchersAndEvents();
     }());
@@ -199,7 +204,7 @@
      */
     function bindRouteParamsToScope () {
       $scope.$bindToRoute({ param: 'aid', expr: 'aid', format: 'raw', default: 0 });
-      $scope.$bindToRoute({ expr: 'filters', param: 'af', default: {} });
+      $scope.$bindToRoute({ expr: 'filters', param: 'af', default: $scope.filters });
       $scope.$bindToRoute({
         expr: 'displayOptions',
         param: 'ado',
@@ -414,6 +419,12 @@
 
       _.each($scope.filters, function (val, key) {
         if (key[0] === '@') return; // Virtual params.
+        if (key[0] === '$') {
+          var paramKey = key.substr(1, key.length);
+          params[paramKey] = val;
+
+          return;
+        }
         if (key === 'activity_type_id' || key === 'activitySet') {
           setActivityTypeIDsFilter(params);
         } else if (val) {
@@ -430,10 +441,6 @@
           }
         }
       });
-
-      if ($scope.params && $scope.params.filters) {
-        angular.extend(params, $scope.params.filters);
-      }
 
       $rootScope.$broadcast(
         'civicaseActivityFeed.query', {

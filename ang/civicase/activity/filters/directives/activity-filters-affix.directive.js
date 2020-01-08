@@ -9,9 +9,9 @@
     /**
      * Link function for civicaseActivityFiltersAffix
      *
-     * @param {Object} scope
-     * @param {Object} $el
-     * @param {Object} attr
+     * @param {object} scope scope object of the directive
+     * @param {object} $el directive element
+     * @param {object} attr attributes
      */
     function civicaseActivityFiltersAffix (scope, $el, attr) {
       var $filter, $feedBodyPanel, $tabs, $toolbarDrawer;
@@ -22,12 +22,27 @@
       }());
 
       /**
+       * Get Tabs element depending on the page
+       *
+       * @returns {object} tab element
+       */
+      function getTabsElement () {
+        if ($('.civicase__dashboard').length > 0) {
+          return $('.civicase__dashboard__tab-container ul.nav');
+        } else if ($('.civicase__crm-dashboard > ul.nav').length > 0) {
+          return $('.civicase__crm-dashboard > ul.nav');
+        } else {
+          return $('.civicase__case-body_tab');
+        }
+      }
+
+      /**
        * Sets Activity Filters affix offsets
        */
       function affixActivityFilters () {
         $filter = $('.civicase__activity-filter');
         $feedBodyPanel = $('.civicase__activity-filter ~ .panel-body');
-        $tabs = $('.civicase__dashboard').length > 0 ? $('.civicase__dashboard__tab-container ul.nav') : $('.civicase__case-body_tab');
+        $tabs = getTabsElement();
         $toolbarDrawer = $('#toolbar');
         var FEED_BODY_ORIGINAL_PADDING_TOP = 8;
 
