@@ -473,6 +473,7 @@ function civicase_civicrm_postProcess($formName, &$form) {
   $hooks = [
     new CRM_Civicase_Hook_PostProcess_CaseCategoryCustomFieldsSaver(),
     new CRM_Civicase_Hook_PostProcess_ProcessCaseCategoryCustomFieldsForSave(),
+    new CRM_Civicase_Hook_PostProcess_SetUserContextForSaveAndNewCase(),
   ];
 
   foreach ($hooks as $hook) {
