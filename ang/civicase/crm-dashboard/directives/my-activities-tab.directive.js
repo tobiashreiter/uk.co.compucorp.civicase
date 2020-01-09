@@ -5,7 +5,7 @@
     return {
       restrict: 'EA',
       controller: 'CivicaseMyActivitiesTabController',
-      templateUrl: '~/civicase/myactivities/directives/my-activities-tab.directive.html',
+      templateUrl: '~/civicase/crm-dashboard/directives/my-activities-tab.directive.html',
       scope: {}
     };
   });
@@ -18,6 +18,8 @@
    * @param {object} ActivityStatus Activity Status service
    */
   function CivicaseMyActivitiesTabController ($scope, Contact, ActivityStatus) {
+    var INCOMPLETE_ACTIVITY_STATUS_CATEGORY = '0';
+
     $scope.displayOptions = { include_case: true };
     $scope.filters = {
       $contact_id: Contact.getContactIDFromUrl(),
@@ -32,7 +34,7 @@
      */
     function getIncompleteActivityStatusIDs () {
       return _.filter(ActivityStatus.getAll(), function (status) {
-        return status.filter === '0';
+        return status.filter === INCOMPLETE_ACTIVITY_STATUS_CATEGORY;
       }).map(function (status) {
         return status.value;
       });

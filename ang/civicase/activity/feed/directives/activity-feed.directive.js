@@ -419,6 +419,7 @@
 
       _.each($scope.filters, function (val, key) {
         if (key[0] === '@') return; // Virtual params.
+        // keys which starts with `$`, are applied directly after removing `$`
         if (key[0] === '$') {
           var paramKey = key.substr(1, key.length);
           params[paramKey] = val;

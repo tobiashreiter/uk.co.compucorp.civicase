@@ -22,27 +22,12 @@
       }());
 
       /**
-       * Get Tabs element depending on the page
-       *
-       * @returns {object} tab element
-       */
-      function getTabsElement () {
-        if ($('.civicase__dashboard').length > 0) {
-          return $('.civicase__dashboard__tab-container ul.nav');
-        } else if ($('.civicase__crm-dashboard > ul.nav').length > 0) {
-          return $('.civicase__crm-dashboard > ul.nav');
-        } else {
-          return $('.civicase__case-body_tab');
-        }
-      }
-
-      /**
        * Sets Activity Filters affix offsets
        */
       function affixActivityFilters () {
         $filter = $('.civicase__activity-filter');
         $feedBodyPanel = $('.civicase__activity-filter ~ .panel-body');
-        $tabs = getTabsElement();
+        $tabs = $('.civicase__affix__activity-filters');
         $toolbarDrawer = $('#toolbar');
         var FEED_BODY_ORIGINAL_PADDING_TOP = 8;
 

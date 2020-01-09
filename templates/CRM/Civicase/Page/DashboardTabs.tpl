@@ -1,7 +1,7 @@
 <div id="bootstrap-theme" class="civicase__crm-dashboard">
   <ul
     civicase-crm-dashboard-tabset-affix
-    class="nav nav-pills nav-pills-horizontal nav-pills-horizontal-default civicase__crm-dashboard__tabs">
+    class="civicase__affix__activity-filters nav nav-pills nav-pills-horizontal nav-pills-horizontal-default civicase__crm-dashboard__tabs">
     <li class="active"><a href="#dashboard" data-toggle="tab">Dashboard</a></li>
     <li class=""><a href="#myactivities" data-toggle="tab">My Activities</a></li>
   </ul>
@@ -16,7 +16,7 @@
 </div>
 {literal}
 <script type="text/javascript">
-  CRM.$(function(){
+  CRM.$(function() {
     var hashWithoutQueryParams = window.location.hash.split('?')[0];
     var hash = hashWithoutQueryParams.substr(2);
 
@@ -25,6 +25,7 @@
     CRM.$('ul.nav.nav-pills a').click(function (e) {
       CRM.$(this).tab('show');
       window.location.hash = this.hash;
+      CRM.$(window).scrollTop(0);
     });
   });
 
