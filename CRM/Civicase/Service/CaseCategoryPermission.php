@@ -35,11 +35,6 @@ class CRM_Civicase_Service_CaseCategoryPermission {
         'label' => $this->replaceWords('CiviCase: add cases', $caseCategoryName),
         'description' => $this->replaceWords('Open a new case', $caseCategoryName),
       ],
-      'ADMINISTER_CASE_CATEGORY' => [
-        'name' => $this->replaceWords('administer CiviCase', $caseCategoryName),
-        'label' => $this->replaceWords('CiviCase: administer CiviCase', $caseCategoryName),
-        'description' => $this->replaceWords('Define case types, access deleted cases', $caseCategoryName),
-      ],
       'ACCESS_CASE_CATEGORY_AND_ACTIVITIES' => [
         'name' => $this->replaceWords('access all cases and activities', $caseCategoryName),
         'label' => $this->replaceWords('CiviCase: access all cases and activities', $caseCategoryName),

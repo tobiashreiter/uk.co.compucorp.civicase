@@ -72,7 +72,6 @@ class CRM_Civicase_Hook_alterAPIPermissions_Case {
     $permissions['relationship_type']['getcaseroles'] = $permissions['relationship_type']['get'];
     $permissions['case']['getcount'] = [$basicCasePermissions];
     $permissions['case_type']['get'] = [$basicCasePermissions];
-    $permissions['case_type']['create'] = $permissions['case_type']['update'] = [$caseCategoryPermissions['ADMINISTER_CASE_CATEGORY']['name']];
     $permissions['casetype']['getcount'] = [$basicCasePermissions];
     $permissions['custom_value']['gettreevalues'] = [$basicCasePermissions];
 
