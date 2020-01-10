@@ -1,0 +1,7 @@
+.___outside-namespace {
+  .page-civicrm-dashboard,
+  // targets root `page-civicrm` page and doesn't target child `page-civicrm-event` pages (for example):
+  .page-civicrm:not([class*=' page-civicrm-']) {
+    @include case-page;
+  }
+}
