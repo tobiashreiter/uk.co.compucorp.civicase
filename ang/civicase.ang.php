@@ -160,7 +160,7 @@ function set_case_actions(&$options, $caseCategoryPermissions) {
       'icon' => 'fa-link',
     ],
   ];
-  if (CRM_Core_Permission::check($caseCategoryPermissions['ADMINISTER_CASE_CATEGORY']['name'])) {
+  if (CRM_Core_Permission::check('administer CiviCase')) {
     $options['caseActions'][] = [
       'title' => ts('Merge 2 Cases'),
       'number' => 2,
