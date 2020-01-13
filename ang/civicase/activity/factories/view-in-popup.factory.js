@@ -11,7 +11,7 @@
      */
     function viewInPopup ($event, activity) {
       var isClickingAButton = $event && $($event.target).is('a, a *, input, button, button *');
-      var activityForm = ActivityForms.getFormService(activity, {
+      var activityForm = ActivityForms.getActivityFormService(activity, {
         formType: 'popup'
       });
 
@@ -19,7 +19,7 @@
         return;
       }
 
-      return CRM.loadForm(activityForm.getUrl(activity));
+      return CRM.loadForm(activityForm.getActivityFormUrl(activity));
     }
 
     return viewInPopup;
