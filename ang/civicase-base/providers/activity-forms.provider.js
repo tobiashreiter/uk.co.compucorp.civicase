@@ -14,7 +14,7 @@
 
     /**
      * Returns a `getActivityFormService` function that can be used to find
-     * right right form service for the given activity.
+     * the right form service for the given activity.
      *
      * @param {object} $injector the angular injector service.
      * @returns {object} The Activity Forms service.
@@ -27,7 +27,7 @@
         .value();
 
       return {
-        getActivityFormService
+        getActivityFormService: getActivityFormService
       };
 
       /**
