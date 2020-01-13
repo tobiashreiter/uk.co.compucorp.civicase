@@ -14,18 +14,18 @@
     beforeEach(inject);
 
     describe('when the civicase module is configured', () => {
-      it('adds the activity popup form service', () => {
-        expect(ActivityFormsProvider.addActivityForms)
-          .toHaveBeenCalledWith(jasmine.arrayContaining([{
-            name: 'ActivityPopupForm',
-            weight: 0
-          }]));
-      });
-
       it('adds the draft email or pdf activity form service', () => {
         expect(ActivityFormsProvider.addActivityForms)
           .toHaveBeenCalledWith(jasmine.arrayContaining([{
             name: 'DraftEmailOrPdfActivityForm',
+            weight: 0
+          }]));
+      });
+
+      it('adds the activity popup form service', () => {
+        expect(ActivityFormsProvider.addActivityForms)
+          .toHaveBeenCalledWith(jasmine.arrayContaining([{
+            name: 'ActivityPopupForm',
             weight: 1
           }]));
       });

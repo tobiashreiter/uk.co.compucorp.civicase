@@ -12,11 +12,11 @@
   function activityFormsConfiguration (ActivityFormsProvider) {
     var addActivityFormConfigs = [
       {
-        name: 'ActivityPopupForm',
+        name: 'DraftEmailOrPdfActivityForm',
         weight: 0
       },
       {
-        name: 'DraftEmailOrPdfActivityForm',
+        name: 'ActivityPopupForm',
         weight: 1
       },
       {
