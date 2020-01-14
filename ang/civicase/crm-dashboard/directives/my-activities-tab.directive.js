@@ -22,7 +22,7 @@
 
     $scope.displayOptions = { include_case: true };
     $scope.filters = {
-      $contact_id: Contact.getContactIDFromUrl(),
+      $contact_id: Contact.getCurrentContactID(),
       '@involvingContact': 'myActivities',
       status_id: getIncompleteActivityStatusIDs()
     };
