@@ -2,6 +2,7 @@
   &__tabs {
     position: relative;
     width: 100%;
+    z-index: 1;
 
     &.affix {
       position: fixed;

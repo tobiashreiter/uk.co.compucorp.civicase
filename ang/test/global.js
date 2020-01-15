@@ -12,6 +12,10 @@
 
   CRM.checkPerm = jasmine.createSpy('checkPerm');
   CRM.loadForm = jasmine.createSpy('loadForm');
+  CRM.loadForm.and.returnValue({
+    one: jasmine.createSpy(),
+    on: jasmine.createSpy()
+  });
   CRM.url = jasmine.createSpy('url').and.callFake((url, searchParamsObject) => {
     const searchParamsString = CRM._.chain(searchParamsObject)
       .map((value, key) => {

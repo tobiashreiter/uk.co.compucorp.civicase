@@ -213,7 +213,7 @@
 
         controller.getPrintActivityUrl(activitiesMockData.get());
         selectedActivities = activitiesMockData.get().map(function (item) {
-          return item['id'];
+          return item.id;
         }).join(',');
       });
 
@@ -255,6 +255,9 @@
       });
     });
 
+    /**
+     *
+     */
     function compileDirective () {
       $scope.viewingCaseDetails = formatCase(CasesData.get().values[0]);
       element = $compile('<div civicase-case-details="viewingCaseDetails"></div>')($scope);
@@ -264,7 +267,7 @@
     /**
      * Initializes the case details controller.
      *
-     * @param {Object} caseItem a case item to pass to the controller. Defaults to
+     * @param {object} caseItem a case item to pass to the controller. Defaults to
      * a case from the mock data.
      */
     function initController (caseItem) {
@@ -281,7 +284,7 @@
      * Mocks a directive
      * TODO: Have a more generic usage - Maybe create a service/factory
      *
-     * @param {String} directiveName
+     * @param {string} directiveName
      */
     function killDirective (directiveName) {
       angular.mock.module(function ($compileProvider) {
@@ -342,11 +345,13 @@
     });
 
     describe('when creating an email', function () {
-      var loadFormArguments;
+      var loadFormArguments, loadFormBefore;
 
       beforeEach(function () {
         initController();
         spyOn($rootScope, '$broadcast');
+        loadFormBefore = CRM.loadForm;
+        CRM.loadForm = jasmine.createSpy();
         CRM.loadForm.and.returnValue({
           on: function () {
             loadFormArguments = arguments;
@@ -354,6 +359,10 @@
         });
 
         $scope.createEmail();
+      });
+
+      afterEach(function () {
+        CRM.loadForm = loadFormBefore;
       });
 
       it('open a popup to create emails', function () {
@@ -384,7 +393,7 @@
     /**
      * Initializes the case details controller.
      *
-     * @param {Object} caseItem a case item to pass to the controller. Defaults to
+     * @param {object} caseItem a case item to pass to the controller. Defaults to
      * a case from the mock data.
      */
     function initController (caseItem) {
