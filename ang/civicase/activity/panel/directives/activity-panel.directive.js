@@ -60,7 +60,12 @@
           id: activity.id,
           reset: 1,
           context: context
-        }), { target: $(element).find('.civicase__activity-panel__core_container') });
+        }), { target: $(element).find('.civicase__activity-panel__core_container') })
+          .one('crmAjaxError', function () {
+            scope.$apply(function () {
+              scope.closeDetailsPanel();
+            });
+          });
 
         element.find('.crm-submit-buttons a.edit').addClass('btn btn-primary');
       }

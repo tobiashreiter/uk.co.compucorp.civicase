@@ -5,7 +5,7 @@
     var $controller, $rootScope, $scope, crmApi, mockContactId, mockContactService;
 
     beforeEach(module('civicase', ($provide) => {
-      mockContactService = jasmine.createSpyObj('Contact', ['getContactIDFromUrl']);
+      mockContactService = jasmine.createSpyObj('Contact', ['getCurrentContactID']);
 
       $provide.value('Contact', mockContactService);
     }));
@@ -19,7 +19,7 @@
     beforeEach(() => {
       mockContactId = _.uniqueId();
 
-      mockContactService.getContactIDFromUrl.and.returnValue(mockContactId);
+      mockContactService.getCurrentContactID.and.returnValue(mockContactId);
       initController();
     });
 

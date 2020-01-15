@@ -34,7 +34,7 @@
     };
 
     $scope.caseDetailsLoaded = false;
-    $scope.contactId = Contact.getContactIDFromUrl();
+    $scope.contactId = Contact.getCurrentContactID();
     $scope.newCaseWebformUrl = newCaseWebformUrl;
     $scope.newCaseWebformClient = newCaseWebformClient;
     $scope.casesListConfig = [

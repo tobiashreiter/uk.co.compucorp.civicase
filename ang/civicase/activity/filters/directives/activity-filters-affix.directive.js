@@ -9,12 +9,12 @@
     /**
      * Link function for civicaseActivityFiltersAffix
      *
-     * @param {Object} scope
-     * @param {Object} $el
-     * @param {Object} attr
+     * @param {object} scope scope object of the directive
+     * @param {object} $el directive element
+     * @param {object} attr attributes
      */
     function civicaseActivityFiltersAffix (scope, $el, attr) {
-      var $filter, $feedBodyPanel, $tabs, $toolbarDrawer;
+      var $filter, $feedBodyPanel, $tabs, $civicrmMenu;
 
       (function init () {
         affixActivityFilters();
@@ -27,17 +27,17 @@
       function affixActivityFilters () {
         $filter = $('.civicase__activity-filter');
         $feedBodyPanel = $('.civicase__activity-filter ~ .panel-body');
-        $tabs = $('.civicase__dashboard').length > 0 ? $('.civicase__dashboard__tab-container ul.nav') : $('.civicase__case-body_tab');
-        $toolbarDrawer = $('#toolbar');
+        $tabs = $('.civicase__affix__activity-filters');
+        $civicrmMenu = $('#civicrm-menu');
         var FEED_BODY_ORIGINAL_PADDING_TOP = 8;
 
         $timeout(function () {
           $filter.affix({
             offset: {
-              top: $filter.offset().top - ($toolbarDrawer.height() + $tabs.height())
+              top: $filter.offset().top - ($civicrmMenu.height() + $tabs.height())
             }
           }).on('affixed.bs.affix', function () {
-            $filter.css('top', $toolbarDrawer.height() + $tabs.height());
+            $filter.css('top', $civicrmMenu.height() + $tabs.height());
             $feedBodyPanel.css('padding-top', $filter.outerHeight() + FEED_BODY_ORIGINAL_PADDING_TOP);
           }).on('affixed-top.bs.affix', function () {
             $filter.css('top', 'auto');
@@ -53,7 +53,7 @@
         $timeout(function () {
           // Reset right case view tab header
           if ($filter.data('bs.affix')) {
-            $filter.data('bs.affix').options.offset.top = $filter.offset().top - ($toolbarDrawer.height() + $tabs.height());
+            $filter.data('bs.affix').options.offset.top = $filter.offset().top - ($civicrmMenu.height() + $tabs.height());
           }
         });
       }
