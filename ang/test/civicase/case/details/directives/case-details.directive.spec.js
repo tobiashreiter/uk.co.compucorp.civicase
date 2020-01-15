@@ -256,7 +256,7 @@
     });
 
     /**
-     *
+     * Compiles the directive.
      */
     function compileDirective () {
       $scope.viewingCaseDetails = formatCase(CasesData.get().values[0]);

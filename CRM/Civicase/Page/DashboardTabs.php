@@ -12,6 +12,7 @@ class CRM_Civicase_Page_DashboardTabs extends CRM_Contact_Page_DashBoard {
    */
   public function run() {
     $loader = new AngularLoader();
+
     $loader->setPageName('civicrm/dashboard');
     $loader->setModules(['crmApp', 'civicase']);
     $loader->load();
