@@ -17,7 +17,7 @@
    * @param {object} Contact Contact global service
    */
   function CivicaseContactActivityTabController ($scope, Contact) {
-    $scope.filters = { contact_id: Contact.getContactIDFromUrl() };
+    $scope.filters = { $contact_id: Contact.getCurrentContactID() };
     $scope.displayOptions = { include_case: false };
   }
 })(angular, CRM.$, CRM._);

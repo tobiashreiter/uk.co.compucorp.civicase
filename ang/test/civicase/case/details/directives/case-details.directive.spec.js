@@ -262,7 +262,7 @@
     });
 
     /**
-     * Compiles the directive
+     * Compiles the directive.
      */
     function compileDirective () {
       $scope.viewingCaseDetails = formatCase(CasesData.get().values[0]);
@@ -352,11 +352,13 @@
     });
 
     describe('when creating an email', function () {
-      var loadFormArguments;
+      var loadFormArguments, loadFormBefore;
 
       beforeEach(function () {
         initController();
         spyOn($rootScope, '$broadcast');
+        loadFormBefore = CRM.loadForm;
+        CRM.loadForm = jasmine.createSpy();
         CRM.loadForm.and.returnValue({
           on: function () {
             loadFormArguments = arguments;
@@ -364,6 +366,10 @@
         });
 
         $scope.createEmail();
+      });
+
+      afterEach(function () {
+        CRM.loadForm = loadFormBefore;
       });
 
       it('open a popup to create emails', function () {

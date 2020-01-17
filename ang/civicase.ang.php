@@ -244,7 +244,6 @@ return [
     // deduped by resource manager.
     'assetBuilder://visual-bundle.css',
     'css/*.css',
-    'ang/civicase/*.css',
   ],
   'partials' => [
     'ang/civicase',

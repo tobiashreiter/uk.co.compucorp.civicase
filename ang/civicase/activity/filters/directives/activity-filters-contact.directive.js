@@ -1,7 +1,7 @@
 (function (angular, $, _) {
   var module = angular.module('civicase');
 
-  module.directive('civicaseActivityFiltersContact', function () {
+  module.directive('civicaseActivityFiltersContact', function (Contact) {
     return {
       restrict: 'AE',
       replace: true,
@@ -15,7 +15,7 @@
     /**
      * Link function for civicaseActivityFiltersContact
      *
-     * @param {Object} $scope
+     * @param {object} $scope
      */
     function civicaseActivityFiltersContactLink ($scope) {
       $scope.ts = CRM.ts('civicase');
@@ -38,8 +38,8 @@
       /**
        * Subscribe listener for civicaseActivityFeed.query
        *
-       * @param {Object} event
-       * @param {Object} feedQueryParams
+       * @param {object} event
+       * @param {object} feedQueryParams
        */
       function feedQueryListener (event, feedQueryParams) {
         if (feedQueryParams.reset) {
@@ -50,15 +50,15 @@
 
         switch (feedQueryParams.filters['@involvingContact']) {
           case 'myActivities':
-            feedQueryParams.apiParams.contact_id = 'user_contact_id';
+            feedQueryParams.apiParams.contact_id = Contact.getCurrentContactID();
             break;
 
           case 'delegated':
             if (_.isEmpty(feedQueryParams.apiParams.assignee_contact_id)) {
-              feedQueryParams.apiParams.assignee_contact_id = {'!=': 'user_contact_id'};
+              feedQueryParams.apiParams.assignee_contact_id = { '!=': Contact.getCurrentContactID() };
             }
             if (_.isEmpty(feedQueryParams.apiParams.source_contact_id)) {
-              feedQueryParams.apiParams.source_contact_id = 'user_contact_id';
+              feedQueryParams.apiParams.source_contact_id = Contact.getCurrentContactID();
             }
             break;
 
