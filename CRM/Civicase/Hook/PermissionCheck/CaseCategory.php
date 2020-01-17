@@ -59,7 +59,7 @@ class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
    * civicase component. To fix such issues, we check that the user has at least
    * any of the equivalent civicase permissions.
    *
-   * @param string$permission
+   * @param string $permission
    *   Permission String.
    * @param bool $granted
    *   Whether permission is granted or not.
@@ -134,6 +134,7 @@ class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
     $isViewCase = $url == 'civicrm/contact/view/case';
     $isCasePage = ($url == 'civicrm/case/add' || $url == 'civicrm/case/a');
     $isAjaxRequest = $url == 'civicrm/ajax/rest';
+    $isCaseActivityPage = 'civicrm/case/activity';
 
     if ($isViewCase) {
       return $this->getCaseCategoryForViewCase();
@@ -146,6 +147,11 @@ class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
     if ($isCasePage) {
       return $this->getCaseCategoryFromUrl();
     }
+
+    if ($isCaseActivityPage) {
+      return $this->getCaseCategoryForCaseActivity();
+    }
+
   }
 
   /**
@@ -183,6 +189,20 @@ class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
    */
   private function getCaseCategoryForViewCase() {
     $caseId = CRM_Utils_Request::retrieve('id', 'Integer');
+
+    return CaseCategoryHelper::getCategoryName($caseId);
+  }
+
+  /**
+   * Get case category name for case activity page.
+   *
+   * The view case activity page is the page for changing the status of
+   * a case activity or editing a case activity. It does not have the
+   * case type category parameter in the URL since it's an internal civi
+   * page but we can use the Case Id to get the case type category.
+   */
+  private function getCaseCategoryForCaseActivity() {
+    $caseId = CRM_Utils_Request::retrieve('caseid', 'Integer');
 
     return CaseCategoryHelper::getCategoryName($caseId);
   }
