@@ -134,4 +134,31 @@ class CRM_Civicase_Helper_CaseCategory {
     return [];
   }
 
+  /**
+   * Return case count for contact for a case category.
+   *
+   * @param string $caseTypeCategoryName
+   *   Case category name.
+   * @param int $contactId
+   *   Contact ID.
+   *
+   * @return int
+   *   Case count.
+   */
+  public static function getCaseCount($caseTypeCategoryName, $contactId) {
+    $params = [
+      'is_deleted' => 0,
+      'contact_id' => $contactId,
+      'check_permissions' => TRUE,
+      'case_type_id.case_type_category' => $caseTypeCategoryName,
+    ];
+    try {
+      return civicrm_api3('Case', 'getcount', $params);
+    }
+    catch (CiviCRM_API3_Exception $e) {
+      // Lack of permissions will throw an exception.
+      return 0;
+    }
+  }
+
 }
