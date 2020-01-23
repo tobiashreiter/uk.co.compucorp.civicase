@@ -1,6 +1,6 @@
 <?php
 
-use CRM_Civicase_Setup_CreateSafeFileExtentionOptionValue as CreateSafeFileExtentionOptionValue;
+use CRM_Civicase_Setup_CreateSafeFileExtensionOptionValue as CreateSafeFileExtensionOptionValue;
 
 /**
  * Class CRM_Civicase_Upgrader_Steps_Step0008.
@@ -14,7 +14,7 @@ class CRM_Civicase_Upgrader_Steps_Step0008 {
    *   Return value in boolean.
    */
   public function apply() {
-    $step = new CreateSafeFileExtentionOptionValue();
+    $step = new CreateSafeFileExtensionOptionValue();
     $step->apply();
 
     return TRUE;
