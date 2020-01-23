@@ -167,7 +167,7 @@
         } else {
           $scope.viewingCaseDetails = _.findWhere($scope.cases, { id: id });
           $scope.viewingCase = id;
-          $scope.viewingCaseTab = 'summary';
+          $scope.viewingCaseTab = 'Summary';
         }
       }
       setPageTitle();
@@ -182,7 +182,7 @@
       $scope.$bindToRoute({ expr: 'sort.dir', param: 'sd', format: 'raw', default: 'ASC' });
       $scope.$bindToRoute({ expr: 'caseIsFocused', param: 'focus', format: 'bool', default: false });
       $scope.$bindToRoute({ expr: 'viewingCase', param: 'caseId', format: 'raw' });
-      $scope.$bindToRoute({ expr: 'viewingCaseTab', param: 'tab', format: 'raw', default: 'summary' });
+      $scope.$bindToRoute({ expr: 'viewingCaseTab', param: 'tab', format: 'raw', default: 'Summary' });
       $scope.$bindToRoute({ expr: 'page.size', param: 'cps', format: 'int', default: 15 });
       $scope.$bindToRoute({ expr: 'page.num', param: 'cpn', format: 'int', default: 1 });
     }
