@@ -17,6 +17,8 @@
     one: jasmine.createSpy(),
     on: jasmine.createSpy()
   });
+  CRM.confirm = jasmine.createSpy('confirm');
+  CRM.status = jasmine.createSpy('status');
   CRM.url = jasmine.createSpy('url').and.callFake((url, searchParamsObject) => {
     const searchParamsString = CRM._.chain(searchParamsObject)
       .map((value, key) => {
