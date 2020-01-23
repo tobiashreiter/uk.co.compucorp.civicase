@@ -6,6 +6,7 @@ use CRM_Civicase_Setup_AddCaseTypesForCustomGroupExtends as AddCaseTypesForCusto
 use CRM_Civicase_Setup_AddCaseCategoryWordReplacementOptionGroup as AddCaseCategoryWordReplacementOptionGroup;
 use CRM_Civicase_Setup_MoveCaseTypesToCasesCategory as MoveCaseTypesToCasesCategory;
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
+use CRM_Civicase_Setup_CreateSafeFileExtentionOptionValue as CreateSafeFileExtentionOptionValue;
 
 /**
  * Collection of upgrade steps.
@@ -70,6 +71,7 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
       new CreateCasesOptionValue(),
       new AddCaseTypesForCustomGroupExtends(),
       new MoveCaseTypesToCasesCategory(),
+      new CreateSafeFileExtentionOptionValue(),
     ];
     foreach ($steps as $step) {
       $step->apply();
@@ -554,7 +556,7 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
    *   The queue requires that true is returned on successful upgrade, but we
    *   use exceptions to indicate an error instead.
    */
-  public static function runStepUpgrade(CRM_Queue_TaskContext $context, $step) {
+  public static function runStepUpgrade(CRM_Queue_TaskContext $context, object $step) {
     $step->apply();
     return TRUE;
   }
