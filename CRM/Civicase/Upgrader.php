@@ -6,6 +6,7 @@ use CRM_Civicase_Setup_AddCaseTypesForCustomGroupExtends as AddCaseTypesForCusto
 use CRM_Civicase_Setup_AddCaseCategoryWordReplacementOptionGroup as AddCaseCategoryWordReplacementOptionGroup;
 use CRM_Civicase_Setup_MoveCaseTypesToCasesCategory as MoveCaseTypesToCasesCategory;
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
+use CRM_Civicase_Setup_CreateSafeFileExtensionOptionValue as CreateSafeFileExtensionOptionValue;
 
 /**
  * Collection of upgrade steps.
@@ -70,6 +71,7 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
       new CreateCasesOptionValue(),
       new AddCaseTypesForCustomGroupExtends(),
       new MoveCaseTypesToCasesCategory(),
+      new CreateSafeFileExtensionOptionValue(),
     ];
     foreach ($steps as $step) {
       $step->apply();
