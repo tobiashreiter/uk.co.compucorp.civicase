@@ -43,7 +43,7 @@
             $scope.$digest();
 
             _.each(CaseTypesMockData.get()['1'].definition.activitySets[0].activityTypes, function (activityTypeFromSet) {
-              expectedActivityTypeIDs.push(_.findKey(ActivityType.getAll(), function (activitySet) {
+              expectedActivityTypeIDs.push(_.findKey(ActivityType.getAll(true), function (activitySet) {
                 return activitySet.name === activityTypeFromSet.name;
               }));
             });

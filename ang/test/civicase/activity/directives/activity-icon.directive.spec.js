@@ -71,7 +71,7 @@
       var activityTypeId;
 
       // get the id of activity type
-      _.each(ActivityType.getAll(), function (activty, index) {
+      _.each(ActivityType.getAll(true), function (activty, index) {
         if (activty.name === activityName) {
           activityTypeId = index;
         }
