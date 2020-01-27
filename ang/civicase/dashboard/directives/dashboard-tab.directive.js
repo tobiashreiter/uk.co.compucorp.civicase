@@ -77,6 +77,7 @@
     $scope.calendarCaseParams = null;
     $scope.activitiesPanel = {
       name: 'activities',
+      config: {},
       query: {
         entity: 'Activity',
         action: 'getcontactactivities',
@@ -95,6 +96,7 @@
     };
     $scope.newMilestonesPanel = {
       name: 'milestones',
+      config: {},
       query: {
         entity: 'Activity',
         action: 'getcontactactivities',
@@ -112,6 +114,7 @@
       }
     };
     $scope.newCasesPanel = {
+      config: {},
       custom: {
         itemName: ts('cases'),
         caseClick: casesCustomClick,
@@ -216,7 +219,9 @@
      * Initializes the controller watchers
      */
     function initWatchers () {
-      $scope.$on('civicase::dashboard-filters::updated', refresh);
+      $scope.$on('civicase::dashboard-filters::updated', function () {
+        refresh(true);
+      });
       $scope.$watchCollection('filters.caseRelationshipType', function (newType, oldType) {
         if (newType === oldType) {
           return;
@@ -261,11 +266,18 @@
 
     /**
      * Refresh all panels
+     *
+     * @param {boolean} forceReload whether to force reload all panels
      */
-    function refresh () {
+    function refresh (forceReload) {
       $scope.activitiesPanel.query.params = getQueryParams('activities');
       $scope.newMilestonesPanel.query.params = getQueryParams('milestones');
       $scope.newCasesPanel.query.params = getQueryParams('cases');
+
+      $scope.activitiesPanel.config.forceReload = forceReload;
+      $scope.newMilestonesPanel.config.forceReload = forceReload;
+      $scope.newCasesPanel.config.forceReload = forceReload;
+
       $scope.newCasesPanel.custom.viewCasesLink = viewCasesLink();
 
       setCalendarParams();
