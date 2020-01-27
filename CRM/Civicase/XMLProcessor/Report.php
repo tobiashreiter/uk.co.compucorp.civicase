@@ -1,5 +1,7 @@
 <?php
 
+use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
+
 /**
  * Class CRM_Civicase_XMLProcessor_Report.
  */
@@ -401,7 +403,7 @@ AND    ac.case_id = %1
 
     // Retrieve custom values for cases.
     $customValues = self::getCaseCustomValues($caseID);
-    $extends = ['case'];
+    $extends = self::getEntityToExtend($caseID);
     $groupTree = CRM_Core_BAO_CustomGroup::getGroupDetail(NULL, NULL, $extends);
     $caseCustomFields = [];
     foreach ($groupTree as $gid => $group_values) {
@@ -464,6 +466,25 @@ AND    ac.case_id = %1
     }
 
     return $customValues;
+  }
+
+  /**
+   * Returns the entity to fetch custom fields for.
+   *
+   * @param int $caseId
+   *   Case ID.
+   *
+   * @return array
+   *   Entity Name.
+   */
+  private static function getEntityToExtend($caseId) {
+    $entityToExtend = ['Case'];
+    $caseCategoryName = CaseCategoryHelper::getCategoryName($caseId);
+    if ($caseCategoryName && $caseCategoryName != 'Cases') {
+      $entityToExtend = [$caseCategoryName];
+    }
+
+    return $entityToExtend;
   }
 
 }
