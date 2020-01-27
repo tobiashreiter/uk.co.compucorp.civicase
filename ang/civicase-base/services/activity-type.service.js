@@ -7,7 +7,13 @@
    * Activity Types Service
    */
   function ActivityType () {
-    var activityTypes = CRM['civicase-base'].activityTypes;
+    var allActivityTypes = CRM['civicase-base'].activityTypes;
+    var activeActivityTypes = _.chain(allActivityTypes)
+      .filter(function (activityType) {
+        return activityType.is_active === '1';
+      })
+      .indexBy('value')
+      .value();
 
     this.getAll = getAll;
     this.findById = findById;
@@ -15,10 +21,13 @@
     /**
      * Get all Activity types
      *
+     * @param {Array} keepDisabled if disabled option values also should be returned
      * @returns {Array} all activity types
      */
-    function getAll () {
-      return activityTypes;
+    function getAll (keepDisabled) {
+      var returnValue = keepDisabled ? allActivityTypes : activeActivityTypes;
+
+      return returnValue;
     }
 
     /**
@@ -28,7 +37,7 @@
      * @returns {object} activity object matching sent id
      */
     function findById (id) {
-      return activityTypes[id];
+      return allActivityTypes[id];
     }
   }
 })(angular, CRM.$, CRM._, CRM);

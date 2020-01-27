@@ -7,16 +7,27 @@
    * Case Status Service
    */
   function CaseStatus () {
-    var caseStatuses = CRM['civicase-base'].caseStatuses;
+    var allCaseStatuses = CRM['civicase-base'].caseStatuses;
+    var activeCaseStatus = _.chain(allCaseStatuses)
+      .filter(function (caseStatus) {
+        return caseStatus.is_active === '1';
+      })
+      .indexBy('value')
+      .value();
 
     this.getAll = getAll;
     this.getLabelsForValues = getLabelsForValues;
 
     /**
+     * Get all Case statuses
+     *
+     * @param {Array} keepDisabled if disabled option values also should be returned
      * @returns {object[]} a list of all the case statuses.
      */
-    function getAll () {
-      return caseStatuses;
+    function getAll (keepDisabled) {
+      var returnValue = keepDisabled ? allCaseStatuses : activeCaseStatus;
+
+      return returnValue;
     }
 
     /**
@@ -27,7 +38,7 @@
      */
     function getLabelsForValues (statusValues) {
       return _.map(statusValues, function (statusValue) {
-        var caseStatus = _.find(caseStatuses, function (caseStatus) {
+        var caseStatus = _.find(allCaseStatuses, function (caseStatus) {
           return caseStatus.value === statusValue;
         });
 
