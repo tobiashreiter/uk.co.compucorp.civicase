@@ -400,7 +400,7 @@ AND    ac.case_id = %1
     CRM_Civicase_XMLProcessor_Report::processClientRelationshipFields($report, $relClient, $caseRelationships, $otherRelationships, $isRedact);
 
     // Retrieve custom values for cases.
-    $customValues = CRM_Core_BAO_CustomValueTable::getEntityValues($caseID, 'Case');
+    $customValues = self::getCaseCustomValues($caseID);
     $extends = ['case'];
     $groupTree = CRM_Core_BAO_CustomGroup::getGroupDetail(NULL, NULL, $extends);
     $caseCustomFields = [];
@@ -431,6 +431,39 @@ AND    ac.case_id = %1
     $printReport = CRM_Case_Audit_Audit::run($contents, $clientID, $caseID, TRUE);
     echo $printReport;
     CRM_Utils_System::civiExit();
+  }
+
+  /**
+   * Returns the case custom values for the given case.
+   *
+   * The format returned is the case custom field id as array key
+   * and the custom value for that case as the value.
+   *
+   * @param int $caseId
+   *   Case ID.
+   *
+   * @return array
+   *   Case custom values.
+   */
+  private static function getCaseCustomValues($caseId) {
+    $customValues = [];
+    $result = civicrm_api3('CustomValue', 'gettreevalues', [
+      'entity_id' => $caseId,
+      'entity_type' => 'Case',
+    ]);
+
+    foreach ($result['values'] as $caseCustomGroup) {
+      if (empty($caseCustomGroup['fields'])) {
+        continue;
+      }
+      foreach ($caseCustomGroup['fields'] as $customField) {
+        if (isset($customField['value']['id'])) {
+          $customValues[$customField['id']] = $customField['value']['display'];
+        }
+      }
+    }
+
+    return $customValues;
   }
 
 }
