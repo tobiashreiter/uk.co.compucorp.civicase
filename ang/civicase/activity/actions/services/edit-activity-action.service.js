@@ -17,7 +17,7 @@
      */
     this.isActionEnabled = function ($scope) {
       if ($scope.mode === 'case-summary') {
-        var activityTypes = ActivityType.getAll();
+        var activityTypes = ActivityType.getAll(true);
         var selectedActivityType = activityTypes[$scope.selectedActivities[0].activity_type_id];
 
         var nonEditableActivityTypes = [

@@ -48,7 +48,7 @@
     $scope.ts = ts;
     var caseTypes = CaseType.getAll();
     var caseStatuses = $scope.caseStatuses = CaseStatus.getAll();
-    var activityTypes = $scope.activityTypes = ActivityType.getAll();
+    var activityTypes = $scope.activityTypes = ActivityType.getAll(true);
     var panelLimit = 5;
 
     $scope.areDetailsLoaded = false;
