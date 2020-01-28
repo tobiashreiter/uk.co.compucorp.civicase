@@ -20,7 +20,7 @@
      * @param {object} attrs attributes
      */
     function activityIconLink (scope, elem, attrs) {
-      var activityTypes = ActivityType.getAll();
+      var activityTypes = ActivityType.getAll(true);
       var activityType = activityTypes[scope.activity.activity_type_id];
 
       // Set direction icon for inbound/outbound email

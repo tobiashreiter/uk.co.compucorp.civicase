@@ -80,7 +80,7 @@
     $scope.isMonthNavVisible = true;
     $scope.isLoading = true;
     $scope.isSelectAll = false;
-    $scope.activityTypes = ActivityType.getAll();
+    $scope.activityTypes = ActivityType.getAll(true);
     $scope.activityStatuses = ActivityStatus.getAll();
     $scope.activities = {};
     $scope.activityGroups = [];
@@ -600,7 +600,7 @@
 
         if (activitySet) {
           _.each(activitySet.activityTypes, function (activityTypeFromSet) {
-            activityTypeIDs.push(_.findKey(ActivityType.getAll(), function (activitySet) {
+            activityTypeIDs.push(_.findKey(ActivityType.getAll(true), function (activitySet) {
               return activitySet.name === activityTypeFromSet.name;
             }));
           });

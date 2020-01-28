@@ -20,7 +20,7 @@
     this.doAction = function (cases, action, callbackFn) {
       var case1 = cases[0];
       var case2 = cases[1];
-      var activityTypes = ActivityType.getAll();
+      var activityTypes = ActivityType.getAll(true);
       var link = {
         path: 'civicrm/case/activity',
         query: {
