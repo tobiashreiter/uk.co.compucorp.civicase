@@ -183,6 +183,7 @@ function civicase_civicrm_buildForm($formName, &$form) {
     new CRM_Civicase_Hook_BuildForm_FilterByCaseCategoryOnChangeCaseType(),
     new CRM_Civicase_Hook_BuildForm_CaseCategoryFormLabelTranslationForNewCase(),
     new CRM_Civicase_Hook_BuildForm_CaseCategoryFormLabelTranslationForChangeCase(),
+    new CRM_Civicase_Hook_BuildForm_EnableCaseCategoryIconField(),
   ];
 
   foreach ($hooks as $hook) {
