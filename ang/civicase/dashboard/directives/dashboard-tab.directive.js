@@ -74,7 +74,7 @@
     };
 
     $scope.ts = ts;
-    $scope.caseIds = null;
+    $scope.calendarCaseParams = null;
     $scope.activitiesPanel = {
       name: 'activities',
       query: {
@@ -128,7 +128,7 @@
 
     (function init () {
       initWatchers();
-      loadCaseIds();
+      setCalendarParams();
     }());
 
     /**
@@ -226,7 +226,7 @@
         $scope.newCasesPanel.query.params = getQueryParams('cases');
         $scope.newCasesPanel.custom.viewCasesLink = viewCasesLink();
 
-        loadCaseIds();
+        setCalendarParams();
       });
 
       // When the involvement filters change, broadcast the event that will be
@@ -269,18 +269,10 @@
      *
      * The ids are used for the activities calendar
      */
-    function loadCaseIds () {
-      crmApi('Case', 'getcaselist', _.assign({
-        'status_id.grouping': 'Opened',
-        return: 'id',
-        sequential: 1,
-        options: { limit: 0 }
-      }, $scope.activityFilters.case_filter))
-        .then(function (result) {
-          $scope.caseIds = result.values.map(function (caseObj) {
-            return caseObj.id;
-          });
-        });
+    function setCalendarParams () {
+      $scope.calendarCaseParams = _.assign({
+        'status_id.grouping': 'Opened'
+      }, $scope.activityFilters.case_filter);
     }
 
     /**

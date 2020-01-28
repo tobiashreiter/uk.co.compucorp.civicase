@@ -7,8 +7,8 @@
   <div class="civicase__dashboard__tab__main">
     <div class="civicase__dashboard__tab__col-wrapper">
       <div class="civicase__dashboard__tab__col civicase__dashboard__tab__col--left">
-        <civicase-activities-calendar case-id="caseIds" refresh-callback="activityCardRefreshCalendar" ng-if="caseIds"></civicase-activities-calendar>
-        <civicase-activities-calendar-placeholder ng-if="!caseIds" style="padding-top: 0;"></civicase-activities-calendar-placeholder>
+        <civicase-activities-calendar case-params="calendarCaseParams" refresh-callback="activityCardRefreshCalendar" ng-if="calendarCaseParams"></civicase-activities-calendar>
+        <civicase-activities-calendar-placeholder ng-if="!calendarCaseParams" style="padding-top: 0;"></civicase-activities-calendar-placeholder>
       </div>
       <div class="civicase__dashboard__tab__col civicase__dashboard__tab__col--right">
         <!-- New Cases -->
