@@ -21,11 +21,11 @@
     /**
      * Get all Case statuses
      *
-     * @param {Array} keepDisabled if disabled option values also should be returned
+     * @param {Array} includeInactive if disabled option values also should be returned
      * @returns {object[]} a list of all the case statuses.
      */
-    function getAll (keepDisabled) {
-      var returnValue = keepDisabled ? allCaseStatuses : activeCaseStatus;
+    function getAll (includeInactive) {
+      var returnValue = includeInactive ? allCaseStatuses : activeCaseStatus;
 
       return returnValue;
     }

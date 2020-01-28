@@ -20,11 +20,11 @@
     /**
      * Get all priorities
      *
-     * @param {Array} keepDisabled if disabled option values also should be returned
+     * @param {Array} includeInactive if disabled option values also should be returned
      * @returns {object[]} a list of all the priorities.
      */
-    function getAll (keepDisabled) {
-      var returnValue = keepDisabled ? allPriorities : activePriorities;
+    function getAll (includeInactive) {
+      var returnValue = includeInactive ? allPriorities : activePriorities;
 
       return returnValue;
     }

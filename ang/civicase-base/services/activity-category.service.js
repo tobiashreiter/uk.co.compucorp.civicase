@@ -20,11 +20,11 @@
     /**
      * Get all Activity categories
      *
-     * @param {Array} keepDisabled if disabled option values also should be returned
+     * @param {Array} includeInactive if disabled option values also should be returned
      * @returns {Array} all activity categories
      */
-    function getAll (keepDisabled) {
-      var returnValue = keepDisabled ? allActivityCategories : activeActivityCategories;
+    function getAll (includeInactive) {
+      var returnValue = includeInactive ? allActivityCategories : activeActivityCategories;
 
       return returnValue;
     }

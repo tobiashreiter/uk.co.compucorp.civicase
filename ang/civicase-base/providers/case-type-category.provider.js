@@ -34,11 +34,11 @@
     /**
      * Returns all case type categories.
      *
-     * @param {Array} keepDisabled if disabled option values also should be returned
+     * @param {Array} includeInactive if disabled option values also should be returned
      * @returns {object[]} all the case type categories.
      */
-    function getAll (keepDisabled) {
-      var returnValue = keepDisabled ? allCaseTypeCategories : activeCaseTypeCategories;
+    function getAll (includeInactive) {
+      var returnValue = includeInactive ? allCaseTypeCategories : activeCaseTypeCategories;
 
       return returnValue;
     }
