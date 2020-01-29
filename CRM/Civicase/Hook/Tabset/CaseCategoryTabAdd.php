@@ -1,6 +1,5 @@
 <?php
 
-use CRM_Case_BAO_CaseType as CaseType;
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 
 /**
@@ -39,28 +38,33 @@ class CRM_Civicase_Hook_Tabset_CaseCategoryTabAdd {
    *   Whether to use angular.
    */
   private function addCaseCategoryContactTabs(array &$tabs, $contactID, &$useAng) {
-    $caseTypeCategories = CaseType::buildOptions('case_type_category', 'match');
-    if (empty($caseTypeCategories)) {
+    $result = civicrm_api3('OptionValue', 'get', [
+      'option_group_id' => 'case_type_categories',
+    ]);
+
+    if (empty($result['values'])) {
       return;
     }
 
     $caseTabWeight = $this->getCaseTabWeight($tabs);
-    foreach ($caseTypeCategories as $categoryName => $categoryLabel) {
-      if ($categoryName == CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME) {
+    foreach ($result['values'] as $caseCategory) {
+      if ($caseCategory['name'] == CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME) {
         continue;
       }
       $caseTabWeight++;
       $useAng = TRUE;
+      $icon = !empty($caseCategory['icon']) ? "crm-i {$caseCategory['icon']}" : '';
       $tabs[] = [
-        'id' => $categoryName,
+        'id' => $caseCategory['name'],
         'url' => CRM_Utils_System::url('civicrm/case/contact-case-tab', [
           'cid' => $contactID,
-          'case_type_category' => $categoryName,
+          'case_type_category' => $caseCategory['name'],
         ]),
-        'title' => ts($categoryLabel),
+        'title' => ts($caseCategory['label']),
         'weight' => $caseTabWeight,
-        'count' => CaseCategoryHelper::getCaseCount($categoryName, $contactID),
+        'count' => CaseCategoryHelper::getCaseCount($caseCategory['name'], $contactID),
         'class' => 'livePage',
+        'icon' => $icon,
       ];
     }
   }
