@@ -128,7 +128,7 @@
         it('loads the days with activities from all the given cases', function () {
           var apiParams1 = crmApi.calls.argsFor(0)[2];
 
-          expect(apiParams1.case_params).toEqual({ a: 'b' });
+          expect(apiParams1.case_filter).toEqual({ a: 'b' });
         });
 
         describe('when selecting a date with activities', function () {

@@ -533,7 +533,7 @@
       }
 
       if ($scope.caseParams) {
-        params.case_params = $scope.caseParams;
+        params.case_filter = $scope.caseParams;
       }
 
       return crmApi('Activity', 'getdayswithactivities', params)
