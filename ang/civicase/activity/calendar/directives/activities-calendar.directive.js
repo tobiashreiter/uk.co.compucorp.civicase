@@ -5,6 +5,7 @@
     return {
       scope: {
         caseId: '=',
+        caseParams: '=',
         refresh: '=refreshCallback'
       },
       controller: 'civicaseActivitiesCalendarController',
@@ -265,20 +266,11 @@
     function formatActivityCardData (activity) {
       activity = formatActivity(activity);
 
-      if ($scope.caseId && (!_.isArray($scope.caseId) || $scope.caseId.length === 1)) {
+      if (!$scope.caseParams) {
         delete activity.case;
       }
 
       return activity;
-    }
-
-    /**
-     * Prepares the value of the case_id api param based on the $scope.caseId property
-     *
-     * @returns {number/object} case id api param
-     */
-    function getCaseIdApiParam () {
-      return _.isArray($scope.caseId) ? { IN: $scope.caseId } : $scope.caseId;
     }
 
     /**
@@ -385,6 +377,9 @@
       $scope.$watch('caseId', function (newValue, oldValue) {
         newValue !== oldValue && reload();
       });
+      $scope.$watch('caseParams', function (newValue, oldValue) {
+        newValue !== oldValue && reload();
+      });
     }
 
     /**
@@ -438,7 +433,11 @@
       params = params || {};
 
       if ($scope.caseId) {
-        params.case_id = getCaseIdApiParam();
+        params.case_id = $scope.caseId;
+      }
+
+      if ($scope.caseParams) {
+        params.case_filter = $scope.caseParams;
       }
 
       return crmApi('Activity', 'get', _.assign(params, {
@@ -530,7 +529,11 @@
       };
 
       if ($scope.caseId) {
-        params.case_id = getCaseIdApiParam();
+        params.case_id = $scope.caseId;
+      }
+
+      if ($scope.caseParams) {
+        params.case_filter = $scope.caseParams;
       }
 
       return crmApi('Activity', 'getdayswithactivities', params)

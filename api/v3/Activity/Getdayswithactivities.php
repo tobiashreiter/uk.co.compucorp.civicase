@@ -35,6 +35,10 @@ function civicrm_api3_activity_getdayswithactivities(array $params) {
   $query = CRM_Utils_SQL_Select::from('civicrm_activity a');
   $query->select(['a.activity_date_time']);
 
+  if (!empty($params['case_id']) && !empty($params['case_filter'])) {
+    throw new API_Exception("case_id and case_filter cannot be present at the same time.");
+  }
+
   if (!empty($params['activity_type_id'])) {
     _civicrm_api3_activity_getdayswithactivities_handle_id_param($params['activity_type_id'], 'a.activity_type_id', $query);
   }
@@ -48,8 +52,17 @@ function civicrm_api3_activity_getdayswithactivities(array $params) {
   }
 
   if (!empty($params['case_id'])) {
-    $query->join('ca', "INNER JOIN civicrm_case_activity AS ca ON a.id = ca.activity_id");
-    _civicrm_api3_activity_getdayswithactivities_handle_id_param($params['case_id'], 'ca.case_id', $query);
+    _join_to_case($query, $params['case_id']);
+  }
+
+  if (!empty($params['case_filter'])) {
+    $case_ids = _get_case_ids($params['case_filter']);
+
+    if (empty($case_ids)) {
+      return civicrm_api3_create_success([], $params, 'Activity', 'getdayswithactivities');
+    }
+
+    _join_to_case($query, ['IN' => _get_case_ids($params['case_filter'])]);
   }
 
   $query->groupBy('a.activity_date_time');
@@ -76,4 +89,36 @@ function _civicrm_api3_activity_getdayswithactivities_handle_id_param($param, $c
   $param = is_array($param) ? $param : ['=' => $param];
 
   $query->where(CRM_Core_DAO::createSQLFilter($column, $param));
+}
+
+/**
+ * Apply Inner Join for Case related filters.
+ *
+ * @param CRM_Utils_SQL_Select $query
+ *   Query.
+ * @param array $value
+ *   Value of the filter.
+ */
+function _join_to_case(CRM_Utils_SQL_Select $query, array $value) {
+  $query->join('ca', "INNER JOIN civicrm_case_activity AS ca ON a.id = ca.activity_id");
+
+  _civicrm_api3_activity_getdayswithactivities_handle_id_param($value, 'ca.case_id', $query);
+}
+
+/**
+ * Get the list of case ids.
+ *
+ * @param array $caseParams
+ *   Case Parameters.
+ *
+ * @return array
+ *   list of case ids.
+ */
+function _get_case_ids(array $caseParams) {
+  $results = civicrm_api3('Case', 'getcaselist', array_merge([
+    'return' => 'id',
+    'options' => [limit => 0],
+  ], $caseParams))['values'];
+
+  return array_column($results, 'id');
 }
