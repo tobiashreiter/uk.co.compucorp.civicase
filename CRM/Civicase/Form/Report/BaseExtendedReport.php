@@ -885,7 +885,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
       $this->_defaults['aggregate_column_date_grouping'] = 'month';
       $suffix = $this->_aliases[$this->_baseTable] == 'civicrm_contact' ? '_contact_id' : '_id';
       $this->_defaults['data_function_field'] = $this->_aliases[$this->_baseTable] . $suffix;
-      $this->_defaults['charts'] = TRUE;
+      $this->_defaults['charts'] = FALSE;
     }
 
 
