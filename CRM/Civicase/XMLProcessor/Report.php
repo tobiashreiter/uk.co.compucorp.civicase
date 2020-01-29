@@ -460,12 +460,33 @@ AND    ac.case_id = %1
       }
       foreach ($caseCustomGroup['fields'] as $customField) {
         if (isset($customField['value']['id'])) {
-          $customValues[$customField['id']] = $customField['value']['display'];
+          $displayField = $customField['value']['display'];
+          if ($customField['data_type'] === 'Money' && in_array($customField['html_type'], ['Radio', 'Select'])) {
+            $displayField = $customField['value']['data'];
+          }
+          if ($customField['data_type'] === 'File') {
+            $displayField = self::getFileLink($customField);
+          }
+
+          $customValues[$customField['id']] = $displayField;
         }
       }
     }
 
     return $customValues;
+  }
+
+  /**
+   * Returns the formatted file link.
+   *
+   * @param string $customData
+   *   Custom data.
+   *
+   * @return string
+   *   The file link.
+   */
+  private static function getFileLink($customData) {
+    return CRM_Utils_System::href($customData['value']['fileName'], $customData['value']['fileURL']);
   }
 
   /**
