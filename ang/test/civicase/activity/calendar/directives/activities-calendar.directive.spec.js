@@ -86,40 +86,6 @@
     });
 
     describe('case id', function () {
-      describe('when none is passed', function () {
-        beforeEach(function () {
-          commonControllerSetup(null);
-        });
-
-        it('loads the days with activities from all cases', function () {
-          var apiParams1 = crmApi.calls.argsFor(0)[2];
-          var apiParams2 = crmApi.calls.argsFor(1)[2];
-
-          expect(apiParams1.case_id).toBeUndefined();
-          expect(apiParams2.case_id).toBeUndefined();
-        });
-
-        describe('when selecting a date with activities', function () {
-          beforeEach(function () {
-            commonDateSelectSetup();
-          });
-
-          it('loads activities from all cases when selecting a day', function () {
-            var apiParams = crmApi.calls.argsFor(0)[2];
-
-            expect(apiParams.case_id).toBeUndefined();
-          });
-
-          describe('case info footer on activity card', function () {
-            it('keeps the `case` property on the activities to display the footer', function () {
-              expect($scope.selectedActivites.every(function (activity) {
-                return typeof activity.case !== 'undefined';
-              })).toBe(true);
-            });
-          });
-        });
-      });
-
       describe('when one is passed', function () {
         beforeEach(function () {
           commonControllerSetup();
@@ -154,25 +120,15 @@
         });
       });
 
-      describe('when multiple ids are passed', function () {
+      describe('when case parameters are passed', function () {
         beforeEach(function () {
-          commonControllerSetup([_.uniqueId(), _.uniqueId(), _.uniqueId()]);
+          commonControllerSetup({ caseParams: { a: 'b' } });
         });
 
         it('loads the days with activities from all the given cases', function () {
           var apiParams1 = crmApi.calls.argsFor(0)[2];
-          var apiParams2 = crmApi.calls.argsFor(1)[2];
 
-          expect(apiParams1.case_id).toEqual({
-            IN: [
-              $scope.caseId[0], $scope.caseId[1], $scope.caseId[2]
-            ]
-          });
-          expect(apiParams2.case_id).toEqual({
-            IN: [
-              $scope.caseId[0], $scope.caseId[1], $scope.caseId[2]
-            ]
-          });
+          expect(apiParams1.case_params).toEqual({ a: 'b' });
         });
 
         describe('when selecting a date with activities', function () {
@@ -183,11 +139,7 @@
           it('loads activities from all the given cases when selecting a day', function () {
             var apiParams = crmApi.calls.argsFor(0)[2];
 
-            expect(apiParams.case_id).toEqual({
-              IN: [
-                $scope.caseId[0], $scope.caseId[1], $scope.caseId[2]
-              ]
-            });
+            expect(apiParams.case_filter).toEqual({ a: 'b' });
           });
 
           describe('case info footer on activity card', function () {
@@ -226,15 +178,14 @@
           });
         });
       });
+
       /**
        * Common controller setup logic for the "case id" tests
        *
-       * @param {*} caseIds The case ids to set on the $scope.caseId property
+       * @param {*} scopeProps properties to add to the scope
        */
-      function commonControllerSetup (caseIds) {
-        var caseIdsParam = typeof caseIds !== 'undefined' ? { caseId: caseIds } : null;
-
-        initController(caseIdsParam);
+      function commonControllerSetup (scopeProps) {
+        initController(scopeProps);
         returnDateForStatus(dates.today, 'any');
 
         $rootScope.$emit('civicase::uibDaypicker::compiled');

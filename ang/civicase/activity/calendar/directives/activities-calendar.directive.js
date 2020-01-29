@@ -377,6 +377,9 @@
       $scope.$watch('caseId', function (newValue, oldValue) {
         newValue !== oldValue && reload();
       });
+      $scope.$watch('caseParams', function (newValue, oldValue) {
+        newValue !== oldValue && reload();
+      });
     }
 
     /**
