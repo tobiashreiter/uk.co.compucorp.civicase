@@ -10,7 +10,14 @@
         <div class="panel-body" civicase-edit-custom-data>
           <div ng-repeat="field in customGroup.fields" class="civicase__case-custom-fields">
             <div class="civicase__case-custom-field__label">{{ field.label }}</div>
-            <div class="civicase__case-custom-field__value">{{ field.value.display || 'Click to set value' }}</div>
+            <div
+              class="civicase__case-custom-field__value" ng-if="!field.value.display">
+              Click to set value
+            </div>
+            <div
+              class="civicase__case-custom-field__value" ng-if="field.value.display"
+              ng-bind-html="trustAsHtml(field.value.display)">
+            </div>
           </div>
         </div>
       </div>

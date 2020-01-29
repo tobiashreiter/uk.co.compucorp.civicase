@@ -20,6 +20,7 @@
    * Case Details Controller
    *
    * @param {object} $location $location service
+   * @param {object} $sce angular Strict Contextual Escaping service
    * @param {object} $rootScope $rootScope
    * @param {object} $scope $scope
    * @param {object} $document $document
@@ -39,7 +40,7 @@
    * @param {object} CaseStatus case status service
    * @param {object} CaseType case type service
    */
-  function civicaseCaseDetailsController ($location, $rootScope, $scope,
+  function civicaseCaseDetailsController ($location, $sce, $rootScope, $scope,
     $document, BulkActions, CaseDetailsTabs, crmApi, formatActivity, formatCase,
     getActivityFeedUrl, getCaseQueryParams, $route, $timeout,
     CasesUtils, PrintMergeCaseAction, ts, ActivityType, CaseStatus, CaseType) {
@@ -58,6 +59,7 @@
     $scope.caseTypesLength = _.size(caseTypes);
     $scope.CRM = CRM;
     $scope.tabs = CaseDetailsTabs;
+    $scope.trustAsHtml = $sce.trustAsHtml;
 
     (function init () {
       $scope.$watch('activeTab', activeTabWatcher);
