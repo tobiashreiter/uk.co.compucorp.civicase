@@ -1,5 +1,7 @@
 <?php
 
+use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
+
 /**
  * Class CRM_Civicase_XMLProcessor_Report.
  */
@@ -400,8 +402,8 @@ AND    ac.case_id = %1
     CRM_Civicase_XMLProcessor_Report::processClientRelationshipFields($report, $relClient, $caseRelationships, $otherRelationships, $isRedact);
 
     // Retrieve custom values for cases.
-    $customValues = CRM_Core_BAO_CustomValueTable::getEntityValues($caseID, 'Case');
-    $extends = ['case'];
+    $customValues = self::getCaseCustomValues($caseID);
+    $extends = self::getEntityToExtend($caseID);
     $groupTree = CRM_Core_BAO_CustomGroup::getGroupDetail(NULL, NULL, $extends);
     $caseCustomFields = [];
     foreach ($groupTree as $gid => $group_values) {
@@ -431,6 +433,79 @@ AND    ac.case_id = %1
     $printReport = CRM_Case_Audit_Audit::run($contents, $clientID, $caseID, TRUE);
     echo $printReport;
     CRM_Utils_System::civiExit();
+  }
+
+  /**
+   * Returns the case custom values for the given case.
+   *
+   * The format returned is the case custom field id as array key
+   * and the custom value for that case as the value.
+   *
+   * @param int $caseId
+   *   Case ID.
+   *
+   * @return array
+   *   Case custom values.
+   */
+  private static function getCaseCustomValues($caseId) {
+    $customValues = [];
+    $result = civicrm_api3('CustomValue', 'gettreevalues', [
+      'entity_id' => $caseId,
+      'entity_type' => 'Case',
+    ]);
+
+    foreach ($result['values'] as $caseCustomGroup) {
+      if (empty($caseCustomGroup['fields'])) {
+        continue;
+      }
+      foreach ($caseCustomGroup['fields'] as $customField) {
+        if (isset($customField['value']['id'])) {
+          $displayField = $customField['value']['display'];
+          if ($customField['data_type'] === 'Money' && in_array($customField['html_type'], ['Radio', 'Select'])) {
+            $displayField = $customField['value']['data'];
+          }
+          if ($customField['data_type'] === 'File') {
+            $displayField = self::getFileLink($customField);
+          }
+
+          $customValues[$customField['id']] = $displayField;
+        }
+      }
+    }
+
+    return $customValues;
+  }
+
+  /**
+   * Returns the formatted file link.
+   *
+   * @param string $customData
+   *   Custom data.
+   *
+   * @return string
+   *   The file link.
+   */
+  private static function getFileLink($customData) {
+    return CRM_Utils_System::href($customData['value']['fileName'], $customData['value']['fileURL']);
+  }
+
+  /**
+   * Returns the entity to fetch custom fields for.
+   *
+   * @param int $caseId
+   *   Case ID.
+   *
+   * @return array
+   *   Entity Name.
+   */
+  private static function getEntityToExtend($caseId) {
+    $entityToExtend = ['Case'];
+    $caseCategoryName = CaseCategoryHelper::getCategoryName($caseId);
+    if ($caseCategoryName && $caseCategoryName != 'Cases') {
+      $entityToExtend = [$caseCategoryName];
+    }
+
+    return $entityToExtend;
   }
 
 }
