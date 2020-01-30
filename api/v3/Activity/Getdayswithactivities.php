@@ -96,10 +96,10 @@ function _civicrm_api3_activity_getdayswithactivities_handle_id_param($param, $c
  *
  * @param CRM_Utils_SQL_Select $query
  *   Query.
- * @param array $value
+ * @param array|string $value
  *   Value of the filter.
  */
-function _join_to_case(CRM_Utils_SQL_Select $query, array $value) {
+function _join_to_case(CRM_Utils_SQL_Select $query, $value) {
   $query->join('ca', "INNER JOIN civicrm_case_activity AS ca ON a.id = ca.activity_id");
 
   _civicrm_api3_activity_getdayswithactivities_handle_id_param($value, 'ca.case_id', $query);
