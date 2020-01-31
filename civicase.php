@@ -685,21 +685,11 @@ function civicase_civicrm_preProcess($formName, &$form) {
     new CRM_Civicase_Hook_PreProcess_ProcessCaseCategoryCustomFieldsForEdit(),
     new CRM_Civicase_Hook_PreProcess_CaseCategoryWordReplacementsForNewCase(),
     new CRM_Civicase_Hook_PreProcess_CaseCategoryWordReplacementsForChangeCase(),
+    new CRM_Civicase_Hook_PreProcess_AddCaseAdminSettings(),
   ];
 
   foreach ($hooks as $hook) {
     $hook->run($formName, $form);
-  }
-
-  // TODO: We need to move this function into it's own class
-  // and implement as above.
-  if ($formName == 'CRM_Admin_Form_Setting_Case') {
-    $settings = $form->getVar('_settings');
-    $settings['civicaseAllowCaseLocks'] = CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME;
-    $settings['civicaseAllowCaseWebform'] = CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME;
-    $settings['civicaseWebformUrl'] = CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME;
-
-    $form->setVar('_settings', $settings);
   }
 }
 
