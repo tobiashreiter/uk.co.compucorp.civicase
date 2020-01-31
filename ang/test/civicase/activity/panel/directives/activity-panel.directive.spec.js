@@ -2,16 +2,20 @@
 
 (function ($, _) {
   describe('civicaseActivityPanel', function () {
-    var $compile, $rootScope, $scope, activityPanel, activitiesMockData, refreshFunction, formatActivity, ActivityStatus;
+    var $compile, $rootScope, $scope, activityPanel, activitiesMockData,
+      refreshFunction, formatActivity, ActivityStatus, ActivityForms,
+      MockActivityFormsService;
 
     beforeEach(module('civicase', 'civicase.templates', 'civicase.data'));
 
-    beforeEach(inject(function (_$compile_, _$rootScope_, _activitiesMockData_, _formatActivity_, _ActivityStatus_) {
+    beforeEach(inject(function (_$compile_, _$rootScope_, _activitiesMockData_,
+      _formatActivity_, _ActivityStatus_, _ActivityForms_) {
       $compile = _$compile_;
       $rootScope = _$rootScope_;
       activitiesMockData = _activitiesMockData_;
       formatActivity = _formatActivity_;
       ActivityStatus = _ActivityStatus_;
+      ActivityForms = _ActivityForms_;
 
       $scope = $rootScope.$new();
 
@@ -19,6 +23,11 @@
       refreshFunction = jasmine.createSpy('refresh');
 
       spyOn($rootScope, '$broadcast').and.callThrough();
+      spyOn(ActivityForms, 'getActivityFormService');
+
+      MockActivityFormsService = jasmine.createSpyObj('MockActivityFormsService', ['getActivityFormUrl']);
+      MockActivityFormsService.getActivityFormUrl.and.returnValue('/mockactivityurl');
+      ActivityForms.getActivityFormService.and.returnValue(MockActivityFormsService);
 
       initDirective();
     }));
@@ -45,16 +54,12 @@
         });
       });
 
-      it('shows the activity details', function () {
-        expect(CRM.loadForm).toHaveBeenCalledWith('crm url mock', jasmine.objectContaining({
+      it('shows the activity details for the sent activity', function () {
+        expect(ActivityForms.getActivityFormService).toHaveBeenCalledWith($scope.viewingActivity);
+        expect(MockActivityFormsService.getActivityFormUrl).toHaveBeenCalledWith($scope.viewingActivity);
+        expect(CRM.loadForm).toHaveBeenCalledWith('/mockactivityurl', jasmine.objectContaining({
           target: jasmine.any(Object)
         }));
-        expect(CRM.url).toHaveBeenCalledWith('civicrm/activity', {
-          action: 'view',
-          id: $scope.viewingActivity.id,
-          reset: 1,
-          context: 'case'
-        });
       });
     });
 
