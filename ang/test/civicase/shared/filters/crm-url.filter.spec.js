@@ -13,11 +13,12 @@
     }));
 
     describe('getting the href', function () {
-      var hrefLocation, expectedHref, expectedHrefLocation, expectedQuery;
+      var hrefLocation, originalHref, expectedHref, expectedHrefLocation,
+        expectedQuery;
 
       describe('when url starts with backslash', () => {
         beforeEach(function () {
-          var originalHref = '/civicrm/a/civicase';
+          originalHref = '/civicrm/a/civicase';
           expectedHref = 'civicrm/a/civicase';
           expectedHrefLocation = 'http://civicrm.org/' + expectedHref;
           expectedQuery = { cid: _.uniqueId() };
@@ -38,7 +39,7 @@
 
       describe('when url doesnot start with backslash', () => {
         beforeEach(function () {
-          var originalHref = 'civicrm/a/civicase';
+          originalHref = 'civicrm/a/civicase';
           expectedHref = 'civicrm/a/civicase';
           expectedHrefLocation = 'http://civicrm.org/' + expectedHref;
           expectedQuery = { cid: _.uniqueId() };
