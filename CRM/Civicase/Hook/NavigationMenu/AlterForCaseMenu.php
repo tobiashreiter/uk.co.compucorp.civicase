@@ -1,5 +1,7 @@
 <?php
 
+use CRM_Civicase_Service_CaseCategorySetting as CaseCategorySetting;
+
 /**
  * Class CRM_Civicase_Hook_Navigation_AlterForCaseMenu.
  */
@@ -32,12 +34,9 @@ class CRM_Civicase_Hook_NavigationMenu_AlterForCaseMenu {
       'civicrm/case/search?reset=1' => 'civicrm/case/a/#/case/list?sx=1',
     ];
 
-    // For URLS that have hardcoded values that may change per system.
-    // or for adding dynamic menu url mappings.
-    $otherUrlsMap = [];
-    $this->addNewCaseUrlMap($otherUrlsMap);
+    $addCaseUrl = 'civicrm/case/add';
 
-    $this->menuWalk($menu, function (&$item) use ($rewriteMap, $otherUrlsMap) {
+    $this->menuWalk($menu, function (&$item) use ($rewriteMap, $addCaseUrl) {
       if (!isset($item['url'])) {
         return;
       }
@@ -48,12 +47,15 @@ class CRM_Civicase_Hook_NavigationMenu_AlterForCaseMenu {
         return;
       }
 
-      foreach ($otherUrlsMap as $oldUrl => $newUrl) {
-        if (strpos($item['url'], $oldUrl) !== FALSE) {
-          $item['url'] = $newUrl;
+      if (strpos($item['url'], $addCaseUrl) !== FALSE) {
+        $caseCategoryName = $this->getCaseCategoryName($item['url']);
+        $webformUrl = $this->getNewCaseCategoryWebformUrl($caseCategoryName);
 
-          return;
+        if (!empty($webformUrl)) {
+          $item['url'] = $webformUrl;
         }
+
+        return;
       }
     });
   }
@@ -98,23 +100,47 @@ class CRM_Civicase_Hook_NavigationMenu_AlterForCaseMenu {
   }
 
   /**
-   * Civicase Add new case URL map.
+   * Returns the new case category webform URL if it's is set.
    *
-   * Adds the add case URL mapping to the array depending on
-   * the case settings config for the system. IF an alternate add Case
-   * URL is set, the url mapping is added.
+   * @param string $caseCategoryName
+   *   Case category name.
    *
-   * @param array $urlMapArray
-   *   URL Map array.
+   * @return string|null
+   *   Webform URL.
    */
-  private function addNewCaseUrlMap(array &$urlMapArray) {
-    $allowCaseWebform = Civi::settings()->get('civicaseAllowCaseWebform');
-    $newCaseWebformUrl = $allowCaseWebform ? Civi::settings()
-      ->get('civicaseWebformUrl') : NULL;
-
-    if ($newCaseWebformUrl) {
-      $urlMapArray['civicrm/case/add?reset=1'] = $newCaseWebformUrl;
+  private function getNewCaseCategoryWebformUrl($caseCategoryName) {
+    $caseCategorySetting = new CaseCategorySetting();
+    $webformSetting = $caseCategorySetting->getCaseWebformSetting($caseCategoryName);
+    $webformSetting = array_column($webformSetting, 'is_webform_url', 'name');
+    if (empty($webformSetting)) {
+      return;
     }
+
+    foreach ($webformSetting as $key => $value) {
+      if ($value) {
+        $caseCategoryWebformUrl = $key;
+      }
+      else {
+        $allowCaseCategoryWebform = $key;
+      }
+    }
+
+    $allowCaseCategoryWebform = Civi::settings()->get($allowCaseCategoryWebform);
+
+    return $allowCaseCategoryWebform ? Civi::settings()->get($caseCategoryWebformUrl) : NULL;
+  }
+
+  /**
+   * Gets the Case Category Name.
+   *
+   * @param string $url
+   *   Menu URL.
+   */
+  private function getCaseCategoryName($url) {
+    $urlParams = parse_url(htmlspecialchars_decode($url), PHP_URL_QUERY);
+    parse_str($urlParams, $urlParams);
+
+    return !empty($urlParams['case_type_category']) ? $urlParams['case_type_category'] : 'Cases';
   }
 
   /**
