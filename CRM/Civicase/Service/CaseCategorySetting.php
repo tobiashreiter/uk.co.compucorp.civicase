@@ -33,12 +33,12 @@ class CRM_Civicase_Service_CaseCategorySetting {
    * @return array
    *   Case webform setting for category.
    */
-  private function getCaseWebformSetting($caseCategoryName) {
+  public function getCaseWebformSetting($caseCategoryName) {
     return [
       str_replace(' ', '', $this->replaceWords('civicaseAllowCaseWebform', $caseCategoryName)) => [
         'group_name' => 'CiviCRM Preferences',
         'group' => 'core',
-        'name' => $this->replaceWords('civicaseAllowCaseWebform', $caseCategoryName),
+        'name' => str_replace(' ', '', $this->replaceWords('civicaseAllowCaseWebform', $caseCategoryName)),
         'type' => 'Boolean',
         'quick_form_type' => 'YesNo',
         'default' => FALSE,
@@ -55,7 +55,7 @@ class CRM_Civicase_Service_CaseCategorySetting {
       str_replace(' ', '', $this->replaceWords('civicaseWebformUrl', $caseCategoryName)) => [
         'group_name' => 'CiviCRM Preferences',
         'group' => 'core',
-        'name' => $this->replaceWords('civicaseWebformUrl', $caseCategoryName),
+        'name' => str_replace(' ', '', $this->replaceWords('civicaseWebformUrl', $caseCategoryName)),
         'type' => 'String',
         'quick_form_type' => 'Element',
         'html_attributes' => [
@@ -94,8 +94,8 @@ class CRM_Civicase_Service_CaseCategorySetting {
     return str_replace(
       ['civicaseAllowCaseWebform', 'civicaseWebformUrl', 'Case', 'Cases'],
       [
-        "civi{$caseCategoryName}Allow{$caseCategoryName}Webform",
-        "civi{$caseCategoryName}WebformUrl",
+        "civi" . ucfirst($caseCategoryName) . "Allow" . ucfirst($caseCategoryName) . "Webform",
+        "civi" . ucfirst($caseCategoryName) . "WebformUrl",
         ucfirst($caseCategoryName),
         ucfirst($caseCategoryName) . 's',
       ],

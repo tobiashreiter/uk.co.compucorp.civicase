@@ -520,114 +520,12 @@ function civicase_civicrm_check(&$messages) {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_navigationMenu
  */
 function civicase_civicrm_navigationMenu(&$menu) {
-  /**
-   * @var array
-   *   Array(string $oldUrl => string $newUrl).
-   */
-  $rewriteMap = [
-    'civicrm/case?reset=1' => 'civicrm/case/a/#/case?case_type_category=cases',
-    'civicrm/case/search?reset=1' => 'civicrm/case/a/#/case/list?sx=1',
+  $hooks = [
+    new CRM_Civicase_Hook_NavigationMenu_AlterForCaseMenu(),
   ];
 
-  /**
-   * For URLS that have hardcoded values that may change per system.
-   * or for adding dynamic menu url mappings.
-   *
-   * @var array
-   *   Array(string $oldUrl => string $newUrl).
-   */
-  $otherUrlsMap = [];
-  _civicase_addNewCaseUrlMap($otherUrlsMap);
-
-  _civicase_menu_walk($menu, function (&$item) use ($rewriteMap, $otherUrlsMap) {
-    if (!isset($item['url'])) {
-      return;
-    }
-
-    if (isset($rewriteMap[$item['url']])) {
-      $item['url'] = $rewriteMap[$item['url']];
-
-      return;
-    }
-
-    foreach ($otherUrlsMap as $oldUrl => $newUrl) {
-      if (strpos($item['url'], $oldUrl) !== FALSE) {
-        $item['url'] = $newUrl;
-
-        return;
-      }
-    }
-  });
-
-  // Add new menu item
-  // Check that our item doesn't already exist.
-  $menu_item_search = ['url' => 'civicrm/case/webforms'];
-  $menu_items = [];
-  CRM_Core_BAO_Navigation::retrieve($menu_item_search, $menu_items);
-
-  if (!empty($menu_items)) {
-    return;
-  }
-
-  $navId = CRM_Core_DAO::singleValueQuery("SELECT max(id) FROM civicrm_navigation");
-  if (is_int($navId)) {
-    $navId++;
-  }
-  // Find the Civicase menu.
-  $caseID = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_Navigation', 'CiviCase', 'id', 'name');
-  $administerID = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_Navigation', 'Administer', 'id', 'name');
-  $menu[$administerID]['child'][$caseID]['child'][$navId] = [
-    'attributes' => [
-      'label' => ts('CiviCase Webforms'),
-      'name' => 'CiviCase Webforms',
-      'url' => 'civicrm/case/webforms',
-      'permission' => 'access CiviCase',
-      'operator' => 'OR',
-      'separator' => 1,
-      'parentID' => $caseID,
-      'navID' => $navId,
-      'active' => 1,
-    ],
-  ];
-}
-
-/**
- * Civicase Add new case URL map.
- *
- * Adds the add case URL mapping to the array depending on
- * the case settings config for the system. IF an alternate add Case
- * URL is set, the url mapping is added.
- *
- * @param array $urlMapArray
- *   URL Map array.
- */
-function _civicase_addNewCaseUrlMap(array &$urlMapArray) {
-  $allowCaseWebform = Civi::settings()->get('civicaseAllowCaseWebform');
-  $newCaseWebformUrl = $allowCaseWebform ? Civi::settings()
-    ->get('civicaseWebformUrl') : NULL;
-
-  if ($newCaseWebformUrl) {
-    $urlMapArray['civicrm/case/add?reset=1'] = $newCaseWebformUrl;
-  }
-}
-
-/**
- * Visit every link in the navigation menu, and alter it using $callback.
- *
- * @param array $menu
- *   Tree of menu items, per hook_civicrm_navigationMenu.
- * @param callable $callback
- *   Function(&$item).
- */
-function _civicase_menu_walk(array &$menu, callable $callback) {
-  foreach (array_keys($menu) as $key) {
-    if (isset($menu[$key]['attributes'])) {
-      $callback($menu[$key]['attributes']);
-    }
-
-    if (isset($menu[$key]['child'])) {
-      _civicase_menu_walk($menu[$key]['child'], $callback);
-    }
+  foreach ($hooks as $hook) {
+    $hook->run($menu);
   }
 }
 
