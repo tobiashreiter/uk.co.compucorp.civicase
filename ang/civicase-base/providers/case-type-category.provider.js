@@ -8,6 +8,12 @@
    */
   function CaseTypeCategoryProvider () {
     var allCaseTypeCategories = CRM['civicase-base'].caseTypeCategories;
+    var activeCaseTypeCategories = _.chain(allCaseTypeCategories)
+      .filter(function (caseTypeCategory) {
+        return caseTypeCategory.is_active === '1';
+      })
+      .indexBy('value')
+      .value();
 
     this.$get = $get;
     this.getAll = getAll;
@@ -28,10 +34,13 @@
     /**
      * Returns all case type categories.
      *
+     * @param {Array} includeInactive if disabled option values also should be returned
      * @returns {object[]} all the case type categories.
      */
-    function getAll () {
-      return allCaseTypeCategories;
+    function getAll (includeInactive) {
+      var returnValue = includeInactive ? allCaseTypeCategories : activeCaseTypeCategories;
+
+      return returnValue;
     }
 
     /**

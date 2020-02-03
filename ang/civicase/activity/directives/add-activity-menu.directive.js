@@ -55,9 +55,11 @@
 
       _.each(definition.activityTypes, function (actSpec) {
         if (exclude.indexOf(actSpec.name) < 0) {
-          var actTypeId = _.findKey(ActivityType.getAll(), { name: actSpec.name });
+          var actTypeId = _.findKey(ActivityType.getAll(true), { name: actSpec.name });
+          var ifActivityTypeIsActive = ActivityType.findById(actTypeId).is_active === '1';
 
-          if (!actSpec.max_instances || !activityCount[actTypeId] || (actSpec.max_instances > parseInt(activityCount[actTypeId]))) {
+          if (ifActivityTypeIsActive &&
+            (!actSpec.max_instances || !activityCount[actTypeId] || (actSpec.max_instances > parseInt(activityCount[actTypeId])))) {
             ret.push($.extend({ id: actTypeId }, ActivityType.getAll()[actTypeId]));
           }
         }

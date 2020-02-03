@@ -2,14 +2,25 @@
 
 (function ($) {
   describe('ActivityCard', function () {
-    var $compile, $rootScope, $scope, activityCard, activitiesMockData;
+    var $compile, $rootScope, $scope, viewInPopup, activityCard,
+      activitiesMockData, viewInPopupMockReturn, crmFormSuccessCallback;
 
-    beforeEach(module('civicase', 'civicase.templates', 'civicase.data'));
+    beforeEach(module('civicase', 'civicase.templates', 'civicase.data', function ($provide) {
+      var viewInPopupMock = jasmine.createSpy('viewInPopupMock');
+      viewInPopupMockReturn = jasmine.createSpyObj('viewInPopupMockObj', ['on']);
+      viewInPopupMockReturn.on.and.callFake(function (event, fn) {
+        crmFormSuccessCallback = fn;
+      });
+      viewInPopupMock.and.returnValue(viewInPopupMockReturn);
 
-    beforeEach(inject(function (_$compile_, _$rootScope_, _activitiesMockData_) {
+      $provide.value('viewInPopup', viewInPopupMock);
+    }));
+
+    beforeEach(inject(function (_$compile_, _$rootScope_, _activitiesMockData_, _viewInPopup_) {
       $compile = _$compile_;
       $rootScope = _$rootScope_;
       activitiesMockData = _activitiesMockData_;
+      viewInPopup = _viewInPopup_;
 
       $('<div id="bootstrap-theme"></div>').appendTo('body');
       initDirective();
@@ -26,55 +37,20 @@
     });
 
     describe('when editing an activity in the popup', function () {
-      var activity, loadFormSpy, crmUrlReturnVal, crmFormSuccessCallback;
+      var activity;
 
       beforeEach(function () {
-        crmUrlReturnVal = 'some string';
         activity = activitiesMockData.get()[0];
-
-        loadFormSpy = jasmine.createSpyObj('loadForm', ['on']);
-        loadFormSpy.on.and.callFake(function (event, fn) {
-          crmFormSuccessCallback = fn;
-        });
-
-        CRM.loadForm.and.returnValue(loadFormSpy);
-        CRM.url.and.returnValue(crmUrlReturnVal);
 
         activityCard.isolateScope().viewInPopup(null, activity);
       });
 
-      it('prepares the url to open the activity modal', function () {
-        expect(CRM.url).toHaveBeenCalledWith('civicrm/case/activity', {
-          action: 'update',
-          id: activity.id,
-          caseid: activity.case_id,
-          reset: 1
-        });
-      });
-
       it('opens the modal to edit the activity', function () {
-        expect(CRM.loadForm).toHaveBeenCalledWith(crmUrlReturnVal);
+        expect(viewInPopup).toHaveBeenCalledWith(null, activity);
       });
 
       it('listenes for the the form to be saved', function () {
-        expect(loadFormSpy.on).toHaveBeenCalledWith('crmFormSuccess', jasmine.any(Function));
-      });
-
-      describe('when editing an standalone activity', function () {
-        beforeEach(function () {
-          activity = activitiesMockData.get()[0];
-
-          delete activity.case_id;
-          activityCard.isolateScope().viewInPopup(null, activity);
-        });
-
-        it('opens the standalone activity modal form', function () {
-          expect(CRM.url).toHaveBeenCalledWith('civicrm/activity', jasmine.objectContaining({
-            action: 'update',
-            id: activity.id,
-            reset: 1
-          }));
-        });
+        expect(viewInPopupMockReturn.on).toHaveBeenCalledWith('crmFormSuccess', jasmine.any(Function));
       });
 
       describe('when activity is saved', function () {

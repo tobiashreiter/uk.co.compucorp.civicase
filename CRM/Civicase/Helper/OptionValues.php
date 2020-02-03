@@ -13,10 +13,9 @@ class CRM_Civicase_Helper_OptionValues {
       $result = civicrm_api3('OptionValue', 'get', [
         'return' => [
           'value', 'label', 'color', 'icon', 'name', 'grouping',
-          'weight', 'filter',
+          'is_active', 'weight', 'filter',
         ],
         'option_group_id' => $option,
-        'is_active' => 1,
         'options' => ['limit' => 0, 'sort' => 'weight'],
       ]);
       $option = [];

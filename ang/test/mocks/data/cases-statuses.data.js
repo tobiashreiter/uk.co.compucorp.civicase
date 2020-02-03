@@ -7,7 +7,8 @@
       color: '#42afcb',
       name: 'Open',
       grouping: 'Opened',
-      weight: '1'
+      weight: '1',
+      is_active: '1'
     },
     2: {
       value: '2',
@@ -15,7 +16,8 @@
       color: '#4d5663',
       name: 'Closed',
       grouping: 'Closed',
-      weight: '2'
+      weight: '2',
+      is_active: '1'
     },
     3: {
       value: '3',
@@ -23,7 +25,8 @@
       color: '#e6807f',
       name: 'Urgent',
       grouping: 'Opened',
-      weight: '3'
+      weight: '3',
+      is_active: '1'
     }
   };
 

@@ -37,26 +37,15 @@
       }));
     }));
 
-    describe('case ids', function () {
+    describe('case parameters', function () {
       beforeEach(function () {
         initController();
       });
 
-      it('queries the API for the ids of all the cases that match the relationship filter', function () {
-        expect(crmApi).toHaveBeenCalledWith('Case', 'getcaselist', jasmine.objectContaining(_.assign({
-          'status_id.grouping': 'Opened',
-          return: 'id',
-          sequential: 1,
-          options: {
-            limit: 0
-          }
-        }, $scope.activityFilters.case_filter)));
-      });
-
-      it('stores the list of ids', function () {
-        expect($scope.caseIds).toEqual(mockedCases.map(function (caseObj) {
-          return caseObj.id;
-        }));
+      it('fetches the activities from the cases that match the relationship filter', function () {
+        expect($scope.calendarCaseParams).toEqual(_.assign({
+          'status_id.grouping': 'Opened'
+        }, $scope.activityFilters.case_filter));
       });
 
       describe('when the relationship type changes', function () {
@@ -73,7 +62,9 @@
         });
 
         it('adds the properties of the `case_filter` object to the query params', function () {
-          expect(crmApi).toHaveBeenCalledWith('Case', 'getcaselist', jasmine.objectContaining({
+          expect($scope.calendarCaseParams).toEqual(_.assign({
+            'status_id.grouping': 'Opened'
+          }, {
             foo: newFilterValue
           }));
         });
