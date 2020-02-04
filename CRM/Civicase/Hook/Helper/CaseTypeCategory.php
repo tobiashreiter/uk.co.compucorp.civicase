@@ -1,6 +1,7 @@
 <?php
 
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
+use CRM_Civicase_Service_CaseCategorySetting as CaseCategorySetting;
 
 /**
  * CRM_Civicase_Hook_Helper_CaseTypeCategory class.
@@ -85,6 +86,38 @@ class CRM_Civicase_Hook_Helper_CaseTypeCategory {
         ],
       ]
     );
+  }
+
+  /**
+   * Returns the new case category webform URL if it's is set.
+   *
+   * @param string $caseCategoryName
+   *   Case category name.
+   * @param CRM_Civicase_Service_CaseCategorySetting $caseCategorySetting
+   *   CaseCategorySetting service.
+   *
+   * @return string|null
+   *   Webform URL.
+   */
+  public static function getNewCaseCategoryWebformUrl($caseCategoryName, CaseCategorySetting $caseCategorySetting) {
+    $webformSetting = $caseCategorySetting->getCaseWebformSetting($caseCategoryName);
+    $webformSetting = array_column($webformSetting, 'is_webform_url', 'name');
+    if (empty($webformSetting)) {
+      return;
+    }
+
+    foreach ($webformSetting as $key => $value) {
+      if ($value) {
+        $caseCategoryWebformUrl = $key;
+      }
+      else {
+        $allowCaseCategoryWebform = $key;
+      }
+    }
+
+    $allowCaseCategoryWebform = Civi::settings()->get($allowCaseCategoryWebform);
+
+    return $allowCaseCategoryWebform ? Civi::settings()->get($caseCategoryWebformUrl) : NULL;
   }
 
 }
