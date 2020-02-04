@@ -526,6 +526,23 @@
           expect(crmApi.calls.count()).toBe(0);
         });
       });
+
+      describe('when a watcher is triggered while already loading but force reload is necessary', function () {
+        beforeEach(function () {
+          panelQueryScope.loading.full = true;
+          panelQueryScope.pagination.page = 2;
+          panelQueryScope.config.forceReload = true;
+          $scope.$digest();
+        });
+
+        it('does not make an additional api call', function () {
+          expect(crmApi.calls.count()).toBe(1);
+        });
+
+        it('does not make an additional api call', function () {
+          expect(panelQueryScope.config.forceReload).toBe(false);
+        });
+      });
     });
 
     describe('pagination', function () {
@@ -638,7 +655,7 @@
     /**
      * Function responsible for setting up compilation of the directive
      *
-     * @param {Object} slots the transclude slots with their markup
+     * @param {object} slots the transclude slots with their markup
      */
     function compileDirective (slots) {
       var attributes = 'query="queryData"';
@@ -647,6 +664,7 @@
 
       slots = slots || { results: '<div></div>' };
 
+      $scope.config = {};
       $scope.queryData = $scope.queryData || {
         entity: 'FooBar', params: { foo: 'foo', bar: 'bar' }
       };
@@ -654,6 +672,7 @@
       attributes += $scope.panelName ? ' name="' + $scope.panelName + '"' : '';
       attributes += $scope.handlersData ? ' handlers="handlersData"' : '';
       attributes += $scope.customData ? ' custom-data="customData"' : '';
+      attributes += ' config="config"';
 
       content += slots.actions ? '<panel-query-actions>' + slots.actions + '</panel-query-actions>' : '';
       content += slots.empty ? '<panel-query-empty>' + slots.empty + '</panel-query-empty>' : '';
