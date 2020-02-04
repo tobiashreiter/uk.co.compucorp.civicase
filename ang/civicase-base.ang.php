@@ -13,6 +13,9 @@ use CRM_Civicase_Helper_OptionValues as OptionValuesHelper;
 use CRM_Civicase_Helper_GlobRecursive as GlobRecursive;
 use CRM_Civicase_Helper_NewCaseWebform as NewCaseWebform;
 
+$caseCategoryName = CRM_Utils_Request::retrieve('case_type_category', 'String');
+$caseCategorySetting = new CRM_Civicase_Service_CaseCategorySetting();
+
 $options = [
   'activityTypes' => 'activity_type',
   'activityStatuses' => 'activity_status',
@@ -24,7 +27,7 @@ $options = [
 
 OptionValuesHelper::setToJsVariables($options);
 expose_settings($options);
-NewCaseWebform::addWebformDataToOptions($options);
+NewCaseWebform::addWebformDataToOptions($options, $caseCategoryName, $caseCategorySetting);
 set_case_types_to_js_vars($options);
 set_relationship_types_to_js_vars($options);
 set_file_categories_to_js_vars($options);
