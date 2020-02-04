@@ -857,8 +857,13 @@
           $rootScope.$broadcast('civicase::dashboard-filters::updated');
         });
 
-        it('reloads all panels', function () {
+        it('force reloads all panels', function () {
+          expect($scope.activitiesPanel.config.forceReload).toBe(true);
+          expect($scope.newMilestonesPanel.config.forceReload).toBe(true);
+          expect($scope.newCasesPanel.config.forceReload).toBe(true);
           expect($scope.activitiesPanel.query.params.case_filter.foo).toEqual(newFilterValue);
+          expect($scope.newMilestonesPanel.query.params.case_filter.foo).toEqual(newFilterValue);
+          expect($scope.newCasesPanel.query.params.foo).toEqual(newFilterValue);
         });
       });
     });
