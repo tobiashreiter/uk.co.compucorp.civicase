@@ -535,11 +535,11 @@
           $scope.$digest();
         });
 
-        it('does not make an additional api call', function () {
+        it('reloads the panel data', function () {
           expect(crmApi.calls.count()).toBe(1);
         });
 
-        it('does not make an additional api call', function () {
+        it('resets the force reload flag', function () {
           expect(panelQueryScope.config.forceReload).toBe(false);
         });
       });
