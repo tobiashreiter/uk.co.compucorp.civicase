@@ -1,5 +1,8 @@
 <?php
 
+use CRM_Civicase_Hook_Helper_CaseTypeCategory as CaseTypeCategoryHelper;
+use CRM_Civicase_Service_CaseCategorySetting as CaseCategorySetting;
+
 /**
  * CRM_Civicase_Helper_NewCaseWebform class.
  */
@@ -7,14 +10,20 @@ class CRM_Civicase_Helper_NewCaseWebform {
 
   /**
    * Adds new case webform URL and client data to the options array.
+   *
+   * @param array $options
+   *   Options array.
+   * @param string $caseTypeCategory
+   *   Case type category name.
+   * @param CRM_Civicase_Service_CaseCategorySetting $caseCategorySetting
+   *   CaseCategorySetting service.
    */
-  public static function addWebformDataToOptions(&$options) {
+  public static function addWebformDataToOptions(array &$options, $caseTypeCategory, CaseCategorySetting $caseCategorySetting) {
+    $caseTypeCategory = !empty($caseTypeCategory) ? $caseTypeCategory : 'Cases';
+    $newCaseWebformUrl = CaseTypeCategoryHelper::getNewCaseCategoryWebformUrl($caseTypeCategory, $caseCategorySetting);
     // Retrieve civicase webform URL.
-    $allowCaseWebform = Civi::settings()->get('civicaseAllowCaseWebform');
     $options['newCaseWebformClient'] = 'cid';
-    $options['newCaseWebformUrl'] = $allowCaseWebform
-      ? Civi::settings()->get('civicaseWebformUrl')
-      : NULL;
+    $options['newCaseWebformUrl'] = $newCaseWebformUrl;
 
     if ($options['newCaseWebformUrl']) {
       $path = explode('/', $options['newCaseWebformUrl']);

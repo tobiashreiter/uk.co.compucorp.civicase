@@ -1,11 +1,20 @@
 <?php
 
 use CRM_Civicase_Service_CaseCategorySetting as CaseCategorySetting;
+use CRM_Civicase_Hook_Helper_CaseTypeCategory as CaseTypeCategoryHelper;
 
 /**
  * Class CRM_Civicase_Hook_Navigation_AlterForCaseMenu.
  */
 class CRM_Civicase_Hook_NavigationMenu_AlterForCaseMenu {
+
+  /**
+   * Case category Setting.
+   *
+   * @var CRM_Civicase_Service_CaseCategorySetting
+   *   CaseCategorySetting service.
+   */
+  private $caseCategorySetting;
 
   /**
    * Modifies the navigation menu.
@@ -17,6 +26,7 @@ class CRM_Civicase_Hook_NavigationMenu_AlterForCaseMenu {
    *   Menu Array.
    */
   public function run(array &$menu) {
+    $this->caseCategorySetting = new CaseCategorySetting();
     $this->rewriteCaseUrls($menu);
     $this->addCaseWebformUrl($menu);
   }
@@ -49,7 +59,7 @@ class CRM_Civicase_Hook_NavigationMenu_AlterForCaseMenu {
 
       if (strpos($item['url'], $addCaseUrl) !== FALSE) {
         $caseCategoryName = $this->getCaseCategoryName($item['url']);
-        $webformUrl = $this->getNewCaseCategoryWebformUrl($caseCategoryName);
+        $webformUrl = CaseTypeCategoryHelper::getNewCaseCategoryWebformUrl($caseCategoryName, $this->caseCategorySetting);
 
         if (!empty($webformUrl)) {
           $item['url'] = $webformUrl;
@@ -97,37 +107,6 @@ class CRM_Civicase_Hook_NavigationMenu_AlterForCaseMenu {
         'active' => 1,
       ],
     ];
-  }
-
-  /**
-   * Returns the new case category webform URL if it's is set.
-   *
-   * @param string $caseCategoryName
-   *   Case category name.
-   *
-   * @return string|null
-   *   Webform URL.
-   */
-  private function getNewCaseCategoryWebformUrl($caseCategoryName) {
-    $caseCategorySetting = new CaseCategorySetting();
-    $webformSetting = $caseCategorySetting->getCaseWebformSetting($caseCategoryName);
-    $webformSetting = array_column($webformSetting, 'is_webform_url', 'name');
-    if (empty($webformSetting)) {
-      return;
-    }
-
-    foreach ($webformSetting as $key => $value) {
-      if ($value) {
-        $caseCategoryWebformUrl = $key;
-      }
-      else {
-        $allowCaseCategoryWebform = $key;
-      }
-    }
-
-    $allowCaseCategoryWebform = Civi::settings()->get($allowCaseCategoryWebform);
-
-    return $allowCaseCategoryWebform ? Civi::settings()->get($caseCategoryWebformUrl) : NULL;
   }
 
   /**
