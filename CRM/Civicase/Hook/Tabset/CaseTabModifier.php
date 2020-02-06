@@ -57,9 +57,10 @@ class CRM_Civicase_Hook_Tabset_CaseTabModifier {
    *   The URL.
    */
   private function getCaseTabUrl($contactId) {
+    $caseCategoryOptions = array_flip(CRM_Case_BAO_CaseType::buildOptions('case_type_category', 'validate'));
     return CRM_Utils_System::url('civicrm/case/contact-case-tab', [
       'cid' => $contactId,
-      'case_type_category' => CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME,
+      'case_type_category' => $caseCategoryOptions[CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME],
     ]);
   }
 

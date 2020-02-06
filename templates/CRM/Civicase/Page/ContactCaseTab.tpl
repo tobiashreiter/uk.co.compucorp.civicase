@@ -1,4 +1,4 @@
-<div id="civicaseContactTab" >
+<div id="civicaseContactTab-{$case_type_category}">
   <div class="container" ng-view></div>
 </div>
 {literal}
@@ -8,13 +8,13 @@
       angular.module('civicaseContactTab').config(function($routeProvider) {
         $routeProvider.when('/', {
           reloadOnSearch: false,
-          template: '<civicase-contact-case-tab></civicase-contact-case-tab>'
+          template: '<civicase-contact-case-tab case-type-category="{/literal}{$case_type_category}{literal}"></civicase-contact-case-tab>'
         });
       });
     })(angular, CRM.$, CRM._);
 
     CRM.$(document).one('crmLoad', function(){
-      angular.bootstrap(document.getElementById('civicaseContactTab'), ['civicaseContactTab']);
+      angular.bootstrap(document.getElementById('civicaseContactTab-{/literal}{$case_type_category}{literal}'), ['civicaseContactTab']);
     });
   </script>
 {/literal}
