@@ -101,4 +101,31 @@ class CRM_Civicase_Helper_CaseCategory {
     return [];
   }
 
+  /**
+   * Returns the actual case category name stored in case type category.
+   *
+   * The case type category parameter passed in the URL may have been changed
+   * by user e.g might have been changed to upper case or all lower case while
+   * the actual value stored in db might be different. This might cause issues
+   * because Core uses some function to check if the case category value
+   * (especially for custom field) extends match what is stored in some option
+   * values array, if these don't match, it might cause an issue in the
+   * application behaviour.
+   *
+   * @param string $caseCategoryNameFromUrl
+   *   Case category name passed from URL.
+   *
+   * @return string
+   *   Actual case category name.
+   */
+  public static function getActualCaseCategoryName($caseCategoryNameFromUrl) {
+    $caseCategoryNameFromUrl = strtolower($caseCategoryNameFromUrl);
+    $caseTypeCategories = CaseType::buildOptions('case_type_category', 'validate');
+    $caseTypeCategoriesCombined = array_combine($caseTypeCategories, $caseTypeCategories);
+    $caseTypeCategoriesLower = array_change_key_case($caseTypeCategoriesCombined);
+
+    return !empty($caseTypeCategoriesLower[$caseCategoryNameFromUrl]) ? $caseTypeCategoriesLower[$caseCategoryNameFromUrl] : NULL;
+
+  }
+
 }
