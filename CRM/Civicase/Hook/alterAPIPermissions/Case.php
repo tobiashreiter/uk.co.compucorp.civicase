@@ -146,6 +146,10 @@ class CRM_Civicase_Hook_alterAPIPermissions_Case {
       return $this->getCaseCategoryNameFromCaseId($params, 'id');
     }
 
+    if ($entity == 'case' && $action == 'getrelations') {
+      return $this->getCaseCategoryNameFromCaseId($params, 'case_id');
+    }
+
     if ($entity == 'case' && $action == 'create') {
       return $this->getCaseCategoryNameFromCaseType($params, 'case_type_id');
     }
