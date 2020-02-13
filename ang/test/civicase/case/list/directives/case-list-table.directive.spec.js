@@ -138,14 +138,14 @@
             ],
             options: jasmine.any(Object),
             'case_type_id.is_active': 1,
-            'case_type_id.case_type_category': CRM.civicase.defaultCaseCategory,
+            'case_type_id.case_type_category': CRM['civicase-base'].defaultCaseCategory,
             id: { LIKE: '%' + $scope.filters.id + '%' },
             contact_is_deleted: 0
           })],
           ['Case', 'getdetailscount', jasmine.objectContaining({
             'case_type_id.is_active': 1,
             id: { LIKE: '%' + $scope.filters.id + '%' },
-            'case_type_id.case_type_category': CRM.civicase.defaultCaseCategory,
+            'case_type_id.case_type_category': CRM['civicase-base'].defaultCaseCategory,
             contact_is_deleted: 0
           })],
           ['Case', 'getcaselistheaders']
