@@ -26,7 +26,6 @@ $options = [
 ];
 
 OptionValuesHelper::setToJsVariables($options);
-expose_settings($options);
 NewCaseWebform::addWebformDataToOptions($options, $caseCategoryName, $caseCategorySetting);
 set_case_types_to_js_vars($options);
 set_relationship_types_to_js_vars($options);
@@ -34,20 +33,26 @@ set_file_categories_to_js_vars($options);
 set_activity_status_types_to_js_vars($options);
 set_custom_fields_info_to_js_vars($options);
 set_tags_to_js_vars($options);
+expose_settings($options, [
+  'caseCategoryName' => $caseCategoryName,
+]);
 
 /**
  * Expose settings.
  *
  * The default case category is taken from URL first,
  * or uses `case` as the default.
+ *
+ * @param array $options
+ *   The options that will store the exposed settings.
+ * @param array $defaults
+ *   Default values to use when exposing settings.
  */
-function expose_settings(&$options) {
-  $urlCaseCategory = CRM_Utils_Request::retrieveValue('case_type_category', 'String');
-
+function expose_settings(array &$options, array $defaults) {
   $options['allowMultipleCaseClients'] = (bool) Civi::settings()->get('civicaseAllowMultipleClients');
   $options['allowCaseLocks'] = (bool) Civi::settings()->get('civicaseAllowCaseLocks');
-  $options['defaultCaseCategory'] = $urlCaseCategory
-    ? $urlCaseCategory
+  $options['defaultCaseCategory'] = $defaults['caseCategoryName']
+    ? $defaults['caseCategoryName']
     : strtolower(CRM_Civicase_Helper_CaseCategory::CASE_TYPE_CATEGORY_NAME);
 }
 
