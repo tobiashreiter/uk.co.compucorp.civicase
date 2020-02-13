@@ -37,11 +37,18 @@ set_tags_to_js_vars($options);
 
 /**
  * Expose settings.
+ *
+ * The default case category is taken from URL first,
+ * or uses `case` as the default.
  */
 function expose_settings(&$options) {
+  $urlCaseCategory = CRM_Utils_Request::retrieveValue('case_type_category', 'String');
+
   $options['allowMultipleCaseClients'] = (bool) Civi::settings()->get('civicaseAllowMultipleClients');
   $options['allowCaseLocks'] = (bool) Civi::settings()->get('civicaseAllowCaseLocks');
-  $options['defaultCaseCategory'] = strtolower(CRM_Civicase_Helper_CaseCategory::CASE_TYPE_CATEGORY_NAME);
+  $options['defaultCaseCategory'] = $urlCaseCategory
+    ? $urlCaseCategory
+    : strtolower(CRM_Civicase_Helper_CaseCategory::CASE_TYPE_CATEGORY_NAME);
 }
 
 /**
