@@ -16,7 +16,7 @@
    *
    * @param {object} $scope controller's scope.
    * @param {Function} crmApi CRM API service reference.
-   * @param {string} currentCaseCategory default case type category setting value.
+   * @param {string} currentCaseCategory current case type category setting value.
    * @param {object[]} DashboardActionItems Dashboard action items list.
    * @param {Function} formatActivity Format Activity service reference.
    * @param {Function} $timeout timeout service reference.

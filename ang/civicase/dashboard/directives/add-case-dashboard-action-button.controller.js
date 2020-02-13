@@ -10,7 +10,7 @@
    * @param {object} ts ts
    * @param {object} $location the location service.
    * @param {object} $window the window service.
-   * @param {string} currentCaseCategory the default case type category configuration value.
+   * @param {string} currentCaseCategory the current case type category configuration value.
    * @param {string} newCaseWebformUrl the new case web form url configuration value.
    */
   function AddCaseDashboardActionButtonController ($scope, ts, $location, $window,
