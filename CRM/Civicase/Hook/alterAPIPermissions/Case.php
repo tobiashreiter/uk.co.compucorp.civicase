@@ -143,84 +143,77 @@ class CRM_Civicase_Hook_alterAPIPermissions_Case {
    */
   private function getCaseCategoryName($entity, $action, array $params) {
     if ($entity == 'case' && $action == 'delete') {
-      return $this->getCaseCategoryNameForCaseWhenActionIsDelete($params);
+      return $this->getCaseCategoryNameFromCaseId($params, 'id');
     }
 
     if ($entity == 'case' && $action == 'create') {
-      return $this->getCaseCategoryNameForCaseWhenActionIsCreate($params);
+      return $this->getCaseCategoryNameFromCaseType($params, 'case_type_id');
     }
 
     if ($entity == 'case' && $action != 'delete') {
-      return $this->getCaseCategoryNameForCaseWhenActionNotDelete($params);
+      return $this->getCaseCategoryNameFromCaseTypeCategory($params, 'case_type_id.case_type_category');
     }
 
     if ($entity == 'case_type' && $action != 'delete') {
-      return $this->getCaseCategoryNameForCaseTypeWhenActionNotDelete($params);
+      return $this->getCaseCategoryNameFromCaseTypeCategory($params, 'case_type_category');
     }
   }
 
   /**
-   * Returns the case category name when action is delete.
+   * Returns the case category name when case type is known.
    *
    * @param array $params
    *   API parameters.
+   * @param string $key
+   *   Case Type key.
    *
    * @return string|null
    *   Case category name.
    */
-  private function getCaseCategoryNameForCaseWhenActionIsDelete(array $params) {
-    return CaseCategoryHelper::getCategoryName($params['id']);
-  }
-
-  /**
-   * Returns the case category name when action is create.
-   *
-   * @param array $params
-   *   API parameters.
-   *
-   * @return string|null
-   *   Case category name.
-   */
-  private function getCaseCategoryNameForCaseWhenActionIsCreate(array $params) {
-    if (empty($params['case_type_id'])) {
+  private function getCaseCategoryNameFromCaseType(array $params, $key) {
+    if (empty($params[$key])) {
       return;
     }
 
-    return CaseCategoryHelper::getCategoryNameForCaseType($params['case_type_id']);
+    return CaseCategoryHelper::getCategoryNameForCaseType($params[$key]);
   }
 
   /**
-   * Returns the case category name when action is not delete.
+   * Returns the case category name when case Id is known.
    *
    * @param array $params
    *   API parameters.
+   * @param string $key
+   *   Case ID key.
    *
    * @return string|null
    *   Case category name.
    */
-  private function getCaseCategoryNameForCaseWhenActionNotDelete(array $params) {
-    if (empty($params['case_type_id.case_type_category'])) {
+  private function getCaseCategoryNameFromCaseId(array $params, $key) {
+    if (empty($params[$key])) {
       return;
     }
 
-    return $this->getCaseTypeCategoryNameFromOptions($params['case_type_id.case_type_category']);
+    return CaseCategoryHelper::getCategoryName($params[$key]);
   }
 
   /**
-   * Returns the case category name when action is not delete.
+   * Returns the case category name when case type category is known.
    *
    * @param array $params
    *   API parameters.
+   * @param string $key
+   *   Case type category key.
    *
    * @return string|null
    *   Case category name.
    */
-  private function getCaseCategoryNameForCaseTypeWhenActionNotDelete(array $params) {
-    if (empty($params['case_type_category'])) {
+  private function getCaseCategoryNameFromCaseTypeCategory(array $params, $key) {
+    if (empty($params[$key])) {
       return;
     }
 
-    return $this->getCaseTypeCategoryNameFromOptions($params['case_type_category']);
+    return $this->getCaseTypeCategoryNameFromOptions($params[$key]);
   }
 
   /**
