@@ -51,7 +51,7 @@ expose_settings($options, [
 function expose_settings(array &$options, array $defaults) {
   $options['allowMultipleCaseClients'] = (bool) Civi::settings()->get('civicaseAllowMultipleClients');
   $options['allowCaseLocks'] = (bool) Civi::settings()->get('civicaseAllowCaseLocks');
-  $options['defaultCaseCategory'] = $defaults['caseCategoryName']
+  $options['currentCaseCategory'] = $defaults['caseCategoryName']
     ? $defaults['caseCategoryName']
     : strtolower(CRM_Civicase_Helper_CaseCategory::CASE_TYPE_CATEGORY_NAME);
 }

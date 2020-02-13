@@ -1,9 +1,9 @@
 (function (angular, $, _, CRM) {
   var module = angular.module('civicase');
 
-  module.factory('getCaseQueryParams', function (defaultCaseCategory) {
+  module.factory('getCaseQueryParams', function (currentCaseCategory) {
     var DEFAULT_FILTERS = {
-      caseTypeCategory: defaultCaseCategory,
+      caseTypeCategory: currentCaseCategory,
       panelLimit: 5
     };
 
