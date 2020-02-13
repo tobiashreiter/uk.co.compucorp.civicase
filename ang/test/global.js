@@ -3,7 +3,7 @@
 (function (CRM) {
   CRM['civicase-base'] = {};
   CRM.civicase = {};
-  CRM.civicase.defaultCaseCategory = 'cases';
+  CRM['civicase-base'].currentCaseCategory = 'cases';
   CRM.angular = { requires: {} };
   /**
    * Dependency Injection for civicase module, defined in ang/civicase.ang.php
