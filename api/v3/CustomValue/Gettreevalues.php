@@ -70,6 +70,7 @@ function _civicrm_api3_custom_value_gettreevalues_spec(array &$spec) {
  */
 function civicrm_api3_custom_value_gettreevalues(array $params) {
   $ret = [];
+  $groupID = NULL;
   $options = _civicrm_api3_get_options_from_params($params);
   $toReturn = [
     'custom_group' => [],
