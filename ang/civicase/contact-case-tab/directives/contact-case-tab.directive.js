@@ -16,6 +16,7 @@
 
   /**
    * @param {object} $scope the controller scope
+   * @param {Function} ts translation service
    * @param {Function} crmApi the crm api service
    * @param {Function} formatCase the format case service
    * @param {object} Contact the contact service
@@ -23,7 +24,7 @@
    * @param {string} newCaseWebformClient the new case web form client configuration value
    * @param {string} newCaseWebformUrl the new case web form url configuration value
    */
-  function CivicaseContactCaseTabController ($scope, crmApi, formatCase, Contact, ContactsCache,
+  function CivicaseContactCaseTabController ($scope, ts, crmApi, formatCase, Contact, ContactsCache,
     newCaseWebformClient, newCaseWebformUrl) {
     var commonConfigs = {
       isLoaded: false,
@@ -73,7 +74,7 @@
     ];
 
     $scope.checkPerm = CRM.checkPerm;
-    $scope.ts = CRM.ts('civicase');
+    $scope.ts = ts;
 
     (function init () {
       initCasesConfig();
@@ -180,7 +181,8 @@
         'subject', 'details', 'contact_id', 'case_type_id', 'status_id',
         'contacts', 'start_date', 'end_date', 'is_deleted', 'activity_summary',
         'activity_count', 'category_count', 'tag_id.name', 'tag_id.color',
-        'tag_id.description', 'tag_id.parent_id', 'related_case_ids'
+        'tag_id.description', 'tag_id.parent_id', 'related_case_ids',
+        'case_type_id.case_type_category'
       ];
       var returnCaseParams = {
         sequential: 1,
