@@ -1,4 +1,4 @@
-(function (angular, $) {
+(function (angular, $, _) {
   var module = angular.module('civicase');
 
   module.directive('civicaseDashboard', function () {
@@ -120,7 +120,7 @@
      * @param {object} data data sent from the broadcaster
      */
     function updateFilterParams (event, data) {
-      $scope.activityFilters.case_filter.case_type_id = data.case_type_id;
+      _.extend($scope.activityFilters.case_filter, data);
     }
   }
-})(angular, CRM.$);
+})(angular, CRM.$, CRM._);
