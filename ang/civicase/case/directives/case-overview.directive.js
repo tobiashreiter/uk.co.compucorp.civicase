@@ -147,7 +147,12 @@
     function loadStatsData () {
       var apiCalls = [];
 
-      apiCalls.push(['Case', 'getstats', $scope.caseFilter || {}]);
+      var params = angular.copy($scope.caseFilter || {});
+      // status id should not be added to getstats,
+      // because case overview section shows all statuses
+      delete params.status_id;
+
+      apiCalls.push(['Case', 'getstats', params]);
       crmApi(apiCalls).then(function (response) {
         $scope.summaryData = response[0].values;
       });

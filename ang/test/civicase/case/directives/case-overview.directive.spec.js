@@ -62,6 +62,24 @@
       });
     });
 
+    describe('Case Status Data', function () {
+      beforeEach(function () {
+        crmApi.and.returnValue($q.resolve([CasesOverviewStats]));
+        compileDirective({
+          caseTypeCategory: 'cases',
+          caseTypeID: [1, 2],
+          status_id: '1'
+        });
+      });
+
+      it('fetches the case statistics, but shows all case statuses', function () {
+        expect(crmApi).toHaveBeenCalledWith([['Case', 'getstats', {
+          'case_type_id.case_type_category': 'cases',
+          case_type_id: [1, 2]
+        }]]);
+      });
+    });
+
     describe('Case Status', function () {
       describe('when the component loads', function () {
         it('requests the case status that are hidden stored in the browser cache', function () {
