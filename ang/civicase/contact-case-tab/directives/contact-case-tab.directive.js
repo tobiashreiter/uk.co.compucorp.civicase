@@ -43,7 +43,7 @@
     $scope.casesListConfig = [
       {
         name: 'opened',
-        title: 'Open Cases',
+        title: ts('Open Cases'),
         filterParams: {
           'status_id.grouping': 'Opened',
           'case_type_id.case_type_category': $scope.caseTypeCategory,
@@ -53,7 +53,7 @@
         showContactRole: false
       }, {
         name: 'closed',
-        title: 'Resolved cases',
+        title: ts('Resolved cases'),
         filterParams: {
           'status_id.grouping': 'Closed',
           'case_type_id.case_type_category': $scope.caseTypeCategory,
@@ -63,7 +63,7 @@
         showContactRole: false
       }, {
         name: 'related',
-        title: 'Other cases for this contact',
+        title: ts('Other cases for this contact'),
         filterParams: {
           case_manager: $scope.contactId,
           'case_type_id.case_type_category': $scope.caseTypeCategory,
