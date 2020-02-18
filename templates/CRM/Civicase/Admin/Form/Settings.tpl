@@ -9,7 +9,7 @@
   <tr class="crm-case-form-block-{$settingKey}">
     <td class="label">{$form.$settingKey.label}</td>
     <td>{$form.$settingKey.html}<br />
-      <span class="description">{$setting.description}</span>
+      <span class="description">{ts}{$setting.description}{/ts}</span>
     </td>
   </tr>
 {/foreach}
