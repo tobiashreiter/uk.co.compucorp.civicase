@@ -9,7 +9,7 @@
   <tr class="crm-case-form-block-{$settingKey}">
     <td class="label">{$form.$settingKey.label}</td>
     <td>{$form.$settingKey.html}<br />
-      <span class="description">{ts}This setting allows the user to set a webform to be triggered when clicking the "Add Case" button on the Cases tab on the Contact{/ts}</span>
+      <span class="description">{ts}{$setting.description}{/ts}</span>
     </td>
   </tr>
 {/foreach}

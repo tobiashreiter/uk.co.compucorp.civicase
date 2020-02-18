@@ -47,7 +47,7 @@ class CRM_Civicase_Service_CaseCategorySetting {
         'title' => $this->replaceWords('Trigger webform on Add Case', $caseCategoryName),
         'is_domain' => 1,
         'is_contact' => 0,
-        'description' => $this->replaceWords('This setting allows the user to set a webform to be triggered when clicking the `Add Case` button on the Cases tab on the Contact.', $caseCategoryName),
+        'description' => $this->replaceWords('This setting allows the user to set a webform to be triggered when clicking the "Add Case" button on the Cases tab on the Contact.', $caseCategoryName),
         'help_text' => '',
         'is_webform_url' => FALSE,
         'webform_url_name' => str_replace(' ', '', $this->replaceWords('civicaseWebformUrl', $caseCategoryName)),
@@ -68,7 +68,7 @@ class CRM_Civicase_Service_CaseCategorySetting {
         'title' => ' URL of the Webform',
         'is_domain' => 1,
         'is_contact' => 0,
-        'description' => '',
+        'description' => 'A Webform url e.g /node/233',
         'help_text' => '',
         'is_webform_url' => TRUE,
       ],
@@ -92,12 +92,12 @@ class CRM_Civicase_Service_CaseCategorySetting {
     }
 
     return str_replace(
-      ['civicaseAllowCaseWebform', 'civicaseWebformUrl', 'Case', 'Cases'],
+      ['civicaseAllowCaseWebform', 'civicaseWebformUrl', 'Cases', 'Case'],
       [
         "civi" . ucfirst($caseCategoryName) . "Allow" . ucfirst($caseCategoryName) . "Webform",
         "civi" . ucfirst($caseCategoryName) . "WebformUrl",
         ucfirst($caseCategoryName),
-        ucfirst($caseCategoryName) . 's',
+        ucfirst($caseCategoryName),
       ],
       $stringToReplace
     );
