@@ -1,5 +1,7 @@
 <?php
 
+use Civi\Angular\Manager;
+
 /**
  * Class CRM_Civicase_Page_ContactActivityTab.
  *
@@ -18,6 +20,16 @@ class CRM_Civicase_Page_ContactCaseTab extends CRM_Core_Page {
   public function run() {
     $caseTypeCategory = CRM_Utils_Request::retrieveValue('case_type_category', 'String');
     $this->assign('case_type_category', $caseTypeCategory);
+    $caseCategoryName = CRM_Civicase_Helper_CaseCategory::getCaseCategoryNameFromOptionValue($caseTypeCategory);
+    CRM_Civicase_Hook_Helper_CaseTypeCategory::addWordReplacements($caseCategoryName);
+    $translated = [];
+    if (strtolower($caseCategoryName) != 'cases') {
+      $manager = new Manager(CRM_Core_Resources::singleton());
+      $translated = $manager->getTranslatedStrings('civicase');
+    }
+    CRM_Core_Resources::singleton()->addSetting([
+      'strings::uk.co.compucorp.civicase' => $translated,
+    ]);
 
     return parent::run();
   }
