@@ -430,6 +430,9 @@ AND    ac.case_id = %1
       $report,
       $selectedActivities
     );
+
+    $caseCategoryName = CRM_Civicase_Helper_CaseCategory::getCategoryName($caseID);
+    CRM_Civicase_Hook_Helper_CaseTypeCategory::addWordReplacements($caseCategoryName);
     $printReport = CRM_Case_Audit_Audit::run($contents, $clientID, $caseID, TRUE);
     echo $printReport;
     CRM_Utils_System::civiExit();
