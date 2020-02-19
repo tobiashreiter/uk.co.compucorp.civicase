@@ -7,6 +7,7 @@ use CRM_Civicase_Setup_AddCaseCategoryWordReplacementOptionGroup as AddCaseCateg
 use CRM_Civicase_Setup_MoveCaseTypesToCasesCategory as MoveCaseTypesToCasesCategory;
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 use CRM_Civicase_Setup_CreateSafeFileExtensionOptionValue as CreateSafeFileExtensionOptionValue;
+use CRM_Civicase_Setup_UpdateMenuLinks as MenuLinksSetup;
 
 /**
  * Collection of upgrade steps.
@@ -145,7 +146,7 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
     $this->addNav([
       'label' => ts('Manage Cases', ['domain' => 'uk.co.compucorp.civicase']),
       'name' => 'Manage Cases',
-      'url' => 'civicrm/case/a/#/case/list',
+      'url' => MenuLinksSetup::MANAGE_CASE_URL,
       'permission' => 'access my cases and activities,access all cases and activities',
       'operator' => 'OR',
       'separator' => 0,
