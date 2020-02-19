@@ -1,5 +1,7 @@
 <?php
 
+use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
+
 /**
  * CRM_Civicase_Hook_PostProcess_CaseCategoryCustomFieldsSaver class.
  */
@@ -83,7 +85,12 @@ class CRM_Civicase_Hook_PostProcess_CaseCategoryCustomFieldsSaver {
     $urlParams = parse_url(htmlspecialchars_decode($form->controller->_entryURL), PHP_URL_QUERY);
     parse_str($urlParams, $urlParams);
 
-    return !empty($urlParams['case_type_category']) ? $urlParams['case_type_category'] : NULL;
+    $caseCategory = !empty($urlParams['case_type_category']) ? $urlParams['case_type_category'] : NULL;
+    if (!$caseCategory) {
+      return NULL;
+    }
+
+    return CaseCategoryHelper::getActualCaseCategoryName($caseCategory);
   }
 
 }
