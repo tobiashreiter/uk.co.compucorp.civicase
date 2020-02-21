@@ -4,6 +4,9 @@
  * Class CRM_Extendedreport_Form_Report_Case_CaseWithActivityPivot
  */
 class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_Form_Report_BaseExtendedReport {
+  /**
+   * @var string
+   */
   protected $_baseTable = 'civicrm_case';
   protected $skipACL = FALSE;
   protected $_customGroupAggregates = TRUE;
@@ -19,6 +22,7 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
   protected $tempCaseActivityTableName = '';
   protected $tempCaseRelationshipTableName;
   protected $caseRoleContactMetaData = [];
+  protected $_tagFilterTable = 'civicrm_case';
 
 
   public function __construct() {
@@ -38,8 +42,9 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
     $caseClientContactColumns = $this->getColumns('Contact', ['prefix_label' => 'Case Client - ', 'group_title' => 'Case Client Contact']);
     $activityColumns = $this->_columns = $this->getColumns('Activity', ['fields' => FALSE]);
     $caseRolesContactColumns = $this->getCaseRolesContactColumns();
+    $caseTagColumn = $this->getColumns('CaseTag', ['group_title' => 'Case Tags']);
 
-    $this->_columns = $caseColumns + $caseClientContactColumns + $activityColumns + $caseRolesContactColumns;
+    $this->_columns = $caseColumns + $caseClientContactColumns + $activityColumns + $caseRolesContactColumns + $caseTagColumn;
     $this->_columns['civicrm_case']['fields']['id']['required'] = TRUE;
     $this->_columns['civicrm_contact']['fields']['id']['required'] = TRUE;
     $this->_columns['civicrm_case']['fields']['id']['title'] = 'Case';
@@ -61,7 +66,8 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
       'contact_from_case',
       'activity_from_case',
       'relationship_from_case',
-      'case_role_contact'
+      'case_role_contact',
+      'case_tags',
     ];
   }
 
@@ -77,12 +83,12 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
     $date = !empty($this->_params['as_at_date']) ? $this->_params['as_at_date'] :date('Y-m-d');
     $activeStatus = !empty($this->_params['as_at_date']) ? "0, 1" : "1";
     $this->_from .= "
-      LEFT JOIN civicrm_relationship crt 
+      LEFT JOIN civicrm_relationship crt
       ON (
         {$this->_aliases['civicrm_case']}.id = crt.case_id AND
         {$this->_aliases['civicrm_contact']}.id = crt.contact_id_a AND
         crt.is_active IN({$activeStatus}) AND
-        (crt.start_date IS NULL OR crt.start_date <= '{$date}') AND 
+        (crt.start_date IS NULL OR crt.start_date <= '{$date}') AND
         (crt.end_date IS NULL OR crt.end_date >= '{$date}')
        )";
   }
@@ -96,12 +102,22 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
     foreach ($this->caseRoleContactMetaData as $data) {
       $tableAlias = $data['table_prefix'].'civicrm_contact';
       $this->_from .= "
-      LEFT JOIN civicrm_contact $tableAlias 
+      LEFT JOIN civicrm_contact $tableAlias
       ON (
          crt.contact_id_b = {$tableAlias}.id AND
          crt.relationship_type_id = {$data['relationship_type_id']}
       )";
     }
+  }
+
+  /**
+   * Joins to the Entity Tag table from the case table.
+   */
+  public function joinEntityTagFromCase() {
+    $this->_from .= "
+      LEFT JOIN civicrm_entity_tag {$this->_aliases['civicrm_entity_tag']}
+      ON ({$this->_aliases['civicrm_case']}.id = {$this->_aliases['civicrm_entity_tag']}.entity_id
+      AND {$this->_aliases['civicrm_entity_tag']}.entity_table = '{$this->_tagFilterTable}')";
   }
 
   /**
