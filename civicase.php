@@ -588,7 +588,7 @@ function civicase_civicrm_navigationMenu(&$menu) {
    *   Array(string $oldUrl => string $newUrl).
    */
   $rewriteMap = [
-    'civicrm/case?reset=1' => 'civicrm/case/a/#/case?case_type_category=cases',
+    'civicrm/case?reset=1' => 'civicrm/case/a/?case_type_category=cases#/case?case_type_category=cases',
     'civicrm/case/search?reset=1' => 'civicrm/case/a/#/case/list?sx=1',
   ];
 

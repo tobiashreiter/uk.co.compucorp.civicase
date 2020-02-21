@@ -6,6 +6,11 @@
 class CRM_Civicase_Setup_UpdateMenuLinks {
 
   /**
+   * Manage case URL.
+   */
+  const MANAGE_CASE_URL = 'civicrm/case/a/?case_type_category=cases#/case/list?cf=%7B"case_type_category":"cases"%7D';
+
+  /**
    * Updates the Manage Cases Menu URLs.
    */
   public function apply() {
@@ -32,7 +37,7 @@ class CRM_Civicase_Setup_UpdateMenuLinks {
     if ($manageCasesMenuItem['id']) {
       civicrm_api3('Navigation', 'create', [
         'id' => $manageCasesMenuItem['id'],
-        'url' => 'civicrm/case/a/#/case/list?cf=%7B"case_type_category":"cases"%7D',
+        'url' => self::MANAGE_CASE_URL,
       ]);
     }
 
