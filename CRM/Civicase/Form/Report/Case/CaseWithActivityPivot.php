@@ -120,7 +120,7 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
     ];
 
     $caseColumns = $this->getColumns('Case', ['fields' => FALSE]);
-    $caseClientContactColumns = $this->getColumns('Contact', ['prefix_label' => 'Case Client - ', 'group_title' => 'Case Client Contact']);
+    $caseClientContactColumns = $this->getColumns('Contact', ['prefix_label' => 'Case Client - ', 'group_title' => 'Contacts']);
     $activityColumns = $this->_columns = $this->getColumns('Activity', ['fields' => FALSE]);
     $caseRolesContactColumns = $this->getCaseRolesContactColumns();
     $caseTagColumn = $this->getColumns('CaseTag', ['group_title' => 'Case Tags']);
@@ -210,12 +210,40 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
    * having these case role relationship with the case client.
    */
   protected function setCaseRolesContactMetaData() {
+    $caseRolesMetaData = [];
+    $caseRolesData = $this->getCaseRoles();
+    $relationshipTypeData = civicrm_api3('RelationshipType', 'get', [
+      'label_b_a' => ['IN' => array_keys($caseRolesData)],
+    ]);
+
+    foreach ($relationshipTypeData['values'] as $relationshipType) {
+      $tablePrefix = $this->getDbPrefixFromRoleName($relationshipType['label_b_a']);
+      $caseRolesMetaData[$tablePrefix] = [
+        'relationship_type_id' => $relationshipType['id'],
+        'relationship_name' => $relationshipType['label_b_a'],
+        'table_prefix' => $tablePrefix,
+      ];
+    }
+
+    usort($caseRolesMetaData, function($a, $b) {
+      return strcmp($a['relationship_name'], $b['relationship_name']);
+    });
+    $this->caseRoleContactMetaData = $caseRolesMetaData;
+  }
+
+  /**
+   * Returns all case roles for active case types.
+   *
+   * @return array
+   *  Case roles
+   */
+  private function getCaseRoles() {
     $result = civicrm_api3('CaseType', 'get', [
-      'sequential' => 1,
+      'is_active' => 1,
       'return' => ['definition', 'id'],
     ]);
 
-    $caseRoleData = [];
+    $caseRolesData = [];
     foreach ($result['values'] as $value) {
       if (empty($value['definition']['caseRoles'])) {
         continue;
@@ -223,19 +251,11 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
 
       $caseRoles = $value['definition']['caseRoles'];
       foreach ($caseRoles as $caseRole) {
-        $data = civicrm_api3('RelationshipType', 'getsingle', [
-          'label_b_a' => $caseRole['name'],
-        ]);
-        $tablePrefix = $this->getDbPrefixFromRoleName($caseRole['name']);
-        $caseRoleData[$tablePrefix] = [
-          'relationship_type_id' => $data['id'],
-          'relationship_name' => $caseRole['name'],
-          'table_prefix' => $tablePrefix,
-        ];
+        $caseRolesData[$caseRole['name']] = $caseRole;
       }
     }
 
-    $this->caseRoleContactMetaData = $caseRoleData;
+    return $caseRolesData;
   }
 
   /**
