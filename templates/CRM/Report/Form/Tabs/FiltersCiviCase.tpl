@@ -18,7 +18,6 @@
       var body = $('.crm-accordion-body.' + id);
       if (header.length > 0 && body.length > 0) {
         body.html('<div class="crm-loading-element"><span class="loading-text">{/literal}{ts escape='js'}Loading{/ts}{literal}...</span></div>');
-        header.append('{/literal}<a href="#" class="crm-close-accordion crm-hover-button css_right" title="{ts escape='js'}Remove from search criteria{/ts}"><i class="crm-i fa-times"></i></a>{literal}');
         header.addClass('active');
         CRM.loadPage(url, {target: body, block: false});
       }
