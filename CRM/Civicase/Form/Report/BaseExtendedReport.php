@@ -1239,4 +1239,74 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
 
     return $specs['title'];
   }
+
+  /**
+   * Overridden for base form class.
+   *
+   * Overridden so that when filter panes are opened, only filter fields
+   * related to such pane is open a quick exit can be done and the form
+   * is suppressed rather than loading the whole form regions.
+   */
+  public function buildQuickForm() {
+    $this->_filterPane = CRM_Utils_Array::value('filterPane', $_GET);
+    if (!$this->_filterPane) {
+      parent::buildQuickForm();
+    }
+    else {
+      $this->_filterPane = CRM_Utils_Array::value('filterPane', $_GET);
+      if ($this->_filterPane) {
+        $this->addFilters();
+      }
+      $this->add('hidden', "hidden_{$this->_filterPane}", 1);
+      $this->assign('filterPane', $this->_filterPane);
+      $this->assign('suppressForm', TRUE);
+    }
+  }
+
+  /**
+   * Setter for $_params.
+   *
+   * Overridden from base file so that we can add opened pane hidden values
+   * to form values to be stored for report instances. This will ensure that
+   * when next the report instance is opened, those panes are automatically
+   * expanded.
+   *
+   * @param array $params
+   *   Params
+   */
+  public function setParams($params) {
+    if (empty($params)) {
+      $this->_params = $params;
+      return;
+    }
+    $extendedFieldKeys = $this->getConfiguredFieldsFlatArray();
+    if (!empty($extendedFieldKeys)) {
+      $fields = $params['fields'];
+      if (isset($this->_formValues['extended_fields'])) {
+        foreach ($this->_formValues['extended_fields'] as $index => $extended_field) {
+          $fieldName = $extended_field['name'];
+          if (!isset($fields[$fieldName])) {
+            unset($this->_formValues['extended_fields'][$index]);
+          }
+        }
+        $fieldsToAdd = array_diff_key($fields, $extendedFieldKeys);
+        foreach (array_keys($fieldsToAdd) as $fieldName) {
+          $this->_formValues['extended_fields'][] = [
+            'name' => $fieldName,
+            'title' => $this->getMetadataByType('fields')[$fieldName]['title'],
+          ];
+        }
+        // We use array_merge to re-index from 0
+        $params['extended_fields'] = array_merge($this->_formValues['extended_fields']);
+      }
+    }
+    $params['order_bys'] = $params['extended_order_bys'] = $this->getConfiguredOrderBys($params);
+    // Renumber from 0
+    $params['extended_order_bys'] = array_merge($params['extended_order_bys']);
+
+    $paneValues = array_filter($this->_submitValues, function($key) {
+      return strpos($key, 'hidden_') === 0;
+    }, ARRAY_FILTER_USE_KEY);
+    $this->_params = array_merge($params, $paneValues);
+  }
 }
