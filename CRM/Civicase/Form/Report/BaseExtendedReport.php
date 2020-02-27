@@ -2,22 +2,50 @@
 
 abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Report_ExtendedReport {
 
+  /**
+   * @var
+   */
   protected $aggregateDateFields;
 
+  /**
+   * The filter pane currently clicked.
+   *
+   * @var string
+   */
+  protected $_filterPane;
+
+  /**
+   * Date SQL grouping options.
+   *
+   * @var array
+   */
   protected $dateSqlGrouping = [
     'month' => "%Y-%m",
     'year' => "%Y"
   ];
 
+  /**
+   * Data functions array.
+   *
+   * @var array
+   */
   protected $dataFunctions = [
     'COUNT' => 'COUNT',
     'COUNT UNIQUE' => 'COUNT UNIQUE',
     'SUM' => 'SUM'
   ];
 
+  /**
+   * Date grouping array.
+   *
+   * @var array
+   */
   protected $dateGroupingOptions = ['month' => 'Month', 'year' => 'Year'];
 
 
+  /**
+   * CRM_Civicase_Form_Report_BaseExtendedReport constructor.
+   */
   public function __construct() {
     parent::__construct();
     $this->addResultsTab();
@@ -60,6 +88,37 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   }
 
   /**
+   * Returns Custom fields meta data.
+   *
+   * @param array $customFields
+   *   Custom fields.
+   *
+   * @return array
+   *   Custom fields meta data.
+   */
+  private function getCustomFieldsMeta($customFields) {
+    $optionGroupIds = [];
+    $sortedLists = [];
+    foreach ($customFields as $customField) {
+      if (!empty($customField['option_group_id'])) {
+        $optionGroupIds[] = $customField['option_group_id'];
+      }
+    }
+    $extendsString = implode("','", $optionGroupIds);
+    $ogDAO = CRM_Core_DAO::executeQuery("
+    SELECT ov.value, ov.label, ov.option_group_id
+    FROM civicrm_option_value ov
+    WHERE ov.option_group_id IN ('" . $extendsString . "')
+    ORDER BY ov.weight;");
+
+    while ($ogDAO->fetch()) {
+      $sortedLists[$ogDAO->option_group_id][$ogDAO->value] = $ogDAO->label;
+    }
+
+    return $sortedLists;
+  }
+
+  /**
    *  Add the fields to select the aggregate fields to the report.
    *
    * This function is overridden because of a bug that does not allow the custom fields to
@@ -73,13 +132,18 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
     $aggregateRowHeaderFields = $this->getAggregateRowFields();
 
     foreach ($this->_customGroupExtended as $key => $groupSpec) {
+      $extendsKey = implode(',', $groupSpec['extends']);
+      if (isset($this->customDataDAOs[$extendsKey])) {
+        continue;
+      }
       $customDAOs = $this->getCustomDataDAOs($groupSpec['extends']);
+      $customFieldMeta = $this->getCustomFieldsMeta($customDAOs);
       foreach ($customDAOs as $customField) {
         $tableKey = $customField['prefix'] . $customField['table_name'];
         $prefix = $customField['prefix'];
         $fieldName = 'custom_' . ($prefix ? $prefix . '_' : '') . $customField['id'];
         $this->addCustomTableToColumns($customField, $customField['table_name'], $prefix, $customField['prefix_label'], $tableKey);
-        $this->_columns[$tableKey]['metadata'][$fieldName] = $this->getCustomFieldMetadata($customField, $customField['prefix_label']);
+        $this->_columns[$tableKey]['metadata'][$fieldName] = $this->getCustomFieldMetadata($customField, $customField['prefix_label'], '', $customFieldMeta);
         if (!empty($groupSpec['filters'])) {
           $this->_columns[$tableKey]['metadata'][$fieldName]['is_filters'] = TRUE;
           $this->_columns[$tableKey]['metadata'][$fieldName]['extends_table'] = $this->_columns[$tableKey]['extends_table'];
@@ -207,10 +271,11 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * @param string $field
    * @param string $prefixLabel
    * @param string $prefix
+   * @param array $customFieldMeta
    *
    * @return mixed
    */
-  protected function getCustomFieldMetadata($field, $prefixLabel, $prefix = '') {
+  protected function getCustomFieldMetadata($field, $prefixLabel, $prefix = '', $customFieldMeta) {
     $field = array_merge($field, [
       'name' => $field['column_name'],
       'title' => $prefixLabel . $field['label'],
@@ -240,12 +305,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
         $field['operatorType'] = CRM_Report_Form::OP_MULTISELECT;
       }
 
-      $ogDAO = CRM_Core_DAO::executeQuery("SELECT ov.value, ov.label FROM civicrm_option_value ov WHERE ov.option_group_id = %1 ORDER BY ov.weight", [
-        1 => [$field['option_group_id'], 'Integer'],
-      ]);
-      while ($ogDAO->fetch()) {
-        $field['options'][$ogDAO->value] = $ogDAO->label;
-      }
+      $field['options'] = !empty($customFieldMeta[$field['option_group_id']]) ? $customFieldMeta[$field['option_group_id']] : NULL;
     }
 
     if ($field['type'] === CRM_Utils_Type::T_BOOLEAN) {
@@ -955,6 +1015,10 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
       $defaultTpl = 'CRM/Report/Form.tpl';
     }
 
+    if ($this->_filterPane) {
+      $defaultTpl = 'CRM/Report/Form/Tabs/FilterPane.tpl';
+    }
+
     return $defaultTpl;
   }
 
@@ -1032,19 +1096,34 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
       $filters = $filterGroups = [];
       $filterExtendsContactGroup = [];
       $filtersGroupedByTableKeys = [];
+      $filterPaneGroups = [];
       $count = 1;
       foreach ($this->getMetadataByType($filterString) as $fieldName => $field) {
         $table = $field['table_name'];
+        $groupTitle = $this->_columns[$field['table_key']]['group_title'];
+        $paneName = preg_replace("/[^A-Z0-9_-]/i", '', $groupTitle);
         $filterExtendsContact = FALSE;
         if ($filterString === 'filters') {
+          if ($this->_filterPane && $this->_filterPane != $paneName) {
+            continue;
+          }
           $filterExtendsContact = (!empty($field['extends']) && in_array($field['extends'], ['Individual', 'Household', 'Organization'])) ||
             $field['table_name'] == 'civicrm_contact';
           $filterGroups[$table] = [
-            'group_title' => $this->_columns[$field['table_key']]['group_title'],
+            'group_title' => $groupTitle,
+            'pane_name' => $paneName,
             'use_accordian_for_field_selection' => TRUE,
             'group_extends_contact' => $filterExtendsContact
           ];
-
+          if (!empty($_POST["hidden_{$paneName}"]) ||
+            CRM_Utils_Array::value("hidden_{$paneName}", $this->_formValues)
+          ) {
+            $filterGroups[$table]['open'] = 'true';
+          }
+          $filterPaneGroups[$paneName] = [
+            'table_name' => $table,
+            'group_extends_contact' => $filterExtendsContact
+          ];
           if ($filterExtendsContact) {
             $filterExtendsContactGroup[$field['table_key']] = [
               'group_field_label' => !empty($this->_columns[$field['table_key']]['prefix_label']) ?
@@ -1061,6 +1140,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
         $this->addFilterFieldsToReport($field, $fieldName, $table, $count, $prefix);
       }
 
+
       if (!empty($filters) && $filterString == 'filters') {
         $this->tabs['Filters'] = [
           'title' => ts('Filters'),
@@ -1070,6 +1150,8 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
         $this->assign('filterGroups', $filterGroups);
         $this->assign('filterExtendsContactGroup', $filterExtendsContactGroup);
         $this->assign('filtersGroupedByTableSets', $filtersGroupedByTableKeys);
+        $this->assign('filterPaneGroups', $filterPaneGroups);
+        $this->assign('currentPath', CRM_Utils_System::currentPath());
       }
       $this->assign($filterString, $filters);
     }
