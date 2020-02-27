@@ -309,6 +309,9 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
       ],
       'case_role_contact' => [
         'callback' => 'joinCaseRolesContact',
+      ],
+      'case_tags' => [
+        'callback' => 'joinEntityTagFromCase',
       ]
     ];
 
