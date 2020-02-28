@@ -1136,10 +1136,10 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
         if ($filterExtendsContact) {
           $filtersGroupedByTableKeys[$table][$field['table_key']][$prefix . $fieldName] = $field;
         }
-
-        $this->addFilterFieldsToReport($field, $fieldName, $table, $count, $prefix);
+        if ($filterGroups[$table]['open'] == 'true' || $this->_filterPane && $this->_filterPane == $paneName)  {
+          $this->addFilterFieldsToReport($field, $fieldName, $table, $count, $prefix);
+        }
       }
-
 
       if (!empty($filters) && $filterString == 'filters') {
         $this->tabs['Filters'] = [
