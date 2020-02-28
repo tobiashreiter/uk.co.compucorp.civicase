@@ -106,10 +106,11 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
     }
     $extendsString = implode("','", $optionGroupIds);
     $ogDAO = CRM_Core_DAO::executeQuery("
-    SELECT ov.value, ov.label, ov.option_group_id
-    FROM civicrm_option_value ov
-    WHERE ov.option_group_id IN ('" . $extendsString . "')
-    ORDER BY ov.weight;");
+      SELECT ov.value, ov.label, ov.option_group_id
+      FROM civicrm_option_value ov
+      WHERE ov.option_group_id IN ('" . $extendsString . "')
+      ORDER BY ov.weight;
+    ");
 
     while ($ogDAO->fetch()) {
       $sortedLists[$ogDAO->option_group_id][$ogDAO->value] = $ogDAO->label;
