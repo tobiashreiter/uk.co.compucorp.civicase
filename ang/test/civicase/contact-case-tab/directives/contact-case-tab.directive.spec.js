@@ -2,7 +2,8 @@
 
 ((_) => {
   describe('Contact Case Tab', () => {
-    var $controller, $rootScope, $scope, crmApi, mockContactId, mockContactService;
+    var $controller, $rootScope, $scope, CaseTypeCategoryTranslationService,
+      crmApi, mockContactId, mockContactService;
 
     beforeEach(module('civicase', ($provide) => {
       mockContactService = jasmine.createSpyObj('Contact', ['getCurrentContactID']);
@@ -10,10 +11,15 @@
       $provide.value('Contact', mockContactService);
     }));
 
-    beforeEach(inject((_$controller_, _$rootScope_, _crmApi_) => {
+    beforeEach(inject((_$controller_, _$rootScope_, _CaseTypeCategoryTranslationService_,
+      _crmApi_) => {
       $controller = _$controller_;
       $rootScope = _$rootScope_;
+      CaseTypeCategoryTranslationService = _CaseTypeCategoryTranslationService_;
       crmApi = _crmApi_;
+
+      spyOn(CaseTypeCategoryTranslationService, 'restoreTranslation');
+      spyOn(CaseTypeCategoryTranslationService, 'storeTranslation');
     }));
 
     beforeEach(() => {
@@ -26,6 +32,11 @@
     describe('on init', () => {
       it('stores the contact id extracted from the URL', () => {
         expect($scope.contactId).toBe(mockContactId);
+      });
+
+      it('stores the current case type category translation', () => {
+        expect(CaseTypeCategoryTranslationService.storeTranslation)
+          .toHaveBeenCalledWith($scope.caseTypeCategory);
       });
     });
 
@@ -66,6 +77,34 @@
             })]
           })
         ]));
+      });
+    });
+
+    describe('when changing contact tabs', () => {
+      describe('when changing back to the current case type category tab', () => {
+        beforeEach(() => {
+          $scope.handleContactTabChange({
+            case_type_category: $scope.caseTypeCategory
+          });
+        });
+
+        it('restores the translations for the current case type category', () => {
+          expect(CaseTypeCategoryTranslationService.restoreTranslation)
+            .toHaveBeenCalledWith($scope.caseTypeCategory);
+        });
+      });
+
+      describe('when changing back to a different case type category tab', () => {
+        beforeEach(() => {
+          $scope.handleContactTabChange({
+            case_type_category: 3
+          });
+        });
+
+        it('does not restore the case type category translation', () => {
+          expect(CaseTypeCategoryTranslationService.restoreTranslation)
+            .not.toHaveBeenCalled();
+        });
       });
     });
 

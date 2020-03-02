@@ -17,6 +17,7 @@
   /**
    * @param {object} $scope the controller scope
    * @param {Function} ts translation service
+   * @param {Function} CaseTypeCategoryTranslationService the case type category translation service
    * @param {Function} crmApi the crm api service
    * @param {Function} formatCase the format case service
    * @param {object} Contact the contact service
@@ -24,8 +25,8 @@
    * @param {string} newCaseWebformClient the new case web form client configuration value
    * @param {string} newCaseWebformUrl the new case web form url configuration value
    */
-  function CivicaseContactCaseTabController ($scope, ts, crmApi, formatCase, Contact, ContactsCache,
-    newCaseWebformClient, newCaseWebformUrl) {
+  function CivicaseContactCaseTabController ($scope, ts, CaseTypeCategoryTranslationService,
+    crmApi, formatCase, Contact, ContactsCache, newCaseWebformClient, newCaseWebformUrl) {
     var commonConfigs = {
       isLoaded: false,
       showSpinner: false,
@@ -74,12 +75,15 @@
     ];
 
     $scope.checkPerm = CRM.checkPerm;
+    $scope.handleContactTabChange = handleContactTabChange;
     $scope.ts = ts;
 
     (function init () {
       initCasesConfig();
       initSubscribers();
       getCases();
+      CaseTypeCategoryTranslationService
+        .storeTranslation($scope.caseTypeCategory);
     }());
 
     /**
@@ -230,6 +234,25 @@
 
         $scope.totalCount = count;
       });
+    }
+
+    /**
+     * Triggers after the contact tab changes. When changing back to the tab belonging to this case
+     * type category, it restores the translations associated with it. This is done due to CiviCRM
+     * replacing the translation files when a new angular module is loaded. The solution is to manually
+     * restore the translations.
+     *
+     * @param {object} urlParams a map of the URL parameters belonging to the currently active tab.
+     */
+    function handleContactTabChange (urlParams) {
+      var caseTypeCategoryId = parseInt(urlParams.case_type_category, 10);
+      var isChangingToCurrentCaseCategoryTab = caseTypeCategoryId === $scope.caseTypeCategory;
+
+      if (!isChangingToCurrentCaseCategoryTab) {
+        return;
+      }
+
+      CaseTypeCategoryTranslationService.restoreTranslation(caseTypeCategoryId);
     }
 
     /**
