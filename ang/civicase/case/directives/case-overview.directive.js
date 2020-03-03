@@ -175,6 +175,7 @@
         .then(function (data) {
           $scope.caseTypes = data.values;
           $scope.caseTypesLength = _.size($scope.caseTypes);
+          $scope.$emit('civicase::custom-scrollbar::recalculate');
         });
     }
 
