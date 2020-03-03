@@ -2,7 +2,7 @@
 (($, _) => {
   describe('civicaseSearch', () => {
     let $controller, $rootScope, $scope, CaseFilters, CaseStatuses, CaseTypes, crmApi, affixOriginalFunction,
-      offsetOriginalFunction, originalDoSearch, orginalParentScope, affixReturnValue,
+      offsetOriginalFunction, originalDoSearch, originalParentScope, affixReturnValue,
       originalBindToRoute;
 
     beforeEach(module('civicase.templates', 'civicase', 'civicase.data', ($provide) => {
@@ -170,7 +170,7 @@
 
     describe('doSearch()', () => {
       beforeEach(() => {
-        orginalParentScope = $scope.$parent;
+        originalParentScope = $scope.$parent;
         $scope.$parent = {};
       });
 
@@ -181,7 +181,7 @@
       });
 
       afterEach(() => {
-        $scope.$parent = orginalParentScope;
+        $scope.$parent = originalParentScope;
       });
 
       it('should build filter description', () => {
