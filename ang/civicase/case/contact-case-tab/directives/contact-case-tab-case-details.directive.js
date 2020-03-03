@@ -18,9 +18,11 @@
 
   /**
    * @param {object} $scope the scope reference.
+   * @param {Function} ts translation service
    */
-  function CivicaseContactCaseTabCaseDetailsController ($scope) {
+  function CivicaseContactCaseTabCaseDetailsController ($scope, ts) {
     $scope.getCaseDetailsUrl = getCaseDetailsUrl;
+    $scope.ts = ts;
 
     /**
      * Returns the URL needed to open the case details page for the given case.

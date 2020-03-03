@@ -26,7 +26,7 @@
     <button
       class="btn btn-default"
       ng-if="casesList.isLoadMoreAvailable && casesList.isLoaded && !casesList.showSpinner  && !casesList.disableLoadMore"
-      ng-click="loadMore()">Load More Cases</button>
+      ng-click="loadMore()"> {{ ts('Load More Cases') }} </button>
     <div ng-if="!casesList.isLoadMoreAvailable">
       <span ng-if="casesList.cases.length > 0"> Showing all {{ casesList.cases.length }}</span>
     </div>
