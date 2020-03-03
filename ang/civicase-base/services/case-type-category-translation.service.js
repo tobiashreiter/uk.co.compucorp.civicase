@@ -2,7 +2,7 @@
   var module = angular.module('civicase-base');
 
   module.service('CaseTypeCategoryTranslationService', function ($rootScope) {
-    var civicaseTranslationDomainName = 'strings::uk.co.compucorp.civicase';
+    var CIVICASE_TRANSLATION_DOMAIN_NAME = 'strings::uk.co.compucorp.civicase';
 
     this.restoreTranslation = restoreTranslation;
     this.storeTranslation = storeTranslation;
@@ -26,7 +26,7 @@
      * @param {number} caseTypeCategoryId the case type category id.
      */
     function restoreTranslation (caseTypeCategoryId) {
-      CRM[civicaseTranslationDomainName] =
+      CRM[CIVICASE_TRANSLATION_DOMAIN_NAME] =
         $rootScope.caseTypeCategoryTranslations[caseTypeCategoryId];
     }
 
@@ -37,7 +37,7 @@
      */
     function storeTranslation (caseTypeCategoryId) {
       $rootScope.caseTypeCategoryTranslations[caseTypeCategoryId] =
-        _.clone(CRM[civicaseTranslationDomainName]);
+        _.clone(CRM[CIVICASE_TRANSLATION_DOMAIN_NAME]);
     }
   });
 })(CRM._, angular);

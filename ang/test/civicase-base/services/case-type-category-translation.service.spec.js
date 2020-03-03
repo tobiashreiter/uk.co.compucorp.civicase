@@ -2,7 +2,7 @@
 
 ((_, CRM) => {
   describe('CaseTypeCategoryTranslationService', () => {
-    const civicaseTranslationDomainName = 'strings::uk.co.compucorp.civicase';
+    const CIVICASE_TRANSLATION_DOMAIN_NAME = 'strings::uk.co.compucorp.civicase';
     const mockCaseTypeCategoryId = _.uniqueId();
     const mockTranslation = {
       civicase: 'my custom case name'
@@ -15,7 +15,7 @@
       $rootScope = _$rootScope_;
       CaseTypeCategoryTranslationService = _CaseTypeCategoryTranslationService_;
 
-      CRM[civicaseTranslationDomainName] = mockTranslation;
+      CRM[CIVICASE_TRANSLATION_DOMAIN_NAME] = mockTranslation;
     }));
 
     describe('when it initializes', () => {
@@ -43,12 +43,12 @@
     describe('when restoring a case type category translation', () => {
       beforeEach(() => {
         CaseTypeCategoryTranslationService.storeTranslation(mockCaseTypeCategoryId);
-        CRM[civicaseTranslationDomainName] = {};
+        CRM[CIVICASE_TRANSLATION_DOMAIN_NAME] = {};
         CaseTypeCategoryTranslationService.restoreTranslation(mockCaseTypeCategoryId);
       });
 
       it('replaces the civicase translation object with the one that was previously stored in the root scope', () => {
-        expect(CRM[civicaseTranslationDomainName]).toEqual(mockTranslation);
+        expect(CRM[CIVICASE_TRANSLATION_DOMAIN_NAME]).toEqual(mockTranslation);
       });
     });
   });

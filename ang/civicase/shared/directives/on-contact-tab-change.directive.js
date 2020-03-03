@@ -4,7 +4,7 @@
   module.directive('civicaseOnContactTabChange', function (parseUrlParameters) {
     return {
       restrict: 'A',
-      link: onContactTabChangeLink,
+      link: civicaseOnContactTabChangeLink,
       scope: {
         onContactTabChange: '&civicaseOnContactTabChange'
       }
@@ -17,7 +17,7 @@
      *
      * @param {object} $scope a reference to the directive's scope.
      */
-    function onContactTabChangeLink ($scope) {
+    function civicaseOnContactTabChangeLink ($scope) {
       var contactTabs = $('.page-civicrm-contact #mainTabContainer');
 
       (function init () {
