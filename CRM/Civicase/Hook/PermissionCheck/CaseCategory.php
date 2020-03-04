@@ -134,7 +134,9 @@ class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
     $isViewCase = $url == 'civicrm/contact/view/case';
     $isCasePage = ($url == 'civicrm/case/add' || $url == 'civicrm/case/a');
     $isAjaxRequest = $url == 'civicrm/ajax/rest';
-    $isCaseActivityPage = 'civicrm/case/activity';
+    $isCaseActivityPage = $url == 'civicrm/case/activity';
+    $isPrintActivityReportPage = $url == 'civicrm/case/customreport/print';
+    $isActivityPage = $url == 'civicrm/activity';
 
     if ($isViewCase) {
       return $this->getCaseCategoryForViewCase();
@@ -149,7 +151,15 @@ class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
     }
 
     if ($isCaseActivityPage) {
-      return $this->getCaseCategoryForCaseActivity();
+      return $this->getCaseCategoryNameFromCaseIdInUrl('caseid');
+    }
+
+    if ($isPrintActivityReportPage) {
+      return $this->getCaseCategoryNameFromCaseIdInUrl('caseID');
+    }
+
+    if ($isActivityPage) {
+      return $this->getCaseCategoryFromActivityIdInUrl('id');
     }
 
   }
@@ -180,6 +190,36 @@ class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
   }
 
   /**
+   * Returns the case category name from activity id.
+   *
+   * @param string $activityIdParamName
+   *   Case ID Param name.
+   *
+   * @return string
+   *   Case category name.
+   */
+  private function getCaseCategoryFromActivityIdInUrl($activityIdParamName) {
+    $activityId = CRM_Utils_Request::retrieve($activityIdParamName, 'Integer');
+    $context = CRM_Utils_Request::retrieve('context', 'String');
+
+    if ($activityId && strtolower($context) == 'case') {
+      $result = civicrm_api3('Activity', 'get', [
+        'sequential' => 1,
+        'return' => ['case_id'],
+        'id' => $activityId,
+      ]);
+
+      $caseId = !empty($result['values'][0]['case_id'][0]) ? $result['values'][0]['case_id'][0] : NULL;
+
+      if ($caseId) {
+        return CaseCategoryHelper::getCategoryName($caseId);
+      }
+
+      return NULL;
+    }
+  }
+
+  /**
    * Get case category name for view case.
    *
    * The view case page is the page civi redirects to after
@@ -194,15 +234,16 @@ class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
   }
 
   /**
-   * Get case category name for case activity page.
+   * Returns the case category name when case Id is known.
    *
-   * The view case activity page is the page for changing the status of
-   * a case activity or editing a case activity. It does not have the
-   * case type category parameter in the URL since it's an internal civi
-   * page but we can use the Case Id to get the case type category.
+   * @param string $caseIdParamName
+   *   Case ID Param name.
+   *
+   * @return string|null
+   *   Case category name.
    */
-  private function getCaseCategoryForCaseActivity() {
-    $caseId = CRM_Utils_Request::retrieve('caseid', 'Integer');
+  private function getCaseCategoryNameFromCaseIdInUrl($caseIdParamName) {
+    $caseId = CRM_Utils_Request::retrieve($caseIdParamName, 'Integer');
 
     return CaseCategoryHelper::getCategoryName($caseId);
   }
