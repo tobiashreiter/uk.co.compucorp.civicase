@@ -168,6 +168,48 @@
       });
     });
 
+    describe('accepting URL values for the relationship type filter', () => {
+      describe('when setting the case manager as the logged in user', () => {
+        beforeEach(() => {
+          $scope.$bindToRoute.and.callFake(() => {
+            $scope.filters = {
+              case_manager: 'user_contact_id'
+            };
+          });
+          initController();
+          $scope.$digest();
+        });
+
+        it('sets the relationship type filter equal to "My Cases"', () => {
+          expect($scope.relationshipType).toEqual(['is_case_manager']);
+        });
+
+        it('sets the case manager filter equal to the current logged in user id', () => {
+          expect($scope.filters.case_manager).toEqual([CRM.config.user_contact_id]);
+        });
+      });
+
+      describe('when setting the contact involved as the logged in user', () => {
+        beforeEach(() => {
+          $scope.$bindToRoute.and.callFake(() => {
+            $scope.filters = {
+              contact_involved: 'user_contact_id'
+            };
+          });
+          initController();
+          $scope.$digest();
+        });
+
+        it('sets the relationship type filter equal to "Cases I am involved"', () => {
+          expect($scope.relationshipType).toEqual(['is_involved']);
+        });
+
+        it('sets the contact involved filter equal to the current logged in user id', () => {
+          expect($scope.filters.contact_involved).toEqual([CRM.config.user_contact_id]);
+        });
+      });
+    });
+
     describe('doSearch()', () => {
       beforeEach(() => {
         originalParentScope = $scope.$parent;
