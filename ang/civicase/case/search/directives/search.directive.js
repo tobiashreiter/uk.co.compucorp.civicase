@@ -62,6 +62,7 @@
       initSubscribers();
       setCustomSearchFieldsAsSearchFilters();
       requestCaseRoles().then(addCaseRolesToContactRoles);
+      setRelationshipTypeByFilterValues();
     }());
 
     /**
@@ -308,6 +309,22 @@
     }
 
     /**
+     * Checks if the given filter property contains a value referencing
+     * the logged in user ID. It could either be through the direct ID (ex: 2)
+     * or by using the "user_contact_id" placeholder.
+     *
+     * @param {string} filterName the name of the filter property.
+     * @returns {boolean} true when the filter contains the logged in user ID.
+     */
+    function isFilterEqualToLoggedInUser (filterName) {
+      var filterValue = $scope.filters[filterName];
+      var isEqualToUserContactId = filterValue === 'user_contact_id';
+      var isSelectingLoggedInUser = _.isEqual(filterValue, [CRM.config.user_contact_id]);
+
+      return isEqualToUserContactId || isSelectingLoggedInUser;
+    }
+
+    /**
      * Map the option parameter from API
      * to show up correctly on the UI.
      *
@@ -404,6 +421,18 @@
 
       if (hasTotalCount) {
         $scope.pageTitle += ' (' + totalCount + ')';
+      }
+    }
+
+    /**
+     * Sets the relationship type filter according to values coming from the
+     * case manager or contact involved URL parameters.
+     */
+    function setRelationshipTypeByFilterValues () {
+      if (isFilterEqualToLoggedInUser('case_manager')) {
+        $scope.relationshipType = ['is_case_manager'];
+      } else if (isFilterEqualToLoggedInUser('contact_involved')) {
+        $scope.relationshipType = ['is_involved'];
       }
     }
   });
