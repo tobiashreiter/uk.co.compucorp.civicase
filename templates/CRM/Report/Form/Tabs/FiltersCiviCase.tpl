@@ -1,28 +1,30 @@
-{*
- +--------------------------------------------------------------------+
- | CiviCRM version 5                                                  |
- +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2018                                |
- +--------------------------------------------------------------------+
- | This file is a part of CiviCRM.                                    |
- |                                                                    |
- | CiviCRM is free software; you can copy, modify, and distribute it  |
- | under the terms of the GNU Affero General Public License           |
- | Version 3, 19 November 2007 and the CiviCRM Licensing Exception.   |
- |                                                                    |
- | CiviCRM is distributed in the hope that it will be useful, but     |
- | WITHOUT ANY WARRANTY; without even the implied warranty of         |
- | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.               |
- | See the GNU Affero General Public License for more details.        |
- |                                                                    |
- | You should have received a copy of the GNU Affero General Public   |
- | License and the CiviCRM Licensing Exception along                  |
- | with this program; if not, contact CiviCRM LLC                     |
- | at info[AT]civicrm[DOT]org. If you have questions about the        |
- | GNU Affero General Public License or the licensing of CiviCRM,     |
- | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
- +--------------------------------------------------------------------+
-*}
+{literal}
+<script type="text/javascript">
+  CRM.$(function($) {
+    $('.crm-ajax-accordion').on('click', '.crm-accordion-header:not(.active)', function() {
+      loadPanes($(this).attr('id'));
+    });
+    $('.crm-ajax-accordion:not(.collapsed) .crm-accordion-header').each(function() {
+      loadPanes($(this).attr('id'));
+    });
+
+    /**
+     * Loads snippet based on id of crm-accordion-header
+     * @params {String} id
+     */
+    function loadPanes(id) {
+      var url = "{/literal}{crmURL p=`$currentPath` q="qfKey=`$qfKey`&filterPane=" h=0}{literal}" + id;
+      var header = $('#' + id);
+      var body = $('.crm-accordion-body.' + id);
+      if (header.length > 0 && body.length > 0) {
+        body.html('<div class="crm-loading-element"><span class="loading-text">{/literal}{ts escape='js'}Loading{/ts}{literal}...</span></div>');
+        header.addClass('active');
+        CRM.loadPage(url, {target: body, block: false});
+      }
+    }
+  });
+</script>
+{/literal}
 
 <div id="report-tab-set-filters" class="civireport-criteria">
   <div class="crm-accordion-wrapper crm-accordion collapsed">
@@ -45,30 +47,15 @@
     {if $filterGroups.$tableName.group_title and $filterCount gte 1}
     {* we should close table that contains other filter elements before we start building custom group accordion
      *}
-    {if $counter eq 1}
+  {if $counter eq 1}
   </table>
   {assign var="counter" value=0}
   {/if}
-  <div class="crm-accordion-wrapper crm-accordion collapsed">
-    <div class="crm-accordion-header">
+  <div class="crm-accordion-wrapper crm-ajax-accordion crm-{$filterGroups.$tableName.pane_name}-accordion {if $filterGroups.$tableName.open eq 'true'} {else}collapsed{/if}">
+    <div class="crm-accordion-header" id="{$filterGroups.$tableName.pane_name}">
       {$filterGroups.$tableName.group_title}
     </div><!-- /.crm-accordion-header -->
-    <div class="crm-accordion-body">
-      <table class="report-layout">
-        {/if}
-        {if $filterGroups.$tableName.group_extends_contact}
-          {assign var=isGroupeddByTableSet value=TRUE}
-          {foreach from=$filtersGroupedByTableSets.$tableName item=table key=tableKey}
-            <tr class="report-contents crm-report crm-report-criteria-filter crm-report-criteria-filter-{$tableName}">
-              <td colspan=2 class=""><h5>{$filterExtendsContactGroup.$tableKey.group_field_label}</h5></td>
-            </tr>
-            {include file="CRM/Report/Form/Tabs/FilterField.tpl" isGroupedByTableSet='YES'}
-          {/foreach}
-        {else}
-          {include file="CRM/Report/Form/Tabs/FilterField.tpl" isGroupedByTableSet='NO'}
-        {/if}
-        {if $filterGroups.$tableName.group_title}
-      </table>
+    <div class="crm-accordion-body {$filterGroups.$tableName.pane_name}">
     </div><!-- /.crm-accordion-body -->
   </div><!-- /.crm-accordion-wrapper -->
   {assign var=closed value="1"} {*-- ie table tags are closed-- *}

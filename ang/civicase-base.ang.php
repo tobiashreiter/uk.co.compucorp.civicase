@@ -152,7 +152,7 @@ function set_custom_fields_info_to_js_vars(&$options) {
     if (!empty($group['api.CustomField.get']['values'])) {
       if ($group['extends'] == 'Case') {
         if (!empty($group['extends_entity_column_value'])) {
-          $group['caseTypes'] = CRM_Utils_Array::collect('name', array_values(array_intersect_key($caseTypes['values'], array_flip($group['extends_entity_column_value']))));
+          $group['caseTypes'] = CRM_Utils_Array::collect('name', array_values(array_intersect_key($options['caseTypes'], array_flip($group['extends_entity_column_value']))));
         }
         foreach ($group['api.CustomField.get']['values'] as $field) {
           $group['fields'][] = Utils::formatCustomSearchField($field);

@@ -5,7 +5,7 @@ use CRM_Civicase_Setup_UpdateMenuLinks as UpdateMenuLinks;
 /**
  * Updates the Manage Cases Menu URLs.
  */
-class CRM_Civicase_Upgrader_Steps_Step0006 {
+class CRM_Civicase_Upgrader_Steps_Step0009 {
 
   /**
    * Updates the Manage Cases Menu URLs.

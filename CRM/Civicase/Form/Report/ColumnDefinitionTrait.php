@@ -629,4 +629,56 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
     return $this->buildColumns($activityFields['civicrm_activity']['fields'], $options['prefix'] . 'civicrm_activity', 'CRM_Activity_DAO_Activity');
   }
 
+  /**
+   * Returns the case tag column.
+   *
+   * @param array $options
+   *   Options for generating the columns.
+   *
+   * @return array
+   *   Generated columns.
+   */
+  public function getCaseTagColumns(array $options) {
+    $defaultOptions = [
+      'prefix' => '',
+      'prefix_label' => '',
+      'fields' => TRUE,
+      'group_by' => FALSE,
+      'order_by' => TRUE,
+      'filters' => TRUE,
+    ];
+    $options = array_merge($defaultOptions, $options);
+    $caseTagFields['civicrm_entity_tag']['fields'] = [
+      'tag_id' => [
+        'title' => ts('Case Tag'),
+        'is_fields' => TRUE,
+        'is_filters' => TRUE,
+        'alter_display' => 'alterGenericSelect',
+        'operatorType' => CRM_Report_Form::OP_MULTISELECT,
+        'options' => $this->getCaseTags(),
+        'name' => 'tag_id',
+        'type' => CRM_Utils_Type::T_INT,
+      ],
+    ];
+    return $this->buildColumns($caseTagFields['civicrm_entity_tag']['fields'], $options['prefix'] . 'civicrm_entity_tag', 'CRM_Core_DAO_EntityTag', NULL, [], $options);
+  }
+
+  /**
+   * Returns tags applicable for cases.
+   *
+   * @return
+   *   The case tags.
+   */
+  private function getCaseTags() {
+    $result = civicrm_api3('Tag', 'get', [
+      'used_for' => 'Cases',
+    ]);
+
+    if (empty($result['values'])) {
+      return [];
+    }
+
+    return array_column($result['values'], 'name', 'id');
+  }
+
 }
