@@ -137,6 +137,7 @@ class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
     $isCaseActivityPage = $url == 'civicrm/case/activity';
     $isPrintActivityReportPage = $url == 'civicrm/case/customreport/print';
     $isActivityPage = $url == 'civicrm/activity';
+    $isCaseContactTabPage = $url == 'civicrm/case/contact-case-tab';
 
     if ($isViewCase) {
       return $this->getCaseCategoryForViewCase();
@@ -162,6 +163,9 @@ class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
       return $this->getCaseCategoryFromActivityIdInUrl('id');
     }
 
+    if ($isCaseContactTabPage) {
+      return $this->getCaseCategoryFromUrl();
+    }
   }
 
   /**
@@ -171,10 +175,15 @@ class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
    *   Category URL.
    */
   private function getCaseCategoryFromUrl() {
-    $caseCategoryName = CRM_Utils_Request::retrieve('case_type_category', 'String');
+    $caseCategory = CRM_Utils_Request::retrieve('case_type_category', 'String');
+    if ($caseCategory) {
+      if (is_numeric($caseCategory)) {
+        $caseTypeCategories = CaseType::buildOptions('case_type_category', 'validate');
 
-    if ($caseCategoryName) {
-      return $caseCategoryName;
+        return isset($caseTypeCategories[$caseCategory]) ? $caseTypeCategories[$caseCategory] : NULL;
+      }
+
+      return $caseCategory;
     }
 
     $entryURL = CRM_Utils_Request::retrieve('entryURL', 'String');
