@@ -14,7 +14,11 @@ use CRM_Civicase_Helper_NewCaseWebform as NewCaseWebform;
 
 load_resources();
 $caseCategoryName = CRM_Utils_Request::retrieve('case_type_category', 'String');
-CRM_Civicase_Hook_Helper_CaseTypeCategory::addWordReplacements($caseCategoryName);
+
+// Word replacements are already loaded for the contact tab ContactCaseTab.
+if (CRM_Utils_System::currentPath() !== 'civicrm/case/contact-case-tab') {
+  CRM_Civicase_Hook_Helper_CaseTypeCategory::addWordReplacements($caseCategoryName);
+}
 
 $permissionService = new CaseCategoryPermission();
 $caseCategoryPermissions = $permissionService->get($caseCategoryName);
