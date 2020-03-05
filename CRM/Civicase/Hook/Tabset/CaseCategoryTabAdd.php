@@ -1,6 +1,7 @@
 <?php
 
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
+use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
 
 /**
  * Class CRM_Civicase_Hook_TabsetCaseCategoryTabAdd.
@@ -46,11 +47,15 @@ class CRM_Civicase_Hook_Tabset_CaseCategoryTabAdd {
       return;
     }
 
+    $permissionService = new CaseCategoryPermission();
     $caseTabWeight = $this->getCaseTabWeight($tabs);
     foreach ($result['values'] as $caseCategory) {
-      if ($caseCategory['name'] == CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME) {
+      $caseCategoryPermissions = $permissionService->get($caseCategory['name']);
+      $permissionsToCheck = $this->getBasicCaseCategoryPermissions($caseCategoryPermissions);
+      if ($caseCategory['name'] == CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME || !CRM_Core_Permission::check($permissionsToCheck)) {
         continue;
       }
+
       $caseTabWeight++;
       $useAng = TRUE;
       $icon = !empty($caseCategory['icon']) ? "crm-i {$caseCategory['icon']}" : '';
@@ -99,6 +104,23 @@ class CRM_Civicase_Hook_Tabset_CaseCategoryTabAdd {
     }
 
     return 0;
+  }
+
+  /**
+   * The basic Case category permission set.
+   *
+   * @param array $caseCategoryPermissions
+   *   Case category permissions.
+   *
+   * @return array
+   *   The basic permission set.
+   */
+  private function getBasicCaseCategoryPermissions(array $caseCategoryPermissions) {
+    return [
+      $caseCategoryPermissions['ACCESS_MY_CASE_CATEGORY_AND_ACTIVITIES']['name'],
+      $caseCategoryPermissions['ACCESS_CASE_CATEGORY_AND_ACTIVITIES']['name'],
+      $caseCategoryPermissions['BASIC_CASE_CATEGORY_INFO']['name'],
+    ];
   }
 
 }
