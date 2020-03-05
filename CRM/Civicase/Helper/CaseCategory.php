@@ -158,7 +158,6 @@ class CRM_Civicase_Helper_CaseCategory {
     $params = [
       'is_deleted' => 0,
       'contact_id' => $contactId,
-      'check_permissions' => TRUE,
       'case_type_id.case_type_category' => $caseTypeCategoryName,
     ];
     try {
