@@ -146,7 +146,7 @@ class CRM_Civicase_Hook_alterAPIPermissions_Case {
       return $this->getCaseCategoryNameFromCaseId($params, 'id');
     }
 
-    if ($entity == 'case' && $action == 'getrelations') {
+    if ($entity == 'case' && in_array($action, ['getrelations', 'getfiles'])) {
       return $this->getCaseCategoryNameFromCaseId($params, 'case_id');
     }
 
@@ -154,7 +154,7 @@ class CRM_Civicase_Hook_alterAPIPermissions_Case {
       return $this->getCaseCategoryNameFromCaseType($params, 'case_type_id');
     }
 
-    if ($entity == 'case' && $action != 'delete') {
+    if ($entity == 'case' && !in_array($action, ['delete', 'getfiles'])) {
       return $this->getCaseCategoryNameFromCaseTypeCategory($params, 'case_type_id.case_type_category');
     }
 
