@@ -38,6 +38,7 @@
     };
 
     $scope.caseDetailsLoaded = false;
+    $scope.caseTypeCategoryName = CRM['civicase-base'].caseTypeCategories[$scope.caseTypeCategory].name;
     $scope.contactId = Contact.getCurrentContactID();
     $scope.newCaseWebformUrl = newCaseWebformUrl;
     $scope.newCaseWebformClient = newCaseWebformClient;

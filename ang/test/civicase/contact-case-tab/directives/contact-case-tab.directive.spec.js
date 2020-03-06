@@ -5,7 +5,7 @@
     var $controller, $rootScope, $scope, CaseTypeCategoryTranslationService,
       crmApi, mockContactId, mockContactService;
 
-    beforeEach(module('civicase', ($provide) => {
+    beforeEach(module('civicase.data', 'civicase', ($provide) => {
       mockContactService = jasmine.createSpyObj('Contact', ['getCurrentContactID']);
 
       $provide.value('Contact', mockContactService);
@@ -37,6 +37,11 @@
       it('stores the current case type category translation', () => {
         expect(CaseTypeCategoryTranslationService.storeTranslation)
           .toHaveBeenCalledWith($scope.caseTypeCategory);
+      });
+
+      it('stores the case type category name', () => {
+        expect($scope.caseTypeCategoryName)
+          .toBe(CRM['civicase-base'].caseTypeCategories[$scope.caseTypeCategory].name);
       });
     });
 
