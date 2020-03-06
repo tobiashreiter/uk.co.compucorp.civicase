@@ -129,4 +129,22 @@ class CRM_Civicase_Service_CaseCategoryMenu {
     civicrm_api3('Navigation', 'delete', ['id' => $parentMenu['id']]);
   }
 
+  /**
+   * Disables/Enables the Case Category Main menu.
+   *
+   * @param string $caseTypeCategoryName
+   *   Case category name.
+   * @param bool $status
+   *   Status.
+   */
+  public function toggleStatus($caseTypeCategoryName, $status) {
+    $parentMenu = civicrm_api3('Navigation', 'get', ['name' => $caseTypeCategoryName]);
+
+    if ($parentMenu['count'] == 0) {
+      return;
+    }
+
+    civicrm_api3('Navigation', 'create', ['id' => $parentMenu['id'], 'is_active' => $status ? 1 : 0]);
+  }
+
 }

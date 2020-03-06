@@ -24,6 +24,7 @@ class CRM_Civicase_Hook_PostProcess_CaseCategoryMenuLinksProcessor {
     }
 
     $caseCategoryMenu = new CaseCategoryMenuService();
+    $formValues = $form->_submitValues;
     $formAction = $form->getVar('_action');
     if ($formAction == CRM_Core_Action::DELETE) {
       $caseCategoryValues = $form->getVar('_values');
@@ -31,9 +32,35 @@ class CRM_Civicase_Hook_PostProcess_CaseCategoryMenuLinksProcessor {
     }
 
     if ($formAction == CRM_Core_Action::ADD) {
-      $formValues = $form->_submitValues;
       $caseCategoryMenu->createItems($formValues['label']);
     }
+
+    if ($formAction == CRM_Core_Action::UPDATE && !empty($formValues['is_active'])) {
+      $caseCategoryMenu->toggleStatus($this->getOptionValueName($form->getVar('_id')), TRUE);
+    }
+
+    if ($formAction == CRM_Core_Action::UPDATE && empty($formValues['is_active'])) {
+      $caseCategoryMenu->toggleStatus($this->getOptionValueName($form->getVar('_id')), FALSE);
+    }
+  }
+
+  /**
+   * Returns the option value name given it's id.
+   *
+   * @param int $id
+   *   Option value id.
+   *
+   * @return string
+   *   Option value name.
+   */
+  private function getOptionValueName($id) {
+    $result = civicrm_api3('OptionValue', 'get', [
+      'option_group_id' => 'case_type_categories',
+      'id' => $id,
+      'return' => ['name'],
+    ]);
+
+    return $result['values'][$id]['name'];
   }
 
   /**
