@@ -140,14 +140,14 @@ class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
     $isCaseContactTabPage = $url == 'civicrm/case/contact-case-tab';
 
     if ($isViewCase) {
-      return $this->getCaseCategoryForViewCase();
+      return $this->getCaseCategoryNameFromCaseIdInUrl('id');
     }
 
     if ($isAjaxRequest) {
       return $this->getCaseCategoryForAjaxRequest();
     }
 
-    if ($isCasePage) {
+    if ($isCasePage || $isCaseContactTabPage) {
       return $this->getCaseCategoryFromUrl();
     }
 
@@ -161,10 +161,6 @@ class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
 
     if ($isActivityPage) {
       return $this->getCaseCategoryFromActivityIdInUrl('id');
-    }
-
-    if ($isCaseContactTabPage) {
-      return $this->getCaseCategoryFromUrl();
     }
   }
 
@@ -226,20 +222,6 @@ class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
 
       return NULL;
     }
-  }
-
-  /**
-   * Get case category name for view case.
-   *
-   * The view case page is the page civi redirects to after
-   * adding a new case. It does not have the case type category
-   * parameter in the URL since it's an internal civi page but we
-   * can use the just created Case Id to get the case type category.
-   */
-  private function getCaseCategoryForViewCase() {
-    $caseId = CRM_Utils_Request::retrieve('id', 'Integer');
-
-    return CaseCategoryHelper::getCategoryName($caseId);
   }
 
   /**
