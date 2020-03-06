@@ -17,6 +17,7 @@
   /**
    * @param {object} $scope the controller scope
    * @param {Function} ts translation service
+   * @param {Function} CaseTypeCategory the case type category service
    * @param {Function} CaseTypeCategoryTranslationService the case type category translation service
    * @param {Function} crmApi the crm api service
    * @param {Function} formatCase the format case service
@@ -25,8 +26,9 @@
    * @param {string} newCaseWebformClient the new case web form client configuration value
    * @param {string} newCaseWebformUrl the new case web form url configuration value
    */
-  function CivicaseContactCaseTabController ($scope, ts, CaseTypeCategoryTranslationService,
-    crmApi, formatCase, Contact, ContactsCache, newCaseWebformClient, newCaseWebformUrl) {
+  function CivicaseContactCaseTabController ($scope, ts, CaseTypeCategory,
+    CaseTypeCategoryTranslationService, crmApi, formatCase, Contact,
+    ContactsCache, newCaseWebformClient, newCaseWebformUrl) {
     var commonConfigs = {
       isLoaded: false,
       showSpinner: false,
@@ -38,7 +40,7 @@
     };
 
     $scope.caseDetailsLoaded = false;
-    $scope.caseTypeCategoryName = CRM['civicase-base'].caseTypeCategories[$scope.caseTypeCategory].name;
+    $scope.caseTypeCategoryName = CaseTypeCategory.getAll()[$scope.caseTypeCategory].name;
     $scope.contactId = Contact.getCurrentContactID();
     $scope.newCaseWebformUrl = newCaseWebformUrl;
     $scope.newCaseWebformClient = newCaseWebformClient;
