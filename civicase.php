@@ -217,7 +217,6 @@ function civicase_civicrm_buildForm($formName, &$form) {
   $hooks = [
     new CRM_Civicase_Hook_BuildForm_CaseClientPopulator(),
     new CRM_Civicase_Hook_BuildForm_CaseCategoryCustomFieldsProcessing(),
-    new CRM_Civicase_Hook_BuildForm_DisableCaseCustomFieldValidations(),
     new CRM_Civicase_Hook_BuildForm_FilterByCaseCategoryOnChangeCaseType(),
     new CRM_Civicase_Hook_BuildForm_CaseCategoryFormLabelTranslationForNewCase(),
     new CRM_Civicase_Hook_BuildForm_CaseCategoryFormLabelTranslationForChangeCase(),
@@ -470,15 +469,6 @@ function civicase_civicrm_post($op, $objectName, $objectId, &$objectRef) {
  * Implements hook_civicrm_postProcess().
  */
 function civicase_civicrm_postProcess($formName, &$form) {
-  $hooks = [
-    new CRM_Civicase_Hook_PostProcess_CaseCategoryCustomFieldsSaver(),
-    new CRM_Civicase_Hook_PostProcess_ProcessCaseCategoryCustomFieldsForSave(),
-  ];
-
-  foreach ($hooks as $hook) {
-    $hook->run($formName, $form);
-  }
-
   if (!empty($form->civicase_reload)) {
     $api = civicrm_api3('Case', 'getdetails', ['check_permissions' => 1] + $form->civicase_reload);
     $form->ajaxResponse['civicase_reload'] = $api['values'];
@@ -738,8 +728,6 @@ function civicase_civicrm_permission_check($permission, &$granted) {
  */
 function civicase_civicrm_preProcess($formName, &$form) {
   $hooks = [
-    new CRM_Civicase_Hook_PreProcess_CaseCategoryCustomFieldsSetDefaultValues(),
-    new CRM_Civicase_Hook_PreProcess_ProcessCaseCategoryCustomFieldsForEdit(),
     new CRM_Civicase_Hook_PreProcess_CaseCategoryWordReplacementsForNewCase(),
     new CRM_Civicase_Hook_PreProcess_CaseCategoryWordReplacementsForChangeCase(),
   ];

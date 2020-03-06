@@ -29,7 +29,6 @@ class CRM_Civicase_Hook_BuildForm_CaseCategoryCustomFieldsProcessing {
     }
 
     $this->filterCaseTypeOptionValues($form, $caseCategoryName);
-    $this->updateCaseTypeFieldOnChangeValue($form, $caseCategoryName);
   }
 
   /**
@@ -59,23 +58,6 @@ class CRM_Civicase_Hook_BuildForm_CaseCategoryCustomFieldsProcessing {
 
     sort($options);
     $caseTypeIdElement->_options = $options;
-  }
-
-  /**
-   * Updates the onchange attribute for the case type element.
-   *
-   * @param CRM_Core_Form $form
-   *   Form class object.
-   * @param string $caseCategoryName
-   *   Case category name.
-   */
-  private function updateCaseTypeFieldOnChangeValue(CRM_Core_Form $form, $caseCategoryName) {
-    if ($caseCategoryName == 'cases') {
-      return;
-    }
-    $caseTypeIdElement = &$form->getElement('case_type_id');
-    $caseTypeIdElement->updateAttributes(['onchange' => "CRM.buildCustomData('{$caseCategoryName}', this.value)"]);
-    $form->assign('customDataType', $caseCategoryName);
   }
 
   /**
