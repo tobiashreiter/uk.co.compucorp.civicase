@@ -35,12 +35,13 @@ class CRM_Civicase_Hook_PostProcess_CaseCategoryMenuLinksProcessor {
       $caseCategoryMenu->createItems($formValues['label']);
     }
 
-    if ($formAction == CRM_Core_Action::UPDATE && !empty($formValues['is_active'])) {
-      $caseCategoryMenu->toggleStatus($this->getOptionValueName($form->getVar('_id')), TRUE);
-    }
+    if ($formAction == CRM_Core_Action::UPDATE) {
+      $updateParams = [
+        'is_active' => !empty($formValues['is_active']) ? 1 : 0,
+        'icon' => 'crm-i ' . $formValues['icon'],
+      ];
 
-    if ($formAction == CRM_Core_Action::UPDATE && empty($formValues['is_active'])) {
-      $caseCategoryMenu->toggleStatus($this->getOptionValueName($form->getVar('_id')), FALSE);
+      $caseCategoryMenu->updateItems($form->getVar('_id'), $updateParams);
     }
   }
 

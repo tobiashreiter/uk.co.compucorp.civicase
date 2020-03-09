@@ -19,7 +19,7 @@ class CRM_Civicase_Service_CaseCategoryMenu {
     if ($result['count'] > 0) {
       return;
     }
-
+    $optionValueDetails = $this->getCaseCategoryOptionDetailsByName($caseTypeCategoryName);
     $caseCategoryPermission = new CaseCategoryPermission();
     $permissions = $caseCategoryPermission->get($caseTypeCategoryName);
     $casesWeight = CRM_Core_DAO::getFieldValue(
@@ -36,7 +36,7 @@ class CRM_Civicase_Service_CaseCategoryMenu {
       'permission_operator' => 'OR',
       'is_active' => 1,
       'permission' => "{$permissions['ACCESS_MY_CASE_CATEGORY_AND_ACTIVITIES']['name']},{$permissions['ACCESS_CASE_CATEGORY_AND_ACTIVITIES']['name']}",
-      'icon' => 'crm-i fa-folder-open-o',
+      'icon' => !empty($optionValueDetails['icon']) ? "crm-i " . $optionValueDetails['icon'] : 'crm-i fa-folder-open-o',
     ];
 
     $caseCategoryMenu = civicrm_api3('Navigation', 'create', $params);
@@ -132,19 +132,65 @@ class CRM_Civicase_Service_CaseCategoryMenu {
   /**
    * Disables/Enables the Case Category Main menu.
    *
-   * @param string $caseTypeCategoryName
+   * @param int $caseCategoryId
    *   Case category name.
-   * @param bool $status
-   *   Status.
+   * @param array $menuParams
+   *   Case category name.
    */
-  public function toggleStatus($caseTypeCategoryName, $status) {
-    $parentMenu = civicrm_api3('Navigation', 'get', ['name' => $caseTypeCategoryName]);
+  public function updateItems($caseCategoryId, array $menuParams) {
+    $caseCategoryOptionDetails = $this->getCaseCategoryOptionDetailsById($caseCategoryId);
+
+    $parentMenu = civicrm_api3('Navigation', 'get', ['name' => $caseCategoryOptionDetails['name']]);
 
     if ($parentMenu['count'] == 0) {
       return;
     }
 
-    civicrm_api3('Navigation', 'create', ['id' => $parentMenu['id'], 'is_active' => $status ? 1 : 0]);
+    $menuParams['id'] = $parentMenu['id'];
+    civicrm_api3('Navigation', 'create', $menuParams);
+  }
+
+  /**
+   * Gets case category option details by id.
+   *
+   * @param int $id
+   *   Category Id.
+   *
+   * @return array
+   *   Category details.
+   */
+  private function getCaseCategoryOptionDetailsById($id) {
+    return $this->getCaseCategoryOptionDetailsByParams(['id' => $id]);
+  }
+
+  /**
+   * Gets case category option details by name.
+   *
+   * @param string $name
+   *   Category name.
+   *
+   * @return array
+   *   Category details.
+   */
+  private function getCaseCategoryOptionDetailsByName($name) {
+    return $this->getCaseCategoryOptionDetailsByParams(['name' => $name]);
+  }
+
+  /**
+   * Gets case category option details by params.
+   *
+   * @param array $params
+   *   Catetgory params.
+   *
+   * @return array
+   *   Category details.
+   */
+  private function getCaseCategoryOptionDetailsByParams(array $params) {
+    $apiParams = ['sequential' => 1];
+    $apiParams = array_merge($apiParams, $params);
+    $result = civicrm_api3('OptionValue', 'get', $apiParams);
+
+    return !empty($result['values'][0]) ? $result['values'][0] : [];
   }
 
 }
