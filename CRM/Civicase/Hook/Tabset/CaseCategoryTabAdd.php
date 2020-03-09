@@ -41,6 +41,7 @@ class CRM_Civicase_Hook_Tabset_CaseCategoryTabAdd {
   private function addCaseCategoryContactTabs(array &$tabs, $contactID, &$useAng) {
     $result = civicrm_api3('OptionValue', 'get', [
       'option_group_id' => 'case_type_categories',
+      'is_active' => 1,
     ]);
 
     if (empty($result['values'])) {
