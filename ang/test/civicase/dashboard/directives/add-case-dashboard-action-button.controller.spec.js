@@ -2,7 +2,7 @@
 
 (($, loadForm, getCrmUrl) => {
   describe('AddCaseDashboardActionButtonController', () => {
-    let $location, $window, $rootScope, $scope, $controller, defaultCaseCategory,
+    let $location, $window, $rootScope, $scope, $controller, currentCaseCategory,
       mockedFormPopUp;
 
     beforeEach(() => {
@@ -94,7 +94,7 @@
           beforeEach(() => {
             expectedFormUrl = getCrmUrl('civicrm/case/add', {
               action: 'add',
-              case_type_category: defaultCaseCategory,
+              case_type_category: currentCaseCategory,
               context: 'standalone',
               reset: 1
             });
@@ -145,12 +145,12 @@
      */
     function injectDependencies () {
       inject((_$location_, _$rootScope_, _$window_, _$controller_,
-        _defaultCaseCategory_) => {
+        _currentCaseCategory_) => {
         $location = _$location_;
         $window = _$window_;
         $controller = _$controller_;
         $rootScope = _$rootScope_;
-        defaultCaseCategory = _defaultCaseCategory_;
+        currentCaseCategory = _currentCaseCategory_;
 
         initController();
       });

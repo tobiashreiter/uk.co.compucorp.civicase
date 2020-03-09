@@ -52,7 +52,7 @@
 
   module.controller('CivicaseCaseListTableController', function ($rootScope,
     $scope, $window, BulkActions, crmApi, crmStatus, crmUiHelp,
-    crmThrottle, $timeout, formatCase, ContactsCache, CasesUtils, ts,
+    crmThrottle, currentCaseCategory, $timeout, formatCase, ContactsCache, CasesUtils, ts,
     ActivityCategory, ActivityType, CaseStatus) {
     var firstLoad = true;
     var allCases;
@@ -323,7 +323,10 @@
       if (sort.field !== 'id') {
         returnCaseParams.options.sort += ', id';
       }
-      var params = { 'case_type_id.is_active': 1 };
+      var params = {
+        'case_type_id.is_active': 1,
+        'case_type_id.case_type_category': currentCaseCategory
+      };
       _.each(filters, function (val, filter) {
         if (val || typeof val === 'boolean') {
           if (filter === 'case_type_category') {

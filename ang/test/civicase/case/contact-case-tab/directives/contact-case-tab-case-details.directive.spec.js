@@ -1,14 +1,15 @@
 /* eslint-env jasmine */
 
-(() => {
+((_) => {
   describe('Contact Case Tab Case Details', () => {
-    let $controller, $rootScope, $scope, mockCase;
+    let $controller, $rootScope, $scope, CaseTypeCategory, mockCase;
 
     beforeEach(module('civicase', 'civicase.data'));
 
-    beforeEach(inject((_$controller_, _$rootScope_, _CasesData_, _crmApi_) => {
+    beforeEach(inject((_$controller_, _$rootScope_, _CasesData_, _CaseTypeCategory_, _crmApi_) => {
       $controller = _$controller_;
       $rootScope = _$rootScope_;
+      CaseTypeCategory = _CaseTypeCategory_;
       mockCase = _CasesData_.get().values[0];
 
       initController();
@@ -18,8 +19,14 @@
       let expectedUrl, returnedUrl;
 
       beforeEach(() => {
-        expectedUrl = '/civicrm/case/a/#/case/list' +
-          `?caseId=${mockCase.id}&cf={"status_id":[${mockCase.status_id}]}`;
+        var caseTypeCategory = _.chain(CaseTypeCategory.getAll())
+          .values()
+          .sample()
+          .value();
+        mockCase['case_type_id.case_type_category'] = caseTypeCategory.value;
+        expectedUrl = '/civicrm/case/a/' +
+          `?case_type_category=${caseTypeCategory.name}` +
+          `#/case/list?caseId=${mockCase.id}&cf={"status_id":[${mockCase.status_id}]}`;
         returnedUrl = $scope.getCaseDetailsUrl(mockCase);
       });
 
@@ -37,4 +44,4 @@
       $controller('CivicaseContactCaseTabCaseDetailsController', { $scope: $scope });
     }
   });
-})();
+})(CRM._);

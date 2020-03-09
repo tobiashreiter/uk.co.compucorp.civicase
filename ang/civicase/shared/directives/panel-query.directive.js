@@ -5,9 +5,10 @@
     return {
       restrict: 'E',
       templateUrl: '~/civicase/shared/directives/panel-query.directive.html',
-      link: linkFn,
-      controller: 'panelQueryCtrl',
+      link: civicasePanelQueryLink,
+      controller: 'civicasePanelQueryController',
       scope: {
+        config: '=',
         query: '<',
         name: '@?',
         customData: '<?',
@@ -21,7 +22,16 @@
       }
     };
 
-    function linkFn ($scope, $element, $attrs, $controller, $transclude) {
+    /**
+     * Panel Query Link
+     *
+     * @param {object} $scope scope object
+     * @param {object} $element element
+     * @param {object} $attrs attributes
+     * @param {Function} $controller controller service
+     * @param {Function} $transclude transclude function
+     */
+    function civicasePanelQueryLink ($scope, $element, $attrs, $controller, $transclude) {
       ['actions', 'empty', 'results', 'title'].forEach(function (slot) {
         $transclude($scope, function (clone, scope) {
           $element.find('[ng-transclude="' + slot + '"]').html(clone);
@@ -30,11 +40,18 @@
     }
   });
 
-  module.controller('panelQueryCtrl', panelQueryCtrl);
+  module.controller('civicasePanelQueryController', civicasePanelQueryController);
 
-  panelQueryCtrl.$inject = ['$log', '$q', '$rootScope', '$scope', 'crmApi', 'ts'];
-
-  function panelQueryCtrl ($log, $q, $rootScope, $scope, crmApi, ts) {
+  /**
+   * Panel Query Controller
+   *
+   * @param {object} $q angular promise service
+   * @param {object} $rootScope rootscope object
+   * @param {object} $scope scope object
+   * @param {Function} crmApi crm api service
+   * @param {Function} ts translation service
+   */
+  function civicasePanelQueryController ($q, $rootScope, $scope, crmApi, ts) {
     var PAGE_SIZE = 5;
     var cacheByPage = [];
 
@@ -68,7 +85,7 @@
      * Calculates the offset of the results list based
      * on the current page number and page size
      *
-     * @return {String}
+     * @returns {number} page offset
      */
     function calculatePageOffset () {
       return ($scope.pagination.page - 1) * $scope.pagination.size;
@@ -85,8 +102,8 @@
     /**
      * Fetches the data, either via the cache or the api
      *
-     * @param {Boolean} skipCount
-     * @return {Promise}
+     * @param {boolean} skipCount if true then the "getcount" request won't be sent
+     * @returns {Promise} promise
      */
     function fetchData (skipCount) {
       var cachedPage = cacheByPage[$scope.pagination.page];
@@ -108,8 +125,8 @@
      * It uses a deep copy of the original query parameters in order to modify
      * them without triggering their watcher
      *
-     * @param {Boolean} skipCount if true then the "getcount" request won't be sent
-     * @return {Promise}
+     * @param {boolean} skipCount if true then the "getcount" request won't be sent
+     * @returns {Promise} promise
      */
     function fetchDataViaApi (skipCount) {
       var paramsCopy = _.cloneDeep($scope.query.params);
@@ -119,8 +136,8 @@
       }
 
       var apiCalls = {
-        get: [ $scope.query.entity, ($scope.query.action || 'get'), prepareGetParams(paramsCopy) ],
-        count: [ $scope.query.entity, ($scope.query.countAction || 'getcount'), paramsCopy ]
+        get: [$scope.query.entity, ($scope.query.action || 'get'), prepareGetParams(paramsCopy)],
+        count: [$scope.query.entity, ($scope.query.countAction || 'getcount'), paramsCopy]
       };
 
       skipCount && (delete apiCalls.count);
@@ -167,12 +184,12 @@
     /**
      * Loads the data and triggers any subsequent logic
      *
-     * @param {Boolean} skipCount sets whether the directive needs to recalculate the total
-     * @return {Promise}
+     * @param {boolean} skipCount sets whether the directive needs to recalculate the total
+     * @returns {Promise} promise
      */
     function loadData (skipCount) {
       // Prevents accidental additional call by watchers
-      if ($scope.loading.full || $scope.loading.partial) {
+      if (($scope.loading.full || $scope.loading.partial) && !$scope.config.forceReload) {
         return;
       }
 
@@ -189,11 +206,11 @@
     /**
      * Prepare the parameters for the "get" request before passing them to the API
      *
-     * @NOTE: The cumbersome implementation was necessary because the current
+     * The cumbersome implementation was necessary because the current
      * version of lodash in Civi does not have the _.defaultsDeep() method
      *
-     * @param {Object} queryParams
-     * @return {String}
+     * @param {object} queryParams query parameters
+     * @returns {string} parameters
      */
     function prepareGetParams (queryParams) {
       var requestParams = _.cloneDeep(queryParams) || {};
@@ -211,8 +228,8 @@
      * Process the list of results via the "results" handler (if provided)
      * before storing it
      *
-     * @param {Array} results
-     * @return {Promise}
+     * @param {Array} results results array
+     * @returns {Promise} promise
      */
     function processResults (results) {
       return $q.resolve($scope.handlers.results ? $scope.handlers.results(results) : results);
@@ -221,8 +238,8 @@
     /**
      * It triggers a full reload if the panel's name is passed with the event
      *
-     * @param {Object} $event
-     * @param {String/Array} name
+     * @param {object} $event event object
+     * @param {string/Array} name name of the panel
      */
     function reloadEventHandler ($event, name) {
       var refresh = _.isArray(name)
@@ -235,12 +252,13 @@
     /**
      * Activates / Deactivates the loading state of the directive
      *
-     * @param {Boolean} partial whether the loading mode is "partial" instead of "full"
+     * @param {boolean} partial whether the loading mode is "partial" instead of "full"
      */
     function toggleLoadingState (partial) {
       var mode = partial ? 'partial' : 'full';
 
       $scope.loading[mode] = !$scope.loading[mode];
+      $scope.config.forceReload = false;
     }
 
     /**

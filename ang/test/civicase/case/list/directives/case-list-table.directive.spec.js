@@ -78,7 +78,7 @@
      * Initializes the civicaseActivityMonthNav directive
      */
     function initDirective () {
-      var html = `<div civicase-case-list-table></div>`;
+      var html = '<div civicase-case-list-table></div>';
 
       $compile(html)($scope);
       $scope.$digest();
@@ -130,21 +130,23 @@
       beforeEach(function () {
         expectedApiCallParams = [
           ['Case', 'getcaselist', jasmine.objectContaining({
-            'sequential': 1,
+            sequential: 1,
             return: [
               'subject', 'case_type_id', 'status_id', 'is_deleted', 'start_date',
               'modified_date', 'contacts', 'activity_summary', 'category_count',
               'tag_id.name', 'tag_id.color', 'tag_id.description'
             ],
-            'options': jasmine.any(Object),
+            options: jasmine.any(Object),
             'case_type_id.is_active': 1,
-            'id': { 'LIKE': '%' + $scope.filters.id + '%' },
-            'contact_is_deleted': 0
+            'case_type_id.case_type_category': CRM['civicase-base'].currentCaseCategory,
+            id: { LIKE: '%' + $scope.filters.id + '%' },
+            contact_is_deleted: 0
           })],
           ['Case', 'getdetailscount', jasmine.objectContaining({
             'case_type_id.is_active': 1,
-            'id': { 'LIKE': '%' + $scope.filters.id + '%' },
-            'contact_is_deleted': 0
+            id: { LIKE: '%' + $scope.filters.id + '%' },
+            'case_type_id.case_type_category': CRM['civicase-base'].currentCaseCategory,
+            contact_is_deleted: 0
           })],
           ['Case', 'getcaselistheaders']
         ];

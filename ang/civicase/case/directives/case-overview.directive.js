@@ -43,15 +43,12 @@
    * @param {object} crmApi the crm api service reference.
    * @param {object} BrowserCache the browser cache service reference.
    * @param {object} CaseStatus the case status service reference.
-   * @param {object} CaseTypeCategory the case type category service reference.
    * @param {object} CaseType the case type service reference.
    */
-  function civicaseCaseOverviewController ($scope, crmApi, BrowserCache, CaseStatus, CaseTypeCategory, CaseType) {
+  function civicaseCaseOverviewController ($scope, crmApi, BrowserCache, CaseStatus, CaseType) {
     var BROWSER_CACHE_IDENTIFIER = 'civicase.CaseOverview.hiddenCaseStatuses';
-    var caseTypes = CaseType.getAll();
-    var caseTypeCategories = CaseTypeCategory.getAll();
 
-    $scope.getButtonsForCaseType = CaseType.getButtonsForCaseType;
+    $scope.getItemsForCaseType = CaseType.getItemsForCaseType;
     $scope.summaryData = [];
     $scope.caseStatuses = _.chain(CaseStatus.getAll())
       .sortBy(function (status) { return status.weight; })
@@ -59,7 +56,7 @@
       .value();
 
     (function init () {
-      setCaseTypesBasedOnCategory();
+      getCaseTypes();
       // We hide the breakdown when there's only one case type
       if ($scope.caseTypesLength < 2) {
         $scope.showBreakdown = false;
@@ -128,7 +125,7 @@
      * Watcher function for caseFilter
      */
     function caseFilterWatcher () {
-      setCaseTypesBasedOnCategory();
+      getCaseTypes();
       loadStatsData();
     }
 
@@ -150,42 +147,36 @@
     function loadStatsData () {
       var apiCalls = [];
 
-      apiCalls.push(['Case', 'getstats', $scope.caseFilter || {}]);
+      var params = angular.copy($scope.caseFilter || {});
+      // status id should not be added to getstats,
+      // because case overview section shows all statuses
+      delete params.status_id;
+
+      apiCalls.push(['Case', 'getstats', params]);
       crmApi(apiCalls).then(function (response) {
         $scope.summaryData = response[0].values;
       });
     }
 
     /**
-     * Sets the Case Types Based on Case Type Category
-     */
-    function setCaseTypesBasedOnCategory () {
-      var filteredCaseTypes = $scope.caseFilter['case_type_id.case_type_category']
-        ? getCaseTypesFilteredByCategory($scope.caseFilter['case_type_id.case_type_category'])
-        : caseTypes;
-
-      $scope.caseTypes = filteredCaseTypes;
-      $scope.caseTypesLength = _.size($scope.caseTypes);
-    }
-
-    /**
-     * Returns case types filtered by given category.
+     * Get Case Types based on filters
      *
-     * @param {string} categoryName the case type category name.
-     * @returns {object[]} the filtered list of case types.
+     * @returns {Promise} promise
      */
-    function getCaseTypesFilteredByCategory (categoryName) {
-      var caseTypeCategory = _.find(caseTypeCategories, function (category) {
-        return category.name.toLowerCase() === categoryName.toLowerCase();
-      });
+    function getCaseTypes () {
+      var params = {
+        sequential: 1,
+        case_type_category: $scope.caseFilter['case_type_id.case_type_category'],
+        id: $scope.caseFilter.case_type_id,
+        is_active: 1
+      };
 
-      if (!caseTypeCategory) {
-        return [];
-      }
-
-      return _.pick(caseTypes, function (caseType) {
-        return caseType.case_type_category === caseTypeCategory.value;
-      });
+      return crmApi('CaseType', 'get', params)
+        .then(function (data) {
+          $scope.caseTypes = data.values;
+          $scope.caseTypesLength = _.size($scope.caseTypes);
+          $scope.$emit('civicase::custom-scrollbar::recalculate');
+        });
     }
 
     /**

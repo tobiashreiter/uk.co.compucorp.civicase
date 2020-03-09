@@ -1,4 +1,4 @@
-(function (angular, $) {
+(function (angular, $, _) {
   var module = angular.module('civicase');
 
   module.directive('civicaseDashboard', function () {
@@ -16,13 +16,13 @@
    *
    * @param {object} $scope controller's scope.
    * @param {Function} crmApi CRM API service reference.
+   * @param {string} currentCaseCategory current case type category setting value.
    * @param {object[]} DashboardActionItems Dashboard action items list.
-   * @param {string} defaultCaseCategory default case type category setting value.
    * @param {Function} formatActivity Format Activity service reference.
    * @param {Function} $timeout timeout service reference.
    * @param {Function} ts translate service reference.
    */
-  function civicaseDashboardController ($scope, crmApi, DashboardActionItems, defaultCaseCategory,
+  function civicaseDashboardController ($scope, crmApi, currentCaseCategory, DashboardActionItems,
     formatActivity, $timeout, ts) {
     $scope.checkPerm = CRM.checkPerm;
     $scope.actionBarItems = DashboardActionItems;
@@ -38,7 +38,7 @@
       initWatchers();
       prepareCaseFilterOption();
       $scope.caseTypeCategoryName = getCaseTypeCategoryName();
-      $scope.defaultCaseCategory = defaultCaseCategory;
+      $scope.currentCaseCategory = currentCaseCategory;
       $scope.ts = ts;
     }());
 
@@ -93,6 +93,7 @@
      * Initialise watchers
      */
     function initWatchers () {
+      $scope.$on('civicase::dashboard-filters::updated', updateFilterParams);
       $scope.$watch('filters.caseRelationshipType', caseRelationshipTypeWatcher);
     }
 
@@ -111,5 +112,15 @@
 
       $scope.caseRelationshipOptions = options;
     }
+
+    /**
+     * Update Filter Parameters
+     *
+     * @param {object} event event
+     * @param {object} data data sent from the broadcaster
+     */
+    function updateFilterParams (event, data) {
+      _.extend($scope.activityFilters.case_filter, data);
+    }
   }
-})(angular, CRM.$);
+})(angular, CRM.$, CRM._);

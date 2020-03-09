@@ -106,7 +106,7 @@
      * @returns {string} url
      */
     $scope.newActivityUrl = function (actType) {
-      var caseQueryParams = JSON.stringify(getCaseQueryParams($scope.case.id));
+      var caseQueryParams = JSON.stringify(getCaseQueryParams({ caseId: $scope.case.id }));
       var path = 'civicrm/case/activity';
       var args = {
         action: 'add',

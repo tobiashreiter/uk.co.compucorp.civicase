@@ -18,9 +18,12 @@
 
   /**
    * @param {object} $scope the scope reference.
+   * @param {Function} CaseTypeCategory case type category service.
+   * @param {Function} ts translation service
    */
-  function CivicaseContactCaseTabCaseDetailsController ($scope) {
+  function CivicaseContactCaseTabCaseDetailsController ($scope, CaseTypeCategory, ts) {
     $scope.getCaseDetailsUrl = getCaseDetailsUrl;
+    $scope.ts = ts;
 
     /**
      * Returns the URL needed to open the case details page for the given case.
@@ -31,7 +34,11 @@
      * @returns {string} the case details page url.
      */
     function getCaseDetailsUrl (caseItem) {
-      return '/civicrm/case/a/#/case/list?caseId=' + caseItem.id +
+      var caseTypeCategoryId = caseItem['case_type_id.case_type_category'];
+      var caseTypeCategoryName = CaseTypeCategory.getAll()[caseTypeCategoryId].name;
+
+      return '/civicrm/case/a/?case_type_category=' + caseTypeCategoryName +
+        '#/case/list?caseId=' + caseItem.id +
         '&cf={"status_id":[' + caseItem.status_id + ']}';
     }
   }

@@ -3,12 +3,15 @@
 
   module.service('PrintCaseAction', PrintCaseAction);
 
+  /**
+   *
+   */
   function PrintCaseAction () {
     /**
      * Click event handler for the Action
      *
      * @param {Array} cases
-     * @param {Object} action
+     * @param {object} action
      * @param {Function} callbackFn
      */
     this.doAction = function (cases, action, callbackFn) {

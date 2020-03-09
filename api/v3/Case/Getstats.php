@@ -83,6 +83,13 @@ function civicrm_api3_case_getstats(array $params) {
     _civicrm_api3_case_add_case_category_query_filter($query, $caseTypes);
   }
 
+  if (!empty($params['case_type_id'])) {
+    $caseTypesParams['id'] = $params['case_type_id'];
+    $caseTypes = civicrm_api3('CaseType', 'get', $caseTypesParams);
+
+    _civicrm_api3_case_add_case_category_query_filter($query, $caseTypes);
+  }
+
   $query->groupBy('a.case_type_id, a.status_id');
   if (!empty($params['check_permissions'])) {
     $permClauses = array_filter(CRM_Case_BAO_Case::getSelectWhereClause('a'));

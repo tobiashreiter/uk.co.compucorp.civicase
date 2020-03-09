@@ -1,8 +1,14 @@
 (function (angular, $, _, CRM) {
   var module = angular.module('civicase');
 
-  module.factory('getCaseQueryParams', function () {
-    return function getCaseQueryParams (caseId, panelLimit) {
+  module.factory('getCaseQueryParams', function (currentCaseCategory) {
+    var DEFAULT_FILTERS = {
+      caseTypeCategory: currentCaseCategory,
+      panelLimit: 5
+    };
+
+    return function getCaseQueryParams (extraFilters) {
+      var filters = _.defaults(extraFilters, DEFAULT_FILTERS);
       var activityReturnParams = [
         'subject', 'details', 'activity_type_id', 'status_id', 'source_contact_name',
         'target_contact_name', 'assignee_contact_name', 'activity_date_time', 'is_star',
@@ -22,66 +28,65 @@
       ];
       var relationshipReturnParams = ['id', 'relationship_type_id', 'contact_id_a', 'contact_id_b', 'description', 'start_date'];
 
-      panelLimit = panelLimit || 5;
-
       return {
-        id: caseId,
+        id: filters.caseId,
         return: caseReturnParams,
+        'case_type_id.case_type_category': filters.caseTypeCategory,
         'api.Case.getcaselist.relatedCasesByContact': {
-          contact_id: {IN: '$value.contact_id'},
-          id: {'!=': '$value.id'},
+          contact_id: { IN: '$value.contact_id' },
+          id: { '!=': '$value.id' },
           is_deleted: 0,
           return: caseListReturnParams
         },
         // Linked cases
         'api.Case.getcaselist.linkedCases': {
-          id: {IN: '$value.related_case_ids'},
+          id: { IN: '$value.related_case_ids' },
           is_deleted: 0,
           return: caseListReturnParams
         },
         // For the "recent communication" panel
         'api.Activity.get.recentCommunication': {
-          case_id: caseId,
+          case_id: filters.caseId,
           is_current_revision: 1,
           is_test: 0,
           activity_type_id: { '!=': 'Bulk Email' },
-          'activity_type_id.grouping': {LIKE: '%communication%'},
+          'activity_type_id.grouping': { LIKE: '%communication%' },
           'status_id.filter': 1,
-          options: {limit: panelLimit, sort: 'activity_date_time DESC'},
+          options: { limit: filters.panelLimit, sort: 'activity_date_time DESC' },
           return: activityReturnParams
         },
         // For the "tasks" panel
         'api.Activity.get.tasks': {
-          case_id: caseId,
+          case_id: filters.caseId,
           is_current_revision: 1,
           is_test: 0,
           activity_type_id: { '!=': 'Bulk Email' },
-          'activity_type_id.grouping': {LIKE: '%task%'},
+          'activity_type_id.grouping': { LIKE: '%task%' },
           'status_id.filter': 0,
-          options: {limit: panelLimit, sort: 'activity_date_time ASC'},
+          options: { limit: filters.panelLimit, sort: 'activity_date_time ASC' },
           return: activityReturnParams
         },
         // For the "Next Activity" panel
         'api.Activity.get.nextActivitiesWhichIsNotMileStone': {
-          case_id: caseId,
-          status_id: {'!=': 'Completed'},
+          case_id: filters.caseId,
+          status_id: { '!=': 'Completed' },
           activity_type_id: { '!=': 'Bulk Email' },
-          'activity_type_id.grouping': {'NOT LIKE': '%milestone%'},
+          'activity_type_id.grouping': { 'NOT LIKE': '%milestone%' },
           options: {
             limit: 1
           },
           return: activityReturnParams
         },
         'api.Activity.getcount.scheduled': {
-          case_id: caseId,
+          case_id: filters.caseId,
           is_current_revision: 1,
           is_deleted: 0,
           activity_type_id: { '!=': 'Bulk Email' },
-          'status_id': 'Scheduled'
+          status_id: 'Scheduled'
         },
         // For the "scheduled-overdue" count
         'api.Activity.getcount.scheduled_overdue': {
-          case_id: caseId,
+          case_id: filters.caseId,
           is_current_revision: 1,
           is_deleted: 0,
           is_overdue: 1,
@@ -96,7 +101,7 @@
         },
         // Relationship description field
         'api.Relationship.get': {
-          case_id: caseId,
+          case_id: filters.caseId,
           is_active: 1,
           return: relationshipReturnParams
         },

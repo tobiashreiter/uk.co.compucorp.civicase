@@ -10,11 +10,11 @@
    * @param {object} ts ts
    * @param {object} $location the location service.
    * @param {object} $window the window service.
-   * @param {string} defaultCaseCategory the default case type category configuration value.
+   * @param {string} currentCaseCategory the current case type category configuration value.
    * @param {string} newCaseWebformUrl the new case web form url configuration value.
    */
   function AddCaseDashboardActionButtonController ($scope, ts, $location, $window,
-    defaultCaseCategory, newCaseWebformUrl) {
+    currentCaseCategory, newCaseWebformUrl) {
     $scope.ts = ts;
 
     $scope.clickHandler = clickHandler;
@@ -63,7 +63,7 @@
 
       var formUrl = getCrmUrl('civicrm/case/add', {
         action: 'add',
-        case_type_category: caseTypeCategory || defaultCaseCategory,
+        case_type_category: caseTypeCategory || currentCaseCategory,
         context: 'standalone',
         reset: 1
       });

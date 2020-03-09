@@ -77,6 +77,7 @@
     $scope.calendarCaseParams = null;
     $scope.activitiesPanel = {
       name: 'activities',
+      config: {},
       query: {
         entity: 'Activity',
         action: 'getcontactactivities',
@@ -95,6 +96,7 @@
     };
     $scope.newMilestonesPanel = {
       name: 'milestones',
+      config: {},
       query: {
         entity: 'Activity',
         action: 'getcontactactivities',
@@ -112,6 +114,7 @@
       }
     };
     $scope.newCasesPanel = {
+      config: {},
       custom: {
         itemName: ts('cases'),
         caseClick: casesCustomClick,
@@ -216,17 +219,15 @@
      * Initializes the controller watchers
      */
     function initWatchers () {
+      $scope.$on('civicase::dashboard-filters::updated', function () {
+        refresh(true);
+      });
       $scope.$watchCollection('filters.caseRelationshipType', function (newType, oldType) {
         if (newType === oldType) {
           return;
         }
 
-        $scope.activitiesPanel.query.params = getQueryParams('activities');
-        $scope.newMilestonesPanel.query.params = getQueryParams('milestones');
-        $scope.newCasesPanel.query.params = getQueryParams('cases');
-        $scope.newCasesPanel.custom.viewCasesLink = viewCasesLink();
-
-        setCalendarParams();
+        refresh();
       });
 
       // When the involvement filters change, broadcast the event that will be
@@ -261,6 +262,25 @@
           }
         );
       }, true);
+    }
+
+    /**
+     * Refresh all panels
+     *
+     * @param {boolean} forceReload whether to force reload all panels
+     */
+    function refresh (forceReload) {
+      $scope.activitiesPanel.query.params = getQueryParams('activities');
+      $scope.newMilestonesPanel.query.params = getQueryParams('milestones');
+      $scope.newCasesPanel.query.params = getQueryParams('cases');
+
+      $scope.activitiesPanel.config.forceReload = forceReload;
+      $scope.newMilestonesPanel.config.forceReload = forceReload;
+      $scope.newCasesPanel.config.forceReload = forceReload;
+
+      $scope.newCasesPanel.custom.viewCasesLink = viewCasesLink();
+
+      setCalendarParams();
     }
 
     /**
@@ -307,7 +327,7 @@
     function resultsHandler (formatFn, contactsProp, results) {
       // Flattened list of all the contact ids of all the contacts of all the cases
       var contactIds = _(results).pluck(contactsProp).flatten().pluck('contact_id').uniq().value();
-      var formattedResults = results.map(formatFn);
+      var formattedResults = _.map(results, formatFn);
       // The try/catch block is necessary because the service does not
       // return a Promise if it doesn't find any new contacts to fetch
       try {
