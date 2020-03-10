@@ -9,12 +9,12 @@
     <div class="civicase__case-card__row civicase__case-card__row--primary clearfix">
       <div class="pull-left civicase__case-card-subject">{{ data.subject }}</div>
       <div class="pull-right">
-        <span>Case ID : </span>
+        <span> {{ ts('Case ID :') }} </span>
         <strong> {{ data.id }} </strong>
         <span class="civicase__pipe" ng-if="data.status !== 'Resolved'"> | </span>
         <span ng-if="data.status !== 'Resolved'">
           <span>Next Milestone: </span>
-          <span 
+          <span
             class="civicase__case-card__date"
             ng-class="{'civicase__overdue-activity-icon': data.activity_summary.milestone[0].is_overdue}"
             >

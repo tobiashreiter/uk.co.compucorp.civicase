@@ -12,7 +12,11 @@
       </div>
       <div class="civicase__dashboard__tab__col civicase__dashboard__tab__col--right">
         <!-- New Cases -->
-        <civicase-panel-query query="newCasesPanel.query" handlers="newCasesPanel.handlers" custom-data="newCasesPanel.custom">
+        <civicase-panel-query
+          query="newCasesPanel.query"
+          handlers="newCasesPanel.handlers"
+          config="newCasesPanel.config"
+          custom-data="newCasesPanel.custom">
           <panel-query-actions>
             <a class="panel-heading-control" ng-href="{{customData.viewCasesLink.url}}">
               {{customData.viewCasesLink.label}}
@@ -36,6 +40,7 @@
         </civicase-panel-query>
         <!-- New Milestones -->
         <civicase-panel-query
+          config="newMilestonesPanel.config"
           name="{{newMilestonesPanel.name}}"
           query="newMilestonesPanel.query"
           handlers="newMilestonesPanel.handlers"
@@ -67,6 +72,7 @@
         </civicase-panel-query>
         <!-- Activities -->
         <civicase-panel-query
+          config="activitiesPanel.config"
           name="{{activitiesPanel.name}}"
           query="activitiesPanel.query"
           handlers="activitiesPanel.handlers"

@@ -144,6 +144,12 @@
         expect(element.isolateScope().item.category_count.incomplete.task).toBe(2);
       });
 
+      it('checks whether the user has permission to fetch case details', function () {
+        expect(crmApi).toHaveBeenCalledWith('Case', 'getdetails', jasmine.objectContaining({
+          'case_type_id.case_type_category': 'cases'
+        }));
+      });
+
       describe('Related Cases', function () {
         describe('related cases', function () {
           var relatedCasesByContact, linkedCases;
@@ -277,7 +283,8 @@
      */
     function compileDirective () {
       $scope.viewingCaseDetails = formatCase(CasesData.get().values[0]);
-      element = $compile('<div civicase-case-details="viewingCaseDetails"></div>')($scope);
+      $scope.caseTypeCategory = 'cases';
+      element = $compile('<div civicase-case-details="viewingCaseDetails" case-type-category="caseTypeCategory"></div>')($scope);
       $scope.$digest();
     }
 
@@ -301,7 +308,7 @@
      * Mocks a directive
      * TODO: Have a more generic usage - Maybe create a service/factory
      *
-     * @param {string} directiveName the name of the directive.
+     * @param {string} directiveName name of the directive
      */
     function killDirective (directiveName) {
       angular.mock.module(function ($compileProvider) {

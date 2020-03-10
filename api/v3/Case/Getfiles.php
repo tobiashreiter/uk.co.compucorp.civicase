@@ -62,9 +62,6 @@ function _civicrm_api3_case_getfiles_spec(&$spec) {
  * @throws API_Exception
  */
 function civicrm_api3_case_getfiles($params) {
-  // Check authorization.
-  // WISHLIST: would be nice to incorporate addSelectWhere() instead?
-  _civicrm_api3_case_getfiles_assert_access($params);
   $params = _civicrm_api3_case_getfiles_format_params($params);
   $options = _civicrm_api3_get_options_from_params($params);
 
@@ -218,28 +215,6 @@ function _civicrm_api3_case_getfiles_select($params) {
 
   $select->orderBy(array('act.activity_date_time DESC, act.id DESC, f.id DESC'));
   return $select;
-}
-
-/**
- * Assert that this request is authorized to access the given Case.
- * @param array $params
- * @throws API_Exception
- */
-function _civicrm_api3_case_getfiles_assert_access($params) {
-  if (empty($params['check_permissions'])) {
-    return; // OK
-  }
-
-  if (empty($params['case_id'])) {
-    throw new API_Exception("Blank case_id cannot be validated");
-  }
-
-  // Delegate to Case.get to determine if the ID is accessible.
-  civicrm_api3('Case', 'getsingle', array(
-    'id' => $params['case_id'],
-    'check_permissions' => $params['check_permissions'],
-    'return' => 'id',
-  ));
 }
 
 /**

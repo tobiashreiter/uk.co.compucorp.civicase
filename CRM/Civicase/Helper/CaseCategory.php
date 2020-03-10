@@ -20,16 +20,49 @@ class CRM_Civicase_Helper_CaseCategory {
    */
   public static function getCategoryName($caseId) {
     $caseTypeCategories = CaseType::buildOptions('case_type_category', 'validate');
+    try {
+      $result = civicrm_api3('Case', 'getsingle', [
+        'id' => $caseId,
+        'return' => ['case_type_id.case_type_category'],
+      ]);
 
-    $result = civicrm_api3('Case', 'getsingle', [
-      'id' => $caseId,
-      'return' => ['case_type_id.case_type_category'],
-    ]);
+      if (!empty($result['case_type_id.case_type_category'])) {
+        $caseCategoryId = $result['case_type_id.case_type_category'];
 
-    if (!empty($result['case_type_id.case_type_category'])) {
-      $caseCategoryId = $result['case_type_id.case_type_category'];
+        return $caseTypeCategories[$caseCategoryId];
+      }
+    } catch (Exception $e) {
+      return NULL;
+    }
 
-      return $caseTypeCategories[$caseCategoryId];
+    return NULL;
+  }
+
+  /**
+   * Returns the case category name for the case typeId.
+   *
+   * @param int $caseTypeId
+   *   The Case Type ID.
+   *
+   * @return string|null
+   *   The Case Category Name.
+   */
+  public static function getCategoryNameForCaseType($caseTypeId) {
+    $caseTypeCategories = CaseType::buildOptions('case_type_category');
+    try {
+      $result = civicrm_api3('CaseType', 'getvalue', [
+        'id' => $caseTypeId,
+        'return' => ['case_type_category'],
+      ]);
+
+      if (!empty($result['is_error'])) {
+        $caseCategoryId = $result['result'];
+
+        return $caseTypeCategories[$caseCategoryId];
+      }
+    }
+    catch(Exception $e) {
+      return NULL;
     }
 
     return NULL;
@@ -84,7 +117,16 @@ class CRM_Civicase_Helper_CaseCategory {
       ]);
 
     } catch (Exception $e) {
-      return [];
+      if (!$caseTypeCategoryName || strtolower($caseTypeCategoryName) == 'cases') {
+        return [];
+      }
+
+      return [
+        'Case' => ucfirst($caseTypeCategoryName),
+        'Cases' => ucfirst($caseTypeCategoryName) . 's',
+        'case' => strtolower($caseTypeCategoryName),
+        'cases' => strtolower($caseTypeCategoryName) . 's',
+      ];
     }
 
     if (empty($result['id'])) {
@@ -99,6 +141,32 @@ class CRM_Civicase_Helper_CaseCategory {
     }
 
     return [];
+  }
+
+  /**
+   * Return case count for contact for a case category.
+   *
+   * @param string $caseTypeCategoryName
+   *   Case category name.
+   * @param int $contactId
+   *   Contact ID.
+   *
+   * @return int
+   *   Case count.
+   */
+  public static function getCaseCount($caseTypeCategoryName, $contactId) {
+    $params = [
+      'is_deleted' => 0,
+      'contact_id' => $contactId,
+      'case_type_id.case_type_category' => $caseTypeCategoryName,
+    ];
+    try {
+      return civicrm_api3('Case', 'getcount', $params);
+    }
+    catch (CiviCRM_API3_Exception $e) {
+      // Lack of permissions will throw an exception.
+      return 0;
+    }
   }
 
   /**

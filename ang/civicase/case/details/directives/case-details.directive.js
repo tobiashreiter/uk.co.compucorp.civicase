@@ -9,7 +9,8 @@
       scope: {
         activeTab: '=civicaseTab',
         isFocused: '=civicaseFocused',
-        item: '=civicaseCaseDetails'
+        item: '=civicaseCaseDetails',
+        caseTypeCategory: '='
       }
     };
   });
@@ -279,7 +280,11 @@
      * @returns {string} url
      */
     function caseGetParams () {
-      return getCaseQueryParams($scope.item.id, panelLimit);
+      return getCaseQueryParams({
+        caseId: $scope.item.id,
+        panelLimit: panelLimit,
+        caseTypeCategory: $scope.caseTypeCategory
+      });
     }
 
     /**

@@ -172,10 +172,12 @@
       $scope.allowedActivityStatuses = {};
 
       _.each(ActivityStatus.getAll(), function (activityStatus, activityStatusID) {
-        var ifStatusIsInSameCategory = _.intersection($scope.activity.category, activityStatus.grouping.split(',')).length > 0;
-        var ifStatusIsInNoneCategory = $scope.activity.category.length === 0 && activityStatus.grouping.split(',').indexOf('none') !== -1;
+        var statusGrouping = activityStatus.grouping ? activityStatus.grouping.split(',') : [];
+        var ifStatusIsInSameCategory = _.intersection($scope.activity.category, statusGrouping).length > 0;
+        var ifStatusIsInNoneCategory = $scope.activity.category.length === 0 && statusGrouping.indexOf('none') !== -1;
+        var ifStatusIsForAllCategories = statusGrouping.length === 0;
 
-        if (ifStatusIsInSameCategory || ifStatusIsInNoneCategory) {
+        if (ifStatusIsInSameCategory || ifStatusIsInNoneCategory || ifStatusIsForAllCategories) {
           $scope.allowedActivityStatuses[activityStatusID] = activityStatus;
         }
       });

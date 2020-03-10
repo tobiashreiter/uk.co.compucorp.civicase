@@ -3,13 +3,13 @@
   describe('CaseOverview', function () {
     var $compile, $provide, $q, $rootScope, $scope, BrowserCache,
       CasesOverviewStats, crmApi, element, targetElementScope,
-      caseTypeCategoriesMockData, CaseStatus, CaseType;
+      CaseStatus;
 
     beforeEach(module('civicase.data', 'civicase', 'civicase.templates', function (_$provide_) {
       $provide = _$provide_;
     }));
 
-    beforeEach(inject(function (_$compile_, _$q_, _$rootScope_, BrowserCacheMock, _crmApi_, _CasesOverviewStatsData_, _caseTypeCategoriesMockData_, _CaseStatus_, _CaseType_) {
+    beforeEach(inject(function (_$compile_, _$q_, _$rootScope_, BrowserCacheMock, _crmApi_, _CasesOverviewStatsData_, _CaseStatus_) {
       $compile = _$compile_;
       $q = _$q_;
       $rootScope = _$rootScope_;
@@ -17,9 +17,7 @@
       crmApi = _crmApi_;
       CasesOverviewStats = _CasesOverviewStatsData_.get();
       BrowserCache = BrowserCacheMock;
-      CaseType = _CaseType_;
       CaseStatus = _CaseStatus_;
-      caseTypeCategoriesMockData = _caseTypeCategoriesMockData_;
 
       BrowserCache.get.and.returnValue([1, 3]);
       $provide.value('BrowserCache', BrowserCache);
@@ -28,13 +26,12 @@
 
     beforeEach(function () {
       $scope.caseStatuses = CaseStatus.getAll();
-      $scope.caseTypesLength = _.size(CaseType.getAll());
       $scope.summaryData = [];
     });
 
     beforeEach(function () {
       listenForCaseOverviewRecalculate();
-      compileDirective();
+      compileDirective({});
     });
 
     describe('compile directive', function () {
@@ -50,31 +47,36 @@
     });
 
     describe('Case Types', function () {
-      describe('when case type category filter is not present', function () {
-        it('does not filter case types using case type category', function () {
-          expect(element.isolateScope().caseTypes).toEqual(CaseType.getAll());
+      beforeEach(function () {
+        crmApi.and.returnValue($q.resolve([CasesOverviewStats]));
+        compileDirective({ caseTypeCategory: 'cases', caseTypeID: [1, 2] });
+      });
+
+      it('fetches the active case types', function () {
+        expect(crmApi).toHaveBeenCalledWith('CaseType', 'get', {
+          sequential: 1,
+          case_type_category: 'cases',
+          id: [1, 2],
+          is_active: 1
+        });
+      });
+    });
+
+    describe('Case Status Data', function () {
+      beforeEach(function () {
+        crmApi.and.returnValue($q.resolve([CasesOverviewStats]));
+        compileDirective({
+          caseTypeCategory: 'cases',
+          caseTypeID: [1, 2],
+          status_id: '1'
         });
       });
 
-      describe('when case type category filter is present', function () {
-        var expectedResult;
-        var caseTypeCategory = 'prospecting';
-
-        beforeEach(function () {
-          compileDirective(caseTypeCategory);
-          $scope.$digest();
-
-          var caseTypeCategoryID = _.find(caseTypeCategoriesMockData, function (category) {
-            return category.label.toLowerCase() === caseTypeCategory.toLowerCase();
-          }).value;
-          expectedResult = _.pick(CaseType.getAll(), function (caseType) {
-            return caseType.case_type_category === caseTypeCategoryID;
-          });
-        });
-
-        it('filters the case types using case type category', function () {
-          expect(element.isolateScope().caseTypes).toEqual(expectedResult);
-        });
+      it('fetches the case statistics, but shows all case statuses', function () {
+        expect(crmApi).toHaveBeenCalledWith([['Case', 'getstats', {
+          'case_type_id.case_type_category': 'cases',
+          case_type_id: [1, 2]
+        }]]);
       });
     });
 
@@ -160,10 +162,13 @@
     /**
      * Initialise directive.
      *
-     * @param {string} caseTypeCategory the case type category name.
+     * @param {string} params the case type category name.
      */
-    function compileDirective (caseTypeCategory) {
-      $scope.caseFilter = { 'case_type_id.case_type_category': caseTypeCategory };
+    function compileDirective (params) {
+      $scope.caseFilter = {
+        'case_type_id.case_type_category': params.caseTypeCategory,
+        case_type_id: params.caseTypeID
+      };
       element = $compile('<civicase-case-overview case-filter="caseFilter"></civicase-case-overview>')($scope);
       $scope.$digest();
     }

@@ -65,7 +65,7 @@
       </div>
       <div
         class="civicase__case-overview__breakdown"
-        ng-repeat="(ctid, caseType) in caseTypes"
+        ng-repeat="caseType in caseTypes"
         ng-if="showBreakdown">
         <div class="civicase__case-overview__breakdown-field  civicase__case-overview__breakdown-field--hoverable"
           uib-popover="{{ caseType.title }}"
@@ -76,18 +76,16 @@
           <a ng-href="{{ caseListLink(caseType.name) }}">
             {{ caseType.title }}
           </a>
-          <a class="btn btn-link"
-            ng-href="{{button.url}}"
-            ng-repeat="button in getButtonsForCaseType(caseType.name)">
-            <i class="{{button.icon}}"></i>
-          </a>
+          <span
+            ng-repeat="caseTypeItem in getItemsForCaseType(caseType.name)"
+            ng-include="caseTypeItem.templateUrl"></span>
         </div>
         <div
           class="civicase__case-overview__breakdown-field"
           ng-if="!status.isHidden"
           ng-repeat="status in caseStatuses">
           <a ng-href="{{ caseListLink(caseType.name, status.value) }}">
-            {{ summaryData[ctid][status.value] || '0' }}
+            {{ summaryData[caseType.id][status.value] || '0' }}
           </a>
         </div>
         <div class="civicase__case-overview__breakdown-field" ng-if="areAllStatusesHidden()"> - </div>

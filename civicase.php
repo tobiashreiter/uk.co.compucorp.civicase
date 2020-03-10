@@ -16,52 +16,14 @@ require_once 'civicase.civix.php';
  */
 function civicase_civicrm_tabset($tabsetName, &$tabs, $context) {
   $useAng = FALSE;
+  $hooks = [
+    new CRM_Civicase_Hook_Tabset_CaseTabModifier(),
+    new CRM_Civicase_Hook_Tabset_CaseCategoryTabAdd(),
+    new CRM_Civicase_Hook_Tabset_ActivityTabModifier(),
+  ];
 
-  switch ($tabsetName) {
-    case 'civicrm/contact/view':
-      $caseTabPresent = FALSE;
-
-      foreach ($tabs as &$tab) {
-        if ($tab['id'] === 'case') {
-          $caseTabPresent = TRUE;
-          $useAng = TRUE;
-          $tab['url'] = CRM_Utils_System::url('civicrm/case/contact-case-tab', [
-            'cid' => $context['contact_id'],
-          ]);
-        }
-        if ($tab['id'] === 'activity') {
-          $activity_types = array_flip(CRM_Activity_BAO_Activity::buildOptions('activity_type_id', 'validate'));
-          $useAng = TRUE;
-          $tab['url'] = CRM_Utils_System::url('civicrm/case/contact-act-tab', [
-            'cid' => $context['contact_id'],
-          ]);
-          // Exclude bulk email activity type from the Activity count because
-          // there are issues with target contact for this activity type.
-          // To remove this code once issue is fixed from core.
-          $params = [
-            'activity_type_exclude_id' => $activity_types['Bulk Email'],
-            'contact_id' => $context['contact_id'],
-          ];
-          $tab['count'] = CRM_Activity_BAO_Activity::getActivitiesCount($params);
-        }
-      }
-
-      if (!$caseTabPresent && CRM_Core_Permission::check('basic case information')) {
-        $useAng = TRUE;
-        $tabs[] = [
-          'id' => 'case',
-          'url' => CRM_Utils_System::url('civicrm/case/contact-case-tab', [
-            'cid' => $context['contact_id'],
-          ]),
-          'title' => ts('Cases'),
-          'weight' => 20,
-          'count' => CRM_Contact_BAO_Contact::getCountComponent('case', $context['contact_id']),
-          'class' => 'livePage',
-        ];
-      }
-
-      break;
-
+  foreach ($hooks as $hook) {
+    $hook->run($tabsetName, $tabs, $context, $useAng);
   }
 
   if ($useAng) {
@@ -220,6 +182,7 @@ function civicase_civicrm_buildForm($formName, &$form) {
     new CRM_Civicase_Hook_BuildForm_FilterByCaseCategoryOnChangeCaseType(),
     new CRM_Civicase_Hook_BuildForm_CaseCategoryFormLabelTranslationForNewCase(),
     new CRM_Civicase_Hook_BuildForm_CaseCategoryFormLabelTranslationForChangeCase(),
+    new CRM_Civicase_Hook_BuildForm_EnableCaseCategoryIconField(),
   ];
 
   foreach ($hooks as $hook) {
@@ -469,6 +432,15 @@ function civicase_civicrm_post($op, $objectName, $objectId, &$objectRef) {
  * Implements hook_civicrm_postProcess().
  */
 function civicase_civicrm_postProcess($formName, &$form) {
+  $hooks = [
+    new CRM_Civicase_Hook_PostProcess_SetUserContextForSaveAndNewCase(),
+    new CRM_Civicase_Hook_PostProcess_CaseCategoryMenuLinksProcessor(),
+  ];
+
+  foreach ($hooks as $hook) {
+    $hook->run($formName, $form);
+  }
+
   if (!empty($form->civicase_reload)) {
     $api = civicrm_api3('Case', 'getdetails', ['check_permissions' => 1] + $form->civicase_reload);
     $form->ajaxResponse['civicase_reload'] = $api['values'];
@@ -488,10 +460,8 @@ function civicase_civicrm_postProcess($formName, &$form) {
  * Implements hook_civicrm_permission().
  */
 function civicase_civicrm_permission(&$permissions) {
-  $permissions['basic case information'] = [
-    'Civicase: basic case information',
-    ts('Allows a user to view only basic information of cases.'),
-  ];
+  $permissionHook = new CRM_Civicase_Hook_Permissions_CaseCategory($permissions);
+  $permissionHook->run();
 }
 
 /**
@@ -509,38 +479,13 @@ function civicase_civicrm_apiWrappers(&$wrappers, $apiRequest) {
  * @link https://docs.civicrm.org/dev/en/master/hooks/hook_civicrm_alterAPIPermissions/
  */
 function civicase_civicrm_alterAPIPermissions($entity, $action, &$params, &$permissions) {
-  $permissions['case']['getfiles'] = [
-    ['access my cases and activities', 'access all cases and activities'],
-    'access uploaded files',
+  $hooks = [
+    new CRM_Civicase_Hook_alterAPIPermissions_Case(),
   ];
 
-  $permissions['case']['get'] = $permissions['custom_value']['gettreevalues'] = [
-    [
-      'access my cases and activities',
-      'access all cases and activities',
-      'basic case information',
-    ],
-  ];
-
-  $locationTypePermissions = array_merge($permissions['default']['default'], ['access CiviCRM']);
-  $permissions['location_type']['get'] = [$locationTypePermissions];
-  $permissions['relationship_type']['getcaseroles'] = $permissions['relationship_type']['get'];
-
-  $permissions['case']['getcount'] = [
-    [
-      'access my cases and activities',
-      'access all cases and activities',
-      'basic case information',
-    ],
-  ];
-
-  $permissions['case_type']['get'] = $permissions['casetype']['getcount'] = [
-    [
-      'access my cases and activities',
-      'access all cases and activities',
-      'basic case information',
-    ],
-  ];
+  foreach ($hooks as $hook) {
+    $hook->run($entity, $action, $params, $permissions);
+  }
 }
 
 /**
@@ -573,114 +518,12 @@ function civicase_civicrm_check(&$messages) {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_navigationMenu
  */
 function civicase_civicrm_navigationMenu(&$menu) {
-  /**
-   * @var array
-   *   Array(string $oldUrl => string $newUrl).
-   */
-  $rewriteMap = [
-    'civicrm/case?reset=1' => 'civicrm/case/a/?case_type_category=cases#/case?case_type_category=cases',
-    'civicrm/case/search?reset=1' => 'civicrm/case/a/#/case/list?sx=1',
+  $hooks = [
+    new CRM_Civicase_Hook_NavigationMenu_AlterForCaseMenu(),
   ];
 
-  /**
-   * For URLS that have hardcoded values that may change per system.
-   * or for adding dynamic menu url mappings.
-   *
-   * @var array
-   *   Array(string $oldUrl => string $newUrl).
-   */
-  $otherUrlsMap = [];
-  _civicase_addNewCaseUrlMap($otherUrlsMap);
-
-  _civicase_menu_walk($menu, function (&$item) use ($rewriteMap, $otherUrlsMap) {
-    if (!isset($item['url'])) {
-      return;
-    }
-
-    if (isset($rewriteMap[$item['url']])) {
-      $item['url'] = $rewriteMap[$item['url']];
-
-      return;
-    }
-
-    foreach ($otherUrlsMap as $oldUrl => $newUrl) {
-      if (strpos($item['url'], $oldUrl) !== FALSE) {
-        $item['url'] = $newUrl;
-
-        return;
-      }
-    }
-  });
-
-  // Add new menu item
-  // Check that our item doesn't already exist.
-  $menu_item_search = ['url' => 'civicrm/case/webforms'];
-  $menu_items = [];
-  CRM_Core_BAO_Navigation::retrieve($menu_item_search, $menu_items);
-
-  if (!empty($menu_items)) {
-    return;
-  }
-
-  $navId = CRM_Core_DAO::singleValueQuery("SELECT max(id) FROM civicrm_navigation");
-  if (is_int($navId)) {
-    $navId++;
-  }
-  // Find the Civicase menu.
-  $caseID = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_Navigation', 'CiviCase', 'id', 'name');
-  $administerID = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_Navigation', 'Administer', 'id', 'name');
-  $menu[$administerID]['child'][$caseID]['child'][$navId] = [
-    'attributes' => [
-      'label' => ts('CiviCase Webforms'),
-      'name' => 'CiviCase Webforms',
-      'url' => 'civicrm/case/webforms',
-      'permission' => 'access CiviCase',
-      'operator' => 'OR',
-      'separator' => 1,
-      'parentID' => $caseID,
-      'navID' => $navId,
-      'active' => 1,
-    ],
-  ];
-}
-
-/**
- * Civicase Add new case URL map.
- *
- * Adds the add case URL mapping to the array depending on
- * the case settings config for the system. IF an alternate add Case
- * URL is set, the url mapping is added.
- *
- * @param array $urlMapArray
- *   URL Map array.
- */
-function _civicase_addNewCaseUrlMap(array &$urlMapArray) {
-  $allowCaseWebform = Civi::settings()->get('civicaseAllowCaseWebform');
-  $newCaseWebformUrl = $allowCaseWebform ? Civi::settings()
-    ->get('civicaseWebformUrl') : NULL;
-
-  if ($newCaseWebformUrl) {
-    $urlMapArray['civicrm/case/add?reset=1'] = $newCaseWebformUrl;
-  }
-}
-
-/**
- * Visit every link in the navigation menu, and alter it using $callback.
- *
- * @param array $menu
- *   Tree of menu items, per hook_civicrm_navigationMenu.
- * @param callable $callback
- *   Function(&$item).
- */
-function _civicase_menu_walk(array &$menu, callable $callback) {
-  foreach (array_keys($menu) as $key) {
-    if (isset($menu[$key]['attributes'])) {
-      $callback($menu[$key]['attributes']);
-    }
-
-    if (isset($menu[$key]['child'])) {
-      _civicase_menu_walk($menu[$key]['child'], $callback);
-    }
+  foreach ($hooks as $hook) {
+    $hook->run($menu);
   }
 }
 
@@ -719,8 +562,14 @@ function civicase_civicrm_queryObjects(&$queryObjects, $type) {
  * Implements hook_civicrm_permission_check().
  */
 function civicase_civicrm_permission_check($permission, &$granted) {
-  $permissionsChecker = new CRM_Civicase_Hook_Permissions_Check();
-  $granted = $permissionsChecker->validatePermission($permission, $granted);
+  $hooks = [
+    new CRM_Civicase_Hook_PermissionCheck_ActivityPageView(),
+    new CRM_Civicase_Hook_PermissionCheck_CaseCategory(),
+  ];
+
+  foreach ($hooks as $hook) {
+    $hook->run($permission, $granted);
+  }
 }
 
 /**
@@ -730,21 +579,11 @@ function civicase_civicrm_preProcess($formName, &$form) {
   $hooks = [
     new CRM_Civicase_Hook_PreProcess_CaseCategoryWordReplacementsForNewCase(),
     new CRM_Civicase_Hook_PreProcess_CaseCategoryWordReplacementsForChangeCase(),
+    new CRM_Civicase_Hook_PreProcess_AddCaseAdminSettings(),
   ];
 
   foreach ($hooks as $hook) {
     $hook->run($formName, $form);
-  }
-
-  // TODO: We need to move this function into it's own class
-  // and implement as above.
-  if ($formName == 'CRM_Admin_Form_Setting_Case') {
-    $settings = $form->getVar('_settings');
-    $settings['civicaseAllowCaseLocks'] = CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME;
-    $settings['civicaseAllowCaseWebform'] = CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME;
-    $settings['civicaseWebformUrl'] = CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME;
-
-    $form->setVar('_settings', $settings);
   }
 }
 
