@@ -33,6 +33,7 @@
         return: caseReturnParams,
         'case_type_id.case_type_category': filters.caseTypeCategory,
         'api.Case.getcaselist.relatedCasesByContact': {
+          'case_type_id.case_type_category': filters.caseTypeCategory,
           contact_id: { IN: '$value.contact_id' },
           id: { '!=': '$value.id' },
           is_deleted: 0,
@@ -40,6 +41,7 @@
         },
         // Linked cases
         'api.Case.getcaselist.linkedCases': {
+          'case_type_id.case_type_category': filters.caseTypeCategory,
           id: { IN: '$value.related_case_ids' },
           is_deleted: 0,
           return: caseListReturnParams
