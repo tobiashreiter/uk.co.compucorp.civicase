@@ -1,19 +1,19 @@
 <?php
 
-use CRM_Civicase_Setup_AddCaseCategoryCgExtendsValue as AddCaseCategoryCgExtendsValue;
+use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 
 /**
- * Class CRM_CiviAwards_Setup_DeleteCaseCgExtendsOptionValue.
+ * Class CRM_Civicase_Uninstall_DeleteCaseCgExtendsOption.
  */
-class CRM_CiviAwards_Setup_DeleteCaseCgExtendsOption {
+class CRM_Civicase_Uninstall_DeleteCaseCgExtendsOption {
 
   /**
-   * Deletes the Awards option from the CG Extends option values.
+   * Deletes the Cases option from the CG Extends option values.
    */
   public function apply() {
     $result = civicrm_api3('OptionValue', 'get', [
       'sequential' => 1,
-      'label' => AddCaseCategoryCgExtendsValue::CASE_CATEGORY_LABEL,
+      'value' => CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME,
       'option_group_id' => 'cg_extend_objects',
     ]);
 
