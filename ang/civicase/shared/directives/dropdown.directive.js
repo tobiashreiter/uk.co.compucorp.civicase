@@ -14,9 +14,9 @@
     /**
      * Dropdown Directive's link function definition.
      *
-     * @param {Object} scope the scope the element is linked to.
-     * @param {Object} element a reference to the dropdown element.
-     * @param {Object} attrs attributes and values attached to the dropdown element.
+     * @param {object} scope the scope the element is linked to.
+     * @param {object} $element a reference to the dropdown element.
+     * @param {object} attrs attributes and values attached to the dropdown element.
      */
     function civicaseDropdownLink (scope, $element, attrs) {
       var $toggleElement = $element.find('[civicase-dropdown-toggle]:first');
@@ -30,7 +30,7 @@
       /**
        * Closes the dropdown menu when clicking outside of it or when clicking
        *
-       * @param {Object} event the DOM event that was triggered by the click.
+       * @param {object} event the DOM event that was triggered by the click.
        */
       function closeDropdownOnClickOutside (event) {
         var $dropdownMenu = getChildDropdownMenu();
@@ -48,7 +48,7 @@
       /**
        * Closes the dropdown menu when the Escape key is pressed
        *
-       * @param {Object} event the DOM event that was triggered by the key press.
+       * @param {object} event the DOM event that was triggered by the key press.
        */
       function closeDropdownOnEscapeKeyPressed (event) {
         var $dropdownMenu = getChildDropdownMenu();
@@ -61,6 +61,9 @@
         }
       }
 
+      /**
+       * @returns {object} a reference to the dropdown menu container.
+       */
       function getChildDropdownMenu () {
         return $element.find('.dropdown-menu:first');
       }

@@ -73,7 +73,7 @@
 
       describe('when pressing the Escape key', function () {
         beforeEach(function () {
-          var escapeKeydownEven = new window.KeyboardEvent('keydown', {'key': 'Escape'});
+          var escapeKeydownEven = new window.KeyboardEvent('keydown', { key: 'Escape' });
 
           $('body')[0].dispatchEvent(escapeKeydownEven);
         });
@@ -104,7 +104,7 @@
 
         describe('when pressing the Escape key', function () {
           beforeEach(function () {
-            var escapeKeydownEven = new window.KeyboardEvent('keydown', {'key': 'Escape'});
+            var escapeKeydownEven = new window.KeyboardEvent('keydown', { key: 'Escape' });
 
             $('body')[0].dispatchEvent(escapeKeydownEven);
           });
@@ -149,7 +149,7 @@
       /**
        * Dispatches a mouse event to the dropdown toggle element.
        *
-       * @param {String} eventType the mouse event type that is going to be dispatched to the element.
+       * @param {string} eventType the mouse event type that is going to be dispatched to the element.
        */
       function dispatchMouseEvent (eventType) {
         var event = document.createEvent('mouseevent');
@@ -163,7 +163,7 @@
      * Initializes the dropdown directive, stores a reference to the dropdown element
      * and scope.
      *
-     * @param {Object} options a list of configurations to pass to the dropdown directive.
+     * @param {object} options a list of configurations to pass to the dropdown directive.
      */
     function initDirective (options) {
       var defaultOptions = { trigger: 'click' };
