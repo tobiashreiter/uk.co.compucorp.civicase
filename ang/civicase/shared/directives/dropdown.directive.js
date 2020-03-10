@@ -87,8 +87,8 @@
         $(document).on('click', closeDropdownOnClickOutside);
 
         if (attrs.civicaseDropdownTrigger === 'hover') {
-          $element.on('mouseover', showDropdown);
-          $element.on('mouseout', hideDropdown);
+          $element.on('mouseenter', showDropdown);
+          $element.on('mouseleave', hideDropdown);
         }
       }
 
@@ -110,8 +110,8 @@
           $toggleElement.unbind('click', toggleDropdown);
           $('body').unbind('keydown', closeDropdownOnEscapeKeyPressed);
           $(document).unbind('click', closeDropdownOnClickOutside);
-          $element.unbind('mouseover', showDropdown);
-          $element.unbind('mouseout', hideDropdown);
+          $element.unbind('mouseenter', showDropdown);
+          $element.unbind('mouseleave', hideDropdown);
         });
       }
 
