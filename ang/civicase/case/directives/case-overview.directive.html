@@ -44,7 +44,7 @@
           popover-append-to-body="true"
           popover-class="civicase__tooltip-popup-list">
           <div class="civicase__case-overview__flow-status__count">
-            <a ng-href="{{ caseListLink(null, status.value) }}">
+            <a ng-href="{{ linkToManageCase(null, status.value) }}">
               {{ summaryData.all[status.value] || '0' }}
             </a>
           </div>
@@ -73,7 +73,7 @@
           popover-placement="bottom"
           popover-append-to-body="true"
           popover-class="civicase__tooltip-popup-list">
-          <a ng-href="{{ caseListLink(caseType.name) }}">
+          <a ng-href="{{ linkToManageCase(caseType.name) }}">
             {{ caseType.title }}
           </a>
           <span
@@ -84,7 +84,7 @@
           class="civicase__case-overview__breakdown-field"
           ng-if="!status.isHidden"
           ng-repeat="status in caseStatuses">
-          <a ng-href="{{ caseListLink(caseType.name, status.value) }}">
+          <a ng-href="{{ linkToManageCase(caseType.name, status.value) }}">
             {{ summaryData[caseType.id][status.value] || '0' }}
           </a>
         </div>
