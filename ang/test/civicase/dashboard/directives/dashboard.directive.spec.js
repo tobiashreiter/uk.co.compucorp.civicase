@@ -103,6 +103,54 @@
       });
     });
 
+    describe('link to manage screen page', () => {
+      beforeEach(() => {
+        initController();
+        $scope.caseTypeCategoryName = 'cases';
+      });
+
+      describe('when case type and case status is sent ', () => {
+        let returnedLink;
+
+        beforeEach(() => {
+          returnedLink = $scope.linkToManageCase('type', 'status');
+        });
+
+        it('returns url to manage cases page with case type and case status preselected', () => {
+          expect(returnedLink)
+            .toBe('#/case/list?cf=%7B%22case_type_category%22%3A%22cases%22%2C%22case_type_id%22%3A%5B%22type%22%5D%2C%22status_id%22%3A%5B%22status%22%5D%7D');
+        });
+      });
+
+      describe('when "my cases" filter is selected ', () => {
+        let returnedLink;
+
+        beforeEach(() => {
+          $scope.filters.caseRelationshipType = 'is_case_manager';
+          returnedLink = $scope.linkToManageCase('type', 'status');
+        });
+
+        it('returns url to manage cases page with "my cases" filter selected', () => {
+          expect(returnedLink)
+            .toBe('#/case/list?cf=%7B%22case_type_category%22%3A%22cases%22%2C%22case_type_id%22%3A%5B%22type%22%5D%2C%22status_id%22%3A%5B%22status%22%5D%2C%22case_manager%22%3A%5B203%5D%7D');
+        });
+      });
+
+      describe('when "cases I am involved in" filter is selected ', () => {
+        let returnedLink;
+
+        beforeEach(() => {
+          $scope.filters.caseRelationshipType = 'is_involved';
+          returnedLink = $scope.linkToManageCase('type', 'status');
+        });
+
+        it('returns url to manage cases page with "cases I am involved in" filter selected', () => {
+          expect(returnedLink)
+            .toBe('#/case/list?cf=%7B%22case_type_category%22%3A%22cases%22%2C%22case_type_id%22%3A%5B%22type%22%5D%2C%22status_id%22%3A%5B%22status%22%5D%2C%22contact_involved%22%3A%5B203%5D%7D');
+        });
+      });
+    });
+
     /**
      * Initializes the dashboard controller.
      */

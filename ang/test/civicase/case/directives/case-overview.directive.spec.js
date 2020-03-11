@@ -40,12 +40,6 @@
       });
     });
 
-    describe('caseListLink', function () {
-      it('checks the output of caseListLink function', function () {
-        expect(element.isolateScope().caseListLink('type', 'status')).toEqual('#/case/list?cf=%7B%22case_type_id%22%3A%5B%22type%22%5D%2C%22status_id%22%3A%5B%22status%22%5D%7D');
-      });
-    });
-
     describe('Case Types', function () {
       beforeEach(function () {
         crmApi.and.returnValue($q.resolve([CasesOverviewStats]));
