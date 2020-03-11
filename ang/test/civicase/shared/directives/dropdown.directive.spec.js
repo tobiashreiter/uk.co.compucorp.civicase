@@ -127,7 +127,7 @@
 
       describe('when the mouse passes over the dropdown element', () => {
         beforeEach(() => {
-          dispatchMouseEvent('mouseover');
+          dispatchMouseEvent('mouseenter');
         });
 
         it('displays the dropdown menu', () => {
@@ -137,8 +137,8 @@
 
       describe('when the mouse passes over and then leaves the dropdown element', () => {
         beforeEach(() => {
-          dispatchMouseEvent('mouseover');
-          dispatchMouseEvent('mouseout');
+          dispatchMouseEvent('mouseenter');
+          dispatchMouseEvent('mouseleave');
         });
 
         it('hides the dropdown menu', () => {
@@ -147,15 +147,14 @@
       });
 
       /**
-       * Dispatches a mouse event to the dropdown toggle element.
+       * Dispatches the given event type to the dropdown toggle element.
        *
        * @param {string} eventType the mouse event type that is going to be dispatched to the element.
        */
       function dispatchMouseEvent (eventType) {
-        var event = document.createEvent('mouseevent');
+        var event = $.Event(eventType);
 
-        event.initEvent(eventType, true, false);
-        dropdowns.parent.find('[civicase-dropdown-toggle]:first')[0].dispatchEvent(event);
+        dropdowns.parent.find('[civicase-dropdown-toggle]:first').trigger(event);
       }
     });
 
