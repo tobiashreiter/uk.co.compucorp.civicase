@@ -470,7 +470,6 @@
     function initiateWatchersAndEvents () {
       $scope.$watchCollection('filters', resetPages);
       $scope.$watchCollection('displayOptions', resetPages);
-      $scope.$watch('params.filters', resetPages, true);
       $scope.$on('updateCaseData', resetPages);
       $scope.$on('civicase::activity::updated', refreshAll);
       $scope.$on('civicase::month-nav::set-starting-offset', monthNavSetStartingOffsetListener);
@@ -484,6 +483,13 @@
       $scope.$on('civicase::activity-feed::hide-activity-panel', function () {
         toggleMonthNavVisibility(true);
       });
+      $scope.$watch('params.filters', function () {
+        if ($scope.params && $scope.params.filters) {
+          angular.extend($scope.filters, $scope.params.filters);
+        }
+
+        resetPages();
+      }, true);
     }
 
     /**

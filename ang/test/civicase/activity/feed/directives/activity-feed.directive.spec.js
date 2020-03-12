@@ -78,6 +78,29 @@
             });
           });
         });
+
+        describe('when the filters are updated', () => {
+          let expectedFilters;
+
+          beforeEach(() => {
+            $scope.params.filters = {
+              case_type_id: _.uniqueId()
+            };
+            expectedFilters = angular.extend({}, $scope.filters, $scope.params.filters);
+            $scope.$digest();
+          });
+
+          it('update the existing filters', () => {
+            expect($scope.filters).toEqual(expectedFilters);
+          });
+
+          it('updates the activity feed', () => {
+            expect(crmApi).toHaveBeenCalledWith({
+              acts: ['Activity', 'get', jasmine.any(Object)],
+              all: ['Activity', 'getcount', jasmine.any(Object)]
+            });
+          });
+        });
       });
 
       describe('checkIfRecordsAvailableOnDirection()', function () {
