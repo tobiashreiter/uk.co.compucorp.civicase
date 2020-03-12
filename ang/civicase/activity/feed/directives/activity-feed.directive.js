@@ -92,10 +92,7 @@
     $scope.showSpinner = { up: false, down: false };
 
     (function init () {
-      if ($scope.params && $scope.params.filters) {
-        angular.extend($scope.filters, $scope.params.filters);
-      }
-
+      applyFiltersFromBindings();
       bindRouteParamsToScope();
       initiateWatchersAndEvents();
     }());
@@ -198,6 +195,16 @@
         $scope.aid = act.id;
       }
     };
+
+    /**
+     * Accepts filters coming from the scope bindings and will add them
+     * to the local filters object.
+     */
+    function applyFiltersFromBindings () {
+      if ($scope.params && $scope.params.filters) {
+        angular.extend($scope.filters, $scope.params.filters);
+      }
+    }
 
     /**
      * Binds all route parameters to scope
@@ -484,10 +491,7 @@
         toggleMonthNavVisibility(true);
       });
       $scope.$watch('params.filters', function () {
-        if ($scope.params && $scope.params.filters) {
-          angular.extend($scope.filters, $scope.params.filters);
-        }
-
+        applyFiltersFromBindings();
         resetPages();
       }, true);
     }
