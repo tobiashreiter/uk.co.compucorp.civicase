@@ -1,16 +1,16 @@
 /* eslint-env jasmine */
 
-(function (_) {
-  describe('civicaseActivityFeed', function () {
-    describe('Activity Feed Controller', function () {
-      var $provide, $controller, $rootScope, $scope, $q, crmApi, CaseTypesMockData, activitiesMockData, ActivityType;
-      var activitiesInCurrentPage, totalNumberOfActivities;
+((_) => {
+  describe('civicaseActivityFeed', () => {
+    describe('Activity Feed Controller', () => {
+      let $provide, $controller, $rootScope, $scope, $q, crmApi, CaseTypesMockData, activitiesMockData, ActivityType;
+      let activitiesInCurrentPage, totalNumberOfActivities;
 
-      beforeEach(module('civicase', 'civicase.data', function (_$provide_) {
+      beforeEach(module('civicase', 'civicase.data', (_$provide_) => {
         $provide = _$provide_;
       }));
 
-      beforeEach(inject(function (_$controller_, _$rootScope_, _$q_, _CaseTypesMockData_, _crmApi_, _activitiesMockData_, _ActivityType_) {
+      beforeEach(inject((_$controller_, _$rootScope_, _$q_, _CaseTypesMockData_, _crmApi_, _activitiesMockData_, _ActivityType_) => {
         $controller = _$controller_;
         $rootScope = _$rootScope_;
         $q = _$q_;
@@ -23,8 +23,8 @@
         crmApi = _crmApi_;
       }));
 
-      describe('loadActivities', function () {
-        beforeEach(function () {
+      describe('loadActivities', () => {
+        beforeEach(() => {
           activitiesInCurrentPage = [];
           totalNumberOfActivities = 0;
 
@@ -35,43 +35,43 @@
           $scope.filters.activity_type_id = '5';
         });
 
-        describe('when filtered by activity set and activity id', function () {
-          var expectedActivityTypeIDs;
+        describe('when filtered by activity set and activity id', () => {
+          let expectedActivityTypeIDs;
 
-          beforeEach(function () {
+          beforeEach(() => {
             expectedActivityTypeIDs = [];
             $scope.$digest();
 
-            _.each(CaseTypesMockData.get()['1'].definition.activitySets[0].activityTypes, function (activityTypeFromSet) {
-              expectedActivityTypeIDs.push(_.findKey(ActivityType.getAll(true), function (activitySet) {
+            _.each(CaseTypesMockData.get()['1'].definition.activitySets[0].activityTypes, (activityTypeFromSet) => {
+              expectedActivityTypeIDs.push(_.findKey(ActivityType.getAll(true), (activitySet) => {
                 return activitySet.name === activityTypeFromSet.name;
               }));
             });
             expectedActivityTypeIDs.push($scope.filters.activity_type_id);
           });
 
-          it('requests the activities using the "get" api action', function () {
+          it('requests the activities using the "get" api action', () => {
             expect(crmApi).toHaveBeenCalledWith({
               acts: ['Activity', 'get', jasmine.any(Object)],
               all: ['Activity', 'getcount', jasmine.any(Object)]
             });
           });
 
-          it('filters by the activities of the selected activity set and the activity id', function () {
-            var args = crmApi.calls.mostRecent().args[0].acts[2].activity_type_id;
+          it('filters by the activities of the selected activity set and the activity id', () => {
+            const args = crmApi.calls.mostRecent().args[0].acts[2].activity_type_id;
 
             expect(args).toEqual({ IN: expectedActivityTypeIDs });
           });
         });
 
-        describe('when filtered by "My Activities"', function () {
-          beforeEach(function () {
+        describe('when filtered by "My Activities"', () => {
+          beforeEach(() => {
             $scope.filters['@involvingContact'] = 'myActivities';
 
             $scope.$digest();
           });
 
-          it('requests the activities using the "get contact activities" api action', function () {
+          it('requests the activities using the "get contact activities" api action', () => {
             expect(crmApi).toHaveBeenCalledWith({
               acts: ['Activity', 'getcontactactivities', jasmine.any(Object)],
               all: ['Activity', 'getcontactactivitiescount', jasmine.any(Object)]
@@ -103,9 +103,9 @@
         });
       });
 
-      describe('checkIfRecordsAvailableOnDirection()', function () {
-        describe('when total count of activities is 0', function () {
-          beforeEach(function () {
+      describe('checkIfRecordsAvailableOnDirection()', () => {
+        describe('when total count of activities is 0', () => {
+          beforeEach(() => {
             activitiesInCurrentPage = [];
             totalNumberOfActivities = 0;
 
@@ -114,15 +114,15 @@
             $scope.$digest();
           });
 
-          it('does not show load more button', function () {
+          it('does not show load more button', () => {
             expect($scope.checkIfRecordsAvailableOnDirection('down')).toBe(false);
           });
         });
 
-        describe('when total count of activities is more than 0', function () {
-          describe('starting offset is 0', function () {
-            describe('and less than 25', function () {
-              beforeEach(function () {
+        describe('when total count of activities is more than 0', () => {
+          describe('starting offset is 0', () => {
+            describe('and less than 25', () => {
+              beforeEach(() => {
                 activitiesInCurrentPage = activitiesMockData.getSentNoOfActivities(20);
                 totalNumberOfActivities = 20;
 
@@ -136,17 +136,17 @@
                 $scope.$digest();
               });
 
-              it('does not show load more button on down direction', function () {
+              it('does not show load more button on down direction', () => {
                 expect($scope.checkIfRecordsAvailableOnDirection('down')).toBe(false);
               });
 
-              it('does not show load more button on top direction', function () {
+              it('does not show load more button on top direction', () => {
                 expect($scope.checkIfRecordsAvailableOnDirection('up')).toBe(false);
               });
             });
 
-            describe('and total count is 26', function () {
-              beforeEach(function () {
+            describe('and total count is 26', () => {
+              beforeEach(() => {
                 activitiesInCurrentPage = activitiesMockData.getSentNoOfActivities(26);
                 totalNumberOfActivities = 26;
 
@@ -160,17 +160,17 @@
                 $scope.$digest();
               });
 
-              it('shows load more button on down direction', function () {
+              it('shows load more button on down direction', () => {
                 expect($scope.checkIfRecordsAvailableOnDirection('down')).toBe(true);
               });
 
-              it('does not show load more button on top direction', function () {
+              it('does not show load more button on top direction', () => {
                 expect($scope.checkIfRecordsAvailableOnDirection('up')).toBe(false);
               });
             });
 
-            describe('and more than 25', function () {
-              beforeEach(function () {
+            describe('and more than 25', () => {
+              beforeEach(() => {
                 activitiesInCurrentPage = activitiesMockData.getSentNoOfActivities(30);
                 totalNumberOfActivities = 30;
 
@@ -184,18 +184,18 @@
                 $scope.$digest();
               });
 
-              it('shows load more button on down direction', function () {
+              it('shows load more button on down direction', () => {
                 expect($scope.checkIfRecordsAvailableOnDirection('down')).toBe(true);
               });
 
-              it('does not show load more button on top direction', function () {
+              it('does not show load more button on top direction', () => {
                 expect($scope.checkIfRecordsAvailableOnDirection('up')).toBe(false);
               });
             });
           });
 
-          describe('starting offset is between 0 and total number of records', function () {
-            beforeEach(function () {
+          describe('starting offset is between 0 and total number of records', () => {
+            beforeEach(() => {
               activitiesInCurrentPage = activitiesMockData.getSentNoOfActivities(60);
               totalNumberOfActivities = 60;
 
@@ -209,19 +209,19 @@
               $scope.$digest();
             });
 
-            it('shows load more button on down direction', function () {
+            it('shows load more button on down direction', () => {
               expect($scope.checkIfRecordsAvailableOnDirection('down')).toBe(true);
             });
 
-            it('shows load more button on top direction', function () {
+            it('shows load more button on top direction', () => {
               expect($scope.checkIfRecordsAvailableOnDirection('up')).toBe(true);
             });
           });
         });
       });
 
-      describe('when clicking load more button', function () {
-        beforeEach(function () {
+      describe('when clicking load more button', () => {
+        beforeEach(() => {
           activitiesInCurrentPage = activitiesMockData.getSentNoOfActivities(25);
           totalNumberOfActivities = 26;
 
@@ -233,32 +233,32 @@
           activitiesInCurrentPage[0].subject = 'custom text';
         });
 
-        describe('nextPage()', function () {
-          beforeEach(function () {
+        describe('nextPage()', () => {
+          beforeEach(() => {
             $scope.nextPage();
             $scope.$digest();
           });
 
-          it('appends new activties to the end of previous activities', function () {
+          it('appends new activties to the end of previous activities', () => {
             expect($scope.activities[25].subject).toBe('custom text');
           });
         });
 
-        describe('previousPage()', function () {
-          beforeEach(function () {
+        describe('previousPage()', () => {
+          beforeEach(() => {
             $scope.previousPage();
             $scope.$digest();
           });
 
-          it('appends new activties to the beginning of previous activities', function () {
+          it('appends new activties to the beginning of previous activities', () => {
             expect($scope.activities[0].subject).toBe('custom text');
           });
         });
       });
 
       describe('when clicked on a month nav and data for that month' +
-       'is not rendered on the screen', function () {
-        beforeEach(function () {
+       'is not rendered on the screen', () => {
+        beforeEach(() => {
           activitiesInCurrentPage = activitiesMockData.getSentNoOfActivities(60);
           totalNumberOfActivities = 60;
 
@@ -273,7 +273,7 @@
           $scope.$digest();
         });
 
-        it('shows records starting from the clicked month', function () {
+        it('shows records starting from the clicked month', () => {
           expect(crmApi).toHaveBeenCalledWith(jasmine.objectContaining({
             acts: ['Activity', 'get', jasmine.objectContaining({
               options: jasmine.objectContaining({
@@ -284,8 +284,8 @@
         });
       });
 
-      describe('when activity panel show/hide', function () {
-        beforeEach(function () {
+      describe('when activity panel show/hide', () => {
+        beforeEach(() => {
           activitiesInCurrentPage = activitiesMockData.getSentNoOfActivities(25);
           totalNumberOfActivities = 25;
           mockActivitiesAPICall();
@@ -294,51 +294,51 @@
           $scope.$digest();
         });
 
-        describe('when activity panel is shown', function () {
-          describe('and hide-quick-nav-when-details-is-visible property is true', function () {
-            beforeEach(function () {
+        describe('when activity panel is shown', () => {
+          describe('and hide-quick-nav-when-details-is-visible property is true', () => {
+            beforeEach(() => {
               $scope.hideQuickNavWhenDetailsIsVisible = true;
               $rootScope.$broadcast('civicase::activity-feed::show-activity-panel');
             });
 
-            it('hides the activity nav', function () {
+            it('hides the activity nav', () => {
               expect($scope.isMonthNavVisible).toBe(false);
             });
           });
 
-          describe('and hide-quick-nav-when-details-is-visible property is false', function () {
-            beforeEach(function () {
+          describe('and hide-quick-nav-when-details-is-visible property is false', () => {
+            beforeEach(() => {
               $scope.hideQuickNavWhenDetailsIsVisible = false;
               $rootScope.$broadcast('civicase::activity-feed::show-activity-panel');
             });
 
-            it('does not hide the activity nav', function () {
+            it('does not hide the activity nav', () => {
               expect($scope.isMonthNavVisible).toBe(true);
             });
           });
         });
 
-        describe('when activity panel is hidden', function () {
-          describe('and hide-quick-nav-when-details-is-visible property is true', function () {
-            beforeEach(function () {
+        describe('when activity panel is hidden', () => {
+          describe('and hide-quick-nav-when-details-is-visible property is true', () => {
+            beforeEach(() => {
               $scope.isMonthNavVisible = false;
               $scope.hideQuickNavWhenDetailsIsVisible = true;
               $rootScope.$broadcast('civicase::activity-feed::hide-activity-panel');
             });
 
-            it('shows the activity nav', function () {
+            it('shows the activity nav', () => {
               expect($scope.isMonthNavVisible).toBe(true);
             });
           });
 
-          describe('and hide-quick-nav-when-details-is-visible property is false', function () {
-            beforeEach(function () {
+          describe('and hide-quick-nav-when-details-is-visible property is false', () => {
+            beforeEach(() => {
               $scope.isMonthNavVisible = false;
               $scope.hideQuickNavWhenDetailsIsVisible = false;
               $rootScope.$broadcast('civicase::activity-feed::hide-activity-panel');
             });
 
-            it('does not show the activity nav', function () {
+            it('does not show the activity nav', () => {
               expect($scope.isMonthNavVisible).toBe(false);
             });
           });
@@ -354,10 +354,10 @@
           all: totalNumberOfActivities
         }));
 
-        $provide.factory('crmThrottle', function () {
-          var crmThrottle = jasmine.createSpy('crmThrottle');
+        $provide.factory('crmThrottle', () => {
+          const crmThrottle = jasmine.createSpy('crmThrottle');
 
-          crmThrottle.and.callFake(function (callable) {
+          crmThrottle.and.callFake((callable) => {
             callable();
 
             return $q.resolve([{
