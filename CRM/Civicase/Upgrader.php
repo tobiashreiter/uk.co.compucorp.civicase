@@ -7,8 +7,8 @@ use CRM_Civicase_Setup_MoveCaseTypesToCasesCategory as MoveCaseTypesToCasesCateg
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 use CRM_Civicase_Setup_CreateSafeFileExtensionOptionValue as CreateSafeFileExtensionOptionValue;
 use CRM_Civicase_Setup_UpdateMenuLinks as MenuLinksSetup;
-use CRM_Civicase_Uninstall_DeleteCaseCgExtendsOption as DeleteCaseCgExtendsOption;
-use CRM_Civicase_Setup_AddCaseCategoryCgExtendsValue as AddCaseCategoryCgExtendsValue;
+use CRM_Civicase_Uninstall_RemoveCustomGroupSupportForCaseCategory as RemoveCustomGroupSupportForCaseCategory;
+use CRM_Civicase_Setup_ProcessCaseCategoryForCustomGroupSupport as ProcessCaseCategoryForCustomGroupSupport;
 
 /**
  * Collection of upgrade steps.
@@ -73,7 +73,7 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
       new CreateCasesOptionValue(),
       new MoveCaseTypesToCasesCategory(),
       new CreateSafeFileExtensionOptionValue(),
-      new AddCaseCategoryCgExtendsValue(),
+      new ProcessCaseCategoryForCustomGroupSupport(),
     ];
     foreach ($steps as $step) {
       $step->apply();
@@ -229,7 +229,7 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
     $this->restoreCaseCustomGroupExtendClassToDefault();
 
     $steps = [
-      new DeleteCaseCgExtendsOption(),
+      new RemoveCustomGroupSupportForCaseCategory(),
     ];
     foreach ($steps as $step) {
       $step->apply();
