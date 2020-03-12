@@ -1,6 +1,6 @@
 <?php
 
-use CRM_Civicase_Setup_AddCaseCategoryCgExtendsValue as AddCaseCategoryCgExtendsValue;
+use CRM_Civicase_Setup_ProcessCaseCategoryForCustomGroupSupport as ProcessCaseCategoryForCustomGroupSupport;
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 
 /**
@@ -13,16 +13,16 @@ class CRM_Civicase_Upgrader_Steps_Step0010 {
    */
   public function apply() {
     $this->removeRestrictionToCaseTypesForDefaultCaseEntity();
-    $this->addCaseCategoryCgExtendsValue();
+    $this->ProcessCaseCategoryForCustomGroupSupport();
 
     return TRUE;
   }
 
   /**
-   * Add Cases as a valid Entity that a custom group can extend.
+   * Process Case Category Custom Group Support.
    */
-  private function addCaseCategoryCgExtendsValue() {
-    $step = new AddCaseCategoryCgExtendsValue();
+  private function processCaseCategoryForCustomGroupSupport() {
+    $step = new ProcessCaseCategoryForCustomGroupSupport();
     $step->apply();
   }
 
