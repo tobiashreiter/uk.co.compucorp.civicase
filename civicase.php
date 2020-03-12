@@ -183,6 +183,7 @@ function civicase_civicrm_buildForm($formName, &$form) {
     new CRM_Civicase_Hook_BuildForm_CaseCategoryFormLabelTranslationForNewCase(),
     new CRM_Civicase_Hook_BuildForm_CaseCategoryFormLabelTranslationForChangeCase(),
     new CRM_Civicase_Hook_BuildForm_EnableCaseCategoryIconField(),
+    new CRM_Civicase_Hook_BuildForm_CaseCategoryCustomGroupDisplay(),
   ];
 
   foreach ($hooks as $hook) {
@@ -421,6 +422,8 @@ function civicase_civicrm_validateForm($formName, &$fields, &$files, &$form, &$e
 function civicase_civicrm_post($op, $objectName, $objectId, &$objectRef) {
   $hooks = [
     new CRM_Civicase_Hook_Post_PopulateCaseCategoryForCaseType(),
+    new CRM_Civicase_Hook_Post_CaseCategoryCustomGroupSaver(),
+    new CRM_Civicase_Hook_Post_UpdateCaseTypeListForCaseCategoryCustomGroup(),
   ];
 
   foreach ($hooks as $hook) {
@@ -434,7 +437,7 @@ function civicase_civicrm_post($op, $objectName, $objectId, &$objectRef) {
 function civicase_civicrm_postProcess($formName, &$form) {
   $hooks = [
     new CRM_Civicase_Hook_PostProcess_SetUserContextForSaveAndNewCase(),
-    new CRM_Civicase_Hook_PostProcess_CaseCategoryMenuLinksProcessor(),
+    new CRM_Civicase_Hook_PostProcess_CaseCategoryPostProcessor(),
   ];
 
   foreach ($hooks as $hook) {
@@ -496,6 +499,7 @@ function civicase_civicrm_pageRun(&$page) {
     new CRM_Civicase_Hook_PageRun_ViewCasePageRedirect(),
     new CRM_Civicase_Hook_PageRun_AddCaseAngularPageResources(),
     new CRM_Civicase_Hook_PageRun_AddContactPageSummaryResources(),
+    new CRM_Civicase_Hook_PageRun_CaseCategoryCustomGroupListing(),
   ];
 
   foreach ($hooks as $hook) {
