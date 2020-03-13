@@ -60,17 +60,26 @@ class CRM_Civicase_Hook_Post_UpdateCaseTypeListForCaseCategoryCustomGroup {
    *   Case type Id.
    */
   private function addCaseTypeToCaseCategoryCustomGroupList($caseCategoryId, $caseTypeId) {
-    $result = civicrm_api3('CustomGroup', 'get', [
+    $customGroupsWithoutCurrentCaseType = civicrm_api3('CustomGroup', 'get', [
       'extends' => 'Case',
       'extends_entity_column_id' => $caseCategoryId,
       'extends_entity_column_value' => ['NOT LIKE' => '%' . CRM_Core_DAO::VALUE_SEPARATOR . $caseTypeId . CRM_Core_DAO::VALUE_SEPARATOR . '%'],
     ]);
 
-    if ($result['count'] == 0) {
+    // API above will not fetch results for when
+    // extends_entity_column_value is NULL.
+    $customGroupsWithNullCaseType = civicrm_api3('CustomGroup', 'get', [
+      'extends' => 'Case',
+      'extends_entity_column_id' => $caseCategoryId,
+      'extends_entity_column_value' => ['IS NULL' => 1],
+    ]);
+
+    $affectedCustomGroups = array_merge($customGroupsWithoutCurrentCaseType['values'], $customGroupsWithNullCaseType['values']);
+    if (count($affectedCustomGroups) == 0) {
       return;
     }
 
-    foreach ($result['values'] as $cusGroup) {
+    foreach ($affectedCustomGroups as $cusGroup) {
       $extendColValue = !empty($cusGroup['extends_entity_column_value']) ? $cusGroup['extends_entity_column_value'] : [];
       $entityColumnValues = array_merge($extendColValue, [$caseTypeId]);
       $this->updateCustomGroup($cusGroup['id'], $entityColumnValues);
@@ -98,6 +107,7 @@ class CRM_Civicase_Hook_Post_UpdateCaseTypeListForCaseCategoryCustomGroup {
 
     foreach ($result['values'] as $cusGroup) {
       $entityColumnValues = array_diff($cusGroup['extends_entity_column_value'], [$caseTypeId]);
+      $entityColumnValues = $entityColumnValues ? $entityColumnValues : NULL;
       $this->updateCustomGroup($cusGroup['id'], $entityColumnValues);
     }
   }
@@ -112,13 +122,14 @@ class CRM_Civicase_Hook_Post_UpdateCaseTypeListForCaseCategoryCustomGroup {
    *
    * @param int $id
    *   Custom group Id.
-   * @param array $entityColumnValues
+   * @param array|null $entityColumnValues
    *   Entity custom values for custom group.
    */
-  private function updateCustomGroup($id, array $entityColumnValues) {
+  private function updateCustomGroup($id, $entityColumnValues) {
     $cusGroup = new CRM_Core_BAO_CustomGroup();
     $cusGroup->id = $id;
-    $cusGroup->extends_entity_column_value = CRM_Core_DAO::VALUE_SEPARATOR . implode(CRM_Core_DAO::VALUE_SEPARATOR, $entityColumnValues) . CRM_Core_DAO::VALUE_SEPARATOR;
+    $entityColValue = is_null($entityColumnValues) ? 'null' : CRM_Core_DAO::VALUE_SEPARATOR . implode(CRM_Core_DAO::VALUE_SEPARATOR, $entityColumnValues) . CRM_Core_DAO::VALUE_SEPARATOR;
+    $cusGroup->extends_entity_column_value = $entityColValue;
     $cusGroup->save();
   }
 
