@@ -71,7 +71,8 @@ class CRM_Civicase_Hook_Post_UpdateCaseTypeListForCaseCategoryCustomGroup {
     }
 
     foreach ($result['values'] as $cusGroup) {
-      $entityColumnValues = array_merge($cusGroup['extends_entity_column_value'], [$caseTypeId]);
+      $extendColValue = !empty($cusGroup['extends_entity_column_value']) ? $cusGroup['extends_entity_column_value'] : [];
+      $entityColumnValues = array_merge($extendColValue, [$caseTypeId]);
       $this->updateCustomGroup($cusGroup['id'], $entityColumnValues);
     }
   }
