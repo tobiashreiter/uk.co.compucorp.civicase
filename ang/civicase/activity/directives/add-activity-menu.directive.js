@@ -95,7 +95,7 @@
 
       $scope.$watch('case.allActivities', function () {
         $scope.availableActivityTypes = getAvailableActivityTypes(
-          $scope.case.activity_count, $scope.case.definition);
+          $scope.case.activity_count, definition);
       });
     }
 
