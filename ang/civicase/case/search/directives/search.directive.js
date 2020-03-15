@@ -19,7 +19,10 @@
    * Controller Function for civicase-search directive
    */
   module.controller('civicaseSearchController', function ($scope, $rootScope, $timeout,
-    crmApi, getSelect2Value, ts, CaseStatus, CaseTypeCategory, CaseType, CustomSearchField) {
+    crmApi, getSelect2Value, ts, CaseStatus, CaseTypeCategory, CaseType, currentCaseCategory, CustomSearchField) {
+    var DEFAULT_CASE_FILTERS = {
+      case_type_category: currentCaseCategory
+    };
     $scope.ts = ts;
     var caseTypes = CaseType.getAll();
     var caseStatuses = CaseStatus.getAll();
@@ -146,7 +149,7 @@
      */
     function bindRouteParamsToScope () {
       $scope.$bindToRoute({ expr: 'expanded', param: 'sx', format: 'bool', default: false });
-      $scope.$bindToRoute({ expr: 'filters', param: 'cf', default: {} });
+      $scope.$bindToRoute({ expr: 'filters', param: 'cf', default: DEFAULT_CASE_FILTERS });
       $scope.$bindToRoute({ expr: 'contactRoleFilter', param: 'crf', default: $scope.contactRoleFilter });
     }
 
