@@ -76,14 +76,29 @@
       });
     });
 
-    describe('when no case filters are passed through the URL', () => {
-      it('sets the case type category filter equal to the current case type category', () => {
-        expect($scope.$bindToRoute).toHaveBeenCalledWith({
-          expr: 'filters',
-          param: 'cf',
-          default: jasmine.objectContaining({
+    describe('default case filters', () => {
+      describe('when no case filters are passed through the URL', () => {
+        it('sets the case type category category equal to the current case type category', () => {
+          expect($scope.filters).toEqual({
             case_type_category: currentCaseCategory
-          })
+          });
+        });
+      });
+
+      describe('when a case filter is passed through the URL', () => {
+        beforeEach(() => {
+          $scope.$bindToRoute.and.callFake((options) => {
+            if (options.param === 'cf') {
+              $scope.filters.case_type_category = 'custom-category';
+              $scope.$digest();
+            }
+          });
+
+          initController();
+        });
+
+        it('uses the case type category passed from the URL', () => {
+          expect($scope.filters.case_type_category).toEqual('custom-category');
         });
       });
     });

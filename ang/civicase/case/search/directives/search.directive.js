@@ -48,7 +48,7 @@
     $scope.caseRelationshipOptions = caseRelationshipConfig;
     $scope.checkPerm = CRM.checkPerm;
     $scope.filterDescription = buildDescription();
-    $scope.filters = angular.extend({}, $scope.defaults);
+    $scope.filters = {};
     $scope.contactRoles = [
       { id: 'all-case-roles', text: ts('All Case Roles') },
       { id: 'client', text: ts('Client') }
@@ -60,6 +60,7 @@
 
     (function init () {
       bindRouteParamsToScope();
+      applyDefaultFilters();
       setCaseTypesBasedOnCategory();
       initiateWatchers();
       initSubscribers();
@@ -145,11 +146,29 @@
     }
 
     /**
+     * Sets default case filters based on this priority:
+     *
+     * 1 - the filters coming from the URL through the `cf` parameter.
+     * 2 - the default filters coming the `filters` directive's attribute.
+     * 3 - default filter values defined in this directive.
+     */
+    function applyDefaultFilters () {
+      var filtersComingFromUrl = $scope.filters;
+
+      $scope.filters = _.defaults(
+        {},
+        filtersComingFromUrl,
+        $scope.defaults,
+        DEFAULT_CASE_FILTERS
+      );
+    }
+
+    /**
      * Binds all route parameters to scope
      */
     function bindRouteParamsToScope () {
       $scope.$bindToRoute({ expr: 'expanded', param: 'sx', format: 'bool', default: false });
-      $scope.$bindToRoute({ expr: 'filters', param: 'cf', default: DEFAULT_CASE_FILTERS });
+      $scope.$bindToRoute({ expr: 'filters', param: 'cf', default: {} });
       $scope.$bindToRoute({ expr: 'contactRoleFilter', param: 'crf', default: $scope.contactRoleFilter });
     }
 
