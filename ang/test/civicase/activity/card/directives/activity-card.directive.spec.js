@@ -1,15 +1,15 @@
 /* eslint-env jasmine */
 
-(function ($, _) {
-  describe('ActivityCard', function () {
-    var $compile, $filter, $rootScope, $scope, viewInPopup, activityCard,
+(($, _) => {
+  describe('ActivityCard', () => {
+    let $compile, $filter, $rootScope, $scope, viewInPopup, activityCard,
       activitiesMockData, CaseType, CaseTypeCategory,
       viewInPopupMockReturn, crmFormSuccessCallback;
 
-    beforeEach(module('civicase', 'civicase.templates', 'civicase.data', function ($provide) {
-      var viewInPopupMock = jasmine.createSpy('viewInPopupMock');
+    beforeEach(module('civicase', 'civicase.templates', 'civicase.data', ($provide) => {
+      const viewInPopupMock = jasmine.createSpy('viewInPopupMock');
       viewInPopupMockReturn = jasmine.createSpyObj('viewInPopupMockObj', ['on']);
-      viewInPopupMockReturn.on.and.callFake(function (event, fn) {
+      viewInPopupMockReturn.on.and.callFake((event, fn) => {
         crmFormSuccessCallback = fn;
       });
       viewInPopupMock.and.returnValue(viewInPopupMockReturn);
@@ -34,12 +34,12 @@
       initDirective();
     }));
 
-    afterEach(function () {
+    afterEach(() => {
       $('#bootstrap-theme').remove();
     });
 
-    describe('on init', function () {
-      it('stores a reference to the bootstrap theme element', function () {
+    describe('on init', () => {
+      it('stores a reference to the bootstrap theme element', () => {
         expect(activityCard.isolateScope().bootstrapThemeElement.is('#bootstrap-theme')).toBe(true);
       });
 
@@ -94,29 +94,29 @@
       });
     });
 
-    describe('when editing an activity in the popup', function () {
-      var activity;
+    describe('when editing an activity in the popup', () => {
+      let activity;
 
-      beforeEach(function () {
+      beforeEach(() => {
         activity = activitiesMockData.get()[0];
 
         activityCard.isolateScope().viewInPopup(null, activity);
       });
 
-      it('opens the modal to edit the activity', function () {
+      it('opens the modal to edit the activity', () => {
         expect(viewInPopup).toHaveBeenCalledWith(null, activity);
       });
 
-      it('listenes for the the form to be saved', function () {
+      it('listenes for the the form to be saved', () => {
         expect(viewInPopupMockReturn.on).toHaveBeenCalledWith('crmFormSuccess', jasmine.any(Function));
       });
 
-      describe('when activity is saved', function () {
-        beforeEach(function () {
+      describe('when activity is saved', () => {
+        beforeEach(() => {
           crmFormSuccessCallback();
         });
 
-        it('refreshes the data when activity is saved', function () {
+        it('refreshes the data when activity is saved', () => {
           expect(activityCard.isolateScope().refresh).toHaveBeenCalled();
         });
       });
