@@ -46,7 +46,7 @@ class CRM_Civicase_Hook_Post_CaseCategoryCustomGroupSaver {
     $caseTypeIds = $this->getCaseTypeIdsForCaseCategory($caseTypeCategories[$objectRef->extends]);
     $ids = CRM_Core_DAO::VALUE_SEPARATOR . implode(CRM_Core_DAO::VALUE_SEPARATOR, $caseTypeIds) . CRM_Core_DAO::VALUE_SEPARATOR;
     $objectRef->extends_entity_column_id = $caseTypeCategories[$objectRef->extends];
-    if (!empty($id)) {
+    if (!empty($ids)) {
       $objectRef->extends_entity_column_value = $ids;
     }
     $objectRef->extends = 'Case';
