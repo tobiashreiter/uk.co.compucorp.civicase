@@ -20,10 +20,6 @@
    */
   module.controller('civicaseSearchController', function ($scope, $rootScope, $timeout,
     crmApi, getSelect2Value, ts, CaseStatus, CaseTypeCategory, CaseType, currentCaseCategory, CustomSearchField) {
-    var DEFAULT_CASE_FILTERS = {
-      case_type_category: currentCaseCategory
-    };
-    $scope.ts = ts;
     var caseTypes = CaseType.getAll();
     var caseStatuses = CaseStatus.getAll();
     var caseTypeCategories = CaseTypeCategory.getAll();
@@ -41,22 +37,26 @@
       { text: ts('My cases'), id: 'is_case_manager' },
       { text: ts('Cases I am involved'), id: 'is_involved' }
     ];
+    var DEFAULT_CASE_FILTERS = {
+      case_type_category: currentCaseCategory
+    };
 
-    $scope.pageTitle = '';
-    $scope.caseStatusOptions = _.map(caseStatuses, mapSelectOptions);
-    $scope.customGroups = CustomSearchField.getAll();
     $scope.caseRelationshipOptions = caseRelationshipConfig;
+    $scope.caseStatusOptions = _.map(caseStatuses, mapSelectOptions);
     $scope.checkPerm = CRM.checkPerm;
+    $scope.customGroups = CustomSearchField.getAll();
     $scope.filterDescription = buildDescription();
     $scope.filters = {};
-    $scope.contactRoles = [
-      { id: 'all-case-roles', text: ts('All Case Roles') },
-      { id: 'client', text: ts('Client') }
-    ];
+    $scope.pageTitle = '';
+    $scope.ts = ts;
     $scope.contactRoleFilter = {
       selectedContacts: null,
       selectedContactRoles: ['all-case-roles']
     };
+    $scope.contactRoles = [
+      { id: 'all-case-roles', text: ts('All Case Roles') },
+      { id: 'client', text: ts('Client') }
+    ];
 
     (function init () {
       bindRouteParamsToScope();
