@@ -8,7 +8,8 @@
       templateUrl: '~/civicase/case/directives/case-overview.directive.html',
       controller: civicaseCaseOverviewController,
       scope: {
-        caseFilter: '<'
+        caseFilter: '<',
+        linkToManageCase: '='
       },
       link: civicaseCaseOverviewLink
     };
@@ -75,31 +76,6 @@
       return _.filter($scope.caseStatuses, function (status) {
         return !status.isHidden;
       }).length === 0;
-    };
-
-    /**
-     * Creates link to the filtered cases list
-     *
-     * @param {string} type the case type
-     * @param {string} status the case's status.
-     * @returns {string} link to the filtered list of cases
-     */
-    $scope.caseListLink = function (type, status) {
-      var cf = {};
-
-      if (type) {
-        cf.case_type_id = [type];
-      }
-
-      if (status) {
-        cf.status_id = [status];
-      }
-
-      if ($scope.myCasesOnly) {
-        cf.case_manager = [CRM.config.user_contact_id];
-      }
-
-      return '#/case/list?' + $.param({ cf: JSON.stringify(cf) });
     };
 
     /**

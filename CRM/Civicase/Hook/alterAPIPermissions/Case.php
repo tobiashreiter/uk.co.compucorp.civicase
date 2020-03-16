@@ -67,6 +67,7 @@ class CRM_Civicase_Hook_alterAPIPermissions_Case {
     ];
 
     $permissions['case']['get'] = $permissions['custom_value']['gettreevalues'] = [$basicCasePermissions];
+    $permissions['case']['update'] = [$basicCasePermissions];
     $locationTypePermissions = array_merge($permissions['default']['default'], ['access CiviCRM']);
     $permissions['location_type']['get'] = [$locationTypePermissions];
     $permissions['relationship_type']['getcaseroles'] = $permissions['relationship_type']['get'];

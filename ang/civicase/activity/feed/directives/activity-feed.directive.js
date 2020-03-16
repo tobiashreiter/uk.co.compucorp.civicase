@@ -92,10 +92,7 @@
     $scope.showSpinner = { up: false, down: false };
 
     (function init () {
-      if ($scope.params && $scope.params.filters) {
-        angular.extend($scope.filters, $scope.params.filters);
-      }
-
+      applyFiltersFromBindings();
       bindRouteParamsToScope();
       initiateWatchersAndEvents();
     }());
@@ -198,6 +195,16 @@
         $scope.aid = act.id;
       }
     };
+
+    /**
+     * Accepts filters coming from the scope bindings and will add them
+     * to the local filters object.
+     */
+    function applyFiltersFromBindings () {
+      if ($scope.params && $scope.params.filters) {
+        angular.extend($scope.filters, $scope.params.filters);
+      }
+    }
 
     /**
      * Binds all route parameters to scope
@@ -470,7 +477,6 @@
     function initiateWatchersAndEvents () {
       $scope.$watchCollection('filters', resetPages);
       $scope.$watchCollection('displayOptions', resetPages);
-      $scope.$watch('params.filters', resetPages, true);
       $scope.$on('updateCaseData', resetPages);
       $scope.$on('civicase::activity::updated', refreshAll);
       $scope.$on('civicase::month-nav::set-starting-offset', monthNavSetStartingOffsetListener);
@@ -484,6 +490,10 @@
       $scope.$on('civicase::activity-feed::hide-activity-panel', function () {
         toggleMonthNavVisibility(true);
       });
+      $scope.$watch('params.filters', function () {
+        applyFiltersFromBindings();
+        resetPages();
+      }, true);
     }
 
     /**
