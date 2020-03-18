@@ -1,161 +1,160 @@
 /* eslint-env jasmine */
 
-(function ($) {
-  describe('Dropdown', function () {
+(($) => {
+  describe('Dropdown', () => {
     var $compile, $rootScope, dropdowns, dropdownContainer, scope;
 
     beforeEach(module('civicase'));
 
-    beforeEach(inject(function (_$compile_, _$rootScope_) {
+    beforeEach(inject((_$compile_, _$rootScope_) => {
       $compile = _$compile_;
       $rootScope = _$rootScope_;
     }));
 
-    afterEach(function () {
+    afterEach(() => {
       dropdownContainer.remove();
     });
 
-    describe('opening the dropdown', function () {
-      beforeEach(function () {
+    describe('opening the dropdown', () => {
+      beforeEach(() => {
         initDirective();
       });
 
-      describe('when clicking on the toggle element', function () {
-        beforeEach(function () {
+      describe('when clicking on the toggle element', () => {
+        beforeEach(() => {
           dropdowns.parent.find('[civicase-dropdown-toggle]:first').click();
         });
 
-        it('displays the dropdown menu', function () {
+        it('displays the dropdown menu', () => {
           expect(dropdowns.parent.find('.dropdown-menu:first').is(':visible')).toBe(true);
         });
       });
 
-      describe('when opening the parent menu and then clicking the child toggle element', function () {
-        beforeEach(function () {
+      describe('when opening the parent menu and then clicking the child toggle element', () => {
+        beforeEach(() => {
           dropdowns.parent.find('[civicase-dropdown-toggle]:first').click();
           dropdowns.child.find('[civicase-dropdown-toggle]:first').click();
         });
 
-        it('displays the child dropdown menu', function () {
+        it('displays the child dropdown menu', () => {
           expect(dropdowns.child.find('.dropdown-menu:first').is(':visible')).toBe(true);
         });
       });
     });
 
-    describe('closing the dropdown', function () {
-      beforeEach(function () {
+    describe('closing the dropdown', () => {
+      beforeEach(() => {
         initDirective();
       });
 
-      beforeEach(function () {
+      beforeEach(() => {
         dropdowns.parent.find('[civicase-dropdown-toggle]:first').click();
       });
 
-      describe('when the dropdown is open and the toggle element is clicked again', function () {
-        beforeEach(function () {
+      describe('when the dropdown is open and the toggle element is clicked again', () => {
+        beforeEach(() => {
           dropdowns.parent.find('[civicase-dropdown-toggle]:first').click();
         });
 
-        it('hides the dropdown menu', function () {
+        it('hides the dropdown menu', () => {
           expect(dropdowns.parent.find('.dropdown-menu:first').is(':visible')).toBe(false);
         });
       });
 
-      describe('when the dropdown is open and an element outside of the dropdown is clicked', function () {
-        beforeEach(function () {
+      describe('when the dropdown is open and an element outside of the dropdown is clicked', () => {
+        beforeEach(() => {
           $('body').click();
         });
 
-        it('hides the dropdown menu', function () {
+        it('hides the dropdown menu', () => {
           expect(dropdowns.parent.find('.dropdown-menu:first').is(':visible')).toBe(false);
         });
       });
 
-      describe('when pressing the Escape key', function () {
-        beforeEach(function () {
-          var escapeKeydownEven = new window.KeyboardEvent('keydown', {'key': 'Escape'});
+      describe('when pressing the Escape key', () => {
+        beforeEach(() => {
+          var escapeKeydownEven = new window.KeyboardEvent('keydown', { key: 'Escape' });
 
           $('body')[0].dispatchEvent(escapeKeydownEven);
         });
 
-        it('hides the child dropdown menu', function () {
+        it('hides the child dropdown menu', () => {
           expect(dropdowns.parent.find('.dropdown-menu:first').is(':visible')).toBe(false);
         });
       });
 
-      describe('closing the child dropdown', function () {
-        beforeEach(function () {
+      describe('closing the child dropdown', () => {
+        beforeEach(() => {
           dropdowns.child.find('[civicase-dropdown-toggle]:first').click();
         });
 
-        describe('when the child toggle element is clicked', function () {
-          beforeEach(function () {
+        describe('when the child toggle element is clicked', () => {
+          beforeEach(() => {
             dropdowns.child.find('[civicase-dropdown-toggle]:first').click();
           });
 
-          it('hides the child dropdown menu', function () {
+          it('hides the child dropdown menu', () => {
             expect(dropdowns.child.find('.dropdown-menu:first').is(':visible')).toBe(false);
           });
 
-          it('keeps the parent dropdown menu visible', function () {
+          it('keeps the parent dropdown menu visible', () => {
             expect(dropdowns.parent.find('.dropdown-menu:first').is(':visible')).toBe(true);
           });
         });
 
-        describe('when pressing the Escape key', function () {
-          beforeEach(function () {
-            var escapeKeydownEven = new window.KeyboardEvent('keydown', {'key': 'Escape'});
+        describe('when pressing the Escape key', () => {
+          beforeEach(() => {
+            var escapeKeydownEven = new window.KeyboardEvent('keydown', { key: 'Escape' });
 
             $('body')[0].dispatchEvent(escapeKeydownEven);
           });
 
-          it('hides the child dropdown menu', function () {
+          it('hides the child dropdown menu', () => {
             expect(dropdowns.child.find('.dropdown-menu:first').is(':visible')).toBe(false);
           });
 
-          it('keeps the parent dropdown menu visible', function () {
+          it('keeps the parent dropdown menu visible', () => {
             expect(dropdowns.parent.find('.dropdown-menu:first').is(':visible')).toBe(true);
           });
         });
       });
     });
 
-    describe('when the dropdown menu is triggered by mouse events', function () {
-      beforeEach(function () {
+    describe('when the dropdown menu is triggered by mouse events', () => {
+      beforeEach(() => {
         initDirective({ trigger: 'hover' });
       });
 
-      describe('when the mouse passes over the dropdown element', function () {
-        beforeEach(function () {
-          dispatchMouseEvent('mouseover');
+      describe('when the mouse passes over the dropdown element', () => {
+        beforeEach(() => {
+          dispatchMouseEvent('mouseenter');
         });
 
-        it('displays the dropdown menu', function () {
+        it('displays the dropdown menu', () => {
           expect(dropdowns.parent.find('.dropdown-menu:first').is(':visible')).toBe(true);
         });
       });
 
-      describe('when the mouse passes over and then leaves the dropdown element', function () {
-        beforeEach(function () {
-          dispatchMouseEvent('mouseover');
-          dispatchMouseEvent('mouseout');
+      describe('when the mouse passes over and then leaves the dropdown element', () => {
+        beforeEach(() => {
+          dispatchMouseEvent('mouseenter');
+          dispatchMouseEvent('mouseleave');
         });
 
-        it('hides the dropdown menu', function () {
+        it('hides the dropdown menu', () => {
           expect(dropdowns.parent.find('.dropdown-menu:first').is(':visible')).toBe(false);
         });
       });
 
       /**
-       * Dispatches a mouse event to the dropdown toggle element.
+       * Dispatches the given event type to the dropdown toggle element.
        *
-       * @param {String} eventType the mouse event type that is going to be dispatched to the element.
+       * @param {string} eventType the mouse event type that is going to be dispatched to the element.
        */
       function dispatchMouseEvent (eventType) {
-        var event = document.createEvent('mouseevent');
+        var event = $.Event(eventType);
 
-        event.initEvent(eventType, true, false);
-        dropdowns.parent.find('[civicase-dropdown-toggle]:first')[0].dispatchEvent(event);
+        dropdowns.parent.find('[civicase-dropdown-toggle]:first').trigger(event);
       }
     });
 
@@ -163,7 +162,7 @@
      * Initializes the dropdown directive, stores a reference to the dropdown element
      * and scope.
      *
-     * @param {Object} options a list of configurations to pass to the dropdown directive.
+     * @param {object} options a list of configurations to pass to the dropdown directive.
      */
     function initDirective (options) {
       var defaultOptions = { trigger: 'click' };
