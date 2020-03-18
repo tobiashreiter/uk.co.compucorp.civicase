@@ -129,7 +129,7 @@
     <div class="civicase__activity-card--big--empty-description"> {{ ts('Click the button below to create a new case for this contact') }} </div>
     <a ng-if="checkPerm('add cases')"
       class="civicase__activity-card--big--empty-button btn"
-      ng-href="{{ 'civicrm/case/add' | civicaseCrmUrl:{reset: 1, action: 'add', context: 'standalone'} }}"
+      ng-href="{{ 'civicrm/case/add' | civicaseCrmUrl:{civicase_cid: contactId, reset: 1, action: 'add', context: 'standalone', case_type_category: caseTypeCategoryName } }}"
       crm-popup-form-success="refresh()">
       {{ ts('Add new case') }}
     </a>
