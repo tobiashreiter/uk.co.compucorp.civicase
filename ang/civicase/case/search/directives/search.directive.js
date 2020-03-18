@@ -19,8 +19,7 @@
    * Controller Function for civicase-search directive
    */
   module.controller('civicaseSearchController', function ($scope, $rootScope, $timeout,
-    crmApi, getSelect2Value, ts, CaseStatus, CaseTypeCategory, CaseType, CustomSearchField) {
-    $scope.ts = ts;
+    crmApi, getSelect2Value, ts, CaseStatus, CaseTypeCategory, CaseType, currentCaseCategory, CustomSearchField) {
     var caseTypes = CaseType.getAll();
     var caseStatuses = CaseStatus.getAll();
     var caseTypeCategories = CaseTypeCategory.getAll();
@@ -38,25 +37,30 @@
       { text: ts('My cases'), id: 'is_case_manager' },
       { text: ts('Cases I am involved'), id: 'is_involved' }
     ];
+    var DEFAULT_CASE_FILTERS = {
+      case_type_category: currentCaseCategory
+    };
 
-    $scope.pageTitle = '';
-    $scope.caseStatusOptions = _.map(caseStatuses, mapSelectOptions);
-    $scope.customGroups = CustomSearchField.getAll();
     $scope.caseRelationshipOptions = caseRelationshipConfig;
+    $scope.caseStatusOptions = _.map(caseStatuses, mapSelectOptions);
     $scope.checkPerm = CRM.checkPerm;
+    $scope.customGroups = CustomSearchField.getAll();
     $scope.filterDescription = buildDescription();
-    $scope.filters = angular.extend({}, $scope.defaults);
-    $scope.contactRoles = [
-      { id: 'all-case-roles', text: ts('All Case Roles') },
-      { id: 'client', text: ts('Client') }
-    ];
+    $scope.filters = {};
+    $scope.pageTitle = '';
+    $scope.ts = ts;
     $scope.contactRoleFilter = {
       selectedContacts: null,
       selectedContactRoles: ['all-case-roles']
     };
+    $scope.contactRoles = [
+      { id: 'all-case-roles', text: ts('All Case Roles') },
+      { id: 'client', text: ts('Client') }
+    ];
 
     (function init () {
       bindRouteParamsToScope();
+      applyDefaultFilters();
       setCaseTypesBasedOnCategory();
       initiateWatchers();
       initSubscribers();
@@ -139,6 +143,24 @@
           });
         })
         .value();
+    }
+
+    /**
+     * Sets default case filters based on this priority:
+     *
+     * 1 - the filters coming from the URL through the `cf` parameter.
+     * 2 - the default filters coming the `filters` directive's attribute.
+     * 3 - default filter values defined in this directive.
+     */
+    function applyDefaultFilters () {
+      var filtersComingFromUrl = $scope.filters;
+
+      $scope.filters = _.defaults(
+        {},
+        filtersComingFromUrl,
+        $scope.defaults,
+        DEFAULT_CASE_FILTERS
+      );
     }
 
     /**

@@ -42,8 +42,10 @@
   module.controller('caseActivityCardController', caseActivityCardController);
 
   /**
-   *
+   * @param {Function} $filter a reference to the $filter service
    * @param {object} $scope scope object of the controller
+   * @param {object} CaseType a reference to the Case Type service
+   * @param {object} CaseTypeCategory a reference to the Case Type Category service
    * @param {object} dialogService service to open the dialog box
    * @param {Function} crmApi service to interact with the civicrm api
    * @param {object} crmBlocker crm blocker service
@@ -52,10 +54,21 @@
    * @param {object} ts ts service
    * @param {Function} viewInPopup factory to view an activity in a popup
    */
-  function caseActivityCardController ($scope, dialogService, crmApi, crmBlocker,
-    crmStatus, DateHelper, ts, viewInPopup) {
+  function caseActivityCardController ($filter, $scope, CaseType, CaseTypeCategory, dialogService, crmApi,
+    crmBlocker, crmStatus, DateHelper, ts, viewInPopup) {
+    var caseTypes = CaseType.getAll();
+    var caseTypeCategories = CaseTypeCategory.getAll();
+
     $scope.ts = ts;
     $scope.formatDate = DateHelper.formatDate;
+
+    (function init () {
+      var hasCase = $scope.activity && !_.isEmpty($scope.activity.case);
+
+      if (hasCase) {
+        $scope.caseDetailUrl = getCaseDetailUrl();
+      }
+    })();
 
     /**
      * Mark an activity as complete
@@ -158,5 +171,22 @@
         }, promise));
       };
     };
+
+    /**
+     * @returns {string} The URL to the case details for the case related to
+     * this activity. The case type category name is appended in order to
+     * validate the right permissions.
+     */
+    function getCaseDetailUrl () {
+      var caseTypeId = $scope.activity.case.case_type_id;
+      var caseType = caseTypes[caseTypeId];
+      var caseTypeCategory = caseTypeCategories[caseType.case_type_category];
+      var caseDetailUrl = 'civicrm/case/a/?' +
+        $.param({ case_type_category: caseTypeCategory.name }) +
+        '#/case/list';
+      var angularParams = $.param({ caseId: $scope.activity.case_id });
+
+      return $filter('civicaseCrmUrl')(caseDetailUrl) + '?' + angularParams;
+    }
   }
 })(angular, CRM.$, CRM._);
