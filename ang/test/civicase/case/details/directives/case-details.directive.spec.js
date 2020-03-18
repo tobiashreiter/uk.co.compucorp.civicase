@@ -279,7 +279,7 @@
     });
 
     /**
-     * Compiles the directive.
+     * Compiles the civicase-case-details directive.
      */
     function compileDirective () {
       $scope.viewingCaseDetails = formatCase(CasesData.get().values[0]);
@@ -323,21 +323,23 @@
   });
 
   describe('civicaseCaseDetailsController', function () {
-    var $controller, $provide, $rootScope, $route, $scope, CasesData, crmApiMock;
+    var $controller, $provide, $rootScope, $route, $scope, CasesData, CasesUtils, crmApiMock, loadFormBefore;
 
     beforeEach(module('civicase', 'civicase.data', function (_$provide_) {
       $provide = _$provide_;
+      crmApiMock = jasmine.createSpy('crmApi');
+
+      $provide.value('crmApi', crmApiMock);
     }));
 
-    beforeEach(inject(function (_$controller_, $q, _$rootScope_, _$route_, _CasesData_) {
+    beforeEach(inject(function (_$controller_, $q, _$rootScope_, _$route_, _CasesData_, _CasesUtils_) {
       $controller = _$controller_;
       $rootScope = _$rootScope_;
       $route = _$route_;
       CasesData = _CasesData_;
-      crmApiMock = jasmine.createSpy('crmApi').and
-        .returnValue($q.defer().promise);
-
-      $provide.value('crmApi', crmApiMock);
+      CasesUtils = _CasesUtils_;
+      crmApiMock.and
+        .returnValue($q.resolve({ values: CasesData.get() }));
     }));
 
     describe('viewing the case', function () {
@@ -369,7 +371,7 @@
     });
 
     describe('when creating an email', function () {
-      var loadFormArguments, loadFormBefore;
+      var loadFormArguments;
 
       beforeEach(function () {
         initController();
@@ -395,7 +397,7 @@
           caseid: $scope.item.id,
           atype: '3',
           reset: 1,
-          context: 'standalone'
+          cid: CasesUtils.getAllCaseClientContactIds($scope.item.contacts).join(',')
         });
       });
 

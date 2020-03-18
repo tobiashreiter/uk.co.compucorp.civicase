@@ -5,7 +5,7 @@
     /**
      * Fetch additional information about the contacts
      *
-     * @param {array} cases
+     * @param {Array} cases list of cases
      */
     this.fetchMoreContactsInformation = function (cases) {
       var contacts = [];
@@ -18,10 +18,29 @@
     };
 
     /**
+     * Get all case clients ids for a case contacts list
+     *
+     * @param {Array} contacts contacts of a case
+     *
+     * @returns {Array} contact contacts of all client ids
+     */
+    this.getAllCaseClientContactIds = function (contacts) {
+      return _.chain(contacts)
+        .filter(function (contact) {
+          return contact.role === 'Client';
+        })
+        .map(function (client) {
+          return client.contact_id;
+        })
+        .value();
+    };
+
+    /**
      * Get all the contacts of the given case
      *
-     * @param {object} caseObj
-     * @return {array}
+     * @param {object} caseObj - case object to be processed
+     *
+     * @returns {Array} of all contact ids
      */
     function getAllContactIdsForCase (caseObj) {
       var contacts = [];
