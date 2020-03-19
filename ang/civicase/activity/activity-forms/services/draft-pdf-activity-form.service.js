@@ -22,11 +22,15 @@
 
     /**
      * @param {object} activity an activity object.
+     * @param {object} [optionsWithoutDefaults={action: 'add'}]
+     *   a list of options to display the form.
      * @returns {string} the form URL for activities that are PDF letter drafts.
      */
-    function getActivityFormUrl (activity) {
-      return getCrmUrl('civicrm/activity/pdf/add', {
-        action: 'add',
+    function getActivityFormUrl (activity, optionsWithoutDefaults) {
+      var options = _.defaults({}, optionsWithoutDefaults, { action: 'add' });
+
+      return getCrmUrl('civicrm/activity/pdf/' + options.action, {
+        action: options.action,
         cid: getActivityContacts(activity),
         context: 'standalone',
         draft_id: activity.id,

@@ -37,20 +37,45 @@
       });
     });
 
-    describe('when getting the form url', () => {
+    describe('getting the activity form URL', () => {
+      let expectedActivityFormUrlParams;
+
       beforeEach(() => {
-        activityFormUrl = DraftEmailActivityForm.getActivityFormUrl(activity);
-        expectedActivityFormUrl = getCrmUrl('civicrm/activity/email/add', {
+        expectedActivityFormUrlParams = {
           action: 'add',
           caseId: activity.case_id,
           context: 'standalone',
           draft_id: activity.id,
           reset: '1'
+        };
+      });
+
+      describe('when getting the form URL', () => {
+        beforeEach(() => {
+          expectedActivityFormUrlParams.action = 'add';
+          activityFormUrl = DraftEmailActivityForm.getActivityFormUrl(activity);
+          expectedActivityFormUrl = getCrmUrl('civicrm/activity/email/add',
+            expectedActivityFormUrlParams);
+        });
+
+        it('returns the popup form URL for the draft activity in create mode by default', () => {
+          expect(activityFormUrl).toEqual(expectedActivityFormUrl);
         });
       });
 
-      it('returns the popup form url for the draft activity', () => {
-        expect(activityFormUrl).toEqual(expectedActivityFormUrl);
+      describe('when getting the form URL in view mode', () => {
+        beforeEach(() => {
+          expectedActivityFormUrlParams.action = 'view';
+          activityFormUrl = DraftEmailActivityForm.getActivityFormUrl(activity, {
+            action: 'view'
+          });
+          expectedActivityFormUrl = getCrmUrl('civicrm/activity/email/view',
+            expectedActivityFormUrlParams);
+        });
+
+        it('returns the popup form URL for the draft activity in view mode', () => {
+          expect(activityFormUrl).toEqual(expectedActivityFormUrl);
+        });
       });
     });
   });

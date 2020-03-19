@@ -22,11 +22,15 @@
 
     /**
      * @param {object} activity an activity object.
+     * @param {object} [optionsWithoutDefaults={action: 'add'}]
+     *   a list of options to display the form.
      * @returns {string} the form URL for activities that are email drafts.
      */
-    function getActivityFormUrl (activity) {
-      return getCrmUrl('civicrm/activity/email/add', {
-        action: 'add',
+    function getActivityFormUrl (activity, optionsWithoutDefaults) {
+      var options = _.defaults({}, optionsWithoutDefaults, { action: 'add' });
+
+      return getCrmUrl('civicrm/activity/email/' + options.action, {
+        action: options.action,
         caseId: activity.case_id,
         context: 'standalone',
         draft_id: activity.id,

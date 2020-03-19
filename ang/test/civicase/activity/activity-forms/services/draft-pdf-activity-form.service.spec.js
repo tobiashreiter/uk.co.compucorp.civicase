@@ -76,6 +76,22 @@
           expect(activityFormUrl).toEqual(expectedActivityFormUrl);
         });
       });
+
+      describe('when getting the form URL in view mode', () => {
+        beforeEach(() => {
+          activityFormUrlParams.action = 'view';
+          activityFormUrlParams.cid = CRM.config.user_contact_id;
+          activityFormUrl = DraftPdfActivityForm.getActivityFormUrl(activity, {
+            action: 'view'
+          });
+          expectedActivityFormUrl = getCrmUrl('civicrm/activity/pdf/view',
+            activityFormUrlParams);
+        });
+
+        it('returns the popup form URL for the draft activity in view mode', () => {
+          expect(activityFormUrl).toEqual(expectedActivityFormUrl);
+        });
+      });
     });
   });
 })(CRM._, CRM.url);
