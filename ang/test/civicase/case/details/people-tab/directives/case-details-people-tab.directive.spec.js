@@ -32,8 +32,8 @@ describe('Case Details People Tab', () => {
     CRM.$.fn.select2 = jasmine.createSpy('select2').and.callFake(function (option) {
       if (option === 'data') {
         return caseRoleSelectorContact;
-      } else {
-        return crmConfirmDialog;
+      } else if (option === 'container') {
+        return crmConfirmDialog.find('[name=caseRoleSelector]');
       }
     });
   }));

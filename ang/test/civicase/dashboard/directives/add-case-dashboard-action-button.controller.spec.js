@@ -3,7 +3,7 @@
 (($, loadForm, getCrmUrl) => {
   describe('AddCaseDashboardActionButtonController', () => {
     let $location, $window, $rootScope, $scope, $controller, currentCaseCategory,
-      mockedFormPopUp;
+      mockedFormPopUp, CaseCategoryWebformSettings;
 
     beforeEach(() => {
       $window = { location: { href: '' } };
@@ -43,12 +43,15 @@
     });
 
     describe('click handler', () => {
-      describe('when the new case web form url configuration value is defined', () => {
-        const newCaseWebformUrl = 'http://example.com/';
+      beforeEach(module('civicase', ($provide) => {
+        CaseCategoryWebformSettings = jasmine.createSpyObj('CaseCategoryWebformSettings', ['getSettingsFor']);
+        $provide.value('CaseCategoryWebformSettings', CaseCategoryWebformSettings);
+      }));
 
+      describe('when the new case web form url configuration value is defined', () => {
         beforeEach(module('civicase', ($provide) => {
-          $provide.constant('newCaseWebformUrl', newCaseWebformUrl);
           $provide.value('$window', $window);
+          CaseCategoryWebformSettings.getSettingsFor.and.returnValue({ newCaseWebformUrl: '/someurl' });
         }));
 
         beforeEach(() => {
@@ -57,13 +60,13 @@
         });
 
         it('redirects the user to the configured web form url value', () => {
-          expect($window.location.href).toBe(newCaseWebformUrl);
+          expect($window.location.href).toBe('/someurl');
         });
       });
 
       describe('when the new case web form url configuration value is not defined', () => {
         beforeEach(module('civicase-base', 'civicase', ($provide) => {
-          $provide.constant('newCaseWebformUrl', null);
+          CaseCategoryWebformSettings.getSettingsFor.and.returnValue({ newCaseWebformUrl: null });
           $provide.value('$window', $window);
         }));
 
@@ -81,7 +84,9 @@
       describe('opening a new case form popup', () => {
         let expectedFormUrl;
 
-        beforeEach(module('civicase', 'civicase.data'));
+        beforeEach(module('civicase', 'civicase.data', ($provide) => {
+          CaseCategoryWebformSettings.getSettingsFor.and.returnValue({ newCaseWebformUrl: null });
+        }));
 
         beforeEach(() => {
           injectDependencies();

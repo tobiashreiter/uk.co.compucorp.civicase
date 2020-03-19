@@ -139,7 +139,7 @@
     </div>
     <!-- Case information -->
     <div class="panel-footer" ng-if="activity.case">
-      <a ng-href="{{ 'civicrm/case/a/#/case/list' | civicaseCrmUrl:{ caseId: activity.case_id } }}">
+      <a ng-href="{{ caseDetailUrl }}">
         <div class="civicase__activity-card-row civicase__activity-card-row--case-info" >
           <span>
             <span class="civicase__activity-card__case-id__label">{{ ts("Case ID:") }}</span>

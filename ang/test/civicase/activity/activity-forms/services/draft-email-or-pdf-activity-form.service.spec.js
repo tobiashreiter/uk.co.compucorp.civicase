@@ -28,7 +28,6 @@
         activityFormUrl = DraftEmailOrPdfActivityForm.getActivityFormUrl(activity);
         expectedActivityFormUrl = getCrmUrl('civicrm/activity/email/add', {
           action: 'add',
-          caseId: activity.case_id,
           context: 'standalone',
           draft_id: activity.id,
           reset: '1'

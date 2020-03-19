@@ -143,10 +143,6 @@ class CRM_Civicase_Hook_alterAPIPermissions_Case {
    *   Case category name.
    */
   private function getCaseCategoryName($entity, $action, array $params) {
-    if ($entity == 'case' && $action == 'delete') {
-      return $this->getCaseCategoryNameFromCaseId($params, 'id');
-    }
-
     if ($entity == 'case' && in_array($action, ['getrelations', 'getfiles'])) {
       return $this->getCaseCategoryNameFromCaseId($params, 'case_id');
     }
@@ -155,16 +151,20 @@ class CRM_Civicase_Hook_alterAPIPermissions_Case {
       return $this->getCaseCategoryNameFromCaseType($params, 'case_type_id');
     }
 
-    if ($entity == 'case' && $action == 'update') {
-      return $this->getCaseCategoryNameFromCaseId($params, 'id');
-    }
+    if ($entity == 'case') {
+      if (!empty($params['id']) && empty($params['case_type_id.case_type_category'])) {
+        return $this->getCaseCategoryNameFromCaseId($params, 'id');
+      }
 
-    if ($entity == 'case' && !in_array($action, ['delete', 'getfiles'])) {
       return $this->getCaseCategoryNameFromCaseTypeCategory($params, 'case_type_id.case_type_category');
     }
 
     if ($entity == 'case_type' && $action != 'delete') {
       return $this->getCaseCategoryNameFromCaseTypeCategory($params, 'case_type_category');
+    }
+
+    if ($entity == 'custom_value' && $action == 'gettreevalues') {
+      return $this->getCaseCategoryNameFromCaseId($params, 'entity_id');
     }
   }
 

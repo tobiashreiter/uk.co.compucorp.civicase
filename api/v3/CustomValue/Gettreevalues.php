@@ -57,10 +57,7 @@ function _civicrm_api3_custom_value_gettreevalues_spec(array &$spec) {
 /**
  * CustomValue.Gettreevalues API.
  *
- * This API is a customized version of the Civi Core CustomValue.Gettree API
- * It includes customizations that allows custom groups, fields and values to
- * be returned for a Case entity ID depending on the case category. Since Civi
- * does not understand the concept of case categories, this is necessary.
+ * This API is a customized version of the Civi Core CustomValue.Gettree API.
  *
  * @param array $params
  *   The Api parameters.
@@ -129,14 +126,6 @@ function civicrm_api3_custom_value_gettreevalues(array $params) {
       if (isset($entityData[$key])) {
         $treeParams[$param] = $entityData[$key];
       }
-    }
-  }
-
-  if ($treeParams['entityType'] == 'Case') {
-    $caseCategoryName = CRM_Civicase_Helper_CaseCategory::getCategoryName($params['entity_id']);
-
-    if ($caseCategoryName && $caseCategoryName != 'Cases') {
-      $treeParams['entityType'] = $caseCategoryName;
     }
   }
 

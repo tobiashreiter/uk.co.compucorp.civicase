@@ -87,7 +87,7 @@
         caseid: $scope.item.id,
         atype: '3',
         reset: 1,
-        context: 'standalone'
+        cid: CasesUtils.getAllCaseClientContactIds($scope.item.contacts).join(',')
       };
 
       CRM

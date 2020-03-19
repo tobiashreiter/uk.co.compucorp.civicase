@@ -142,6 +142,7 @@ class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
     $isPrintActivityReportPage = $url == 'civicrm/case/customreport/print';
     $isActivityPage = $url == 'civicrm/activity' || $url == 'civicrm/activity/add';
     $isCaseContactTabPage = $url == 'civicrm/case/contact-case-tab';
+    $isDownloadAllActivityFilesPage = $url == 'civicrm/case/activity/download-all-files';
 
     if ($isViewCase) {
       return $this->getCaseCategoryNameFromCaseIdInUrl('id');
@@ -165,6 +166,10 @@ class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
 
     if ($isActivityPage) {
       return $this->getCaseCategoryFromActivityIdInUrl('id');
+    }
+
+    if ($isDownloadAllActivityFilesPage) {
+      return $this->getCaseCategoryFromActivityIdInUrl('activity_id');
     }
   }
 
@@ -209,9 +214,8 @@ class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
    */
   private function getCaseCategoryFromActivityIdInUrl($activityIdParamName) {
     $activityId = CRM_Utils_Request::retrieve($activityIdParamName, 'Integer');
-    $context = CRM_Utils_Request::retrieve('context', 'String');
 
-    if ($activityId && strtolower($context) == 'case') {
+    if ($activityId) {
       $result = civicrm_api3('Activity', 'get', [
         'sequential' => 1,
         'return' => ['case_id'],
