@@ -109,7 +109,7 @@
    * @param {object} $scope scope object
    * @param {object} ActivityStatus activity status service
    * @param {object} ActivityType activity type service
-   * @param {Function} checkIfDraftEmailOrPDFActivity check if draft email or PDF activity function
+   * @param {Function} checkIfDraftActivity check if activity function
    * @param {object} crmApi crm api service
    * @param {object} crmBlocker crm blocker service
    * @param {object} crmStatus crm status service
@@ -118,7 +118,7 @@
    * @param {object} Priority priority service
    */
   function civicaseActivityPanelController ($rootScope, $scope, ActivityStatus,
-    ActivityType, checkIfDraftEmailOrPDFActivity, crmApi, crmBlocker, crmStatus,
+    ActivityType, checkIfDraftActivity, crmApi, crmBlocker, crmStatus,
     DateHelper, dialogService, Priority) {
     $scope.activityPriorties = Priority.getAll();
     $scope.allowedActivityStatuses = {};
@@ -131,6 +131,15 @@
       $scope.$watch('activity.id', showActivityDetails);
       $scope.$on('civicase::case-details::unfocused', closeDetailsPanel);
     }());
+
+    /**
+     * @param {object} activity an activity object
+     * @returns {boolean} true when the given activity is either an email
+     *  or PDF letter activity and their status is set to draft.
+     */
+    function checkIfDraftEmailOrPDFActivity (activity) {
+      return checkIfDraftActivity(activity, ['Email', 'Print PDF Letter']);
+    }
 
     /**
      * Close the activity details panel
