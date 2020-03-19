@@ -9,8 +9,9 @@ use CRM_Case_BAO_CaseType as CaseType;
 class CRM_Civicase_Hook_BuildForm_ModifyCaseTypesForAdvancedSearch {
 
   /**
+   * Accessible case categories for logged in user.
+   *
    * @var array
-   *   Accessible case categories for logged in user.
    */
   private $accessibleCaseCategories;
 
@@ -39,6 +40,7 @@ class CRM_Civicase_Hook_BuildForm_ModifyCaseTypesForAdvancedSearch {
    * Restrict case type options based on user's case category access.
    *
    * @param CRM_Core_Form $form
+   *   Form object.
    */
   private function restrictCaseTypeOptions(CRM_Core_Form $form) {
     $caseTypeElement = $form->getElement('case_type_id');
@@ -59,7 +61,7 @@ class CRM_Civicase_Hook_BuildForm_ModifyCaseTypesForAdvancedSearch {
    * Returns the case types user has access to based on case category.
    *
    * @return array
-   *  Accessible case types.
+   *   Accessible case types.
    */
   private function getAccessibleCaseTypes() {
     $result = civicrm_api3('CaseType', 'get', [
@@ -71,6 +73,8 @@ class CRM_Civicase_Hook_BuildForm_ModifyCaseTypesForAdvancedSearch {
   }
 
   /**
+   * Whether to modify case type or not.
+   *
    * @return bool
    *   Whether the case type field should be modified or not.
    */
@@ -85,7 +89,7 @@ class CRM_Civicase_Hook_BuildForm_ModifyCaseTypesForAdvancedSearch {
    *
    * @param CRM_Core_Form $form
    *   Form object.
-   * @param String $formName
+   * @param string $formName
    *   Form Name.
    */
   public function shouldRun(CRM_Core_Form $form, $formName) {
