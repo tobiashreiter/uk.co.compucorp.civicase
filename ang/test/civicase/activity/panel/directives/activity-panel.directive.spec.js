@@ -54,9 +54,11 @@
         });
       });
 
-      it('shows the activity details for the sent activity', function () {
-        expect(ActivityForms.getActivityFormService).toHaveBeenCalledWith($scope.viewingActivity);
-        expect(MockActivityFormsService.getActivityFormUrl).toHaveBeenCalledWith($scope.viewingActivity);
+      it('shows the activity details in view mode for the sent activity', function () {
+        expect(ActivityForms.getActivityFormService)
+          .toHaveBeenCalledWith($scope.viewingActivity, { action: 'view' });
+        expect(MockActivityFormsService.getActivityFormUrl)
+          .toHaveBeenCalledWith($scope.viewingActivity, { action: 'view' });
         expect(CRM.loadForm).toHaveBeenCalledWith('/mockactivityurl', jasmine.objectContaining({
           target: jasmine.any(Object)
         }));

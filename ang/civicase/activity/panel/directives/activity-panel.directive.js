@@ -53,14 +53,15 @@
        * @param {object} activity activity
        */
       function loadActivityForm (event, activity) {
-        var activityForm = ActivityForms.getActivityFormService(activity);
+        var activityFormOptions = { action: 'view' };
+        var activityForm = ActivityForms.getActivityFormService(activity, activityFormOptions);
 
         if (!activityForm) {
           return;
         }
 
         CRM
-          .loadForm(activityForm.getActivityFormUrl(activity), {
+          .loadForm(activityForm.getActivityFormUrl(activity, activityFormOptions), {
             target: $(element).find('.civicase__activity-panel__core_container')
           })
           .one('crmAjaxError', function () {
