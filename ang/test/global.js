@@ -21,8 +21,10 @@
   CRM.status = jasmine.createSpy('status');
   CRM.url = jasmine.createSpy('url').and.callFake((url, searchParamsObject) => {
     const searchParamsString = CRM._.chain(searchParamsObject)
-      .map((value, key) => {
-        return `${key}=${value}`;
+      .map((value, key) => ({ key, value }))
+      .sortBy('key')
+      .map((parameter) => {
+        return `${parameter.key}=${parameter.value}`;
       })
       .join('&')
       .value();
