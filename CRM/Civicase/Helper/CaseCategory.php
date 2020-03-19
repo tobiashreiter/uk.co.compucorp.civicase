@@ -1,6 +1,7 @@
 <?php
 
 use CRM_Case_BAO_CaseType as CaseType;
+use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
 
 /**
  * CRM_Civicase_Helper_CaseCategory class.
@@ -194,6 +195,33 @@ class CRM_Civicase_Helper_CaseCategory {
 
     return !empty($caseTypeCategoriesLower[$caseCategoryNameFromUrl]) ? $caseTypeCategoriesLower[$caseCategoryNameFromUrl] : NULL;
 
+  }
+
+  /**
+   * Returns the Case Type Categories that the user has access to.
+   *
+   * If the Contact Id is not passed, the logged in contact ID is used.
+   *
+   * @param int|null $contactId
+   *   The contact Id to check for.
+   *
+   * @return array
+   *   Case category access.
+   */
+  public static function getAccessibleCaseTypeCategories($contactId = NULL) {
+    $caseTypeCategories = CaseType::buildOptions('case_type_category', 'validate');
+    $caseCategoryPermission = new CaseCategoryPermission();
+    $permissionToCheck = 'basic case information';
+    $caseCategoryAccess = [];
+
+    foreach ($caseTypeCategories as $id => $caseTypeCategoryName) {
+      $permission = $caseCategoryPermission->replaceWords($permissionToCheck, $caseTypeCategoryName);
+      if (CRM_Core_Permission::check($permission)) {
+        $caseCategoryAccess[$id] = $caseTypeCategoryName;
+      }
+    }
+
+    return $caseCategoryAccess;
   }
 
 }
