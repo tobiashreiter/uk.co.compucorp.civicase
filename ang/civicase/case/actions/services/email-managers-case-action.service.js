@@ -3,13 +3,20 @@
 
   module.service('EmailManagersCaseAction', EmailManagersCaseAction);
 
+  /**
+   * EmailManagersCaseAction service callback function.
+   */
   function EmailManagersCaseAction () {
     /**
-     * Click event handler for the Action
+     * Returns the configuration options to open up a mail popup to
+     * communicate with the case managers. Displays an error message
+     * when no case managers have been assigned to the case.
      *
-     * @param {Array} cases
-     * @param {Object} action
-     * @param {Function} callbackFn
+     * @param {Array} cases list of cases
+     * @param {object} action action to be performed
+     * @param {Function} callbackFn the callback function
+     *
+     * @returns {string} path for the popup
      */
     this.doAction = function (cases, action, callbackFn) {
       var managers = [];
@@ -19,6 +26,12 @@
           managers.push(item.manager.contact_id);
         }
       });
+
+      if (managers.length === 0) {
+        CRM.alert('Please add a contact as a case manager.', 'No case managers available', 'error');
+
+        return;
+      }
 
       var popupPath = {
         path: 'civicrm/activity/email/add',
