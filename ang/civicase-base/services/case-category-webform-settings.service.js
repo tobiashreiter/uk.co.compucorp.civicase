@@ -16,7 +16,7 @@
      * @returns {object} settings for given case category
      */
     function getSettingsFor (caseCategoryName) {
-      return caseCategoryWebformSettings[caseCategoryName];
+      return caseCategoryWebformSettings[caseCategoryName.toLowerCase()];
     }
   }
 })(angular, CRM._, CRM['civicase-base']);
