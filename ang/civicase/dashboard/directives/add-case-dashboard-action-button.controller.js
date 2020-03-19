@@ -11,10 +11,12 @@
    * @param {object} $location the location service.
    * @param {object} $window the window service.
    * @param {string} currentCaseCategory the current case type category configuration value.
-   * @param {string} newCaseWebformUrl the new case web form url configuration value.
+   * @param {string} CaseCategoryWebformSettings service to fetch case category webform settings
    */
   function AddCaseDashboardActionButtonController ($scope, ts, $location, $window,
-    currentCaseCategory, newCaseWebformUrl) {
+    currentCaseCategory, CaseCategoryWebformSettings) {
+    var webformSettings = CaseCategoryWebformSettings.getSettingsFor(currentCaseCategory);
+
     $scope.ts = ts;
 
     $scope.clickHandler = clickHandler;
@@ -25,7 +27,7 @@
      * it will redirect to it. Otherwise it will open a CRM form popup to add a new case.
      */
     function clickHandler () {
-      var hasCustomNewCaseWebformUrl = !!newCaseWebformUrl;
+      var hasCustomNewCaseWebformUrl = !!webformSettings.newCaseWebformUrl;
 
       hasCustomNewCaseWebformUrl
         ? redirectToCustomNewCaseWebformUrl()
@@ -75,7 +77,7 @@
      * Redirects the user to the custom webform URL as defined in the configuration.
      */
     function redirectToCustomNewCaseWebformUrl () {
-      $window.location.href = newCaseWebformUrl;
+      $window.location.href = webformSettings.newCaseWebformUrl;
     }
   }
 })(CRM._, angular, CRM.checkPerm, CRM.loadForm, CRM.url);

@@ -1,5 +1,6 @@
 <?php
 
+use CRM_Case_BAO_CaseType as CaseType;
 use CRM_Civicase_Hook_Helper_CaseTypeCategory as CaseTypeCategoryHelper;
 use CRM_Civicase_Service_CaseCategorySetting as CaseCategorySetting;
 
@@ -13,25 +14,24 @@ class CRM_Civicase_Helper_NewCaseWebform {
    *
    * @param array $options
    *   Options array.
-   * @param string $caseTypeCategory
-   *   Case type category name.
    * @param CRM_Civicase_Service_CaseCategorySetting $caseCategorySetting
    *   CaseCategorySetting service.
    */
-  public static function addWebformDataToOptions(array &$options, $caseTypeCategory, CaseCategorySetting $caseCategorySetting) {
-    $caseTypeCategory = !empty($caseTypeCategory) ? $caseTypeCategory : 'Cases';
-    $newCaseWebformUrl = CaseTypeCategoryHelper::getNewCaseCategoryWebformUrl($caseTypeCategory, $caseCategorySetting);
-    // Retrieve civicase webform URL.
-    $options['newCaseWebformClient'] = 'cid';
-    $options['newCaseWebformUrl'] = $newCaseWebformUrl;
-
-    if ($options['newCaseWebformUrl']) {
-      $path = explode('/', $options['newCaseWebformUrl']);
-      $webformId = array_pop($path);
-      $clientId = self::getCaseWebformClientId($webformId);
-
-      if ($clientId) {
-        $options['newCaseWebformClient'] = 'cid' . $clientId;
+  public static function addWebformDataToOptions(array &$options, CaseCategorySetting $caseCategorySetting) {
+    $caseTypeCategories = CaseType::buildOptions('case_type_category', 'validate');
+    $options['caseCategoryWebformSettings'] = [];
+    foreach ($caseTypeCategories as $caseTypeCategoryName) {
+      $caseTypeCategoryNameLowerCase = strtolower($caseTypeCategoryName);
+      $newCaseWebformUrl = CaseTypeCategoryHelper::getNewCaseCategoryWebformUrl($caseTypeCategoryName, $caseCategorySetting);
+      $options['caseCategoryWebformSettings'][$caseTypeCategoryNameLowerCase]['newCaseWebformClient'] = 'cid';
+      $options['caseCategoryWebformSettings'][$caseTypeCategoryNameLowerCase]['newCaseWebformUrl'] = $newCaseWebformUrl;
+      if ($newCaseWebformUrl) {
+        $path = explode('/', $newCaseWebformUrl);
+        $webformId = array_pop($path);
+        $clientId = self::getCaseWebformClientId($webformId);
+        if ($clientId) {
+          $options['caseCategoryWebformSettings'][$caseTypeCategoryNameLowerCase]['newCaseWebformClient'] = 'cid' . $clientId;
+        }
       }
     }
   }
