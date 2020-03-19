@@ -12,7 +12,9 @@ class CRM_Civicase_BAO_Query_CaseCategory extends CRM_Contact_BAO_Query_Interfac
    * {@inheritDoc}
    */
   public function &getFields() {
-    return [];
+    $fields = [];
+
+    return $fields;
   }
 
   /**
@@ -26,10 +28,17 @@ class CRM_Civicase_BAO_Query_CaseCategory extends CRM_Contact_BAO_Query_Interfac
    * Alters where statement to limit results to accessible case categories.
    */
   public function where(&$query) {
-    $accessibleCaseCategories = CaseCategoryHelper::getAccessibleCaseTypeCategories();
-    if (!$this->addCaseTypeCategoryCondition($accessibleCaseCategories)) {
+    // This query object can be used in other places apart from advanced search page,
+    // We need to restrict to this page only.
+    if (CRM_Utils_System::currentPath() != 'civicrm/contact/search/advanced') {
       return;
     }
+
+    $accessibleCaseCategories = CaseCategoryHelper::getAccessibleCaseTypeCategories();
+    if (!$this->shouldAddCaseTypeCategoryCondition($accessibleCaseCategories)) {
+      return;
+    }
+
     $query->_where[0][] = CRM_Contact_BAO_Query::buildClause('civicrm_case_type.case_type_category', 'IN', array_keys($accessibleCaseCategories));
     $query->_element['case_type_category'] = 1;
     $query->_tables['case_type'] = $query->_whereTables['case_type'] = 1;
@@ -53,7 +62,7 @@ class CRM_Civicase_BAO_Query_CaseCategory extends CRM_Contact_BAO_Query_Interfac
    * @return bool
    *   Whether to add case type category.
    */
-  private function addCaseTypeCategoryCondition(array $accessibleCaseCategories) {
+  private function shouldAddCaseTypeCategoryCondition(array $accessibleCaseCategories) {
     $caseTypeCategories = CaseType::buildOptions('case_type_category', 'validate');
 
     return !empty($accessibleCaseCategories) && (count($accessibleCaseCategories) < count($caseTypeCategories));
