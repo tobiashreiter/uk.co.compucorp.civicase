@@ -43,7 +43,7 @@ class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
     // We need to exclude this permission for this page because the permission
     // will return true as the logic for equivalent case category permission
     // will be applied.
-    $isAdvancedSearchPage = 'civicrm/contact/search/advanced' && $permission != 'basic case information';
+    $isAdvancedSearchPage = $url == 'civicrm/contact/search/advanced' && $permission != 'basic case information';
     $caseCategoryName = $this->getCaseCategoryName();
 
     if ($caseCategoryName) {
