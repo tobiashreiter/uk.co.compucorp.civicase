@@ -42,6 +42,8 @@
       beforeEach(() => {
         activityFormUrlParams = {
           action: 'add',
+          caseid: activity.case_id,
+          cid: activity.source_contact_id,
           context: 'standalone',
           draft_id: activity.id,
           reset: '1'
@@ -50,29 +52,11 @@
 
       describe('when the activity is part of a case', () => {
         beforeEach(() => {
-          activity['case_id.contacts'] = [
-            { contact_id: _.uniqueId() },
-            { contact_id: _.uniqueId() },
-            { contact_id: _.uniqueId() }
-          ];
-          activityFormUrlParams.cid = _.map(activity['case_id.contacts'], 'contact_id');
           expectedActivityFormUrl = getCrmUrl('civicrm/activity/pdf/add', activityFormUrlParams);
           activityFormUrl = DraftPdfActivityForm.getActivityFormUrl(activity);
         });
 
-        it('returns the popup form url for the PDF draft activity addressed to case contacts', () => {
-          expect(activityFormUrl).toEqual(expectedActivityFormUrl);
-        });
-      });
-
-      describe('when the activity is not part of a case', () => {
-        beforeEach(() => {
-          activityFormUrlParams.cid = CRM.config.user_contact_id;
-          expectedActivityFormUrl = getCrmUrl('civicrm/activity/pdf/add', activityFormUrlParams);
-          activityFormUrl = DraftPdfActivityForm.getActivityFormUrl(activity);
-        });
-
-        it('returns the popup form url for the PDF draft activity addressed to the logged in contact', () => {
+        it('returns the popup form url for the PDF draft activity', () => {
           expect(activityFormUrl).toEqual(expectedActivityFormUrl);
         });
       });
@@ -80,7 +64,6 @@
       describe('when getting the form URL in view mode', () => {
         beforeEach(() => {
           activityFormUrlParams.action = 'view';
-          activityFormUrlParams.cid = CRM.config.user_contact_id;
           activityFormUrl = DraftPdfActivityForm.getActivityFormUrl(activity, {
             action: 'view'
           });

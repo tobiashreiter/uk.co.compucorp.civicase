@@ -31,22 +31,12 @@
 
       return getCrmUrl('civicrm/activity/pdf/' + options.action, {
         action: options.action,
-        cid: getActivityContacts(activity),
+        caseid: activity.case_id,
+        cid: activity.source_contact_id,
         context: 'standalone',
         draft_id: activity.id,
         reset: '1'
       });
-    }
-
-    /**
-     * @param {object} activity an activity object.
-     * @returns {number[]} a list of contacts associated to the activity. For case activities
-     *   it returns the case contacts, otherwise it returns the current logged in user.
-     */
-    function getActivityContacts (activity) {
-      return activity['case_id.contacts']
-        ? _.map(activity['case_id.contacts'], 'contact_id')
-        : [CRM.config.user_contact_id];
     }
   }
 })(CRM._, angular, CRM.url);
