@@ -60,7 +60,7 @@
     <div class="civicase__contact-cases-tab__panel-row civicase__contact-cases-tab__panel-row--dark  clearfix">
       <div class="pull-left">
         <div class="civicase__contact-card--client" civicase-contact-card contacts="item.client"></div>
-        <div class="civicase__summary-tab__subject">
+        <div class="civicase__summary-tab__subject crm-entity" data-entity="Case" data-id="{{ item.id }}">
           <p
             crm-editable="item"
             data-field="subject"
