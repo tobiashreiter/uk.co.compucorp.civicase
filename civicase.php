@@ -184,6 +184,7 @@ function civicase_civicrm_buildForm($formName, &$form) {
     new CRM_Civicase_Hook_BuildForm_CaseCategoryFormLabelTranslationForChangeCase(),
     new CRM_Civicase_Hook_BuildForm_EnableCaseCategoryIconField(),
     new CRM_Civicase_Hook_BuildForm_CaseCategoryCustomGroupDisplay(),
+    new CRM_Civicase_Hook_BuildForm_ModifyCaseTypesForAdvancedSearch(),
   ];
 
   foreach ($hooks as $hook) {
@@ -558,7 +559,8 @@ function civicase_civicrm_entityTypes(&$entityTypes) {
  */
 function civicase_civicrm_queryObjects(&$queryObjects, $type) {
   if ($type == 'Contact') {
-    $queryObjects[] = new CRM_Civicase_BAO_Query();
+    $queryObjects[] = new CRM_Civicase_BAO_Query_ContactLock();
+    $queryObjects[] = new CRM_Civicase_BAO_Query_CaseCategory();
   }
 }
 
