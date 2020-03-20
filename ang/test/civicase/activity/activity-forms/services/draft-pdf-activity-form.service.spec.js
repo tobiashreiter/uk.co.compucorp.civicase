@@ -52,6 +52,7 @@
           cid: activity.source_contact_id,
           context: 'standalone',
           draft_id: activity.id,
+          id: activity.id,
           reset: '1'
         };
       });
