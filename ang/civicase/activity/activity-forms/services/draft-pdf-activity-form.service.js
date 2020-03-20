@@ -29,11 +29,12 @@
      */
     function getActivityFormUrl (activity, optionsWithoutDefaults) {
       var options = _.defaults({}, optionsWithoutDefaults, { action: 'add' });
+      var assigneeContactId = _.first(activity.assignee_contact_id);
 
       return getCrmUrl('civicrm/activity/pdf/' + options.action, {
         action: options.action,
         caseid: activity.case_id,
-        cid: activity.source_contact_id,
+        cid: assigneeContactId,
         context: 'standalone',
         draft_id: activity.id,
         id: activity.id,
