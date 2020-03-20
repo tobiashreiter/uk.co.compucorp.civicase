@@ -18,6 +18,12 @@
         .value();
     }));
 
+    describe('allowing activity status change', () => {
+      it('does not allow for activity status change', () => {
+        expect(DraftEmailActivityForm.canChangeStatus).toBe(false);
+      });
+    });
+
     describe('handling activity forms', () => {
       let canHandleResult, mockCheckIfDraftActivityResult;
 

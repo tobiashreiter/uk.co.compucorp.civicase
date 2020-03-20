@@ -23,6 +23,8 @@
      * @param {object} ts ts service
      */
     function civicaseActivityPanelLink (scope, element, attrs, ts) {
+      scope.canChangeStatus = true;
+
       (function init () {
         $timeout(setPanelHeight);
         scope.$on('civicase::activity-feed::show-activity-panel', loadActivityForm);
@@ -59,6 +61,8 @@
         if (!activityForm) {
           return;
         }
+
+        scope.canChangeStatus = activityForm.canChangeStatus;
 
         CRM
           .loadForm(activityForm.getActivityFormUrl(activity, activityFormOptions), {

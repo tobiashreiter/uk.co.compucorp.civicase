@@ -9,6 +9,7 @@
    * @param {Function} checkIfDraftActivity the check if draft activity function.
    */
   function DraftEmailActivityForm (checkIfDraftActivity) {
+    this.canChangeStatus = false;
     this.canHandleActivity = checkIfDraftEmailOrPDFActivity;
     this.getActivityFormUrl = getActivityFormUrl;
 

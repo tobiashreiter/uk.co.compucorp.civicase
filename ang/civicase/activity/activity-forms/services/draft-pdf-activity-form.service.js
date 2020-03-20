@@ -9,6 +9,7 @@
    * @param {Function} checkIfDraftActivity the check if draft activity function.
    */
   function DraftPdfActivityForm (checkIfDraftActivity) {
+    this.canChangeStatus = false;
     this.canHandleActivity = checkIfDraftPdfLetter;
     this.getActivityFormUrl = getActivityFormUrl;
 

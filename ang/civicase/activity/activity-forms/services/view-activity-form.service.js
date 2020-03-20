@@ -7,6 +7,7 @@
    * View Activity Form service.
    */
   function ViewActivityForm () {
+    this.canChangeStatus = true;
     this.canHandleActivity = canHandleActivity;
     this.getActivityFormUrl = getActivityFormUrl;
 
