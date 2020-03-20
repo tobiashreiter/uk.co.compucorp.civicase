@@ -23,6 +23,8 @@
      * @param {object} ts ts service
      */
     function civicaseActivityPanelLink (scope, element, attrs, ts) {
+      scope.canChangeStatus = true;
+
       (function init () {
         $timeout(setPanelHeight);
         scope.$on('civicase::activity-feed::show-activity-panel', loadActivityForm);
@@ -53,14 +55,17 @@
        * @param {object} activity activity
        */
       function loadActivityForm (event, activity) {
-        var activityForm = ActivityForms.getActivityFormService(activity);
+        var activityFormOptions = { action: 'view' };
+        var activityForm = ActivityForms.getActivityFormService(activity, activityFormOptions);
 
         if (!activityForm) {
           return;
         }
 
+        scope.canChangeStatus = activityForm.canChangeStatus;
+
         CRM
-          .loadForm(activityForm.getActivityFormUrl(activity), {
+          .loadForm(activityForm.getActivityFormUrl(activity, activityFormOptions), {
             target: $(element).find('.civicase__activity-panel__core_container')
           })
           .one('crmAjaxError', function () {
@@ -109,7 +114,7 @@
    * @param {object} $scope scope object
    * @param {object} ActivityStatus activity status service
    * @param {object} ActivityType activity type service
-   * @param {Function} checkIfDraftEmailOrPDFActivity check if draft email or PDF activity function
+   * @param {Function} checkIfDraftActivity check if activity function
    * @param {object} crmApi crm api service
    * @param {object} crmBlocker crm blocker service
    * @param {object} crmStatus crm status service
@@ -118,7 +123,7 @@
    * @param {object} Priority priority service
    */
   function civicaseActivityPanelController ($rootScope, $scope, ActivityStatus,
-    ActivityType, checkIfDraftEmailOrPDFActivity, crmApi, crmBlocker, crmStatus,
+    ActivityType, checkIfDraftActivity, crmApi, crmBlocker, crmStatus,
     DateHelper, dialogService, Priority) {
     $scope.activityPriorties = Priority.getAll();
     $scope.allowedActivityStatuses = {};
@@ -131,6 +136,15 @@
       $scope.$watch('activity.id', showActivityDetails);
       $scope.$on('civicase::case-details::unfocused', closeDetailsPanel);
     }());
+
+    /**
+     * @param {object} activity an activity object
+     * @returns {boolean} true when the given activity is either an email
+     *  or PDF letter activity and their status is set to draft.
+     */
+    function checkIfDraftEmailOrPDFActivity (activity) {
+      return checkIfDraftActivity(activity, ['Email', 'Print PDF Letter']);
+    }
 
     /**
      * Close the activity details panel

@@ -13,6 +13,12 @@
         .value();
     }));
 
+    describe('allowing activity status change', () => {
+      it('allows for activity status change', () => {
+        expect(ActivityPopupForm.canChangeStatus).toBe(true);
+      });
+    });
+
     describe('handling activity forms', () => {
       describe('when handling a popup form', () => {
         beforeEach(() => {
