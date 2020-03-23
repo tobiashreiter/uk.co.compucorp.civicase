@@ -1,15 +1,22 @@
 <div id="bootstrap-theme" class="civicase__tags-modal">
   <form class="form-horizontal">
-    <div class="form-group civicase__tags-modal__generic-tags-container">
-      <div ng-repeat="tag in model.genericTags">
+    <div class="form-group civicase__tags-modal__tags-container">
+      <div class="row">
+        <label class="col-sm-3">Tags</label>
         <input
-          id="civicase_tags_{{tag.id}}"
-          type="checkbox" value="{{tag.name}}"
-          ng-click="model.toggleGenericTags(model, tag.id)"/>
-        <label for="civicase_tags_{{tag.id}}" style="margin-left: {{(tag.indentationLevel*4)}}px;">{{tag.name}}</label>
+          placeholder="Select Tags"
+          class="form-control col-sm-9"
+          ng-model="model.selectedGenericTags"
+          crm-ui-select="{
+            allowClear: true,
+            multiple: true,
+            data: model.genericTags,
+            formatResult: model.formatTags
+          }"/>
       </div>
     </div>
-    <div ng-repeat="tag in model.tagSets" class="form-group civicase__tags-modal__tagsets-container">
+
+    <div ng-repeat="tag in model.tagSets" class="form-group civicase__tags-modal__tags-container">
       <div class="row">
         <label class="col-sm-3">{{tag.name}}</label>
         <input

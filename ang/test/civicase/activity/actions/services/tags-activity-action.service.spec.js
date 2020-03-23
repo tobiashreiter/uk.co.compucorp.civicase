@@ -40,7 +40,8 @@
       it('fetches the tags from the api endpoint', function () {
         expect(crmApiMock).toHaveBeenCalledWith('Tag', 'get', {
           sequential: 1,
-          used_for: { LIKE: '%civicrm_activity%' }
+          used_for: { LIKE: '%civicrm_activity%' },
+          options: { limit: 0 }
         });
       });
 
@@ -54,29 +55,6 @@
 
       it('does not have any selected generic tags initially', function () {
         expect(modalOpenCall[2].selectedGenericTags.length).toBe(0);
-      });
-
-      describe('when generic tags are toggled', function () {
-        describe('when a checkbox is enabled', function () {
-          beforeEach(function () {
-            modalOpenCall[2].toggleGenericTags(modalOpenCall[2], TagsMockData.get(0).id);
-          });
-
-          it('add the clicked tag as a selected tag', function () {
-            expect(modalOpenCall[2].selectedGenericTags).toEqual([TagsMockData.get(0).id]);
-          });
-        });
-
-        describe('when a checkbox is disabled after being enabled', function () {
-          beforeEach(function () {
-            modalOpenCall[2].toggleGenericTags(modalOpenCall[2], TagsMockData.get(0).id);
-            modalOpenCall[2].toggleGenericTags(modalOpenCall[2], TagsMockData.get(0).id);
-          });
-
-          it('removes the clicked tag as a selected tag', function () {
-            expect(modalOpenCall[2].selectedGenericTags).toEqual([]);
-          });
-        });
       });
 
       describe('generic tags', function () {
@@ -166,7 +144,7 @@
 
       describe('when the save button is clicked', function () {
         beforeEach(function () {
-          modalOpenCall[2].toggleGenericTags(modalOpenCall[2], TagsMockData.get()[0].id);
+          modalOpenCall[2].selectedGenericTags = TagsMockData.get()[0].id;
           modalOpenCall[3].buttons[0].click();
         });
 
@@ -209,7 +187,8 @@
       it('fetches the tags from the api endpoint', function () {
         expect(crmApiMock).toHaveBeenCalledWith('Tag', 'get', {
           sequential: 1,
-          used_for: { LIKE: '%civicrm_activity%' }
+          used_for: { LIKE: '%civicrm_activity%' },
+          options: { limit: 0 }
         });
       });
 
@@ -223,29 +202,6 @@
 
       it('does not have any selected generic tags initially', function () {
         expect(modalOpenCall[2].selectedGenericTags.length).toBe(0);
-      });
-
-      describe('when generic tags are toggled', function () {
-        describe('when a checkbox is enabled', function () {
-          beforeEach(function () {
-            modalOpenCall[2].toggleGenericTags(modalOpenCall[2], TagsMockData.get(0).id);
-          });
-
-          it('add the clicked tag as a selected tag', function () {
-            expect(modalOpenCall[2].selectedGenericTags).toEqual([TagsMockData.get(0).id]);
-          });
-        });
-
-        describe('when a checkbox is disabled after being enabled', function () {
-          beforeEach(function () {
-            modalOpenCall[2].toggleGenericTags(modalOpenCall[2], TagsMockData.get(0).id);
-            modalOpenCall[2].toggleGenericTags(modalOpenCall[2], TagsMockData.get(0).id);
-          });
-
-          it('removes the clicked tag as a selected tag', function () {
-            expect(modalOpenCall[2].selectedGenericTags).toEqual([]);
-          });
-        });
       });
 
       describe('generic tags', function () {
@@ -335,7 +291,7 @@
 
       describe('when the save button is clicked', function () {
         beforeEach(function () {
-          modalOpenCall[2].toggleGenericTags(modalOpenCall[2], TagsMockData.get()[0].id);
+          modalOpenCall[2].selectedGenericTags = TagsMockData.get()[0].id;
           modalOpenCall[3].buttons[0].click();
         });
 

@@ -9,8 +9,10 @@
    * @param {object} $rootScope rootscope object
    * @param {object} crmApi service to use civicrm api
    * @param {object} dialogService service to open dialog box
+   * @param {object} TagsHelper tags helper service
+   * @param {Function} getSelect2Value service to get select 2 values
    */
-  function TagsActivityAction ($rootScope, crmApi, dialogService) {
+  function TagsActivityAction ($rootScope, crmApi, dialogService, TagsHelper, getSelect2Value) {
     /**
      * Check if the Action is enabled
      *
@@ -71,30 +73,14 @@
     function setModelObjectForModal (tags, numberOfActivities) {
       var model = {};
 
+      model.formatTags = TagsHelper.formatTags;
       model.selectedActivitiesLength = numberOfActivities;
-      model.genericTags = prepareGenericTags(tags);
-      model.tagSets = prepareTagSetsTree(tags);
+      model.genericTags = TagsHelper.prepareGenericTags(tags);
+      model.tagSets = TagsHelper.prepareTagSetsTree(tags);
 
-      model.selectedGenericTags = [];
-      model.toggleGenericTags = toggleGenericTags;
+      model.selectedGenericTags = '';
 
       return model;
-    }
-
-    /**
-     * Toggle the State of Generic tags
-     *
-     * @param {object} model model object for dialog box
-     * @param {string} tagID id of the tag
-     */
-    function toggleGenericTags (model, tagID) {
-      if (model.selectedGenericTags.indexOf(tagID) === -1) {
-        model.selectedGenericTags.push(tagID);
-      } else {
-        model.selectedGenericTags = _.reject(model.selectedGenericTags, function (tag) {
-          return tag === tagID;
-        });
-      }
     }
 
     /**
@@ -130,7 +116,7 @@
      * @param {object} model model object for dialog box
      */
     function addRemoveTagsConfirmationHandler (operation, activitiesObject, model) {
-      var tagIds = model.selectedGenericTags;
+      var tagIds = getSelect2Value(model.selectedGenericTags);
 
       _.each(model.tagSets, function (tag) {
         if (tag.selectedTags) {
@@ -184,76 +170,11 @@
     function getTags () {
       return crmApi('Tag', 'get', {
         sequential: 1,
-        used_for: { LIKE: '%civicrm_activity%' }
+        used_for: { LIKE: '%civicrm_activity%' },
+        options: { limit: 0 }
       }).then(function (data) {
         return data.values;
       });
-    }
-
-    /**
-     * Recursive function to prepare the generic tags
-     *
-     * @param {Array} tags tags
-     * @param {string} parentID id of the parent tag
-     * @param {number} level level of tag
-     * @returns {Array} tags list
-     */
-    function prepareGenericTags (tags, parentID, level) {
-      var returnArray = [];
-
-      level = typeof level !== 'undefined' ? level : 0;
-      parentID = typeof parent !== 'undefined' ? parentID : undefined;
-
-      var filteredTags = _.filter(tags, function (child) {
-        return child.parent_id === parentID && child.is_tagset === '0';
-      });
-
-      if (_.isEmpty(filteredTags)) {
-        return [];
-      }
-
-      _.each(filteredTags, function (tag) {
-        returnArray.push(tag);
-        tag.indentationLevel = level;
-        returnArray = returnArray.concat(prepareGenericTags(tags, tag.id, level + 1));
-      });
-
-      return returnArray;
-    }
-
-    /**
-     * Prepares the tag sets tree
-     *
-     * @param {Array} tags list of tags
-     * @returns {Array} tags tree
-     */
-    function prepareTagSetsTree (tags) {
-      var returnArray = [];
-
-      var filteredTags = _.filter(tags, function (child) {
-        return !child.parent_id && child.is_tagset === '1';
-      });
-
-      if (_.isEmpty(filteredTags)) {
-        return [];
-      }
-
-      _.each(filteredTags, function (tag) {
-        var children = _.filter(tags, function (child) {
-          if (child.parent_id === tag.id && child.is_tagset === '0') {
-            child.text = child.name;
-            return true;
-          }
-        });
-
-        if (children.length > 0) {
-          tag.children = children;
-        }
-
-        returnArray.push(tag);
-      });
-
-      return returnArray;
     }
   }
 })(angular, CRM.$, CRM._);
