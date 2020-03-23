@@ -8,11 +8,12 @@
       "isUIBPopover": true
     },
     {
-      "label": "Civicase - Dashboard - With overview table expanded and gear icon opened",
+      "label": "Civicase - Dashboard - With overview table expanded, gear icon opened and case filter dropdown opened",
       "url": "{url}/civicrm/case/a/#/case",
       "clickSelectors": [
         ".civicase__case-overview__flow-status-settings + .civicase__case-overview__flow-status__icon",
-        ".civicase__case-overview__flow-status-settings"
+        ".civicase__case-overview__flow-status-settings",
+        ".civicase__dashboard__relation-filter .select2-choice"
       ]
     },
     {
@@ -30,6 +31,12 @@
       "label": "Civicase - Dashboard - Calendar - Activity Card - Loading state",
       "url": "{url}/civicrm/case/a/#/case",
       "clickSelector": ".civicase__activities-calendar__day-status"
+    },
+    {
+      "label": "Civicase - Dashboard - Add case modal",
+      "url": "{url}/civicrm/case/a/#/case",
+      "clickSelector": ".civicase__dashboard__action-btn",
+      "waitForUIModalLoad": true
     }
   ]
 }

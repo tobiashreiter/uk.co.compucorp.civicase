@@ -16,11 +16,11 @@ The backstop test suite for Civicase 5.1 extension covers following screens
 
 ## Dashboard
 - [x] Dashboard Main screen - With overview table expanded and tooltip visible on one of the titles
-- [x] Dashboard Overview table with gear icon opened
+- [x] Dashboard Main screen - With overview table expanded, gear icon opened and case filter dropdown opened
 - [x] Dashboard Main screen - with loading screens
 - [x] Dashboard Main screen - Calendar - Acitivity card
 - [x] Dashboard Main screen - Calendar - Acitivity card - Loading State
-- [ ] Dashboard Main screen  - Empty State
+- [x] Dashboard Main screen - Add case modal
 
 ## Activities Feed Panel
 - [ ] Activities Feed Panel - Main screen
@@ -31,7 +31,6 @@ The backstop test suite for Civicase 5.1 extension covers following screens
 - [ ] Activities Feed Panel - with one filter enabled
 - [ ] Activities Feed Panel - one activity selected
 - [ ] Activities Feed Panel - Activity card menu on case overview
-- [ ] Activities Feed Panel - Empty State
 - [ ] Activities Feed Panel - Detail - Edit state
 - [ ] Activities Feed Panel - Detail - Delete state
 - [ ] Activities Feed Panel - Under Manage Cases
@@ -43,7 +42,7 @@ The backstop test suite for Civicase 5.1 extension covers following screens
 - [ ] Manage Cases List - Loading screen
 - [ ] Manage Cases List - selected case
 - [ ] Manage Cases List - Case Overview - with drawer closed
-- [ ] Manage Cases List - Case Overview - Empty States
+
 - [ ] Manage Cases List - Case Overview - with calendar activity opened
 - [ ] Manage Cases List - Case Overview - Loading
 - [ ] Manage Cases List - Case Overview - Edit custom Data
@@ -69,6 +68,11 @@ The backstop test suite for Civicase 5.1 extension covers following screens
 - [ ] Modals - Manage Cases - Case Detail - Actions Menu
 - [ ] Modals - Manage Cases - Case Detail - Actions Menu - Edit Tags
 - [ ] Modals - Manage Cases List - Files - menu actions
+
+## Empty States
+- [ ] Dashboard Main screen - Empty State
+- [ ] Activities Feed Panel - Empty State
+- [ ] Manage Cases List - Case Overview - Empty States
 
 # Developer Guide
 
