@@ -87,12 +87,9 @@ function civicrm_api3_case_getstats(array $params) {
     $caseTypesParams['id'] = $params['case_type_id'];
     $caseTypes = civicrm_api3('CaseType', 'get', $caseTypesParams);
 
-    _civicrm_api3_case_add_case_category_query_filter($query, $caseTypes);
-  }
-  // Handle no value for case_type_id param case.
-  elseif ($params['case_type_id'] === "") {
-    // Pass an invalid id to get no response.
-    $caseTypes = ['values' => ['0' => ['id' => '0']]];
+    if (!empty($caseTypesParams['id']['IS NULL'])) {
+      $caseTypes = ['values' => ['0' => ['id' => 'IS NULL']]];
+    }
 
     _civicrm_api3_case_add_case_category_query_filter($query, $caseTypes);
   }
@@ -136,10 +133,15 @@ function _civicrm_api3_case_add_case_category_query_filter($query, array $caseTy
   if (empty($caseTypeIds)) {
     return;
   }
+
+  $param = ['IN' => $caseTypeIds];
+
+  if (isset($caseTypeIds[0]) && $caseTypeIds[0] === 'IS NULL') {
+    $param = ['IS NULL' => []];
+  }
+
   $query->join('ct', 'JOIN civicrm_case_type AS ct ON ct.id = a.case_type_id');
-  $query->where(CRM_Core_DAO::createSQLFilter('ct.id', [
-    'IN' => $caseTypeIds,
-  ]));
+  $query->where(CRM_Core_DAO::createSQLFilter('ct.id', $param));
 }
 
 /**
