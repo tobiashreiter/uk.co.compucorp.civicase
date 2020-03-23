@@ -6,7 +6,6 @@
     var caseStatuses = CaseStatus.getAll();
 
     return function (item) {
-      item.myRole = [];
       item.client = [];
       item.subject = (typeof item.subject === 'undefined') ? '' : item.subject;
       item.status = caseStatuses[item.status_id].label;
@@ -32,10 +31,6 @@
       _.each(item.contacts, function (contact) {
         if (!contact.relationship_type_id) {
           item.client.push(contact);
-        }
-
-        if (contact.contact_id === CRM.config.user_contact_id) {
-          item.myRole.push(contact.role);
         }
 
         if (contact.manager) {

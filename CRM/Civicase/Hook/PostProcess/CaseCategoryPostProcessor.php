@@ -1,11 +1,13 @@
 <?php
 
 use CRM_Civicase_Service_CaseCategoryMenu as CaseCategoryMenuService;
+use CRM_Civicase_Service_CaseCategoryCustomDataType as CaseCategoryCustomDataType;
+use CRM_Civicase_Service_CaseCategoryCustomFieldExtends as CaseCategoryCustomFieldExtends;
 
 /**
- * Class CRM_Civicase_Hook_PostProcess_CaseCategoryMenuLinksProcessor.
+ * Class CRM_Civicase_Hook_PostProcess_CaseCategoryPostProcessor.
  */
-class CRM_Civicase_Hook_PostProcess_CaseCategoryMenuLinksProcessor {
+class CRM_Civicase_Hook_PostProcess_CaseCategoryPostProcessor {
 
   /**
    * Case Category Menu Links Processor.
@@ -24,15 +26,23 @@ class CRM_Civicase_Hook_PostProcess_CaseCategoryMenuLinksProcessor {
     }
 
     $caseCategoryMenu = new CaseCategoryMenuService();
+    $caseCategoryCustomData = new CaseCategoryCustomDataType();
+    $caseCategoryCustomFieldExtends = new CaseCategoryCustomFieldExtends();
+
     $formValues = $form->_submitValues;
     $formAction = $form->getVar('_action');
+
     if ($formAction == CRM_Core_Action::DELETE) {
       $caseCategoryValues = $form->getVar('_values');
       $caseCategoryMenu->deleteItems($caseCategoryValues['name']);
+      $caseCategoryCustomFieldExtends->delete($caseCategoryValues['name']);
+      $caseCategoryCustomData->delete($caseCategoryValues['name']);
     }
 
     if ($formAction == CRM_Core_Action::ADD) {
       $caseCategoryMenu->createItems($formValues['label']);
+      $caseCategoryCustomFieldExtends->create($formValues['label'], "Case ({$formValues['label']})");
+      $caseCategoryCustomData->create($formValues['label']);
     }
 
     if ($formAction == CRM_Core_Action::UPDATE) {

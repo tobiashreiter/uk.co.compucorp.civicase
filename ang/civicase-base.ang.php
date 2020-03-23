@@ -26,7 +26,7 @@ $options = [
 ];
 
 OptionValuesHelper::setToJsVariables($options);
-NewCaseWebform::addWebformDataToOptions($options, $caseCategoryName, $caseCategorySetting);
+NewCaseWebform::addWebformDataToOptions($options, $caseCategorySetting);
 set_case_types_to_js_vars($options);
 set_relationship_types_to_js_vars($options);
 set_file_categories_to_js_vars($options);
@@ -52,7 +52,7 @@ function expose_settings(array &$options, array $defaults) {
   $options['allowMultipleCaseClients'] = (bool) Civi::settings()->get('civicaseAllowMultipleClients');
   $options['allowCaseLocks'] = (bool) Civi::settings()->get('civicaseAllowCaseLocks');
   $options['currentCaseCategory'] = $defaults['caseCategoryName']
-    ? $defaults['caseCategoryName']
+    ? strtolower($defaults['caseCategoryName'])
     : strtolower(CRM_Civicase_Helper_CaseCategory::CASE_TYPE_CATEGORY_NAME);
 }
 

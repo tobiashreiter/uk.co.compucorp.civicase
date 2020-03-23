@@ -4,7 +4,5 @@
   module
     .constant('allowCaseLocks', configuration.allowCaseLocks)
     .constant('allowMultipleCaseClients', configuration.allowMultipleCaseClients)
-    .constant('currentCaseCategory', configuration.currentCaseCategory)
-    .constant('newCaseWebformClient', configuration.newCaseWebformClient)
-    .constant('newCaseWebformUrl', configuration.newCaseWebformUrl);
+    .constant('currentCaseCategory', configuration.currentCaseCategory);
 })(angular, CRM['civicase-base']);

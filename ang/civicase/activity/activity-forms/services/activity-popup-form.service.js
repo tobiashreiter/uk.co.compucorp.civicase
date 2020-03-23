@@ -7,6 +7,7 @@
    * Activity Popup Form service.
    */
   function ActivityPopupForm () {
+    this.canChangeStatus = true;
     this.canHandleActivity = canHandleActivity;
     this.getActivityFormUrl = getActivityFormUrl;
 

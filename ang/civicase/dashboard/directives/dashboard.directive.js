@@ -31,7 +31,6 @@
     $scope.activityFilters = {
       case_filter: { 'case_type_id.is_active': 1, contact_is_deleted: 0 }
     };
-    $scope.newCaseWebformUrl = CRM.civicase.newCaseWebformUrl;
 
     (function init () {
       bindRouteParamsToScope();
@@ -42,17 +41,31 @@
       $scope.ts = ts;
     }());
 
-    $scope.caseListLink = function (type, status) {
-      var cf = {};
+    /**
+     * Creates link to the filtered cases list
+     *
+     * @param {string} type the case type
+     * @param {string} status the case's status.
+     * @returns {string} link to the filtered list of cases
+     */
+    $scope.linkToManageCase = function (type, status) {
+      var cf = { case_type_category: $scope.caseTypeCategoryName };
+      var userContactId = [CRM.config.user_contact_id];
+
       if (type) {
         cf.case_type_id = [type];
       }
+
       if (status) {
         cf.status_id = [status];
       }
-      if ($scope.myCasesOnly) {
-        cf.case_manager = CRM.config.user_contact_id;
+
+      if ($scope.filters.caseRelationshipType === 'is_case_manager') {
+        cf.case_manager = userContactId;
+      } else if ($scope.filters.caseRelationshipType === 'is_involved') {
+        cf.contact_involved = userContactId;
       }
+
       return '#/case/list?' + $.param({ cf: JSON.stringify(cf) });
     };
 

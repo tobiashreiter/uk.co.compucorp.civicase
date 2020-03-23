@@ -9,10 +9,9 @@
    * @param {object} $rootScope rootscope object
    * @param {object} crmApi service to call civicrm api
    * @param {object} dialogService service for opening dialog box
+   * @param {Function} ts the translation service
    */
-  function MoveCopyActivityAction ($rootScope, crmApi, dialogService) {
-    var ts = CRM.ts('civicase');
-
+  function MoveCopyActivityAction ($rootScope, crmApi, dialogService, ts) {
     /**
      * Perform the action
      *

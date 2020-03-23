@@ -27,6 +27,7 @@
 
       MockActivityFormsService = jasmine.createSpyObj('MockActivityFormsService', ['getActivityFormUrl']);
       MockActivityFormsService.getActivityFormUrl.and.returnValue('/mockactivityurl');
+      MockActivityFormsService.canChangeStatus = false;
       ActivityForms.getActivityFormService.and.returnValue(MockActivityFormsService);
 
       initDirective();
@@ -54,12 +55,19 @@
         });
       });
 
-      it('shows the activity details for the sent activity', function () {
-        expect(ActivityForms.getActivityFormService).toHaveBeenCalledWith($scope.viewingActivity);
-        expect(MockActivityFormsService.getActivityFormUrl).toHaveBeenCalledWith($scope.viewingActivity);
+      it('shows the activity details in view mode for the sent activity', function () {
+        expect(ActivityForms.getActivityFormService)
+          .toHaveBeenCalledWith($scope.viewingActivity, { action: 'view' });
+        expect(MockActivityFormsService.getActivityFormUrl)
+          .toHaveBeenCalledWith($scope.viewingActivity, { action: 'view' });
         expect(CRM.loadForm).toHaveBeenCalledWith('/mockactivityurl', jasmine.objectContaining({
           target: jasmine.any(Object)
         }));
+      });
+
+      it('allows or blocks changing the activity status depending on the activity form value', () => {
+        expect(activityPanel.isolateScope().canChangeStatus)
+          .toBe(MockActivityFormsService.canChangeStatus);
       });
     });
 

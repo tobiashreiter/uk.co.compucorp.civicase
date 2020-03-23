@@ -1,6 +1,6 @@
 /* eslint-env jasmine */
 
-(function (_) {
+(function (_, $) {
   describe('civicaseDashboardController', function () {
     var $controller, $rootScope, $scope, DashboardActionItems;
 
@@ -103,6 +103,74 @@
       });
     });
 
+    describe('link to manage screen page', () => {
+      beforeEach(() => {
+        initController();
+        $scope.caseTypeCategoryName = 'cases';
+      });
+
+      describe('when case type and case status is sent ', () => {
+        let returnedLink;
+
+        beforeEach(() => {
+          returnedLink = $scope.linkToManageCase('type', 'status');
+        });
+
+        it('returns the url to manage cases page with case type and case status preselected', () => {
+          expect(returnedLink)
+            .toBe('#/case/list?' + $.param({
+              cf: JSON.stringify({
+                case_type_category: 'cases',
+                case_type_id: ['type'],
+                status_id: ['status']
+              })
+            }));
+        });
+      });
+
+      describe('when "my cases" filter is selected ', () => {
+        let returnedLink;
+
+        beforeEach(() => {
+          $scope.filters.caseRelationshipType = 'is_case_manager';
+          returnedLink = $scope.linkToManageCase('type', 'status');
+        });
+
+        it('returns the url to manage cases page with "my cases" filter selected', () => {
+          expect(returnedLink)
+            .toBe('#/case/list?' + $.param({
+              cf: JSON.stringify({
+                case_type_category: 'cases',
+                case_type_id: ['type'],
+                status_id: ['status'],
+                case_manager: [CRM.config.user_contact_id]
+              })
+            }));
+        });
+      });
+
+      describe('when "cases I am involved in" filter is selected ', () => {
+        let returnedLink;
+
+        beforeEach(() => {
+          $scope.filters.caseRelationshipType = 'is_involved';
+          returnedLink = $scope.linkToManageCase('type', 'status');
+        });
+
+        it('returns the url to manage cases page with "cases I am involved in" filter selected', () => {
+          expect(returnedLink)
+            .toBe('#/case/list?' + $.param({
+              cf: JSON.stringify({
+                case_type_category: 'cases',
+                case_type_id: ['type'],
+                status_id: ['status'],
+                contact_involved: [CRM.config.user_contact_id]
+              })
+            }));
+        });
+      });
+    });
+
     /**
      * Initializes the dashboard controller.
      */
@@ -112,4 +180,4 @@
       });
     }
   });
-})(CRM._);
+})(CRM._, CRM.$);

@@ -1,14 +1,14 @@
 /* eslint-env jasmine */
 ((_) => {
-  describe('checkIfDraftEmailOrPDFActivity', () => {
-    let activity, checkIfDraftEmailOrPDFActivity, emailActivityTypeId,
-      isDraftEmailOrPdf, pdfActivityTypeId;
+  describe('checkIfDraftActivity', () => {
+    let activity, checkIfDraftActivity, emailActivityTypeId,
+      isDraftActivity, pdfActivityTypeId;
 
     beforeEach(module('civicase.data', 'civicase'));
 
     beforeEach(inject((_activitiesMockData_, _ActivityTypesData_,
-      _checkIfDraftEmailOrPDFActivity_) => {
-      checkIfDraftEmailOrPDFActivity = _checkIfDraftEmailOrPDFActivity_;
+      _checkIfDraftActivity_) => {
+      checkIfDraftActivity = _checkIfDraftActivity_;
       emailActivityTypeId = _.chain(_ActivityTypesData_.values)
         .findKey({ name: 'Email' })
         .cloneDeep()
@@ -23,15 +23,37 @@
         .value();
     }));
 
+    describe('when checking a draft activity of any kind', () => {
+      beforeEach(() => {
+        activity.status_name = 'Draft';
+        isDraftActivity = checkIfDraftActivity(activity);
+      });
+
+      it('returns true', () => {
+        expect(isDraftActivity).toBe(true);
+      });
+    });
+
+    describe('when checking a non draft activity of any kind', () => {
+      beforeEach(() => {
+        activity.status_name = 'Completed';
+        isDraftActivity = checkIfDraftActivity(activity);
+      });
+
+      it('returns false', () => {
+        expect(isDraftActivity).toBe(false);
+      });
+    });
+
     describe('when checking an email draft', () => {
       beforeEach(() => {
         activity.activity_type_id = emailActivityTypeId;
         activity.status_name = 'Draft';
-        isDraftEmailOrPdf = checkIfDraftEmailOrPDFActivity(activity);
+        isDraftActivity = checkIfDraftActivity(activity, ['Email']);
       });
 
       it('returns true', () => {
-        expect(isDraftEmailOrPdf).toBe(true);
+        expect(isDraftActivity).toBe(true);
       });
     });
 
@@ -39,11 +61,11 @@
       beforeEach(() => {
         activity.activity_type_id = emailActivityTypeId;
         activity.status_name = 'Completed';
-        isDraftEmailOrPdf = checkIfDraftEmailOrPDFActivity(activity);
+        isDraftActivity = checkIfDraftActivity(activity, ['Email']);
       });
 
       it('returns false', () => {
-        expect(isDraftEmailOrPdf).toBe(false);
+        expect(isDraftActivity).toBe(false);
       });
     });
 
@@ -51,11 +73,11 @@
       beforeEach(() => {
         activity.activity_type_id = pdfActivityTypeId;
         activity.status_name = 'Draft';
-        isDraftEmailOrPdf = checkIfDraftEmailOrPDFActivity(activity);
+        isDraftActivity = checkIfDraftActivity(activity, ['Print PDF Letter']);
       });
 
       it('returns true', () => {
-        expect(isDraftEmailOrPdf).toBe(true);
+        expect(isDraftActivity).toBe(true);
       });
     });
 
@@ -63,11 +85,11 @@
       beforeEach(() => {
         activity.activity_type_id = pdfActivityTypeId;
         activity.status_name = 'Completed';
-        isDraftEmailOrPdf = checkIfDraftEmailOrPDFActivity(activity);
+        isDraftActivity = checkIfDraftActivity(activity, ['Print PDF Letter']);
       });
 
       it('returns false', () => {
-        expect(isDraftEmailOrPdf).toBe(false);
+        expect(isDraftActivity).toBe(false);
       });
     });
   });

@@ -1,8 +1,8 @@
 /* eslint-env jasmine */
 (($, _) => {
   describe('civicaseSearch', () => {
-    let $controller, $rootScope, $scope, CaseFilters, CaseStatuses, CaseTypes, crmApi, affixOriginalFunction,
-      offsetOriginalFunction, originalDoSearch, originalParentScope, affixReturnValue,
+    let $controller, $rootScope, $scope, CaseFilters, CaseStatuses, CaseTypes, crmApi, currentCaseCategory,
+      affixOriginalFunction, offsetOriginalFunction, originalDoSearch, originalParentScope, affixReturnValue,
       originalBindToRoute;
 
     beforeEach(module('civicase.templates', 'civicase', 'civicase.data', ($provide) => {
@@ -11,13 +11,15 @@
       $provide.value('crmApi', crmApi);
     }));
 
-    beforeEach(inject((_$controller_, $q, _$rootScope_, _CaseFilters_, _CaseStatuses_, _CaseTypesMockData_) => {
+    beforeEach(inject((_$controller_, $q, _$rootScope_, _CaseFilters_, _CaseStatuses_, _CaseTypesMockData_,
+      _currentCaseCategory_) => {
       $controller = _$controller_;
       $rootScope = _$rootScope_;
       $scope = $rootScope.$new();
       CaseFilters = _CaseFilters_;
       CaseStatuses = _CaseStatuses_.values;
       CaseTypes = _CaseTypesMockData_.get();
+      currentCaseCategory = _currentCaseCategory_;
 
       crmApi.and.returnValue($q.resolve({ values: [] }));
     }));
@@ -71,6 +73,33 @@
 
       it('checks $scope.filters', () => {
         expect($scope.filterDescription).toEqual(jasmine.any(Object));
+      });
+    });
+
+    describe('default case filters', () => {
+      describe('when no case filters are passed through the URL', () => {
+        it('sets the case type category category equal to the current case type category', () => {
+          expect($scope.filters).toEqual({
+            case_type_category: currentCaseCategory
+          });
+        });
+      });
+
+      describe('when a case filter is passed through the URL', () => {
+        beforeEach(() => {
+          $scope.$bindToRoute.and.callFake((options) => {
+            if (options.param === 'cf') {
+              $scope.filters.case_type_category = 'custom-category';
+              $scope.$digest();
+            }
+          });
+
+          initController();
+        });
+
+        it('uses the case type category passed from the URL', () => {
+          expect($scope.filters.case_type_category).toEqual('custom-category');
+        });
       });
     });
 

@@ -9,6 +9,7 @@
       templateUrl: '~/civicase/case/contact-case-tab/directives/contact-case-tab-case-details.directive.html',
       scope: {
         item: '=selectedCase',
+        caseTypeCategory: '=',
         refreshCases: '=refreshCallback'
       }
     };

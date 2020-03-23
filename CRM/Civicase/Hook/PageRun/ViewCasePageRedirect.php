@@ -42,12 +42,31 @@ class CRM_Civicase_Hook_PageRun_ViewCasePageRedirect {
       ],
     ]);
 
+    // Add selected parameters passed to this page to the redirect URL.
+    $relevantUrlParams = [['name' => 'tab', 'type' => 'String']];
     $caseCategoryName = CaseCategoryHelper::getCaseCategoryNameFromOptionValue($case['case_type_id.case_type_category']);
-    $url = CRM_Utils_System::url('civicrm/case/a/', ['case_type_category' => strtolower($caseCategoryName)], TRUE,
-      "/case/list?sf=id&sd=DESC&caseId={$caseId}&cf=%7B%22case_type_category%22:%22" . strtolower($caseCategoryName) . "%22,%22status_id%22:%5B%22{$case['status_id']}%22%5D,%22case_type_id%22:%5B%22{$case['case_type_id.name']}%22%5D%7D",
-      FALSE);
+    $fragment = "/case/list?sf=id&sd=DESC&caseId={$caseId}&cf=%7B%22case_type_category%22:%22" . strtolower($caseCategoryName) . "%22,%22status_id%22:%5B%22{$case['status_id']}%22%5D,%22case_type_id%22:%5B%22{$case['case_type_id.name']}%22%5D%7D";
+    $this->addRelevantUrlParamsToFragment($fragment, $relevantUrlParams);
+    $url = CRM_Utils_System::url('civicrm/case/a/', ['case_type_category' => strtolower($caseCategoryName)], TRUE, $fragment, FALSE);
 
     CRM_Utils_System::redirect($url);
+  }
+
+  /**
+   * Parameters from the URL that we are intrested in appending to the fragment.
+   *
+   * @param string $fragment
+   *   Fragment.
+   * @param array $relevantUrlParams
+   *   Url parameters.
+   */
+  private function addRelevantUrlParamsToFragment(&$fragment, array $relevantUrlParams) {
+    foreach ($relevantUrlParams as $relevantUrlParam) {
+      $value = CRM_Utils_Request::retrieve($relevantUrlParam['name'], $relevantUrlParam['type']);
+      if ($value) {
+        $fragment .= "&{$relevantUrlParam['name']}={$value}";
+      }
+    }
   }
 
   /**

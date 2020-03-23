@@ -40,31 +40,35 @@ class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
 
     $url = CRM_Utils_System::currentPath();
     $isAjaxRequest = $url == 'civicrm/ajax/rest';
+    // We need to exclude this permission for this page because the permission
+    // will return true as the logic for equivalent case category permission
+    // will be applied.
+    $isAdvancedSearchPage = $url == 'civicrm/contact/search/advanced' && $permission != 'basic case information';
     $caseCategoryName = $this->getCaseCategoryName();
 
     if ($caseCategoryName) {
       $this->modifyPermissionCheckForCategory($permission, $granted, $caseCategoryName);
     }
-    elseif ($isAjaxRequest && !$this->isCaseEntity) {
-      $this->modifyPermissionCheckForAjaxRequest($permission, $granted);
+    elseif (($isAjaxRequest && !$this->isCaseEntity) || $isAdvancedSearchPage) {
+      $this->checkForEquivalentCaseCategoryPermission($permission, $granted);
     }
   }
 
   /**
-   * Modify permission check for Ajax requests when not case entity.
+   * Checks for Equivalent Case Category Permission.
    *
-   * When an AJAX request is not of the case entity, for example calls to
-   * Activity.get will still check the type of activity and the component it
-   * belongs to thereby invoking Civicase permission for activity types for the
-   * civicase component. To fix such issues, we check that the user has at least
-   * any of the equivalent civicase permissions.
+   * This function checks that the user has at least any of the equivalent
+   * civicase permissions.
+   * Useful for pages like advanced search and the ajax request page where the
+   * case category is not passed but we need to restrict or grant some access
+   * based on case type categories.
    *
    * @param string $permission
    *   Permission String.
    * @param bool $granted
    *   Whether permission is granted or not.
    */
-  private function modifyPermissionCheckForAjaxRequest($permission, &$granted) {
+  private function checkForEquivalentCaseCategoryPermission($permission, &$granted) {
     $caseTypeCategories = CaseType::buildOptions('case_type_category', 'validate');
     foreach ($caseTypeCategories as $caseTypeCategory) {
       if ($caseTypeCategory == CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME) {
@@ -136,8 +140,9 @@ class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
     $isAjaxRequest = $url == 'civicrm/ajax/rest';
     $isCaseActivityPage = $url == 'civicrm/case/activity';
     $isPrintActivityReportPage = $url == 'civicrm/case/customreport/print';
-    $isActivityPage = $url == 'civicrm/activity';
+    $isActivityPage = $url == 'civicrm/activity' || $url == 'civicrm/activity/add';
     $isCaseContactTabPage = $url == 'civicrm/case/contact-case-tab';
+    $isDownloadAllActivityFilesPage = $url == 'civicrm/case/activity/download-all-files';
 
     if ($isViewCase) {
       return $this->getCaseCategoryNameFromCaseIdInUrl('id');
@@ -161,6 +166,10 @@ class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
 
     if ($isActivityPage) {
       return $this->getCaseCategoryFromActivityIdInUrl('id');
+    }
+
+    if ($isDownloadAllActivityFilesPage) {
+      return $this->getCaseCategoryFromActivityIdInUrl('activity_id');
     }
   }
 
@@ -205,9 +214,8 @@ class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
    */
   private function getCaseCategoryFromActivityIdInUrl($activityIdParamName) {
     $activityId = CRM_Utils_Request::retrieve($activityIdParamName, 'Integer');
-    $context = CRM_Utils_Request::retrieve('context', 'String');
 
-    if ($activityId && strtolower($context) == 'case') {
+    if ($activityId) {
       $result = civicrm_api3('Activity', 'get', [
         'sequential' => 1,
         'return' => ['case_id'],
