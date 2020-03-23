@@ -89,6 +89,13 @@ function civicrm_api3_case_getstats(array $params) {
 
     _civicrm_api3_case_add_case_category_query_filter($query, $caseTypes);
   }
+  // Handle no value for case_type_id param case.
+  elseif ($params['case_type_id'] === "") {
+    // Pass an invalid id to get no response.
+    $caseTypes = ['values' => ['0' => ['id' => '0']]];
+
+    _civicrm_api3_case_add_case_category_query_filter($query, $caseTypes);
+  }
 
   $query->groupBy('a.case_type_id, a.status_id');
   if (!empty($params['check_permissions'])) {
