@@ -19,7 +19,7 @@
     "clickSelector": ".civicase__activity-feed-pager__more .btn"
   },
   {
-    "label": "Activity Feed Panel - Selected Filter",
+    "label": "Activity Feed Panel - Filters",
     "url": "{url}/civicrm/case/a/#/case?dtab=1",
     "clickSelectors": [
       ".civicase__activity-filter__more",
@@ -36,6 +36,21 @@
     "url": "{url}/civicrm/case/a/#/case?dtab=1",
     "onReadyScript": "activity-feed-panel/activity-detail.js",
     "selectors": [".CRM_Activity_Form_Activity"]
+  },
+  {
+    "label": "Activity Feed Panel - Selected Activity - Details - Maximise",
+    "url": "{url}/civicrm/case/a/#/case?dtab=1",
+    "onReadyScript": "activity-feed-panel/activity-detail-maximize.js"
+  },
+  {
+    "label": "Activity Feed Panel - Selected Activity - Details - Status Dropdown",
+    "url": "{url}/civicrm/case/a/#/case?dtab=1",
+    "onReadyScript": "activity-feed-panel/activity-detail-status-dropdown.js"
+  },
+  {
+    "label": "Activity Feed Panel - Selected Activity - Details - Priority Dropdown",
+    "url": "{url}/civicrm/case/a/#/case?dtab=1",
+    "onReadyScript": "activity-feed-panel/activity-detail-priority-dropdown.js"
   },
   {
     "label": "Activity Feed Panel - Activity Card Menu",
@@ -56,5 +71,30 @@
     "label": "Activity Feed Panel - On Contact Page",
     "url": "{url}/civicrm/contact/search?reset=1",
     "onReadyScript": "activity-feed-panel/on-contact-page.js"
+  },
+  {
+    "label": "Activity Feed Panel - Bulk Actions - Move to case",
+    "url": "{url}/civicrm/case/a/#/case?dtab=1",
+    "onReadyScript": "activity-feed-panel/bulk-actions-move-to-case.js"
+  },
+  {
+    "label": "Activity Feed Panel - Bulk Actions - Copy to case",
+    "url": "{url}/civicrm/case/a/#/case?dtab=1",
+    "onReadyScript": "activity-feed-panel/bulk-actions-copy-to-case.js"
+  },
+  {
+    "label": "Activity Feed Panel - Bulk Actions - Add tags",
+    "url": "{url}/civicrm/case/a/#/case?dtab=1",
+    "onReadyScript": "activity-feed-panel/bulk-actions-add-tag.js"
+  },
+  {
+    "label": "Activity Feed Panel - Bulk Actions - Remove tags",
+    "url": "{url}/civicrm/case/a/#/case?dtab=1",
+    "onReadyScript": "activity-feed-panel/bulk-actions-remove-tag.js"
+  },
+  {
+    "label": "Activity Feed Panel - Bulk Actions - Delete",
+    "url": "{url}/civicrm/case/a/#/case?dtab=1",
+    "onReadyScript": "activity-feed-panel/bulk-actions-delete.js"
   }]
 }

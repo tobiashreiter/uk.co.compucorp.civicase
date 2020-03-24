@@ -26,9 +26,17 @@ The backstop test suite for Civicase 5.1 extension covers following screens
 - [x] Activities Feed Panel - Main screen
 - [x] Activities Feed Panel - Loading screen
 - [x] Activities Feed Panel - Bulk action Checkbox enabled and all checkboxes checked, and bulk action dropdown opened
+- [x] Activities Feed Panel - Bulk Actions - Move to case
+- [x] Activities Feed Panel - Bulk Actions - Copy to case
+- [x] Activities Feed Panel - Bulk Actions - Add tags
+- [x] Activities Feed Panel - Bulk Actions - Remove tags
+- [x] Activities Feed Panel - Bulk Actions - Delete activities
 - [x] Activities Feed Panel - Load more state
 - [x] Activities Feed Panel - filter enabled and one dropdown opened
 - [x] Activities Feed Panel - one activity selected
+- [x] Activities Feed Panel - Selected Activity - Details - Maximise
+- [x] Activities Feed Panel - Selected Activity - Details - Status Dropdown
+- [x] Activities Feed Panel - Selected Activity - Details - Priority Dropdown
 - [x] Activities Feed Panel - Activity card menu on case overview
 - [x] Activities Feed Panel - Detail - Edit state
 - [x] Activities Feed Panel - Detail - Delete state
@@ -41,7 +49,6 @@ The backstop test suite for Civicase 5.1 extension covers following screens
 - [ ] Manage Cases List - Loading screen
 - [ ] Manage Cases List - selected case
 - [ ] Manage Cases List - Case Overview - with drawer closed
-
 - [ ] Manage Cases List - Case Overview - with calendar activity opened
 - [ ] Manage Cases List - Case Overview - Loading
 - [ ] Manage Cases List - Case Overview - Edit custom Data
