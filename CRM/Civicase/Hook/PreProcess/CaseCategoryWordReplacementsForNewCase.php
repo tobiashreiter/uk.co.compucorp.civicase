@@ -1,5 +1,6 @@
 <?php
 
+use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 use CRM_Civicase_Hook_Helper_CaseTypeCategory as CaseTypeCategoryHelper;
 
 /**
@@ -46,39 +47,7 @@ class CRM_Civicase_Hook_PreProcess_CaseCategoryWordReplacementsForNewCase {
     // through the ts function.
     $pageTitle = $form->get_template_vars('activityType');
     CRM_Utils_System::setTitle(ts($pageTitle));
-    $this->updateBreadcrumbs($caseCategoryName);
-  }
-
-  /**
-   * Updates the New Case page breadcrumb.
-   *
-   * The breadcrumb is updated so that the necessary words can be replaced and
-   * also so that the dashboard leads to the case category dashboard page
-   * depending on the case category.
-   *
-   * @param string $caseCategoryName
-   *   Case category name.
-   */
-  private function updateBreadcrumbs($caseCategoryName) {
-    $caseCategoryName = strtolower($caseCategoryName);
-    CRM_Utils_System::resetBreadCrumb();
-    $breadcrumb = [
-      [
-        'title' => ts('Home'),
-        'url' => CRM_Utils_System::url(),
-      ],
-      [
-        'title' => ts('CiviCRM'),
-        'url' => CRM_Utils_System::url('civicrm', 'reset=1'),
-      ],
-      [
-        'title' => ts('Case Dashboard'),
-        'url' => CRM_Utils_System::url('civicrm/case/a/', ['case_type_category' => $caseCategoryName], TRUE,
-          "/case?case_type_category={$caseCategoryName}"),
-      ],
-    ];
-
-    CRM_Utils_System::appendBreadCrumb($breadcrumb);
+    CaseCategoryHelper::updateBreadcrumbs($caseCategoryName);
   }
 
   /**
