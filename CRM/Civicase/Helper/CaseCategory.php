@@ -62,7 +62,7 @@ class CRM_Civicase_Helper_CaseCategory {
         return $caseTypeCategories[$caseCategoryId];
       }
     }
-    catch(Exception $e) {
+    catch (Exception $e) {
       return NULL;
     }
 
@@ -222,6 +222,37 @@ class CRM_Civicase_Helper_CaseCategory {
     }
 
     return $caseCategoryAccess;
+  }
+
+  /**
+   * Updates breadcrumb for a case category page.
+   *
+   * The breadcrumb is updated so that the necessary words can be replaced and
+   * also so that the dashboard leads to the case category dashboard page
+   * depending on the case category.
+   *
+   * @param string $caseCategoryName
+   *   Case category name.
+   */
+  public static function updateBreadcrumbs($caseCategoryName) {
+    CRM_Utils_System::resetBreadCrumb();
+    $breadcrumb = [
+      [
+        'title' => ts('Home'),
+        'url' => CRM_Utils_System::url(),
+      ],
+      [
+        'title' => ts('CiviCRM'),
+        'url' => CRM_Utils_System::url('civicrm', 'reset=1'),
+      ],
+      [
+        'title' => ts('Case Dashboard'),
+        'url' => CRM_Utils_System::url('civicrm/case/a/', ['case_type_category' => $caseCategoryName], TRUE,
+          "/case?case_type_category={$caseCategoryName}"),
+      ],
+    ];
+
+    CRM_Utils_System::appendBreadCrumb($breadcrumb);
   }
 
 }
