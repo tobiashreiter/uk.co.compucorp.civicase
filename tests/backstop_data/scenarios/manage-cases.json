@@ -1,0 +1,90 @@
+{
+  "scenarios": [
+    {
+      "label": "Manage Cases - List Loading",
+      "url": "{url}/civicrm/case/a/#/case/list",
+      "captureLoadingScreen": true
+    },
+    {
+      "label": "Manage Cases - List",
+      "url": "{url}/civicrm/case/a/#/case/list",
+      "waitForLoadingComplete": ".civicase__case-list-panel"
+    },
+    {
+      "label": "Manage Cases - Other Criterion/Find Case",
+      "url": "{url}/civicrm/case/a/#/case/list",
+      "waitForLoadingComplete": ".civicase__case-list-panel",
+      "clickSelector": ".civicase__case-filter-panel__button[ng-show=\"!expanded\"]"
+    },
+    {
+      "label": "Manage Cases - Case Overview",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}"
+    },
+    {
+      "label": "Manage Cases - Case Overview - Loading",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}",
+      "captureLoadingScreen": true
+    },
+    {
+      "label": "Manage Cases - Case Overview - Full Screen",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}",
+      "clickSelector": ".civicase__case-header__expand_button",
+      "delay": 300
+    },
+    {
+      "label": "Manage Cases - Case Overview - Empty Case",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={emptyCaseId}"
+    },
+    {
+      "label": "Manage Cases - Case Overview - Activity Calendar open",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}",
+      "clickSelector": ".civicase__activities-calendar__day-status"
+    },
+    {
+      "label": "Manage Cases - Case Overview - Edit Custom Data",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}",
+      "clickSelector": ".civicase__case-custom-fields__container .crm-editable-enabled"
+    },
+    {
+      "label": "Manage Cases - Case Overview - Add New menu",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}",
+      "clickSelectors": [
+        ".civicase__case-details__add-new-dropdown .btn-primary",
+        ".civicase__activity-dropdown",
+        ".civicase__activity-dropdown"
+      ]
+    },
+    {
+      "label": "Manage Cases - Case Overview - People tab",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=People"
+    },
+    {
+      "label": "Manage Cases - Case Overview - People tab - Loading",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=People",
+      "captureLoadingScreen": true
+    },
+    {
+      "label": "Manage Cases - Case Overview - People tab - Other Relationships",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=People&peopleTab=relations"
+    },
+    {
+      "label": "Manage Cases - Case Overview - People tab - Other Relationships - Loading",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=People",
+      "onReadyScript": "manage-cases/people-tab-other-relationships-loading.js"
+    },
+    {
+      "label": "Manage Cases - Case Overview - Files tab - Loading",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=Files",
+      "captureLoadingScreen": true
+    },
+    {
+      "label": "Manage Cases - Case Overview - Files tab",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=Files"
+    },
+    {
+      "label": "Manage Cases - Case Overview - Files tab - Upload File",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=Files",
+      "onReadyScript": "manage-cases/files-tab-upload-file.js"
+    }
+  ]
+}

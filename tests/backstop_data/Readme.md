@@ -10,6 +10,9 @@
 
 ## Activities Section
 * Make sure that there exists at least one tag and one tagset for activities.
+
+## Cases
+* Make sure there is a `sample.txt` file in the root of the folder.
 ---
 
 # Covered Screens
