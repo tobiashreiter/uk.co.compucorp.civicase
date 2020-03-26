@@ -31,7 +31,7 @@
       $scope.tagSets = prepareTagSetsTree($scope.allTags);
 
       if ($scope.model.length > 0) {
-        $scope.tags = prepareTagsForEditingReviewPanel($scope.model);
+        $scope.tags = prepareTagsForEditing($scope.model);
       }
 
       $scope.$watch('tags', function (tags) {
@@ -117,12 +117,12 @@
     }
 
     /**
-     * Prepare Tags for Editing Review panel
+     * Prepare Tags for Editing
      *
      * @param {Array} tags list of all tags
      * @returns {object} tags object
      */
-    function prepareTagsForEditingReviewPanel (tags) {
+    function prepareTagsForEditing (tags) {
       return {
         genericTags: getTagIDFromGivenList(tags, $scope.genericTags),
         tagSets: prepareTagSetsForEdit(tags, $scope.tagSets)
@@ -153,7 +153,7 @@
     }
 
     /**
-     * Prepare Tags for Editing Review panel
+     * Prepare Tags Sets for Editing
      *
      * @param {object} listOfTagIDs list of tag ids
      * @param {Array} tagsSetsToSearchFrom tags sets array to search from
