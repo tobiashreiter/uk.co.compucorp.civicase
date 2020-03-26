@@ -7,9 +7,9 @@
    * Tags Helper Service
    */
   function TagsHelper () {
+    this.formatTags = formatTags;
     this.prepareGenericTags = prepareGenericTags;
     this.prepareTagSetsTree = prepareTagSetsTree;
-    this.formatTags = formatTags;
 
     /**
      * Format Tags to add indentation

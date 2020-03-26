@@ -27,74 +27,36 @@
     });
 
     describe('when displaying generic tags', () => {
-      let preparedTags, tags;
+      let preparedTags, tags, excpectedTags;;
 
       beforeEach(() => {
         tags = [TagsMockData[0], TagsMockData[18]];
         preparedTags = TagsHelper.prepareGenericTags(tags);
+
+        expectedTags = _.cloneDeep(tags);
+        expectedTags[0].indentationLevel = 0;
+        expectedTags[1].parent_id = expectedTags[0].id;
+        expectedTags[1].indentationLevel = 1;
       });
 
       it('shows the tags hierarchy', () => {
-        expect(preparedTags).toEqual([{
-          id: '1',
-          name: 'Non-profit',
-          text: 'Non-profit',
-          description: 'Any not-for-profit organization.',
-          is_selectable: '1',
-          is_reserved: '0',
-          is_tagset: '0',
-          used_for: 'civicrm_contact',
-          indentationLevel: 0
-        }, {
-          id: '18',
-          name: 'L3',
-          text: 'L3',
-          parent_id: '1',
-          is_selectable: '1',
-          is_reserved: '0',
-          is_tagset: '0',
-          used_for: 'civicrm_activity',
-          created_id: '202',
-          created_date: '2018-12-27 07:38:15',
-          indentationLevel: 1
-        }]);
+        expect(preparedTags).toEqual(expectedTags);
       });
     });
 
     describe('when displaying tagsets', () => {
-      let preparedTags, tags;
+      let preparedTags, tags, excpectedTags;
 
       beforeEach(() => {
         tags = [TagsMockData[5], TagsMockData[6]];
         preparedTags = TagsHelper.prepareTagSetsTree(tags);
+
+        excpectedTags = [_.cloneDeep(tags[0])];
+        excpectedTags[0].children = [_.cloneDeep(tags[1])];
       });
 
       it('shows the tagsets and child tags', () => {
-        expect(preparedTags).toEqual([{
-          id: '6',
-          name: 'Fruit',
-          description: 'Sweet and nutritious',
-          is_selectable: '1',
-          is_reserved: '0',
-          is_tagset: '1',
-          used_for: 'civicrm_activity,civicrm_case',
-          created_id: '202',
-          created_date: '2018-10-11 12:38:07',
-          children: [{
-            id: '7',
-            name: 'Apple',
-            text: 'Apple',
-            description: 'An apple a day keeps the Windows away',
-            parent_id: '6',
-            is_selectable: '1',
-            is_reserved: '0',
-            is_tagset: '0',
-            used_for: 'civicrm_activity,civicrm_case',
-            created_id: '202',
-            color: '#ec3737',
-            created_date: '2018-10-11 12:38:07'
-          }]
-        }]);
+        expect(preparedTags).toEqual(excpectedTags);
       });
     });
   });
