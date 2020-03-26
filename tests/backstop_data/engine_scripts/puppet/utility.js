@@ -10,7 +10,7 @@ module.exports = class CrmPage {
   /**
    * Waits and clicks every element that matches the target selector.
    *
-   * @param {String} selector - the css selector of the target elements to
+   * @param {string} selector - the css selector of the target elements to
    * click.
    */
   async clickAll (selector) {
@@ -22,7 +22,7 @@ module.exports = class CrmPage {
   /**
    * Waits for the Navigation to happens after some link (selector) is clicked.
    *
-   * @param {String} selector - the css selector for the element to click and wait for navigation.
+   * @param {string} selector - the css selector for the element to click and wait for navigation.
    */
   async clickAndWaitForNavigation (selector) {
     await this.engine.waitForSelector(selector);
@@ -43,7 +43,7 @@ module.exports = class CrmPage {
    */
   async cloneUibPopover () {
     await this.engine.evaluate(() => {
-      let uibPopover = document.querySelector('div[uib-popover-popup]');
+      const uibPopover = document.querySelector('div[uib-popover-popup]');
       const uibPopoverClone = uibPopover.cloneNode(true);
 
       // Insert the new node before the reference node
@@ -54,8 +54,8 @@ module.exports = class CrmPage {
   /**
    * Checks if element is visible on screen
    *
-   * @param {String} selector - the css selector for the element to checkfor
-   * @return {Boolean}
+   * @param {string} selector - the css selector for the element to checkfor
+   * @returns {boolean} if the element is visible on the screen
    */
   async isElementVisible (selector) {
     return this.engine.evaluate((selector) => {
@@ -108,7 +108,7 @@ module.exports = class CrmPage {
   /**
    * Waits for all the loading placeholders to vanish
    *
-   * @param {String} parentSelector
+   * @param {string} parentSelector
    *  - for contextual loading checks
    */
   async waitForLoadingComplete (parentSelector) {
@@ -119,13 +119,22 @@ module.exports = class CrmPage {
       const allLoadingElements = document.querySelectorAll(parentSelector + 'div[class*="civicase__loading-placeholder"]');
 
       return allLoadingElements.length === 0;
-    }, {timeout: timeout}, parentSelector);
+    }, { timeout: timeout }, parentSelector);
+  }
+
+  /**
+   * Waits for the UI modal to load the form inside it.
+   */
+  async waitForUIModalLoad () {
+    await this.engine.waitFor('.modal-dialog.crm-ajax-container > form');
+    await this.cleanups();
+    await this.openAllAccordions();
   }
 
   /**
    * Waits for a selector before clicking
    *
-   * @param {String} selector
+   * @param {string} selector to wait for and click on
    */
   async waitForAndClick (selector) {
     await this.engine.waitFor(selector);
@@ -135,7 +144,7 @@ module.exports = class CrmPage {
   /**
    * Waits for a selector before hovering
    *
-   * @param {String} selector
+   * @param {string} selector to wait for and hover on
    */
   async waitForAndHover (selector) {
     await this.engine.waitFor(selector);
@@ -167,7 +176,7 @@ module.exports = class CrmPage {
   /**
    * Waits for the selector to be clearly visible on the screen.
    *
-   * @param {String} selector - the css selector of the target elements to
+   * @param {string} selector - the css selector of the target elements to
    * look for.
    */
   async waitForVisibility (selector) {
@@ -181,7 +190,7 @@ module.exports = class CrmPage {
   /**
    * Waits for an element and then evaluates a function on the browser.
    *
-   * @param {String} selector - the css selector for the element to wait
+   * @param {string} selector - the css selector for the element to wait
    * @param {Function} fn - the callback function to be executed in
    * the browser after the target element is ready.
    * for.
