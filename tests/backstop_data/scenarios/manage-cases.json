@@ -56,34 +56,34 @@
     },
     {
       "label": "Manage Cases - Case Overview - People tab",
-      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=people"
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=People"
     },
     {
       "label": "Manage Cases - Case Overview - People tab - Loading",
-      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=people",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=People",
       "captureLoadingScreen": true
     },
     {
       "label": "Manage Cases - Case Overview - People tab - Other Relationships",
-      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=people&peopleTab=relations"
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=People&peopleTab=relations"
     },
     {
       "label": "Manage Cases - Case Overview - People tab - Other Relationships - Loading",
-      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=people",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=People",
       "onReadyScript": "manage-cases/people-tab-other-relationships-loading.js"
     },
     {
       "label": "Manage Cases - Case Overview - Files tab - Loading",
-      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=files",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=Files",
       "captureLoadingScreen": true
     },
     {
       "label": "Manage Cases - Case Overview - Files tab",
-      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=files"
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=Files"
     },
     {
       "label": "Manage Cases - Case Overview - Files tab - Upload File",
-      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=files",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=Files",
       "onReadyScript": "manage-cases/files-tab-upload-file.js"
     }
   ]

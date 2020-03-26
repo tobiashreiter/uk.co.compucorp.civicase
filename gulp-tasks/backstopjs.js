@@ -26,9 +26,9 @@ var CACHE = {
   emptyCaseId: null
 };
 var CONFIG_TPL = {
-  'url': 'http://%{site-host}',
-  'drush_alias': '',
-  'root': '%{path-to-site-root}'
+  url: 'http://%{site-host}',
+  drush_alias: '',
+  root: '%{path-to-site-root}'
 };
 var FILES = {
   siteConfig: path.join(BACKSTOP_DIR, 'site-config.json'),
@@ -50,21 +50,21 @@ var URL_VAR_REPLACERS = [
   replaceRootUrlVar
 ];
 
-var createUniqueActivity = createUniqueRecordFactory('Activity', [ 'subject' ]);
-var createUniqueAttachment = createUniqueRecordFactory('Attachment', [ 'entity_id', 'entity_table' ]);
-var createUniqueCase = createUniqueRecordFactory('Case', [ 'subject' ]);
-var createUniqueCaseType = createUniqueRecordFactory('CaseType', [ 'name' ]);
-var createUniqueContact = createUniqueRecordFactory('Contact', [ 'display_name' ]);
-var createUniqueCustomField = createUniqueRecordFactory('CustomField', [ 'label' ]);
-var createUniqueCustomGroup = createUniqueRecordFactory('CustomGroup', [ 'title' ]);
+var createUniqueActivity = createUniqueRecordFactory('Activity', ['subject']);
+var createUniqueAttachment = createUniqueRecordFactory('Attachment', ['entity_id', 'entity_table']);
+var createUniqueCase = createUniqueRecordFactory('Case', ['subject']);
+var createUniqueCaseType = createUniqueRecordFactory('CaseType', ['name']);
+var createUniqueContact = createUniqueRecordFactory('Contact', ['display_name']);
+var createUniqueCustomField = createUniqueRecordFactory('CustomField', ['label']);
+var createUniqueCustomGroup = createUniqueRecordFactory('CustomGroup', ['title']);
 
 /**
  * Returns the list of the scenarios from
  *   a. All the different groups if `group` is == '_all_',
  *   b. Only the given group
  *
- * @param {String} group
- * @return {Array}
+ * @param {string} group of scenarios
+ * @returns {Array} of the list of the scenarios
  */
 function buildScenariosList (group) {
   const dirPath = path.join(BACKSTOP_DIR, 'scenarios');
@@ -106,7 +106,7 @@ function checkAndThrowApiResponseErrors (responses) {
  * Removes the temp config file and sends a notification
  * based on the given outcome from BackstopJS
  *
- * @param {Boolean} success
+ * @param {boolean} success if backstop ran with a success
  */
 function cleanUpAndNotify (success) {
   gulp
@@ -124,7 +124,7 @@ function cleanUpAndNotify (success) {
  * The content is the mix of the config template and the list of scenarios
  * under the scenarios/ folder
  *
- * @return {String}
+ * @returns {string} of content for the config
  */
 function createTempConfig () {
   var group = argv.group ? argv.group : '_all_';
@@ -143,17 +143,17 @@ function createTempConfig () {
 /**
  * Returns a function that creates unique records for the given entity.
  *
- * @param {String} entityName the name of the entity that the records belongs to.
- * @param {String[]} matchingFields the list of fields that will be used to check
+ * @param {string} entityName the name of the entity that the records belongs to.
+ * @param {string[]} matchingFields the list of fields that will be used to check
  * if the record has already been created. Ex.: `name`, `subject`, `title`, etc.
- * @return {Function}
+ * @returns {Function} of unique records
  */
 function createUniqueRecordFactory (entityName, matchingFields) {
   /**
    * Checks if the record exists on the given entity before creating a new one.
    *
-   * @param {Object} recordData the data used to create a new record on the Entity.
-   * @return {Object} the returned value from the API.
+   * @param {object} recordData the data used to create a new record on the Entity.
+   * @returns {object} the returned value from the API.
    */
   return function createUniqueRecord (recordData) {
     var filter = { options: { limit: 1 } };
@@ -176,10 +176,10 @@ function createUniqueRecordFactory (entityName, matchingFields) {
  * Executes a single call to the `cv api` service and returns the response
  * in JSON format.
  *
- * @param {String} entityName the name of the entity to run the query on.
- * @param {String} action the entity action.
- * @param {Object} queryData the data to pass to the entity action.
- * @return {Object} the result from the entity action call.
+ * @param {string} entityName the name of the entity to run the query on.
+ * @param {string} action the entity action.
+ * @param {object} queryData the data to pass to the entity action.
+ * @returns {object} the result from the entity action call.
  */
 function cvApi (entityName, action, queryData) {
   var queryResponse = cvApiBatch([[entityName, action, queryData]]);
@@ -192,6 +192,7 @@ function cvApi (entityName, action, queryData) {
  * those calls in JSON format.
  *
  * @param {Array} queriesData a list of queries to pass to the `cv api:batch` service.
+ * @returns {object} response from the cv api.
  */
 function cvApiBatch (queriesData) {
   var config = siteConfig();
@@ -206,8 +207,8 @@ function cvApiBatch (queriesData) {
 /**
  * Defines a BackstopJS gulp task for the given action.
  *
- * @param {String} action the name of the Backstop action.
- * @return {Object} gulp task.
+ * @param {string} action the name of the Backstop action.
+ * @returns {object} gulp task.
  */
 function defineBackstopJsAction (action) {
   return gulp.task('backstopjs:' + action, () => runBackstopJS(action));
@@ -217,19 +218,19 @@ function defineBackstopJsAction (action) {
  * Returns the ID of a case that is active and has an activity for the current
  * calendar month.
  *
- * @return {Number}
+ * @returns {number} case id of an active case
  */
 function getActiveCaseId () {
   var startDate = moment().startOf('month').format('YYYY-MM-DD');
   var endDate = moment().endOf('month').format('YYYY-MM-DD');
 
   var activity = cvApi('Activity', 'get', {
-    'sequential': 1,
-    'activity_date_time': { BETWEEN: [ startDate, endDate ] },
+    sequential: 1,
+    activity_date_time: { BETWEEN: [startDate, endDate] },
     'case_id.is_deleted': 0,
-    'case_id.status_id': 'Scheduled',
-    'return': [ 'case_id' ],
-    'options': { 'limit': 1 }
+    'case_id.status_id': 'Open',
+    return: ['case_id'],
+    options: { limit: 1 }
   });
 
   if (!activity.count) {
@@ -243,9 +244,10 @@ function getActiveCaseId () {
  * Tries to get the record id from the cache first and if not found will retrieve
  * it using `cv api`, store the record id, and return it.
  *
- * @param {String} cacheKey the cache key where the record id is stored.
+ * @param {string} cacheKey the cache key where the record id is stored.
  * @param {Function} callback a callback function that should return the record id
  *   if none is stored.
+ * @returns {string} if the record from cache
  */
 function getRecordIdFromCacheOrCallback (cacheKey, callback) {
   if (!CACHE[cacheKey]) {
@@ -258,9 +260,9 @@ function getRecordIdFromCacheOrCallback (cacheKey, callback) {
 /**
  * Replaces the `{caseId}` var with the id of the first non deleted, open case.
  *
- * @param {String} url the scenario url.
- * @param {Object} config the site config options.
- * @return {String}
+ * @param {string} url the scenario url.
+ * @param {object} config the site config options.
+ * @returns {string} replaced record id
  */
 function replaceCaseIdVar (url, config) {
   return url.replace('{caseId}', function () {
@@ -272,7 +274,7 @@ function replaceCaseIdVar (url, config) {
  * Replaces the `{emptyCaseId}` var with the id for the empty case created by the setup script.
  *
  * @param {string} url the scenario url.
- * @return {String}
+ * @returns {string} case record id
  */
 function replaceEmptyCaseIdVar (url) {
   return url.replace('{emptyCaseId}', function () {
@@ -291,7 +293,7 @@ function replaceEmptyCaseIdVar (url) {
  *
  * @param {string} url the scenario url.
  * @param {object} config the site config options.
- * @return {string}
+ * @returns {string} final processed url string
  */
 function replaceRootUrlVar (url, config) {
   return url.replace('{url}', config.url);
@@ -303,7 +305,7 @@ function replaceRootUrlVar (url, config) {
  * `http://example.com/contact`.
  *
  * @param {string} url the original scenario url with all vars intact.
- * @return {string} the scenario url with vars replaced.
+ * @returns {string} the scenario url with vars replaced.
  */
 function replaceUrlVars (url) {
   const config = siteConfig();
@@ -321,8 +323,8 @@ function replaceUrlVars (url) {
  * It fills the template file with the list of scenarios, creates a temp
  * file passed to backstopJS, then removes the temp file once the command is completed
  *
- * @param  {String} command
- * @return {Promise}
+ * @param  {string} command for the backstop task
+ * @returns {Promise} for the backstop task
  */
 function runBackstopJS (command) {
   if (touchSiteConfigFile()) {
@@ -414,7 +416,7 @@ function setupData () {
 /**
  * Returns the content of site config file
  *
- * @return {Object}
+ * @returns {object} content of site config file
  */
 function siteConfig () {
   return JSON.parse(fs.readFileSync(FILES.siteConfig));
@@ -423,7 +425,7 @@ function siteConfig () {
 /**
  * Creates the site config file is in the backstopjs folder, if it doesn't exists yet
  *
- * @return {Boolean} Whether the file had to be created or not
+ * @returns {boolean} Whether the file had to be created or not
  */
 function touchSiteConfigFile () {
   let created = false;
@@ -444,8 +446,8 @@ function touchSiteConfigFile () {
  * It converts the tab character to the amount of spaces required to correctly
  * align a multi-line block of text horizontally
  *
- * @param {String} msg
- * @throws {Error}
+ * @param {string} msg to be displayed
+ * @throws {Error} of the plugin
  */
 function throwError (msg) {
   throw new PluginError('Error', {
@@ -463,7 +465,7 @@ function throwError (msg) {
  * The cookie is then stored in a json file which is used by the BackstopJS scenarios
  * to log in
  *
- * @return {Promise}
+ * @returns {Promise} for writing cookies
  */
 async function writeCookies () {
   var cookiesDir = path.join(BACKSTOP_DIR, 'cookies');
@@ -488,7 +490,7 @@ async function writeCookies () {
 /**
  * Exports backstopJS related tasks task
  *
- * @param {String} action
+ * @param {string} action
  */
 module.exports = {
   setupData: setupData,
