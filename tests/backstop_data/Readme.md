@@ -2,13 +2,14 @@
  The backstopJS test suite needs following to be setup in prior
 
 ## Dashboard Section
-
 * The current calendar month has at least one day with some activities
 * Have at least that many acitivities on activity panel, so that it shows load more button
 
 ## Contact Section
 * Make sure the civicase is installed with demo data and should have a contact name matching "Betty" and at least have one activity for the contact.
 
+## Activities Section
+* Make sure that there exists at least one tag and one tagset for activities.
 ---
 
 # Covered Screens
