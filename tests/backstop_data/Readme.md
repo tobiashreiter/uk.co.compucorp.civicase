@@ -4,9 +4,10 @@
 ## Dashboard Section
 
 * The current calendar month has at least one day with some activities
+* Have at least that many acitivities on activity panel, so that it shows load more button
 
 ## Contact Section
-* Make sure the civicase is installed with demo data and should have a contact name "Betty Adams" and at least have one activity for the contact.
+* Make sure the civicase is installed with demo data and should have a contact name matching "Betty" and at least have one activity for the contact.
 
 ---
 
