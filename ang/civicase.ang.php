@@ -11,6 +11,7 @@
 use CRM_Civicase_Helper_GlobRecursive as GlobRecursive;
 use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
 use CRM_Civicase_Helper_NewCaseWebform as NewCaseWebform;
+use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 
 load_resources();
 $caseCategoryName = CRM_Utils_Request::retrieve('case_type_category', 'String');
@@ -26,7 +27,7 @@ $caseCategoryPermissions = $permissionService->get($caseCategoryName);
 // The following changes are only relevant to the full-page app.
 if (CRM_Utils_System::getUrlPath() == 'civicrm/case/a') {
   adds_shoreditch_css();
-  update_breadcrumbs();
+  CaseCategoryHelper::updateBreadcrumbs($caseCategoryName);
 }
 
 $options = [];
@@ -76,28 +77,6 @@ function adds_shoreditch_css() {
     Civi::resources()
       ->addStyleFile('org.civicrm.shoreditch', 'css/custom-civicrm.css', 99, 'html-header');
   }
-}
-
-/**
- * Update Breadcrumbs.
- */
-function update_breadcrumbs() {
-  CRM_Utils_System::resetBreadCrumb();
-  $breadcrumb = [
-    [
-      'title' => ts('Home'),
-      'url' => CRM_Utils_System::url(),
-    ],
-    [
-      'title' => ts('CiviCRM'),
-      'url' => CRM_Utils_System::url('civicrm', 'reset=1'),
-    ],
-    [
-      'title' => ts('Case Dashboard'),
-      'url' => CRM_Utils_System::url('civicrm/case/a/#/case'),
-    ],
-  ];
-  CRM_Utils_System::appendBreadCrumb($breadcrumb);
 }
 
 /**
