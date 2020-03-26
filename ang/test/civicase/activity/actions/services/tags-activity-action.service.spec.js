@@ -53,84 +53,12 @@
         expect(modalOpenCall[3].buttons[0].text).toBe('Tag Activities');
       });
 
-      it('does not have any selected generic tags initially', function () {
-        expect(modalOpenCall[2].selectedGenericTags.length).toBe(0);
+      it('does not have any selected tags initially', function () {
+        expect(modalOpenCall[2].selectedTags.length).toBe(0);
       });
 
-      describe('generic tags', function () {
-        describe('generic tags does not include tagsets', function () {
-          var genericTagsHasTagSets;
-
-          beforeEach(function () {
-            genericTagsHasTagSets = false;
-
-            modalOpenCall[2].genericTags.forEach(function (tag) {
-              if (tag.is_tagset !== '0') {
-                genericTagsHasTagSets = true;
-              }
-            });
-          });
-
-          it('does not include tagsets as generic tags', function () {
-            expect(genericTagsHasTagSets).toBe(false);
-          });
-        });
-
-        describe('child tags are indented in the UI', function () {
-          var tagWithOneLevelOfParent, tagWithTwoLevelofParent;
-
-          beforeEach(function () {
-            tagWithOneLevelOfParent = _.find(modalOpenCall[2].genericTags, function (tag) {
-              return tag.name === 'L1';
-            });
-            tagWithTwoLevelofParent = _.find(modalOpenCall[2].genericTags, function (tag) {
-              return tag.name === 'L2';
-            });
-          });
-
-          it('child tags are indented', function () {
-            expect(tagWithOneLevelOfParent.indentationLevel).toBe(1);
-            expect(tagWithTwoLevelofParent.indentationLevel).toBe(2);
-          });
-        });
-      });
-
-      describe('tagsets', function () {
-        describe('tagsets does not include generic tags', function () {
-          var tagSetsHasGenericTags;
-
-          beforeEach(function () {
-            tagSetsHasGenericTags = false;
-
-            modalOpenCall[2].tagSets.forEach(function (tag) {
-              if (tag.is_tagset === '0') {
-                tagSetsHasGenericTags = true;
-              }
-            });
-          });
-
-          it('does not include generic tags as tagsets', function () {
-            expect(tagSetsHasGenericTags).toBe(false);
-          });
-        });
-
-        describe('each tag set has its child tags set as child', function () {
-          var eachTagSetHasItsOwnChild = true;
-
-          beforeEach(function () {
-            _.each(modalOpenCall[2].tagSets, function (parentTag) {
-              _.each(parentTag.children, function (tag) {
-                if (tag.parent_id !== parentTag.id) {
-                  eachTagSetHasItsOwnChild = false;
-                }
-              });
-            });
-          });
-
-          it('saves every child tag as its parent\'s child', function () {
-            expect(eachTagSetHasItsOwnChild).toBe(true);
-          });
-        });
+      it('shows all tags for selection', function () {
+        expect(modalOpenCall[2].allTags).toEqual(TagsMockData.get());
       });
 
       it('opens the modal to add tags', function () {
@@ -144,7 +72,7 @@
 
       describe('when the save button is clicked', function () {
         beforeEach(function () {
-          modalOpenCall[2].selectedGenericTags = TagsMockData.get()[0].id;
+          modalOpenCall[2].selectedTags = [TagsMockData.get()[0].id];
           modalOpenCall[3].buttons[0].click();
         });
 
@@ -200,84 +128,12 @@
         expect(modalOpenCall[3].buttons[0].text).toBe('Remove tags from Activities');
       });
 
-      it('does not have any selected generic tags initially', function () {
-        expect(modalOpenCall[2].selectedGenericTags.length).toBe(0);
+      it('does not have any selected tags initially', function () {
+        expect(modalOpenCall[2].selectedTags.length).toBe(0);
       });
 
-      describe('generic tags', function () {
-        describe('generic tags does not include tagsets', function () {
-          var genericTagsHasTagSets;
-
-          beforeEach(function () {
-            genericTagsHasTagSets = false;
-
-            modalOpenCall[2].genericTags.forEach(function (tag) {
-              if (tag.is_tagset !== '0') {
-                genericTagsHasTagSets = true;
-              }
-            });
-          });
-
-          it('does not include tagsets as generic tags', function () {
-            expect(genericTagsHasTagSets).toBe(false);
-          });
-        });
-
-        describe('child tags are indented in the UI', function () {
-          var tagWhichHaveOneLevelOfParent, tagWhichHaveTwoLevelofParent;
-
-          beforeEach(function () {
-            tagWhichHaveOneLevelOfParent = _.find(modalOpenCall[2].genericTags, function (tag) {
-              return tag.name === 'L1';
-            });
-            tagWhichHaveTwoLevelofParent = _.find(modalOpenCall[2].genericTags, function (tag) {
-              return tag.name === 'L2';
-            });
-          });
-
-          it('does not include tagsets as generic tags', function () {
-            expect(tagWhichHaveOneLevelOfParent.indentationLevel).toBe(1);
-            expect(tagWhichHaveTwoLevelofParent.indentationLevel).toBe(2);
-          });
-        });
-      });
-
-      describe('tagsets', function () {
-        describe('tagsets does not include generic tags', function () {
-          var tagSetsHasGenericTags;
-
-          beforeEach(function () {
-            tagSetsHasGenericTags = false;
-
-            modalOpenCall[2].tagSets.forEach(function (tag) {
-              if (tag.is_tagset === '0') {
-                tagSetsHasGenericTags = true;
-              }
-            });
-          });
-
-          it('does not include generic tags as tagsets', function () {
-            expect(tagSetsHasGenericTags).toBe(false);
-          });
-        });
-
-        describe('each tag set has its child tags set as child', function () {
-          var eachTagSetHasItsOwnChild = true;
-
-          beforeEach(function () {
-            _.each(modalOpenCall[2].tagSets, function (parentTag) {
-              _.each(parentTag.children, function (tag) {
-                if (tag.parent_id !== parentTag.id) {
-                  eachTagSetHasItsOwnChild = false;
-                }
-              });
-            });
-          });
-
-          it('saves every child tag as its parent\'s child', function () {
-            expect(eachTagSetHasItsOwnChild).toBe(true);
-          });
-        });
+      it('shows all tags for selection', function () {
+        expect(modalOpenCall[2].allTags).toEqual(TagsMockData.get());
       });
 
       it('opens the modal to remove tags', function () {
@@ -291,7 +147,7 @@
 
       describe('when the save button is clicked', function () {
         beforeEach(function () {
-          modalOpenCall[2].selectedGenericTags = TagsMockData.get()[0].id;
+          modalOpenCall[2].selectedTags = [TagsMockData.get()[0].id];
           modalOpenCall[3].buttons[0].click();
         });
 
