@@ -9,10 +9,9 @@
    * @param {object} $rootScope rootscope object
    * @param {object} crmApi service to use civicrm api
    * @param {object} dialogService service to open dialog box
-   * @param {object} TagsHelper tags helper service
    * @param {Function} getSelect2Value service to get select 2 values
    */
-  function TagsActivityAction ($rootScope, crmApi, dialogService, TagsHelper, getSelect2Value) {
+  function TagsActivityAction ($rootScope, crmApi, dialogService, getSelect2Value) {
     /**
      * Check if the Action is enabled
      *
@@ -73,12 +72,9 @@
     function setModelObjectForModal (tags, numberOfActivities) {
       var model = {};
 
-      model.formatTags = TagsHelper.formatTags;
+      model.allTags = tags;
+      model.selectedTags = [];
       model.selectedActivitiesLength = numberOfActivities;
-      model.genericTags = TagsHelper.prepareGenericTags(tags);
-      model.tagSets = TagsHelper.prepareTagSetsTree(tags);
-
-      model.selectedGenericTags = '';
 
       return model;
     }
@@ -96,7 +92,7 @@
       dialogService.open('TagsActivityAction', '~/civicase/activity/actions/services/tags-activity-action.html', model, {
         autoOpen: false,
         height: 'auto',
-        width: '40%',
+        width: '450px',
         title: title,
         buttons: [{
           text: saveButtonLabel,
@@ -116,15 +112,7 @@
      * @param {object} model model object for dialog box
      */
     function addRemoveTagsConfirmationHandler (operation, activitiesObject, model) {
-      var tagIds = getSelect2Value(model.selectedGenericTags);
-
-      _.each(model.tagSets, function (tag) {
-        if (tag.selectedTags) {
-          tagIds = tagIds.concat(JSON.parse('[' + tag.selectedTags + ']'));
-        }
-      });
-
-      var apiCalls = prepareApiCalls(operation, activitiesObject, tagIds);
+      var apiCalls = prepareApiCalls(operation, activitiesObject, model.selectedTags);
 
       crmApi(apiCalls)
         .then(function () {
