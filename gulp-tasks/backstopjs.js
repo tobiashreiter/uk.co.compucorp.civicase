@@ -223,12 +223,11 @@ function defineBackstopJsAction (action) {
 function getActiveCaseId () {
   var startDate = moment().startOf('month').format('YYYY-MM-DD');
   var endDate = moment().endOf('month').format('YYYY-MM-DD');
-
   var activity = cvApi('Activity', 'get', {
     sequential: 1,
     activity_date_time: { BETWEEN: [startDate, endDate] },
     'case_id.is_deleted': 0,
-    'case_id.status_id': 'Open',
+    'case_id.status_id': 'Scheduled',
     return: ['case_id'],
     options: { limit: 1 }
   });
