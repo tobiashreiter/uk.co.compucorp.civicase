@@ -2,13 +2,14 @@
  The backstopJS test suite needs following to be setup in prior
 
 ## Dashboard Section
-
 * The current calendar month has at least one day with some activities
 * Have at least that many acitivities on activity panel, so that it shows load more button
 
 ## Contact Section
 * Make sure the civicase is installed with demo data and should have a contact name matching "Betty" and at least have one activity for the contact.
 
+## Activities Section
+* Make sure that there exists at least one tag and one tagset for activities.
 ---
 
 # Covered Screens
@@ -23,18 +24,25 @@ The backstop test suite for Civicase 5.1 extension covers following screens
 - [x] Dashboard Main screen - Add case modal
 
 ## Activities Feed Panel
-- [ ] Activities Feed Panel - Main screen
-- [ ] Activities Feed Panel - Loading screen
-- [ ] Activities Feed Panel - Bulk action Checkbox enabled and one checkbox checked, and bulk action dropdown opened
-- [ ] Activities Feed Panel - Load more state
-- [ ] Activities Feed Panel - filter dropdowns
-- [ ] Activities Feed Panel - with one filter enabled
-- [ ] Activities Feed Panel - one activity selected
-- [ ] Activities Feed Panel - Activity card menu on case overview
-- [ ] Activities Feed Panel - Detail - Edit state
-- [ ] Activities Feed Panel - Detail - Delete state
-- [ ] Activities Feed Panel - Under Manage Cases
-- [ ] Activities Feed Panel - Under Contact Page
+- [x] Activities Feed Panel - Main screen
+- [x] Activities Feed Panel - Loading screen
+- [x] Activities Feed Panel - Bulk action Checkbox enabled and all checkboxes checked, and bulk action dropdown opened
+- [x] Activities Feed Panel - Bulk Actions - Move to case
+- [x] Activities Feed Panel - Bulk Actions - Copy to case
+- [x] Activities Feed Panel - Bulk Actions - Add tags
+- [x] Activities Feed Panel - Bulk Actions - Remove tags
+- [x] Activities Feed Panel - Bulk Actions - Delete activities
+- [x] Activities Feed Panel - Load more state
+- [x] Activities Feed Panel - filter enabled and one dropdown opened
+- [x] Activities Feed Panel - one activity selected
+- [x] Activities Feed Panel - Selected Activity - Details - Maximise
+- [x] Activities Feed Panel - Selected Activity - Details - Status Dropdown
+- [x] Activities Feed Panel - Selected Activity - Details - Priority Dropdown
+- [x] Activities Feed Panel - Activity card menu on case overview
+- [x] Activities Feed Panel - Detail - Edit state
+- [x] Activities Feed Panel - Detail - Delete state
+- [x] Activities Feed Panel - Under Manage Cases
+- [x] Activities Feed Panel - Under Contact Page
 
 ## Manage Cases Screens
 - [ ] Manage Cases List - Main screen
@@ -42,7 +50,6 @@ The backstop test suite for Civicase 5.1 extension covers following screens
 - [ ] Manage Cases List - Loading screen
 - [ ] Manage Cases List - selected case
 - [ ] Manage Cases List - Case Overview - with drawer closed
-
 - [ ] Manage Cases List - Case Overview - with calendar activity opened
 - [ ] Manage Cases List - Case Overview - Loading
 - [ ] Manage Cases List - Case Overview - Edit custom Data
