@@ -12,20 +12,28 @@
   function activityFormsConfiguration (ActivityFormsProvider) {
     var addActivityFormConfigs = [
       {
-        name: 'DraftPdfActivityForm',
+        name: 'AddCustomPathActivityForm',
         weight: 0
       },
       {
-        name: 'DraftEmailActivityForm',
+        name: 'AddActivityForm',
         weight: 1
       },
       {
-        name: 'ActivityPopupForm',
+        name: 'DraftPdfActivityForm',
         weight: 2
       },
       {
-        name: 'ViewActivityForm',
+        name: 'DraftEmailActivityForm',
         weight: 3
+      },
+      {
+        name: 'UpdateActivityForm',
+        weight: 4
+      },
+      {
+        name: 'ViewActivityForm',
+        weight: 5
       }
     ];
 
