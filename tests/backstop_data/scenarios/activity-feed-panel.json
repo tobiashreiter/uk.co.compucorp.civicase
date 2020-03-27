@@ -27,7 +27,7 @@
     ]
   },
   {
-    "label": "Activity Feed Panel - Activity Details - Select Activity",
+    "label": "Activity Feed Panel - Activity Details - Activity Panel visible",
     "url": "{url}/civicrm/case/a/#/case?dtab=1",
     "onReadyScript": "activity-feed-panel/activity-detail.js"
   },

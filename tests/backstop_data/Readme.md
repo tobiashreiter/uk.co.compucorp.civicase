@@ -6,13 +6,13 @@
 * Have at least that many acitivities on activity panel, so that it shows load more button
 
 ## Contact Section
-* Make sure the civicase is installed with demo data and should have a contact name matching "Betty" and at least have one activity for the contact.
+* Make sure 'admin' contact have atleast one activity
 
 ## Activities Section
 * Make sure that there exists at least one tag and one tagset for activities.
 
 ## Cases
-* Make sure there is a `sample.txt` file in the root of the folder.
+* Make sure there is a `sample.txt` file in the root of the folder. This is to test file upload functionality of files tab.
 ---
 
 # Covered Screens
