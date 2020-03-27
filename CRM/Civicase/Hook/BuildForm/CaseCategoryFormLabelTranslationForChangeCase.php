@@ -6,6 +6,17 @@
 class CRM_Civicase_Hook_BuildForm_CaseCategoryFormLabelTranslationForChangeCase {
 
   /**
+   * Elements names that needs label translation.
+   *
+   * @var array
+   */
+  private $elementsToTranslateLabel = [
+    'case_status_id',
+    'case_type_id',
+    'link_to_case_id',
+  ];
+
+  /**
    * Translate some case form labels that Civi did not run translation for.
    *
    * @param CRM_Core_Form $form
@@ -31,21 +42,23 @@ class CRM_Civicase_Hook_BuildForm_CaseCategoryFormLabelTranslationForChangeCase 
    *   Page class.
    */
   private function translateFormLabels(CRM_Core_Form $form) {
-    $caseTypeIdElement = &$form->getElement('case_type_id');
-    $this->translateLabel([$caseTypeIdElement]);
+    foreach ($this->elementsToTranslateLabel as $elementName) {
+      if ($form->elementExists($elementName)) {
+        $element = &$form->getElement($elementName);
+        $this->translateLabel($element);
+      }
+    }
   }
 
   /**
-   * Translate the form labels for an array of form elements.
+   * Translate the form labels for a form elements.
    *
-   * @param array $elements
+   * @param object $element
    *   For Elements array.
    */
-  private function translateLabel(array $elements) {
-    foreach ($elements as $element) {
-      $label = ts($element->getLabel());
-      $element->setLabel($label);
-    }
+  private function translateLabel($element) {
+    $label = ts($element->getLabel());
+    $element->setLabel($label);
   }
 
   /**
@@ -64,7 +77,11 @@ class CRM_Civicase_Hook_BuildForm_CaseCategoryFormLabelTranslationForChangeCase 
       return FALSE;
     }
 
-    return $form->_activityTypeName == 'Change Case Type';
+    return in_array($form->_activityTypeName, [
+      'Change Case Type',
+      'Change Case Status',
+      'Link Cases',
+    ]);
   }
 
 }
