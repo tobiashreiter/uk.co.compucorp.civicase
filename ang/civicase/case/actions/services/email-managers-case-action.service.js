@@ -5,8 +5,10 @@
 
   /**
    * EmailManagersCaseAction service callback function.
+   *
+   * @param {object} ts translation service
    */
-  function EmailManagersCaseAction () {
+  function EmailManagersCaseAction (ts) {
     /**
      * Returns the configuration options to open up a mail popup to
      * communicate with the case managers. Displays an error message
@@ -28,7 +30,11 @@
       });
 
       if (managers.length === 0) {
-        CRM.alert('Please add a contact as a case manager.', 'No case managers available', 'error');
+        CRM.alert(
+          ts('Please add a contact as a case manager.'),
+          ts('No case managers available'),
+          'error'
+        );
 
         return;
       }
