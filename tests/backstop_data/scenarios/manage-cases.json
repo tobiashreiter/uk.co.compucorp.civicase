@@ -85,6 +85,100 @@
       "label": "Manage Cases - Case Overview - Files tab - Upload File",
       "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=Files",
       "onReadyScript": "manage-cases/files-tab-upload-file.js"
+    }],
+  "scenarios":[
+    {
+      "label": "Manage Cases - List - Bulk action with checkbox selected and dropdown opened",
+      "url": "{url}/civicrm/case/a/#/case/list",
+      "onReadyScript": "manage-cases/bulk-actions.js"
+    },
+    {
+      "label": "Manage Cases - List - Sort Dropdown",
+      "url": "{url}/civicrm/case/a/#/case/list",
+      "onReadyScript": "manage-cases/sort-dropdown.js"
+    },
+    {
+      "label": "Manage Cases - Case Overview - Action Dropdown",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}",
+      "onReadyScript": "manage-cases/action-dropdown.js"
+    },
+    {
+      "label": "Manage Cases - Case Overview - Action Dropdown - Change case status",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}",
+      "onReadyScript": "manage-cases/action-dropdown-change-status.js"
+    },
+    {
+      "label": "Manage Cases - Case Overview - Action Dropdown - Edit tags",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}",
+      "onReadyScript": "manage-cases/action-dropdown-edit-tags.js"
+    },
+    {
+      "label": "Manage Cases - Case Overview - Action Dropdown - Email Case Manager",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}",
+      "onReadyScript": "manage-cases/action-dropdown-email-case-manager.js"
+    },
+    {
+      "label": "Manage Cases - Case Overview - Action Dropdown - Print/Merge Document",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}",
+      "onReadyScript": "manage-cases/action-dropdown-print-merge.js"
+    },
+    {
+      "label": "Manage Cases - Case Overview - Action Dropdown - Export cases",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}",
+      "onReadyScript": "manage-cases/action-dropdown-export.js"
+    },
+    {
+      "label": "Manage Cases - Case Overview - Action Dropdown - Link cases",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}",
+      "onReadyScript": "manage-cases/action-dropdown-link.js"
+    },
+    {
+      "label": "Manage Cases - Case Overview - Action Dropdown - Lock case",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}",
+      "onReadyScript": "manage-cases/action-dropdown-lock.js"
+    },
+    {
+      "label": "Manage Cases - Case Overview - Action Dropdown - Delete case",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}",
+      "onReadyScript": "manage-cases/action-dropdown-delete.js"
+    },
+    {
+      "label": "Manage Cases - Case Overview - Status Dropdown",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}",
+      "onReadyScript": "manage-cases/status-dropdown.js"
+    },
+    {
+      "label": "Manage Cases - Case Overview - Status Dropdown - Change status",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}",
+      "onReadyScript": "manage-cases/status-dropdown-change-status.js"
+    },
+    {
+      "label": "Manage Cases - Case Overview - Status Dropdown - Change status",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}",
+      "onReadyScript": "manage-cases/status-dropdown-change-status.js"
+    },
+    {
+      "label": "Manage Cases - Case Overview - People tab - Case role dropdown",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=People",
+      "onReadyScript": "manage-cases/people-tab-add-case-role-dropdown.js"
+    },
+    {
+      "label": "Manage Cases - Case Overview - People tab - Assign role to a client",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=People",
+      "onReadyScript": "manage-cases/people-tab-add-case-role-to-client.js"
+    },
+    {
+      "label": "Manage Cases - Case Overview - People tab - Assign role to a non client",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=People",
+      "onReadyScript": "manage-cases/people-tab-add-case-role-to-non-client.js"
+    },
+    {
+      "label": "Manage Cases - Case Overview - People tab - Remove role",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=People",
+      "clickSelectors": [
+        ".civicase__people-tab__table-body tr:first-child .btn",
+        ".civicase__people-tab__table-body tr:first-child .dropdown-menu li:nth-child(3) a"
+      ]
     }
   ]
 }

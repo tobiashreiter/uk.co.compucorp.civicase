@@ -126,7 +126,7 @@ module.exports = class CrmPage {
    * Waits for the UI modal to load the form inside it.
    */
   async waitForUIModalLoad () {
-    await this.engine.waitFor('.modal-dialog.crm-ajax-container > form');
+    await this.engine.waitFor('.modal-dialog > form');
     await this.cleanups();
     await this.openAllAccordions();
   }
