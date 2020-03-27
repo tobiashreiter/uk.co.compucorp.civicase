@@ -11,8 +11,8 @@ class CRM_Civicase_Hook_ValidateForm_SaveActivityDraft {
    * @var array
    */
   private $specialForms = [
-    'email' => 'CRM_Contact_Form_Task_PDF',
-    'pdf' => 'CRM_Contact_Form_Task_Email',
+    'pdf' => 'CRM_Contact_Form_Task_PDF',
+    'email' => 'CRM_Contact_Form_Task_Email',
   ];
 
   /**
