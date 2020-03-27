@@ -199,7 +199,7 @@ function add_webforms_case_action(&$options) {
       }
       $options['caseActions'][] = [
         'title' => ts('Webforms'),
-        'action' => '',
+        'action' => 'Webforms',
         'icon' => 'fa-file-text-o',
         'items' => $items,
       ];

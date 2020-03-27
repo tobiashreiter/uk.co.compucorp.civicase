@@ -40,7 +40,7 @@
         var caseActionService = getCaseActionService(action.action);
 
         if (caseActionService && caseActionService.isActionAllowed) {
-          isActionAllowed = caseActionService.isActionAllowed(action, $scope.cases);
+          isActionAllowed = caseActionService.isActionAllowed(action, $scope.cases, attributes);
         }
 
         return isActionAllowed && ((isLockCaseAction && isCaseLockAllowed) ||
