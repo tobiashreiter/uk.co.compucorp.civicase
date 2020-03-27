@@ -43,27 +43,41 @@ The backstop test suite for Civicase 5.1 extension covers following screens
 - [x] Activities Feed Panel - Selected Activity - Details - Priority Dropdown
 - [x] Activities Feed Panel - Activity card menu on case overview
 - [x] Activities Feed Panel - Detail - Edit state
-- [x] Activities Feed Panel - Detail - Delete state
 - [x] Activities Feed Panel - Under Manage Cases
 - [x] Activities Feed Panel - Under Contact Page
 
 ## Manage Cases Screens
-- [ ] Manage Cases List - Main screen
-- [ ] Manage Cases List - Other Criterion filter button
-- [ ] Manage Cases List - Loading screen
-- [ ] Manage Cases List - selected case
-- [ ] Manage Cases List - Case Overview - with drawer closed
-- [ ] Manage Cases List - Case Overview - with calendar activity opened
-- [ ] Manage Cases List - Case Overview - Loading
-- [ ] Manage Cases List - Case Overview - Edit custom Data
-- [ ] Manage Cases List - Case Overview - Add new - Open the popup
-- [ ] Manage Cases List - People - Case Roles
-- [ ] Manage Cases List - People - Case Roles - Loading
-- [ ] Manage Cases List - People - Other Relationships
-- [ ] Manage Cases List - People - Other Relationships - Loading
-- [ ] Manage Cases List - Files
-- [ ] Manage Cases List - Files - Loading
-- [ ] Manage Cases List - Files - Upload files - *Skip this if is hard to implement*
+- [x] Manage Cases List - Main screen
+- [x] Manage Cases List - Other Criterion filter button
+- [x] Manage Cases List - Loading screen
+- [x] Manage Cases List - selected case
+- [x] Manage Cases List - Case Overview - with drawer closed
+- [x] Manage Cases List - Case Overview - with calendar activity opened
+- [x] Manage Cases List - Case Overview - Loading
+- [x] Manage Cases List - Case Overview - Edit custom Data
+- [x] Manage Cases List - Case Overview - Add new - Open the popup
+- [x] Manage Cases List - People - Case Roles
+- [x] Manage Cases List - People - Case Roles - Loading
+- [x] Manage Cases List - People - Other Relationships
+- [x] Manage Cases List - People - Other Relationships - Loading
+- [x] Manage Cases List - Files
+- [x] Manage Cases List - Files - Loading
+- [x] Manage Cases List - Files - Upload files - *Skip this if is hard to implement*
+- [x] Manage Cases List - Case Overview - Action Dropdown - Email Case Manager
+- [x] Manage Cases List - Case Overview - Action Dropdown - Export cases
+- [x] Manage Cases List - Case Overview - Action Dropdown - Link cases
+- [x] Manage Cases List - Case Overview - Action Dropdown - Print Merge Document
+- [x] Manage Cases List - Case Overview - Action Dropdown
+- [x] Manage Cases List - Case Overview - People tab - Assign role to a client
+- [x] Manage Cases List - Case Overview - People tab - Assign role to a non client
+- [x] Manage Cases List - Case Overview - People tab - Case role dropdown
+- [x] Manage Cases List - Case Overview - People tab - Remove role
+- [x] Manage Cases List - Case Overview - Status Dropdown - Change status
+- [x] Manage Cases List - Case Overview - Status Dropdown
+- [x] Manage Cases List - List - Bulk action with checkbox selected and dropdown opened
+- [x] Manage Cases List - Case Overview - Action Dropdown - Delete case
+- [x] Manage Cases List - Case Overview - Action Dropdown - Edit tags
+- [x] Manage Cases List - Case Overview - Action Dropdown - Change case status
 
 ## Contact Page
 - [ ] Contact Page - Case Tab
