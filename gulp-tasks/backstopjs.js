@@ -365,11 +365,12 @@ function setupData () {
   var activeCaseId = getActiveCaseId();
   var caseType = createUniqueCaseType({
     name: RECORD_IDENTIFIERS.emptyCaseTypeName,
+    case_type_category: 'Cases',
     title: 'Backstop Empty Case Type',
     definition: {
       activityTypes: [],
       activitySets: [],
-      caseRoles: [],
+      caseRoles: [{ name: 'Case Coordinator is', manager: '1', creator: '1' }],
       timelineActivityTypes: []
     }
   });
@@ -402,6 +403,7 @@ function setupData () {
   createUniqueCase({
     case_type_id: caseType.id,
     contact_id: emptyContact.id,
+    creator_id: emptyContact.id,
     subject: RECORD_IDENTIFIERS.emptyCaseSubject
   });
   createUniqueCustomField({
