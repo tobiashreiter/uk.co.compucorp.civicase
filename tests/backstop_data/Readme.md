@@ -2,11 +2,11 @@
  The backstopJS test suite needs following to be setup in prior
 
 ## Dashboard Section
-* The current calendar month has at least one day with some activities
-* Have at least that many acitivities on activity panel, so that it shows load more button
+* The current calendar month has at least one day with some activities.
+* Have at least that many acitivities on activity panel, so that it shows load more button.
 
 ## Contact Section
-* Make sure 'admin' contact have atleast one activity
+* Make sure 'admin' contact have atleast one activity and atleast 4 cases for itself.
 
 ## Activities Section
 * Make sure that there exists at least one tag and one tagset for activities.
@@ -80,9 +80,9 @@ The backstop test suite for Civicase 5.1 extension covers following screens
 - [x] Manage Cases List - Case Overview - Action Dropdown - Change case status
 
 ## Contact Page
-- [ ] Contact Page - Case Tab
-- [ ] Contact Page - Case Tab - Loading screen
-- [ ] Contact Page - Case Tab - Loading more results icon (When clicked on load more
+- [x] Contact Page - Case Tab
+- [x] Contact Page - Case Tab - Loading screen
+- [x] Contact Page - Case Tab - Loading more results icon (When clicked on load more
 
 ## Modals
 - [ ] Modals - Contact Popover
