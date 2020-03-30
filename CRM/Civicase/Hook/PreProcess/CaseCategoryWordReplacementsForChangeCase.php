@@ -21,6 +21,7 @@ class CRM_Civicase_Hook_PreProcess_CaseCategoryWordReplacementsForChangeCase {
     }
 
     $this->addWordReplacements($form);
+    $this->setPageTitle($form);
   }
 
   /**
@@ -35,10 +36,45 @@ class CRM_Civicase_Hook_PreProcess_CaseCategoryWordReplacementsForChangeCase {
   private function addWordReplacements(CRM_Core_Form $form) {
     $caseCategoryName = CaseCategoryHelper::getCategoryName($form->_caseId[0]);
     CRM_Civicase_Hook_Helper_CaseTypeCategory::addWordReplacements($caseCategoryName);
-    // We need to translate this manually as Civi does not the page title
-    // through the ts function.
+  }
+
+  /**
+   * Sets the Page title.
+   *
+   * We need to translate this manually as Civi did not translate the page
+   * title. Because the form object has no function to get the current
+   * page title, we need to re-construct the page title similar to what is
+   * done in activity form class.
+   *
+   * @param CRM_Core_Form $form
+   *   Form Object.
+   */
+  private function setPageTitle(CRM_Core_Form $form) {
     $pageTitle = $form->get_template_vars('activityTypeName');
-    CRM_Utils_System::setTitle(ts($pageTitle));
+    $displayName = $this->getContactDisplayName($form);
+    if ($displayName) {
+      CRM_Utils_System::setTitle(ts($displayName . ' - ' . $pageTitle));
+    }
+    else {
+      CRM_Utils_System::setTitle(ts('%1 Activity', [1 => $pageTitle]));
+    }
+  }
+
+  /**
+   * Function to get currently viewed contact display name.
+   *
+   * @param CRM_Core_Form $form
+   *   Form object.
+   *
+   * @return null|string
+   *   Contact display name.
+   */
+  private function getContactDisplayName(CRM_Core_Form $form) {
+    if ($form->_currentlyViewedContactId) {
+      $displayName = CRM_Contact_BAO_Contact::displayName($form->_currentlyViewedContactId);
+
+      return $displayName;
+    }
   }
 
   /**
@@ -53,11 +89,7 @@ class CRM_Civicase_Hook_PreProcess_CaseCategoryWordReplacementsForChangeCase {
    *   returns a boolean to determine if hook will run or not.
    */
   private function shouldRun($formName, CRM_Core_Form $form) {
-    if ($formName != 'CRM_Case_Form_Activity') {
-      return FALSE;
-    }
-
-    return $form->_activityTypeName == 'Change Case Type';
+    return $formName == 'CRM_Case_Form_Activity';
   }
 
 }
