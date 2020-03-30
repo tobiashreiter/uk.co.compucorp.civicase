@@ -290,14 +290,14 @@ function replaceEmptyCaseIdVar (url) {
 }
 
 /**
- * Replaces the `{contactId:Albert Adams}` var with the contact id for the contact.
+ * Replaces the `{contactName: CONTACT NAME}` var with the contact id for the contact.
  *
  * @param {string} url the scenario url.
  * @param {object} config the site config options.
  * @returns {string} final processed url string
  */
 function replaceContactIdVar (url, config) {
-  return url.replace(/{contactId:(.+)}/, function (stringMatch, contactName) {
+  return url.replace(/{contactName:(.+)}/, function (stringMatch, contactName) {
     var contactId = CACHE.contactIdsMap[contactName];
 
     if (!contactId) {
