@@ -34,7 +34,7 @@
     };
     var caseRelationshipConfig = [
       { text: ts('All Cases'), id: 'all' },
-      { text: ts('My cases'), id: 'is_case_manager' },
+      { text: ts('My Cases'), id: 'is_case_manager' },
       { text: ts('Cases I am involved'), id: 'is_involved' }
     ];
     var DEFAULT_CASE_FILTERS = {
