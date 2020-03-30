@@ -223,12 +223,11 @@ function defineBackstopJsAction (action) {
 function getActiveCaseId () {
   var startDate = moment().startOf('month').format('YYYY-MM-DD');
   var endDate = moment().endOf('month').format('YYYY-MM-DD');
-
   var activity = cvApi('Activity', 'get', {
     sequential: 1,
     activity_date_time: { BETWEEN: [startDate, endDate] },
     'case_id.is_deleted': 0,
-    'case_id.status_id': 'Open',
+    'case_id.status_id': 'Scheduled',
     return: ['case_id'],
     options: { limit: 1 }
   });
@@ -366,11 +365,12 @@ function setupData () {
   var activeCaseId = getActiveCaseId();
   var caseType = createUniqueCaseType({
     name: RECORD_IDENTIFIERS.emptyCaseTypeName,
+    case_type_category: 'Cases',
     title: 'Backstop Empty Case Type',
     definition: {
       activityTypes: [],
       activitySets: [],
-      caseRoles: [],
+      caseRoles: [{ name: 'Case Coordinator is', manager: '1', creator: '1' }],
       timelineActivityTypes: []
     }
   });
@@ -403,6 +403,7 @@ function setupData () {
   createUniqueCase({
     case_type_id: caseType.id,
     contact_id: emptyContact.id,
+    creator_id: emptyContact.id,
     subject: RECORD_IDENTIFIERS.emptyCaseSubject
   });
   createUniqueCustomField({

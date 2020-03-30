@@ -13,7 +13,7 @@
     class="panel panel-default civicase__case-list-panel"
     ng-class="{'civicase__case-list-panel--summary': viewingCase, 'civicase__case-list-panel--focused': caseIsFocused}">
     <div class="civicase__case-list-table-container" civicase-sticky-table-header>
-      <table ng-if="!caseIsFocused" class="table civicase__case-list-table" >
+      <table ng-show="!caseIsFocused" class="table civicase__case-list-table" >
         <thead class="civicase__case-list-table__header">
         <tr>
           <th
