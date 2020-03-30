@@ -375,6 +375,7 @@ function civicase_civicrm_alterContent(&$content, $context, $templateName, $form
 function civicase_civicrm_validateForm($formName, &$fields, &$files, &$form, &$errors) {
   $hooks = [
     new CRM_Civicase_Hook_ValidateForm_SaveActivityDraft(),
+    new CRM_Civicase_Hook_ValidateForm_SaveCaseTypeCategory(),
   ];
 
   foreach ($hooks as $hook) {
