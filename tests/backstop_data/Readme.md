@@ -83,6 +83,8 @@ The backstop test suite for Civicase 5.1 extension covers following screens
 - [x] Contact Page - Case Tab
 - [x] Contact Page - Case Tab - Loading screen
 - [x] Contact Page - Case Tab - Loading more results icon (When clicked on load more
+- [x] Contact Page - Case Tab - Action Dropdown
+- [x] Contact Page - Case Tab - Status Dropdown
 
 ## Modals
 - [ ] Modals - Contact Popover
