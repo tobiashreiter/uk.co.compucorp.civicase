@@ -22,13 +22,26 @@ class CRM_Civicase_Page_ContactCaseTab extends CRM_Core_Page {
     $this->assign('case_type_category', $caseTypeCategory);
     $caseCategoryName = CRM_Civicase_Helper_CaseCategory::getCaseCategoryNameFromOptionValue($caseTypeCategory);
     CRM_Civicase_Hook_Helper_CaseTypeCategory::addWordReplacements($caseCategoryName);
-    $translated = [];
-    if (strtolower($caseCategoryName) != 'cases') {
-      $manager = new Manager(CRM_Core_Resources::singleton());
-      $translated = $manager->getTranslatedStrings('civicase');
+
+    // Skip translations for default case category:
+    if (strtolower($caseCategoryName) == 'cases') {
+      CRM_Core_Resources::singleton()->addSetting([
+        'strings::uk.co.compucorp.civicase' => [],
+      ]);
+
+      return parent::run();
     }
+
+    $angularManager = new Manager(CRM_Core_Resources::singleton());
+    $civicaseModule = $angularManager->getModule('civicase');
+    $translations = $angularManager->getTranslatedStrings('civicase');
+
+    // Adds translated civicase settings and strings to global CRM var:
     CRM_Core_Resources::singleton()->addSetting([
-      'strings::uk.co.compucorp.civicase' => $translated,
+      'civicase' => $civicaseModule['settings'],
+    ]);
+    CRM_Core_Resources::singleton()->addSetting([
+      'strings::uk.co.compucorp.civicase' => $translations,
     ]);
 
     return parent::run();
