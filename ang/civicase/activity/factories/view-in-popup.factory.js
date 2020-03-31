@@ -12,7 +12,7 @@
     function viewInPopup ($event, activity) {
       var isClickingAButton = $event && $($event.target).is('a, a *, input, button, button *');
       var activityForm = ActivityForms.getActivityFormService(activity, {
-        formType: 'popup'
+        action: 'update'
       });
 
       if (!activityForm || isClickingAButton) {

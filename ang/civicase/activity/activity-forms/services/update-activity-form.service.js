@@ -1,18 +1,18 @@
 (function (angular, getCrmUrl) {
   var module = angular.module('civicase');
 
-  module.service('ActivityPopupForm', ActivityPopupForm);
+  module.service('UpdateActivityForm', UpdateActivityForm);
 
   /**
-   * Activity Popup Form service.
+   * Update Activity Form service.
    */
-  function ActivityPopupForm () {
+  function UpdateActivityForm () {
     this.canChangeStatus = true;
     this.canHandleActivity = canHandleActivity;
     this.getActivityFormUrl = getActivityFormUrl;
 
     /**
-     * Only handles activity forms that will be displayed in a popup.
+     * Only handles activity forms that will be updated.
      * It supports both stand-alone activities and case activities.
      *
      * @param {object} activity an activity object.
@@ -20,12 +20,12 @@
      * @returns {boolean} true when it can handle the activity and form options.
      */
     function canHandleActivity (activity, options) {
-      return (options && options.formType === 'popup') || false;
+      return (options && options.action === 'update') || false;
     }
 
     /**
      * @param {object} activity an activity object.
-     * @returns {string} the URL for the activity form that will be displayed in a popup.
+     * @returns {string} the URL for the activity form that will be updated.
      */
     function getActivityFormUrl (activity) {
       var urlPath = 'civicrm/activity';

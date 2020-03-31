@@ -17,8 +17,24 @@
       it('adds the draft pdf activity form service', () => {
         expect(ActivityFormsProvider.addActivityForms)
           .toHaveBeenCalledWith(jasmine.arrayContaining([{
-            name: 'DraftPdfActivityForm',
+            name: 'AddCustomPathActivityForm',
             weight: 0
+          }]));
+      });
+
+      it('adds the draft pdf activity form service', () => {
+        expect(ActivityFormsProvider.addActivityForms)
+          .toHaveBeenCalledWith(jasmine.arrayContaining([{
+            name: 'AddActivityForm',
+            weight: 1
+          }]));
+      });
+
+      it('adds the draft pdf activity form service', () => {
+        expect(ActivityFormsProvider.addActivityForms)
+          .toHaveBeenCalledWith(jasmine.arrayContaining([{
+            name: 'DraftPdfActivityForm',
+            weight: 2
           }]));
       });
 
@@ -26,15 +42,15 @@
         expect(ActivityFormsProvider.addActivityForms)
           .toHaveBeenCalledWith(jasmine.arrayContaining([{
             name: 'DraftEmailActivityForm',
-            weight: 1
+            weight: 3
           }]));
       });
 
       it('adds the activity popup form service', () => {
         expect(ActivityFormsProvider.addActivityForms)
           .toHaveBeenCalledWith(jasmine.arrayContaining([{
-            name: 'ActivityPopupForm',
-            weight: 2
+            name: 'UpdateActivityForm',
+            weight: 4
           }]));
       });
 
@@ -42,7 +58,7 @@
         expect(ActivityFormsProvider.addActivityForms)
           .toHaveBeenCalledWith(jasmine.arrayContaining([{
             name: 'ViewActivityForm',
-            weight: 3
+            weight: 5
           }]));
       });
     });

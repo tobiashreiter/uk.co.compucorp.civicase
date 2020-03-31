@@ -15,7 +15,8 @@
     };
   });
 
-  module.controller('civicaseAddActivityMenuController', function ($scope, getCaseQueryParams, CaseType, ActivityType) {
+  module.controller('civicaseAddActivityMenuController', function ($scope, getCaseQueryParams, CaseType, ActivityType,
+    ActivityForms) {
     var definition = CaseType.getAll()[$scope.case.case_type_id].definition;
 
     (function init () {
@@ -107,28 +108,22 @@
      */
     $scope.newActivityUrl = function (actType) {
       var caseQueryParams = JSON.stringify(getCaseQueryParams({ caseId: $scope.case.id }));
-      var path = 'civicrm/case/activity';
-      var args = {
+      var newActivity = {
+        activity_type_id: actType.id,
+        case_id: $scope.case.id,
+        type: actType.name
+      };
+      var options = {
         action: 'add',
-        reset: 1,
-        caseid: $scope.case.id,
-        atype: actType.id,
         civicase_reload: caseQueryParams
       };
+      var activityForm = ActivityForms.getActivityFormService(newActivity, options);
 
-      // CiviCRM requires nonstandard urls for a couple special activity types
-      if (actType.name === 'Email') {
-        path = 'civicrm/activity/email/add';
-        args.context = 'standalone';
-        delete args.cid;
+      if (!activityForm) {
+        return;
       }
 
-      if (actType.name === 'Print PDF Letter') {
-        path = 'civicrm/activity/pdf/add';
-        args.context = 'standalone';
-      }
-
-      return CRM.url(path, args);
+      return activityForm.getActivityFormUrl(newActivity, options);
     };
   });
 })(CRM.$, CRM._, angular);
