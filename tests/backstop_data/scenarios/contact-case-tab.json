@@ -1,0 +1,20 @@
+{
+  "scenarios": [
+    {
+      "label": "Contact - Case Tab",
+      "url": "{url}/civicrm/contact/view?cid={contactName:admin}&selectedChild=case",
+      "readySelector": ".civicase__contact-cases-tab-container"
+    },
+    {
+      "label": "Contact - Case Tab - loading",
+      "url": "{url}/civicrm/contact/view?cid={contactName:admin}&selectedChild=case",
+      "readySelector": ".civicase__contact-cases-tab-container",
+      "captureLoadingScreen": true
+    },
+    {
+      "label": "Contact - Case Tab - Load More loading icon",
+      "url": "{url}/civicrm/contact/view?cid={contactName:admin}&selectedChild=case",
+      "clickSelector": ".civicase__contact-case-tab__case-list__footer button"
+    }
+  ]
+}

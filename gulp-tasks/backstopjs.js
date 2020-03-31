@@ -23,7 +23,8 @@ var puppeteer = require('puppeteer');
 var BACKSTOP_DIR = 'tests/backstop_data/';
 var CACHE = {
   caseId: null,
-  emptyCaseId: null
+  emptyCaseId: null,
+  contactIdsMap: {}
 };
 var CONFIG_TPL = {
   url: 'http://%{site-host}',
@@ -47,7 +48,8 @@ var RECORD_IDENTIFIERS = {
 var URL_VAR_REPLACERS = [
   replaceCaseIdVar,
   replaceEmptyCaseIdVar,
-  replaceRootUrlVar
+  replaceRootUrlVar,
+  replaceContactIdVar
 ];
 
 var createUniqueActivity = createUniqueRecordFactory('Activity', ['subject']);
@@ -284,6 +286,28 @@ function replaceEmptyCaseIdVar (url) {
 
       return caseRecord.id;
     });
+  });
+}
+
+/**
+ * Replaces the `{contactName: CONTACT NAME}` var with the contact id for the contact.
+ *
+ * @param {string} url the scenario url.
+ * @param {object} config the site config options.
+ * @returns {string} final processed url string
+ */
+function replaceContactIdVar (url, config) {
+  return url.replace(/{contactName:(.+)}/, function (stringMatch, contactName) {
+    var contactId = CACHE.contactIdsMap[contactName];
+
+    if (!contactId) {
+      var cmd = `cv api contact.getsingle display_name=${contactName} option.limit=1`;
+      var contactInfo = JSON.parse(execSync(cmd, { cwd: config.root }));
+      contactId = contactInfo.id;
+      CACHE.contactIdsMap[contactName] = contactId;
+    }
+
+    return contactId;
   });
 }
 
