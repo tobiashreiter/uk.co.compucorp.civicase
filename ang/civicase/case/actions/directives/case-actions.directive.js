@@ -2,7 +2,7 @@
   var module = angular.module('civicase');
 
   module.directive('civicaseCaseActions', function ($window, $rootScope, $injector, allowCaseLocks,
-    dialogService, PrintMergeCaseAction) {
+    CaseActions, dialogService, PrintMergeCaseAction) {
     return {
       restrict: 'A',
       templateUrl: '~/civicase/case/actions/directives/case-actions.directive.html',
@@ -22,6 +22,7 @@
      * @param {object} attributes the element attributes
      */
     function civicaseCaseActionsLink ($scope, element, attributes) {
+      var CASE_ACTIONS = CaseActions.getAll();
       var ts = CRM.ts('civicase');
       var isBulkMode = attributes.isBulkMode;
 
@@ -99,7 +100,7 @@
             { action: 'DeleteCases', type: 'restore', title: ts('Restore from Trash') }
           ];
         } else {
-          $scope.caseActions = _.cloneDeep(CRM.civicase.caseActions);
+          $scope.caseActions = _.cloneDeep(CASE_ACTIONS);
 
           if (!isBulkMode) {
             _.remove($scope.caseActions, { action: 'changeStatus(cases)' });
