@@ -107,7 +107,11 @@
      * @returns {string} url
      */
     $scope.newActivityUrl = function (actType) {
-      var caseQueryParams = JSON.stringify(getCaseQueryParams({ caseId: $scope.case.id }));
+      var caseType = CaseType.getById($scope.case.case_type_id);
+      var caseQueryParams = JSON.stringify(getCaseQueryParams({
+        caseId: $scope.case.id,
+        caseTypeCategory: caseType.case_type_category
+      }));
       var newActivity = {
         activity_type_id: actType.id,
         case_id: $scope.case.id,

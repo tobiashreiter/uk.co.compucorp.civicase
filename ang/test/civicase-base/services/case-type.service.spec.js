@@ -1,6 +1,6 @@
 /* eslint-env jasmine */
 
-(() => {
+((_) => {
   describe('Case Type', () => {
     let CaseType, CaseTypesData;
 
@@ -40,5 +40,19 @@
         ]);
       });
     });
+
+    describe('when getting a case type by id', () => {
+      let expectedCaseType, returnedCaseType;
+
+      beforeEach(() => {
+        const caseTypeId = _.chain(CaseTypesData).keys().sample().value();
+        expectedCaseType = CaseTypesData[caseTypeId];
+        returnedCaseType = CaseType.getById(caseTypeId);
+      });
+
+      it('returns the matching case type', () => {
+        expect(returnedCaseType).toEqual(expectedCaseType);
+      });
+    });
   });
-})();
+})(CRM._);
