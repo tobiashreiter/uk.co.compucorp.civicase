@@ -66,7 +66,7 @@ class CRM_Civicase_Hook_ValidateForm_SaveActivityDraft {
       'status_id' => 'Draft',
       'case_id' => $caseId,
       'id' => $form->getVar('_activityId'),
-      'assignee_id' => $form->getVar('_contactIds'),
+      'assignee_id' => CRM_Core_Session::getLoggedInContactID(),
     ];
     if (in_array($formName, $this->specialForms)) {
       $params['details'] = CRM_Utils_Array::value('html_message', $fields);

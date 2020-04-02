@@ -140,7 +140,12 @@ class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
     $isAjaxRequest = $url == 'civicrm/ajax/rest';
     $isCaseActivityPage = $url == 'civicrm/case/activity';
     $isPrintActivityReportPage = $url == 'civicrm/case/customreport/print';
-    $isActivityPage = $url == 'civicrm/activity' || $url == 'civicrm/activity/add';
+    $isActivityPage = in_array($url, [
+      'civicrm/activity',
+      'civicrm/activity/add',
+      'civicrm/activity/pdf/view',
+      'civicrm/activity/email/view',
+    ]);
     $isCaseContactTabPage = $url == 'civicrm/case/contact-case-tab';
     $isDownloadAllActivityFilesPage = $url == 'civicrm/case/activity/download-all-files';
 
