@@ -58,7 +58,7 @@
         </div>
       </div>
     </div>
-    <div class="civicase__contact-cases-tab__panel-row civicase__contact-cases-tab__panel-row--dark  clearfix">
+    <div class="civicase__contact-cases-tab__panel-row civicase__contact-cases-tab__panel-row--dark clearfix">
       <div class="pull-left">
         <div class="civicase__contact-card--client" civicase-contact-card contacts="item.client"></div>
         <div class="civicase__summary-tab__subject crm-entity" data-entity="Case" data-id="{{ item.id }}">
@@ -68,6 +68,14 @@
             data-type="textarea"
             data-placeholder="Click to add subject"
             crm-form-success="onChangeSubject($data)">
+          </p>
+        </div>
+        <div class="civicase__summary-tab__description crm-entity" data-entity="Case" data-id="{{ item.id }}">
+          <p
+            crm-editable="item"
+            data-field="details"
+            data-type="textarea"
+            data-placeholder="This case doesn't currently have a description. Click here to add now">
           </p>
         </div>
         <span class="civicase__case-header__case-type">
