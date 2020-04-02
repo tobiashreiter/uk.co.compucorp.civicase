@@ -113,6 +113,18 @@
   &:last-child {
     border-bottom: 0;
   }
+
+  .civicase__summary-tab__subject {
+    textarea {
+      min-height: 65px;
+    }
+  }
+
+  .civicase__summary-tab__description {
+    textarea {
+      min-height: 85px;
+    }
+  }
 }
 
 .civicase__contact-cases-tab__panel-actions {
