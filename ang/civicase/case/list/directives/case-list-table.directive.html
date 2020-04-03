@@ -22,9 +22,9 @@
             ng-include="'~/civicase/case/list/directives/case-list-table-first-column-header.html'">
           </th>
           <th
-                  ng-show="!viewingCase"
-                  ng-repeat="header in headers"
-                  civicase-case-list-sort-header="{{ header.sort }}">{{ ts(header.label) }}
+            ng-if="!viewingCase"
+            ng-repeat="header in headers"
+            civicase-case-list-sort-header="{{ header.sort }}">{{ ts(header.label) }}
           </th>
         </tr>
         </thead>
@@ -34,7 +34,7 @@
             <civicase-case-card mode="case-list" case="item"></civicase-case-card>
           </td>
           <td
-            ng-show="!viewingCase"
+            ng-if="!viewingCase"
             ng-repeat="header in headers"
             ng-class="{'case-activity-card-wrapper': header.display_type == 'activity_card'}">
 
@@ -72,8 +72,8 @@
               </div>
             </div>
           </td>
-          <td ng-show="!viewingCase"><div class="civicase__loading-placeholder__activity-card"><div></div></div></td>
-          <td ng-show="!viewingCase" ng-repeat="i in [1,2,3,4,5,6,7]"><div class="civicase__loading-placeholder__oneline"></div></td>
+          <td ng-if="!viewingCase"><div class="civicase__loading-placeholder__activity-card"><div></div></div></td>
+          <td ng-if="!viewingCase" ng-repeat="i in [1,2,3,4,5,6,7]"><div class="civicase__loading-placeholder__oneline"></div></td>
         </tr>
         <!-- Empty State HTML -->
         <tr ng-if="!cases.length && !isLoading" class="civicase__panel-empty">

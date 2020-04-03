@@ -20,12 +20,12 @@ module.exports = async (page, scenario, viewport) => {
 /**
  * Action handler for hover event
  *
- * @param {Object} page pupettter engine object
- * @param {Object} scenario object of each scenario
- * @param {Object} viewport viewport configurations
+ * @param {object} page pupettter engine object
+ * @param {object} scenario object of each scenario
+ * @param {object} viewport viewport configurations
  */
 async function hoverSelectorAction (page, scenario, viewport) {
-  const hoverSelectors = scenario.hoverSelectors || [ scenario.hoverSelector ];
+  const hoverSelectors = scenario.hoverSelectors || [scenario.hoverSelector];
   const utility = new Utility(page, scenario, viewport);
 
   for (const hoverSelector of hoverSelectors) {
@@ -40,12 +40,12 @@ async function hoverSelectorAction (page, scenario, viewport) {
 /**
  * Action handler for click event
  *
- * @param {Object} page pupettter engine object
- * @param {Object} scenario object of each scenario
- * @param {Object} viewport viewport configurations
+ * @param {object} page pupettter engine object
+ * @param {object} scenario object of each scenario
+ * @param {object} viewport viewport configurations
  */
 async function clickSelectorAction (page, scenario, viewport) {
-  const clickSelectors = scenario.clickSelectors || [ scenario.clickSelector ];
+  const clickSelectors = scenario.clickSelectors || [scenario.clickSelector];
   const utility = new Utility(page, scenario, viewport);
 
   for (const clickSelector of clickSelectors) {
@@ -53,6 +53,10 @@ async function clickSelectorAction (page, scenario, viewport) {
 
     if (scenario.waitForAjaxComplete) {
       await utility.waitForLoadingComplete();
+    }
+
+    if (scenario.waitForUIModalLoad) {
+      await utility.waitForUIModalLoad();
     }
   }
 }

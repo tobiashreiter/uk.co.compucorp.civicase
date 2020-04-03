@@ -7,7 +7,7 @@
   </ul>
   <!-- End Nav Tabs -->
   <!-- Case Role Tab -->
-  <div class="civicase__people-tab__sub-tab" ng-show="tab == 'roles'">
+  <div class="civicase__people-tab__sub-tab" ng-if="tab == 'roles'">
     <div class="civicase__people-tab__search">
       <div class="btn-group btn-group-md pull-right">
         <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -43,7 +43,7 @@
         page="rolesPage"
         page-size="25"
         total="rolesCount"
-        ng-show="rolesCount > 25"
+        ng-if="rolesCount > 25"
         show-prev-next="true"
         show-first-last="true"
         text-first="{{ ts('<< First') }}"
@@ -150,7 +150,7 @@
         page="rolesPage"
         page-size="25"
         total="rolesCount"
-        ng-show="rolesCount > 25"
+        ng-if="rolesCount > 25"
         show-prev-next="true"
         show-first-last="true"
         text-first="{{ ts('<< First') }}"
@@ -163,7 +163,7 @@
   </div>
   <!-- End Case Roles Tab -->
   <!-- Case Relationship tab -->
-  <div class="civicase__people-tab__sub-tab" ng-show="tab == 'relations'">
+  <div class="civicase__people-tab__sub-tab" ng-if="tab == 'relations'">
     <div class="civicase__people-tab__search">
       <div class="btn-group btn-group-md pull-right">
         <a ng-if="item.client.length === 1" class="btn btn-primary crm-popup" crm-popup-form-success="getRelations()" ng-href="{{ 'civicrm/contact/view/rel' | civicaseCrmUrl:{ action: 'add', reset: 1, cid: item.client[0].contact_id } }}">
@@ -201,7 +201,7 @@
         page="relationsPage"
         page-size="25"
         total="relationsCount"
-        ng-show="relationsCount > 25"
+        ng-if="relationsCount > 25"
         show-prev-next="true"
         show-first-last="true"
         text-first="{{ ts('<< First') }}"
@@ -282,7 +282,7 @@
         page="relationsPage"
         page-size="25"
         total="relationsCount"
-        ng-show="relationsCount > 25"
+        ng-if="relationsCount > 25"
         show-prev-next="true"
         show-first-last="true"
         text-first="{{ ts('<< First') }}"
