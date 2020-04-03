@@ -180,7 +180,7 @@ class CRM_Civicase_Hook_alterAPIPermissions_Case {
    *   Case category name.
    */
   private function getCaseCategoryNameFromCaseType(array $params, $key) {
-    if (empty($params[$key])) {
+    if (empty($params[$key]) || !is_numeric($params[$key])) {
       return;
     }
 
@@ -199,7 +199,7 @@ class CRM_Civicase_Hook_alterAPIPermissions_Case {
    *   Case category name.
    */
   private function getCaseCategoryNameFromCaseId(array $params, $key) {
-    if (empty($params[$key])) {
+    if (empty($params[$key]) || !is_numeric($params[$key])) {
       return;
     }
 

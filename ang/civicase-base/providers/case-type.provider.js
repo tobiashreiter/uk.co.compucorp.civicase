@@ -12,6 +12,7 @@
     this.$get = $get;
     this.getAll = getAll;
     this.getByCategory = getByCategory;
+    this.getById = getById;
     this.getTitlesForNames = getTitlesForNames;
 
     /**
@@ -24,6 +25,7 @@
       return {
         getAll: getAll,
         getByCategory: getByCategory,
+        getById: getById,
         getItemsForCaseType: getItemsForCaseType,
         getTitlesForNames: getTitlesForNames
       };
@@ -56,6 +58,14 @@
       return _.filter(caseTypes, function (caseType) {
         return caseType.case_type_category === categoryValue;
       });
+    }
+
+    /**
+     * @param {number} caseTypeId the id for the case type.
+     * @returns {object} the case type for the given ID.
+     */
+    function getById (caseTypeId) {
+      return caseTypes[caseTypeId];
     }
 
     /**
