@@ -230,6 +230,7 @@ function getActiveCaseId () {
     activity_date_time: { BETWEEN: [startDate, endDate] },
     'case_id.is_deleted': 0,
     'case_id.status_id': 'Scheduled',
+    case_filter: { 'case_type_id.case_type_category': 'cases' },
     return: ['case_id'],
     options: { limit: 1 }
   });

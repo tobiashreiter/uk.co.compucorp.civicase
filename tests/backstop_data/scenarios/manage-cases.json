@@ -85,8 +85,7 @@
       "label": "Manage Cases - Case Overview - Files tab - Upload File",
       "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=Files",
       "onReadyScript": "manage-cases/files-tab-upload-file.js"
-    }],
-  "scenarios":[
+    },
     {
       "label": "Manage Cases - List - Bulk action with checkbox selected and dropdown opened",
       "url": "{url}/civicrm/case/a/#/case/list",
