@@ -59,11 +59,14 @@
     var caseTypes = CaseType.getAll();
     var caseTypeCategories = CaseTypeCategory.getAll();
 
+    $scope.isToFieldVisible = false;
     $scope.ts = ts;
     $scope.formatDate = DateHelper.formatDate;
 
     (function init () {
       var hasCase = $scope.activity && !_.isEmpty($scope.activity.case);
+
+      $scope.isToFieldVisible = getToFieldVisibilityStatus();
 
       if (hasCase) {
         $scope.caseDetailUrl = getCaseDetailUrl();
@@ -187,6 +190,18 @@
       var angularParams = $.param({ caseId: $scope.activity.case_id });
 
       return $filter('civicaseCrmUrl')(caseDetailUrl) + '?' + angularParams;
+    }
+
+    /**
+     * @returns {boolean} true when the current activity belongs to the communication group,
+     *   but it's not a Print/Merge Document activity.
+     */
+    function getToFieldVisibilityStatus () {
+      var isNotPrintPdfActivity = $scope.activity && $scope.activity.type !== 'Print/Merge Document';
+      var isCommunicationActivity = (($scope.activity && $scope.activity.category) || [])
+        .indexOf('communication') >= 0;
+
+      return isCommunicationActivity && isNotPrintPdfActivity;
     }
   }
 })(angular, CRM.$, CRM._);

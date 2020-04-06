@@ -43,6 +43,10 @@
         expect(activityCard.isolateScope().bootstrapThemeElement.is('#bootstrap-theme')).toBe(true);
       });
 
+      it('defines the to field visibility as false', () => {
+        expect(activityCard.isolateScope().isToFieldVisible).toBe(false);
+      });
+
       describe('when the activity does not belong to a case', () => {
         it('does not store a link to a case details page', () => {
           expect($scope.caseDetailUrl).not.toBeDefined();
@@ -91,6 +95,51 @@
 
           return $filter('civicaseCrmUrl')(caseDetailUrl) + '?' + angularParams;
         }
+      });
+    });
+
+    describe('"To:" field visibility', () => {
+      beforeEach(() => {
+        $scope.activity = activitiesMockData.get()[0];
+      });
+
+      describe('when the activity is a communication of the "Print/Merge Document" type', () => {
+        beforeEach(() => {
+          $scope.activity.category = 'communication';
+          $scope.activity.type = 'Print/Merge Document';
+
+          initDirective();
+        });
+
+        it('does not show the "To:" field', () => {
+          expect(activityCard.isolateScope().isToFieldVisible).toBe(false);
+        });
+      });
+
+      describe('when the activity is any communication other than the "Print/Merge Document" type', () => {
+        beforeEach(() => {
+          $scope.activity.category = 'communication';
+          $scope.activity.type = 'Email';
+
+          initDirective();
+        });
+
+        it('shows the "To:" field', () => {
+          expect(activityCard.isolateScope().isToFieldVisible).toBe(true);
+        });
+      });
+
+      describe('when the activity is not a communication', () => {
+        beforeEach(() => {
+          $scope.activity.category = 'milestone';
+          $scope.activity.type = 'Open Case';
+
+          initDirective();
+        });
+
+        it('does not show the "To:" field', () => {
+          expect(activityCard.isolateScope().isToFieldVisible).toBe(false);
+        });
       });
     });
 

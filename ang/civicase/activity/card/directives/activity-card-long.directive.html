@@ -106,7 +106,10 @@
         <div ng-if="activity.type !== 'File Upload'" class="civicase__activity-subject">{{ activity.subject }}</div>
         <!-- End - Subject -->
       </div>
-      <div class="civicase__activity-card-row civicase__activity-card-row--communication" ng-if="activity.category.indexOf('communication') > -1">
+      <div
+        class="civicase__activity-card-row civicase__activity-card-row--communication"
+        ng-if="isToFieldVisible"
+      >
         <div>
           <span>To:&nbsp;</span>
           <span ng-if="activity.target_contact_name" civicase-contact-card contacts="activity.target_contact_name"></span>
