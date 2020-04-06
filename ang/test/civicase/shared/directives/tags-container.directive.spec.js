@@ -36,7 +36,7 @@
     /**
      * Initialise the controller
      *
-     * @param {Object} tags
+     * @param {object} tags a list of tags to include in the scrope.
      */
     function initController (tags) {
       $scope = $rootScope.$new();

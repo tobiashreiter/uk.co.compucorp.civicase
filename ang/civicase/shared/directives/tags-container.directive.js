@@ -18,6 +18,8 @@
 
   /**
    * Controller function
+   *
+   * @param {object} $scope a reference to the scope object.
    */
   function civicaseTagsContainerController ($scope) {
     $scope.tagsArray = [];
