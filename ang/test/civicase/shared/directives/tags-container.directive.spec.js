@@ -33,10 +33,21 @@
       });
     });
 
+    describe('when passing an empty object of tags', () => {
+      beforeEach(() => {
+        initController({});
+        $scope.$digest();
+      });
+
+      it('sets the tags array as empty', () => {
+        expect($scope.tagsArray).toEqual([]);
+      });
+    });
+
     /**
      * Initialise the controller
      *
-     * @param {object} tags a list of tags to include in the scrope.
+     * @param {object} tags a list of tags to include in the scope.
      */
     function initController (tags) {
       $scope = $rootScope.$new();
