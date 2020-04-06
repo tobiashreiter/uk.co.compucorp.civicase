@@ -1,8 +1,8 @@
 /* eslint-env jasmine */
 
-(function () {
-  describe('civicaseTag', function () {
-    var $controller, $rootScope, $scope, mockTags;
+(() => {
+  describe('civicaseTag', () => {
+    let $controller, $rootScope, $scope, mockTags;
 
     beforeEach(module('civicase'));
 
@@ -22,13 +22,13 @@
       };
     }));
 
-    describe('on init', function () {
-      beforeEach(function () {
+    describe('on init', () => {
+      beforeEach(() => {
         initController(mockTags);
         $scope.$digest();
       });
 
-      it('converts the tags object into an array', function () {
+      it('converts the tags object into an array', () => {
         expect($scope.tagsArray).toEqual(Object.values(mockTags));
       });
     });
