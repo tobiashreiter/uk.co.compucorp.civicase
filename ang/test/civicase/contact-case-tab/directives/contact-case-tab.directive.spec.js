@@ -3,7 +3,7 @@
 ((_) => {
   describe('Contact Case Tab', () => {
     var $controller, $rootScope, $scope, CaseTypeCategoryTranslationService,
-      crmApi, mockContactId, mockContactService;
+      crmApi, mockContactId, mockContactService, AddCase;
 
     beforeEach(module('civicase.data', 'civicase', ($provide) => {
       mockContactService = jasmine.createSpyObj('Contact', ['getCurrentContactID']);
@@ -12,10 +12,11 @@
     }));
 
     beforeEach(inject((_$controller_, _$rootScope_, _CaseTypeCategoryTranslationService_,
-      _crmApi_) => {
+      _crmApi_, _AddCase_) => {
       $controller = _$controller_;
       $rootScope = _$rootScope_;
       CaseTypeCategoryTranslationService = _CaseTypeCategoryTranslationService_;
+      AddCase = _AddCase_;
       crmApi = _crmApi_;
 
       spyOn(CaseTypeCategoryTranslationService, 'restoreTranslation');
@@ -109,6 +110,35 @@
         it('does not restore the case type category translation', () => {
           expect(CaseTypeCategoryTranslationService.restoreTranslation)
             .not.toHaveBeenCalled();
+        });
+      });
+    });
+
+    describe('Add Case Button', () => {
+      beforeEach(() => {
+        spyOn(AddCase, 'clickHandler');
+        spyOn(AddCase, 'isVisible');
+      });
+
+      describe('visibility of Add Case Button', () => {
+        beforeEach(() => {
+          initController();
+          $scope.isAddCaseVisible();
+        });
+
+        it('displays the Add Case button only when adequate permission is available', () => {
+          expect(AddCase.isVisible).toHaveBeenCalled();
+        });
+      });
+
+      describe('when clicking on Add Case Button', () => {
+        beforeEach(() => {
+          initController();
+          $scope.addCase('cases', '5', jasmine.any(Function));
+        });
+
+        it('creates a new case', () => {
+          expect(AddCase.clickHandler).toHaveBeenCalledWith('cases', '5', jasmine.any(Function));
         });
       });
     });

@@ -74,8 +74,8 @@
       }
     ];
 
-    $scope.clickHandler = AddCase.clickHandler;
-    $scope.isVisible = AddCase.isVisible;
+    $scope.addCase = AddCase.clickHandler;
+    $scope.isAddCaseVisible = AddCase.isVisible;
     $scope.checkPerm = CRM.checkPerm;
     $scope.handleContactTabChange = handleContactTabChange;
     $scope.ts = ts;

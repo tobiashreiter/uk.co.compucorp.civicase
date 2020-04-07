@@ -6,12 +6,10 @@
   /**
    * Add Case Service
    *
-   * @param {object} ts ts
-   * @param {object} $location the location service.
    * @param {object} $window the window service.
    * @param {string} CaseCategoryWebformSettings service to fetch case category webform settings
    */
-  function AddCaseService (ts, $location, $window, CaseCategoryWebformSettings) {
+  function AddCaseService ($window, CaseCategoryWebformSettings) {
     this.clickHandler = clickHandler;
     this.isVisible = isVisible;
 

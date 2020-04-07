@@ -6,9 +6,9 @@
   <!-- Added for SEO purpose (This will be hidden through css) -->
   <h1 crm-page-title class="element-invisible"> {{ ts('Related cases to the user') }} </h1>
   <div class="civicase__contact-cases-tab clearfix">
-    <a ng-if="isVisible()"
+    <a ng-if="isAddCaseVisible()"
       class="btn-primary btn civicase__contact-cases-tab-add"
-      ng-click="clickHandler(caseTypeCategoryName, contactId, refresh)">
+      ng-click="addCase(caseTypeCategoryName, contactId, refresh)">
       <i class="material-icons">add_circle</i>
       {{ ts('Add case') }}
     </a>
@@ -121,9 +121,9 @@
     <div class="civicase__activity-card--big--empty-title"> {{ ts('This contact has no cases') }} </div>
     <div class="civicase__activity-card--big--empty-description"> {{ ts('Click the button below to create a new case for this contact') }} </div>
     <a
-      ng-if="isVisible()"
+      ng-if="isAddCaseVisible()"
       class="civicase__activity-card--big--empty-button btn"
-      ng-click="clickHandler(caseTypeCategoryName, contactId, refresh)">
+      ng-click="addCase(caseTypeCategoryName, contactId, refresh)">
       {{ ts('Add new case') }}
     </a>
   </div>
