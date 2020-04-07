@@ -8,30 +8,20 @@
    *
    * @param {object} $scope scope object
    * @param {object} ts ts
-   * @param {object} $location the location service.
-   * @param {object} $window the window service.
-   * @param {string} currentCaseCategory the current case type category configuration value.
-   * @param {string} CaseCategoryWebformSettings service to fetch case category webform settings
+   * @param {object} $location the location service
+   * @param {object} AddCase Add Case Service
    */
-  function AddCaseDashboardActionButtonController ($scope, ts, $location, $window,
-    currentCaseCategory, CaseCategoryWebformSettings) {
-    var webformSettings = CaseCategoryWebformSettings.getSettingsFor(currentCaseCategory);
-
+  function AddCaseDashboardActionButtonController ($scope, ts, $location, AddCase) {
     $scope.ts = ts;
 
     $scope.clickHandler = clickHandler;
-    $scope.isVisible = isVisible;
+    $scope.isVisible = AddCase.isVisible;
 
     /**
-     * Displays a form to add a new case. If a custom "Add Case" webform url has been configured,
-     * it will redirect to it. Otherwise it will open a CRM form popup to add a new case.
+     * Click handler for the Add Case Dashboard button.
      */
     function clickHandler () {
-      var hasCustomNewCaseWebformUrl = !!webformSettings.newCaseWebformUrl;
-
-      hasCustomNewCaseWebformUrl
-        ? redirectToCustomNewCaseWebformUrl()
-        : openNewCaseForm();
+      AddCase.clickHandler(getCaseTypeCategory());
     }
 
     /**
@@ -43,41 +33,6 @@
       var currentUrlParams = $location.search();
 
       return currentUrlParams.case_type_category;
-    }
-
-    /**
-     * Will display the button if the user can add cases.
-     *
-     * @returns {boolean} returns true when the user can add cases.
-     */
-    function isVisible () {
-      var canAddCases = checkPerm('add cases');
-
-      return canAddCases;
-    }
-
-    /**
-     * Opens a new CRM form popup to add new cases. If a case type category was defined we
-     * use it to limit the type of cases that can be created by this category.
-     */
-    function openNewCaseForm () {
-      var caseTypeCategory = getCaseTypeCategory();
-
-      var formUrl = getCrmUrl('civicrm/case/add', {
-        action: 'add',
-        case_type_category: caseTypeCategory || currentCaseCategory,
-        context: 'standalone',
-        reset: 1
-      });
-
-      loadForm(formUrl);
-    }
-
-    /**
-     * Redirects the user to the custom webform URL as defined in the configuration.
-     */
-    function redirectToCustomNewCaseWebformUrl () {
-      $window.location.href = webformSettings.newCaseWebformUrl;
     }
   }
 })(CRM._, angular, CRM.checkPerm, CRM.loadForm, CRM.url);

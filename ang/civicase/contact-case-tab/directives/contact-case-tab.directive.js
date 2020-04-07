@@ -23,11 +23,11 @@
    * @param {Function} formatCase the format case service
    * @param {object} Contact the contact service
    * @param {object} ContactsCache the contacts cache service
-   * @param {string} CaseCategoryWebformSettings service to fetch case category webform settings
+   * @param {string} AddCase service to open add case popup
    */
   function CivicaseContactCaseTabController ($scope, ts, CaseTypeCategory,
     CaseTypeCategoryTranslationService, crmApi, formatCase, Contact,
-    ContactsCache, CaseCategoryWebformSettings) {
+    ContactsCache, AddCase) {
     var commonConfigs = {
       isLoaded: false,
       showSpinner: false,
@@ -41,7 +41,6 @@
     $scope.caseDetailsLoaded = false;
     $scope.caseTypeCategoryName = CaseTypeCategory.getAll()[$scope.caseTypeCategory].name;
     $scope.contactId = Contact.getCurrentContactID();
-    $scope.webformSettings = CaseCategoryWebformSettings.getSettingsFor($scope.caseTypeCategoryName);
     $scope.casesListConfig = [
       {
         name: 'opened',
@@ -75,6 +74,8 @@
       }
     ];
 
+    $scope.clickHandler = AddCase.clickHandler;
+    $scope.isVisible = AddCase.isVisible;
     $scope.checkPerm = CRM.checkPerm;
     $scope.handleContactTabChange = handleContactTabChange;
     $scope.ts = ts;
