@@ -43,8 +43,8 @@
         expect(activityCard.isolateScope().bootstrapThemeElement.is('#bootstrap-theme')).toBe(true);
       });
 
-      it('defines the to field visibility as false', () => {
-        expect(activityCard.isolateScope().isToFieldVisible).toBe(false);
+      it('defines the "From" and "To" fields visibility as false', () => {
+        expect(activityCard.isolateScope().areFromAndToFieldsVisible).toBe(false);
       });
 
       describe('when the activity does not belong to a case', () => {
@@ -98,7 +98,7 @@
       });
     });
 
-    describe('"To:" field visibility', () => {
+    describe('"From" and "To" fields visibility', () => {
       beforeEach(() => {
         $scope.activity = activitiesMockData.get()[0];
       });
@@ -111,8 +111,8 @@
           initDirective();
         });
 
-        it('does not show the "To:" field', () => {
-          expect(activityCard.isolateScope().isToFieldVisible).toBe(false);
+        it('does not show the "From" and "To" fields', () => {
+          expect(activityCard.isolateScope().areFromAndToFieldsVisible).toBe(false);
         });
       });
 
@@ -124,8 +124,8 @@
           initDirective();
         });
 
-        it('shows the "To:" field', () => {
-          expect(activityCard.isolateScope().isToFieldVisible).toBe(true);
+        it('shows the "From" and "To" fields', () => {
+          expect(activityCard.isolateScope().areFromAndToFieldsVisible).toBe(true);
         });
       });
 
@@ -137,8 +137,8 @@
           initDirective();
         });
 
-        it('does not show the "To:" field', () => {
-          expect(activityCard.isolateScope().isToFieldVisible).toBe(false);
+        it('does not show the "From" and "To" fields', () => {
+          expect(activityCard.isolateScope().areFromAndToFieldsVisible).toBe(false);
         });
       });
     });

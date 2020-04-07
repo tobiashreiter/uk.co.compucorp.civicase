@@ -59,14 +59,14 @@
     var caseTypes = CaseType.getAll();
     var caseTypeCategories = CaseTypeCategory.getAll();
 
-    $scope.isToFieldVisible = false;
+    $scope.areFromAndToFieldsVisible = false;
     $scope.ts = ts;
     $scope.formatDate = DateHelper.formatDate;
 
     (function init () {
       var hasCase = $scope.activity && !_.isEmpty($scope.activity.case);
 
-      $scope.isToFieldVisible = getToFieldVisibilityStatus();
+      $scope.areFromAndToFieldsVisible = getFromAndToFieldsVisibilityStatus();
 
       if (hasCase) {
         $scope.caseDetailUrl = getCaseDetailUrl();
@@ -193,10 +193,12 @@
     }
 
     /**
+     * Determines whether to show or hide the "From" and "To" fields from the view.
+     *
      * @returns {boolean} true when the current activity belongs to the communication group,
      *   but it's not a Print/Merge Document activity.
      */
-    function getToFieldVisibilityStatus () {
+    function getFromAndToFieldsVisibilityStatus () {
       var isNotPrintPdfActivity = $scope.activity && $scope.activity.type !== 'Print/Merge Document';
       var isCommunicationActivity = (($scope.activity && $scope.activity.category) || [])
         .indexOf('communication') >= 0;
