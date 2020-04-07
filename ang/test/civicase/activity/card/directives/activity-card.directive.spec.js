@@ -156,7 +156,7 @@
         expect(viewInPopup).toHaveBeenCalledWith(null, activity);
       });
 
-      it('listenes for the the form to be saved', () => {
+      it('listens for the the form to be saved', () => {
         expect(viewInPopupMockReturn.on).toHaveBeenCalledWith('crmFormSuccess', jasmine.any(Function));
       });
 
