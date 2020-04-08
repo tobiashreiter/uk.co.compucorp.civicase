@@ -588,3 +588,16 @@ function _civicase_add_case_category_case_type_entity(array &$entityTypes) {
     ];
   };
 }
+
+/**
+ * Implements hook_civicrm_alterMailParams().
+ */
+function civicase_civicrm_alterMailParams(&$params, $context) {
+  $hooks = [
+    new CRM_Civicase_Hook_alterMailParams_SubjectCaseTypeCategoryProcessor(),
+  ];
+
+  foreach ($hooks as &$hook) {
+    $hook->run($params, $context);
+  }
+}
