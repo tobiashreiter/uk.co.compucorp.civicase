@@ -33,7 +33,9 @@
       });
 
       it('creates a new case', () => {
-        expect(AddCase.clickHandler).toHaveBeenCalledWith('cases');
+        expect(AddCase.clickHandler).toHaveBeenCalledWith({
+          caseTypeCategoryName: 'cases'
+        });
       });
     });
 

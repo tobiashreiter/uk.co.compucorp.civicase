@@ -21,7 +21,9 @@
      * Click handler for the Add Case Dashboard button.
      */
     function clickHandler () {
-      AddCase.clickHandler(getCaseTypeCategory());
+      AddCase.clickHandler({
+        caseTypeCategoryName: getCaseTypeCategory()
+      });
     }
 
     /**

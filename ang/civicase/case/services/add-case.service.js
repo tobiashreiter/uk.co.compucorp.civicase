@@ -17,17 +17,15 @@
      * Displays a form to add a new case. If a custom "Add Case" webform url has been configured,
      * it will redirect to it. Otherwise it will open a CRM form popup to add a new case.
      *
-     * @param {string} caseTypeCategory case type category
-     * @param {string} contactId contact id
-     * @param {Function} callback callback function
+     * @param {addCaseConfig} params parameters
      */
-    function clickHandler (caseTypeCategory, contactId, callback) {
-      var webformSettings = CaseCategoryWebformSettings.getSettingsFor(caseTypeCategory);
+    function clickHandler (params) {
+      var webformSettings = CaseCategoryWebformSettings.getSettingsFor(params.caseTypeCategoryName);
       var hasCustomNewCaseWebformUrl = !!webformSettings.newCaseWebformUrl;
 
       hasCustomNewCaseWebformUrl
-        ? redirectToCustomNewCaseWebformUrl(webformSettings, contactId)
-        : openNewCaseForm(caseTypeCategory, contactId, callback);
+        ? redirectToCustomNewCaseWebformUrl(webformSettings, params.contactId)
+        : openNewCaseForm(params);
     }
 
     /**
@@ -45,26 +43,24 @@
      * Opens a new CRM form popup to add new cases. If a case type category was defined we
      * use it to limit the type of cases that can be created by this category.
      *
-     * @param {string} caseTypeCategory case type category
-     * @param {string} contactId contact id
-     * @param {Function} callback callback function
+     * @param {addCaseConfig} params parameters
      */
-    function openNewCaseForm (caseTypeCategory, contactId, callback) {
+    function openNewCaseForm (params) {
       var formParams = {
         action: 'add',
-        case_type_category: caseTypeCategory,
+        case_type_category: params.caseTypeCategoryName,
         context: 'standalone',
         reset: 1
       };
 
-      if (contactId) {
-        formParams.civicase_cid = contactId;
+      if (params.contactId) {
+        formParams.civicase_cid = params.contactId;
       }
 
       var formUrl = getCrmUrl('civicrm/case/add', formParams);
 
       loadForm(formUrl)
-        .on('crmFormSuccess crmPopupFormSuccess', callback);
+        .on('crmFormSuccess crmPopupFormSuccess', params.callbackFn);
     }
 
     /**
@@ -79,7 +75,15 @@
       if (contactId) {
         url += '?' + webformSettings.newCaseWebformClient + '=' + contactId;
       }
+
       $window.location.href = url;
     }
+
+    /**
+     * @typedef {object} addCaseConfig
+     * @property {string} caseTypeCategoryName the case category name
+     * @property {number} contactId contact id
+     * @property {number} callbackFn callback function
+     */
   }
 })(CRM._, angular, CRM.checkPerm, CRM.loadForm, CRM.url);

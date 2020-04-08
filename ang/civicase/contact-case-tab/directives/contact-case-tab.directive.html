@@ -8,7 +8,11 @@
   <div class="civicase__contact-cases-tab clearfix">
     <a ng-if="isAddCaseVisible()"
       class="btn-primary btn civicase__contact-cases-tab-add"
-      ng-click="addCase(caseTypeCategoryName, contactId, refresh)">
+      ng-click="addCase({
+        caseTypeCategoryName: caseTypeCategoryName,
+        contactId: contactId,
+        callbackFn: refresh,
+      })">
       <i class="material-icons">add_circle</i>
       {{ ts('Add case') }}
     </a>
@@ -123,7 +127,11 @@
     <a
       ng-if="isAddCaseVisible()"
       class="civicase__activity-card--big--empty-button btn"
-      ng-click="addCase(caseTypeCategoryName, contactId, refresh)">
+      ng-click="addCase({
+        caseTypeCategoryName: caseTypeCategoryName,
+        contactId: contactId,
+        callbackFn: refresh,
+      })">
       {{ ts('Add new case') }}
     </a>
   </div>

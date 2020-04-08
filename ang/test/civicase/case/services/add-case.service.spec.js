@@ -2,19 +2,23 @@
 
 (($, loadForm, getCrmUrl) => {
   describe('AddCaseService', () => {
-    let $window, AddCase, mockedFormPopUp, CaseCategoryWebformSettings;
+    let $window, AddCase, CaseCategoryWebformSettings;
+
+    beforeEach(module('civicase-base', 'civicase', ($provide) => {
+      $window = { location: { href: '' } };
+      CaseCategoryWebformSettings = jasmine.createSpyObj('CaseCategoryWebformSettings', ['getSettingsFor']);
+
+      $provide.value('$window', $window);
+      $provide.value('CaseCategoryWebformSettings', CaseCategoryWebformSettings);
+    }));
 
     beforeEach(() => {
-      $window = { location: { href: '' } };
+      mockFormPopUpDom();
+      injectDependencies();
     });
 
     describe('Button Visibility', () => {
       let isButtonVisible;
-
-      beforeEach(module('civicase-base', 'civicase'));
-      beforeEach(() => {
-        injectDependencies();
-      });
 
       describe('when the user can add new cases', () => {
         beforeEach(() => {
@@ -42,23 +46,17 @@
     });
 
     describe('click handler', () => {
-      beforeEach(module('civicase', ($provide) => {
-        CaseCategoryWebformSettings = jasmine.createSpyObj('CaseCategoryWebformSettings', ['getSettingsFor']);
-        $provide.value('CaseCategoryWebformSettings', CaseCategoryWebformSettings);
-      }));
-
       describe('when the new case web form url configuration value is defined', () => {
-        beforeEach(module('civicase', ($provide) => {
-          $provide.value('$window', $window);
+        beforeEach(() => {
           CaseCategoryWebformSettings.getSettingsFor.and.returnValue({
             newCaseWebformUrl: '/someurl',
             newCaseWebformClient: 'cid'
           });
-        }));
 
-        beforeEach(() => {
-          injectDependencies();
-          AddCase.clickHandler('case', '5');
+          AddCase.clickHandler({
+            caseTypeCategoryName: 'case',
+            contactId: '5'
+          });
         });
 
         it('redirects the user to the configured web form url value', () => {
@@ -67,32 +65,10 @@
       });
 
       describe('when the new case web form url configuration value is not defined', () => {
-        beforeEach(module('civicase-base', 'civicase', ($provide) => {
-          CaseCategoryWebformSettings.getSettingsFor.and.returnValue({ newCaseWebformUrl: null });
-          $provide.value('$window', $window);
-        }));
-
-        beforeEach(() => {
-          injectDependencies();
-          mockFormPopUpDom();
-          AddCase.clickHandler();
-        });
-
-        it('does not redirect the user', () => {
-          expect($window.location.href).toBe('');
-        });
-      });
-
-      describe('opening a new case form popup', () => {
         let expectedFormUrl;
 
-        beforeEach(module('civicase', 'civicase.data', ($provide) => {
-          CaseCategoryWebformSettings.getSettingsFor.and.returnValue({ newCaseWebformUrl: null });
-        }));
-
         beforeEach(() => {
-          injectDependencies();
-          mockFormPopUpDom();
+          CaseCategoryWebformSettings.getSettingsFor.and.returnValue({ newCaseWebformUrl: null });
 
           expectedFormUrl = getCrmUrl('civicrm/case/add', {
             action: 'add',
@@ -102,7 +78,14 @@
             reset: 1
           });
 
-          AddCase.clickHandler('case', '5');
+          AddCase.clickHandler({
+            caseTypeCategoryName: 'case',
+            contactId: '5'
+          });
+        });
+
+        it('does not redirect the user', () => {
+          expect($window.location.href).toBe('');
         });
 
         it('opens the new case form', () => {
@@ -125,9 +108,7 @@
      * Creates a mocked popup element that will be returned by the load form function.
      */
     function mockFormPopUpDom () {
-      mockedFormPopUp = $('<div></div>');
-
-      loadForm.and.returnValue(mockedFormPopUp);
+      loadForm.and.returnValue($('<div></div>'));
     }
   });
 })(CRM.$, CRM.loadForm, CRM.url);

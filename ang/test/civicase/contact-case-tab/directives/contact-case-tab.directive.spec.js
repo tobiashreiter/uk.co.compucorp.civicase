@@ -134,11 +134,19 @@
       describe('when clicking on Add Case Button', () => {
         beforeEach(() => {
           initController();
-          $scope.addCase('cases', '5', jasmine.any(Function));
+          $scope.addCase({
+            caseTypeCategoryName: 'cases',
+            contactId: '5',
+            callbackFn: jasmine.any(Function)
+          });
         });
 
         it('creates a new case', () => {
-          expect(AddCase.clickHandler).toHaveBeenCalledWith('cases', '5', jasmine.any(Function));
+          expect(AddCase.clickHandler).toHaveBeenCalledWith({
+            caseTypeCategoryName: 'cases',
+            contactId: '5',
+            callbackFn: jasmine.any(Function)
+          });
         });
       });
     });
