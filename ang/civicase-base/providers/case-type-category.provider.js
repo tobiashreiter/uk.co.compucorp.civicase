@@ -54,17 +54,9 @@
      * @returns {Array} list of case categories
      */
     function getCategoriesWithAccessToActivity () {
-      return _.chain(allCaseTypeCategories)
-        .filter(function (caseTypeCategory) {
-          return caseTypeCategoriesWithAccessToActivities.indexOf(caseTypeCategory.name) !== -1;
-        })
-        .map(function (caseTypeCategory) {
-          return {
-            text: caseTypeCategory.label,
-            name: caseTypeCategory.name
-          };
-        })
-        .value();
+      return _.filter(allCaseTypeCategories, function (caseTypeCategory) {
+        return caseTypeCategoriesWithAccessToActivities.indexOf(caseTypeCategory.name) !== -1;
+      });
     }
 
     /**

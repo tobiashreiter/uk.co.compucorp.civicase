@@ -2,25 +2,49 @@
 
 (function ($, _) {
   describe('civicaseActivityFilters', function () {
-    var $compile, $rootScope, $scope, activityFilters;
+    var $compile, $rootScope, $scope, activityFilters, CaseTypeCategory;
 
     beforeEach(module('civicase', 'civicase.templates', function () {
       killDirective('civicaseActivityFiltersContact');
     }));
 
-    beforeEach(inject(function (_$compile_, _$rootScope_) {
+    beforeEach(inject(function (_$compile_, _$rootScope_, _CaseTypeCategory_) {
       $compile = _$compile_;
       $rootScope = _$rootScope_;
+      CaseTypeCategory = _CaseTypeCategory_;
       spyOn($rootScope, '$broadcast');
+      spyOn(CaseTypeCategory, 'getCategoriesWithAccessToActivity')
+        .and.returnValue([CaseTypeCategory.getAll()[1]]);
 
       $scope = $rootScope.$new();
+      $scope.filters = {};
 
       initDirective();
     }));
 
+    describe('on init', () => {
+      it('displays a list of case type categories for which the user has permission to see the activities', () => {
+        expect(activityFilters.isolateScope().caseTypeCategories).toEqual([CaseTypeCategory.getAll()[1]]);
+      });
+
+      it('does not filter the activity list with case type category', () => {
+        expect(activityFilters.isolateScope().filters.case_type_category).toBeUndefined();
+      });
+
+      describe('when user can select case type category filter', () => {
+        beforeEach(() => {
+          $scope.canSelectCaseTypeCategory = true;
+          initDirective();
+        });
+
+        it('filters the activity list with the first available case type category', () => {
+          expect(activityFilters.isolateScope().filters.case_type_category).toEqual(CaseTypeCategory.getAll()[1].name);
+        });
+      });
+    });
+
     describe('when clicking more filters button', function () {
       beforeEach(function () {
-        activityFilters.isolateScope().filters = {};
         activityFilters.isolateScope().filters['@moreFilters'] = true;
         activityFilters.isolateScope().toggleMoreFilters();
       });
@@ -39,14 +63,17 @@
      * Initializes the ActivityPanel directive
      */
     function initDirective () {
-      activityFilters = $compile('<div civicase-activity-filters></div>')($scope);
-      $scope.$digest();
+      activityFilters = $compile(`<div
+          civicase-activity-filters="filters"
+          can-select-case-type-category="canSelectCaseTypeCategory"
+        ></div>`)($scope);
+      $rootScope.$digest();
     }
 
     /**
      * Mocks a directive
      *
-     * @param {String} directiveName
+     * @param {string} directiveName name of the directive
      */
     function killDirective (directiveName) {
       angular.mock.module(function ($compileProvider) {

@@ -69,7 +69,7 @@
         ng-model="filters['case_type_category']" crm-ui-select>
         <option value="">{{ ts('Case Type Categories') }}</option>
         <option ng-repeat="caseTypeCategory in caseTypeCategories" value="{{ caseTypeCategory.name }}">
-          {{ caseTypeCategory.text }}
+          {{ caseTypeCategory.label }}
         </option>
       </select>
 
