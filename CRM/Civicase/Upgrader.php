@@ -558,7 +558,7 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
    *
    * @param CRM_Queue_TaskContext $context
    *   Context.
-   * @param \object $step
+   * @param object $step
    *   Step.
    *
    * @return true
