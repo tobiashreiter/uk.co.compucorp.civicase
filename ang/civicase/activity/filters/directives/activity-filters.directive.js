@@ -37,7 +37,7 @@
       $scope.combinedFilterParams = {};
       $scope.activityCategories = prepareActivityCategories();
       $scope.availableFilters = prepareAvailableFilters();
-      $scope.caseTypeCategories = prepareCaseTypeCategories();
+      $scope.caseTypeCategories = CaseTypeCategory.getCategoriesWithAccessToActivity();
       // Default exposed filters
       $scope.exposedFilters = {
         activity_type_id: true,
@@ -48,6 +48,10 @@
       };
 
       (function init () {
+        if ($scope.canSelectCaseTypeCategory) {
+          $scope.filters.case_type_category = $scope.caseTypeCategories[0].name;
+        }
+
         $scope.$on('civicaseActivityFeed.query', feedQueryListener);
         // Ensure set filters are also exposed
         _.each($scope.filters, function (filter, key) {
@@ -232,20 +236,6 @@
           color: option.color,
           icon: option.icon
         };
-      }
-
-      /**
-       * Prepares a list of Case type categories
-       *
-       * @returns {Array} list of case type categories
-       */
-      function prepareCaseTypeCategories () {
-        return _.map(CaseTypeCategory.getAll(), function (caseTypeCategory) {
-          return {
-            text: caseTypeCategory.label,
-            name: caseTypeCategory.name
-          };
-        });
       }
     }
   });

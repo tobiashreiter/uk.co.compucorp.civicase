@@ -8,6 +8,8 @@
    */
   function CaseTypeCategoryProvider () {
     var allCaseTypeCategories = CRM['civicase-base'].caseTypeCategories;
+    var caseTypeCategoriesWithAccessToActivities =
+      CRM['civicase-base'].caseTypeCategoriesWithAccessToActivities;
     var activeCaseTypeCategories = _.chain(allCaseTypeCategories)
       .filter(function (caseTypeCategory) {
         return caseTypeCategory.is_active === '1';
@@ -18,6 +20,7 @@
     this.$get = $get;
     this.getAll = getAll;
     this.findByName = findByName;
+    this.getCategoriesWithAccessToActivity = getCategoriesWithAccessToActivity;
 
     /**
      * Returns the case the category service.
@@ -27,7 +30,8 @@
     function $get () {
       return {
         getAll: getAll,
-        findByName: findByName
+        findByName: findByName,
+        getCategoriesWithAccessToActivity: getCategoriesWithAccessToActivity
       };
     }
 
@@ -41,6 +45,26 @@
       var returnValue = includeInactive ? allCaseTypeCategories : activeCaseTypeCategories;
 
       return returnValue;
+    }
+
+    /**
+     * Get a list of Case type categories of which,
+     * the logged in user can access activities.
+     *
+     * @returns {Array} list of case categories
+     */
+    function getCategoriesWithAccessToActivity () {
+      return _.chain(allCaseTypeCategories)
+        .filter(function (caseTypeCategory) {
+          return caseTypeCategoriesWithAccessToActivities.indexOf(caseTypeCategory.name) !== -1;
+        })
+        .map(function (caseTypeCategory) {
+          return {
+            text: caseTypeCategory.label,
+            name: caseTypeCategory.name
+          };
+        })
+        .value();
     }
 
     /**
