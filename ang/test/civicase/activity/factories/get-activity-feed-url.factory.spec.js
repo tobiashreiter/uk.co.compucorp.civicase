@@ -43,7 +43,7 @@
 
       it('returns a url pointing to the case activity feed', function () {
         expect(activityFeedUrlObject.baseUrl).toBe('#/case/list');
-        expect(activityFeedUrlObject.params.tab).toBe('activities');
+        expect(activityFeedUrlObject.params.tab).toBe('Activities');
       });
     });
 

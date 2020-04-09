@@ -46,7 +46,7 @@
         // If we're not already viewing a case, force the case id filter
         finalUrlParams.cf = JSON.stringify({ id: urlParams.caseId });
       } else {
-        finalUrlParams.tab = 'activities';
+        finalUrlParams.tab = 'Activities';
       }
 
       if (urlParams.caseId) {
