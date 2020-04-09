@@ -1,137 +1,40 @@
 /* eslint-env jasmine */
 
-(($, loadForm, getCrmUrl) => {
+(($) => {
   describe('AddCaseDashboardActionButtonController', () => {
-    let $location, $window, $rootScope, $scope, $controller, currentCaseCategory,
-      mockedFormPopUp, CaseCategoryWebformSettings;
+    let $location, $rootScope, $scope, $controller, AddCase;
 
-    beforeEach(() => {
-      $window = { location: { href: '' } };
-    });
+    beforeEach(module('civicase-base', 'civicase'));
 
     describe('Button Visibility', () => {
-      let isButtonVisible;
-
-      beforeEach(module('civicase-base', 'civicase'));
       beforeEach(() => {
         injectDependencies();
+        spyOn(AddCase, 'isVisible');
+        initController();
+
+        $scope.isVisible();
       });
 
-      describe('when the user can add new cases', () => {
-        beforeEach(() => {
-          CRM.checkPerm.and.returnValue(true);
-
-          isButtonVisible = $scope.isVisible();
-        });
-
-        it('displays the button', () => {
-          expect(isButtonVisible).toBe(true);
-        });
-      });
-
-      describe('when the user cannot add new cases', () => {
-        beforeEach(() => {
-          CRM.checkPerm.and.returnValue(false);
-
-          isButtonVisible = $scope.isVisible();
-        });
-
-        it('does not display the button', () => {
-          expect(isButtonVisible).toBe(false);
-        });
+      it('displays the Add Case button only when adequate permission is available', () => {
+        expect(AddCase.isVisible).toHaveBeenCalled();
       });
     });
 
-    describe('click handler', () => {
-      beforeEach(module('civicase', ($provide) => {
-        CaseCategoryWebformSettings = jasmine.createSpyObj('CaseCategoryWebformSettings', ['getSettingsFor']);
-        $provide.value('CaseCategoryWebformSettings', CaseCategoryWebformSettings);
-      }));
-
-      describe('when the new case web form url configuration value is defined', () => {
-        beforeEach(module('civicase', ($provide) => {
-          $provide.value('$window', $window);
-          CaseCategoryWebformSettings.getSettingsFor.and.returnValue({ newCaseWebformUrl: '/someurl' });
-        }));
-
-        beforeEach(() => {
-          injectDependencies();
-          $scope.clickHandler();
+    describe('Click Event', () => {
+      beforeEach(() => {
+        injectDependencies();
+        spyOn(AddCase, 'clickHandler');
+        spyOn($location, 'search').and.returnValue({
+          case_type_category: 'cases'
         });
+        initController();
 
-        it('redirects the user to the configured web form url value', () => {
-          expect($window.location.href).toBe('/someurl');
-        });
+        $scope.clickHandler();
       });
 
-      describe('when the new case web form url configuration value is not defined', () => {
-        beforeEach(module('civicase-base', 'civicase', ($provide) => {
-          CaseCategoryWebformSettings.getSettingsFor.and.returnValue({ newCaseWebformUrl: null });
-          $provide.value('$window', $window);
-        }));
-
-        beforeEach(() => {
-          injectDependencies();
-          mockFormPopUpDom();
-          $scope.clickHandler();
-        });
-
-        it('does not redirect the user', () => {
-          expect($window.location.href).toBe('');
-        });
-      });
-
-      describe('opening a new case form popup', () => {
-        let expectedFormUrl;
-
-        beforeEach(module('civicase', 'civicase.data', ($provide) => {
-          CaseCategoryWebformSettings.getSettingsFor.and.returnValue({ newCaseWebformUrl: null });
-        }));
-
-        beforeEach(() => {
-          injectDependencies();
-          mockFormPopUpDom();
-
-          spyOn($location, 'search').and.returnValue({});
-        });
-
-        describe('when creating a new case from the default cases dashboard', () => {
-          beforeEach(() => {
-            expectedFormUrl = getCrmUrl('civicrm/case/add', {
-              action: 'add',
-              case_type_category: currentCaseCategory,
-              context: 'standalone',
-              reset: 1
-            });
-
-            $scope.clickHandler();
-          });
-
-          it('opens the new case form for the default case type category', () => {
-            expect(loadForm).toHaveBeenCalledWith(expectedFormUrl);
-          });
-        });
-
-        describe('when creating a new case from the dashboard of a custom case type category', () => {
-          const caseTypeCategory = 'traveling';
-
-          beforeEach(() => {
-            expectedFormUrl = getCrmUrl('civicrm/case/add', {
-              action: 'add',
-              case_type_category: caseTypeCategory,
-              context: 'standalone',
-              reset: 1
-            });
-
-            $location.search.and.returnValue({
-              case_type_category: caseTypeCategory
-            });
-            $scope.clickHandler();
-          });
-
-          it('opens the new case form for the custom case type category', () => {
-            expect(loadForm).toHaveBeenCalledWith(expectedFormUrl);
-          });
+      it('creates a new case', () => {
+        expect(AddCase.clickHandler).toHaveBeenCalledWith({
+          caseTypeCategoryName: 'cases'
         });
       });
     });
@@ -149,25 +52,12 @@
      * Injects and hoists the dependencies used by this spec file.
      */
     function injectDependencies () {
-      inject((_$location_, _$rootScope_, _$window_, _$controller_,
-        _currentCaseCategory_) => {
+      inject((_$location_, _$rootScope_, _$controller_, _AddCase_) => {
         $location = _$location_;
-        $window = _$window_;
         $controller = _$controller_;
         $rootScope = _$rootScope_;
-        currentCaseCategory = _currentCaseCategory_;
-
-        initController();
+        AddCase = _AddCase_;
       });
     }
-
-    /**
-     * Creates a mocked popup element that will be returned by the load form function.
-     */
-    function mockFormPopUpDom () {
-      mockedFormPopUp = $('<div></div>');
-
-      loadForm.and.returnValue(mockedFormPopUp);
-    }
   });
-})(CRM.$, CRM.loadForm, CRM.url);
+})(CRM.$);

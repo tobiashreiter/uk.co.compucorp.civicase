@@ -6,16 +6,13 @@
   <!-- Added for SEO purpose (This will be hidden through css) -->
   <h1 crm-page-title class="element-invisible"> {{ ts('Related cases to the user') }} </h1>
   <div class="civicase__contact-cases-tab clearfix">
-    <a ng-if="checkPerm('add cases') && !webformSettings.newCaseWebformUrl"
+    <a ng-if="isAddCaseVisible()"
       class="btn-primary btn civicase__contact-cases-tab-add"
-      ng-href="{{ 'civicrm/case/add' | civicaseCrmUrl:{civicase_cid: contactId, reset: 1, action: 'add', context: 'standalone', case_type_category: caseTypeCategoryName } }}"
-      crm-popup-form-success="refresh()">
-      <i class="material-icons">add_circle</i>
-      {{ ts('Add case') }}
-    </a>
-    <a ng-if="checkPerm('add cases') && webformSettings.newCaseWebformUrl"
-      class="btn-primary btn"
-      ng-href="{{ webformSettings.newCaseWebformUrl | civicaseCrmUrl:{[webformSettings.newCaseWebformClient]: contactId} }}">
+      ng-click="addCase({
+        caseTypeCategoryName: caseTypeCategoryName,
+        contactId: contactId,
+        callbackFn: refresh,
+      })">
       <i class="material-icons">add_circle</i>
       {{ ts('Add case') }}
     </a>
@@ -127,10 +124,14 @@
     <div class="civicase__activity-no-result-icon civicase__activity-no-result-icon--case"></div>
     <div class="civicase__activity-card--big--empty-title"> {{ ts('This contact has no cases') }} </div>
     <div class="civicase__activity-card--big--empty-description"> {{ ts('Click the button below to create a new case for this contact') }} </div>
-    <a ng-if="checkPerm('add cases')"
+    <a
+      ng-if="isAddCaseVisible()"
       class="civicase__activity-card--big--empty-button btn"
-      ng-href="{{ 'civicrm/case/add' | civicaseCrmUrl:{civicase_cid: contactId, reset: 1, action: 'add', context: 'standalone', case_type_category: caseTypeCategoryName } }}"
-      crm-popup-form-success="refresh()">
+      ng-click="addCase({
+        caseTypeCategoryName: caseTypeCategoryName,
+        contactId: contactId,
+        callbackFn: refresh,
+      })">
       {{ ts('Add new case') }}
     </a>
   </div>
