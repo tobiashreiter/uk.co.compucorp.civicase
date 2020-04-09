@@ -57,10 +57,12 @@ function civicrm_api3_case_getwebforms(array $params) {
 
   foreach ($daos as $dao) {
     $data = unserialize($dao->data);
+
     if ($data['case']['number_of_case'] >= 0) {
       $webforms[] = array(
         'nid' => $dao->nid,
         'title' => $dao->title,
+        'case_type_ids' => _get_case_type_ids_from_webform($data),
         'path' => drupal_get_path_alias('node/' . $dao->nid),
       );
     }
@@ -70,4 +72,25 @@ function civicrm_api3_case_getwebforms(array $params) {
   $out['count'] = count($webforms);
 
   return $out;
+}
+
+/**
+ * Get Case Type Ids from the sent webform.
+ *
+ * @param array $webform
+ *   Parameters.
+ *
+ * @return array
+ *   List of Case Type IDs
+ */
+function _get_case_type_ids_from_webform(array $webform) {
+  $caseTypeIds = [];
+
+  foreach ($webform['case'] as $cases) {
+    foreach ($cases['case'] as $case) {
+      array_push($caseTypeIds, $case['case_type_id']);
+    }
+  }
+
+  return $caseTypeIds;
 }
