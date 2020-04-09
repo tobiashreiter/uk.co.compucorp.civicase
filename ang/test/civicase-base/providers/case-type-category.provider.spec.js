@@ -35,7 +35,7 @@
       var expectedResults;
 
       beforeEach(() => {
-        CRM['civicase-base'].caseTypeCategoriesWithAccessToActivities = ['awards'];
+        CRM['civicase-base'].caseTypeCategoriesWhereUserCanAccessActivities = ['awards'];
 
         module('civicase-base');
         injectDependencies();

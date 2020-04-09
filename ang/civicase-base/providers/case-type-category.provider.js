@@ -8,8 +8,8 @@
    */
   function CaseTypeCategoryProvider () {
     var allCaseTypeCategories = CRM['civicase-base'].caseTypeCategories;
-    var caseTypeCategoriesWithAccessToActivities =
-      CRM['civicase-base'].caseTypeCategoriesWithAccessToActivities;
+    var caseTypeCategoriesWhereUserCanAccessActivities =
+      CRM['civicase-base'].caseTypeCategoriesWhereUserCanAccessActivities;
     var activeCaseTypeCategories = _.chain(allCaseTypeCategories)
       .filter(function (caseTypeCategory) {
         return caseTypeCategory.is_active === '1';
@@ -55,7 +55,7 @@
      */
     function getCategoriesWithAccessToActivity () {
       return _.filter(allCaseTypeCategories, function (caseTypeCategory) {
-        return caseTypeCategoriesWithAccessToActivities.indexOf(caseTypeCategory.name) !== -1;
+        return caseTypeCategoriesWhereUserCanAccessActivities.indexOf(caseTypeCategory.name) !== -1;
       });
     }
 

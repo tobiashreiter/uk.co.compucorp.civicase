@@ -2,7 +2,8 @@
 
 (function ($, _) {
   describe('civicaseActivityFilters', function () {
-    var $compile, $rootScope, $scope, activityFilters, CaseTypeCategory;
+    var $compile, $rootScope, $scope, activityFilters, CaseTypeCategory,
+      categoryWhereUserCanAccessActivities;
 
     beforeEach(module('civicase', 'civicase.templates', function () {
       killDirective('civicaseActivityFiltersContact');
@@ -12,9 +13,11 @@
       $compile = _$compile_;
       $rootScope = _$rootScope_;
       CaseTypeCategory = _CaseTypeCategory_;
+
+      categoryWhereUserCanAccessActivities = _.sample(CaseTypeCategory.getAll(), 1);
       spyOn($rootScope, '$broadcast');
       spyOn(CaseTypeCategory, 'getCategoriesWithAccessToActivity')
-        .and.returnValue([CaseTypeCategory.getAll()[1]]);
+        .and.returnValue([categoryWhereUserCanAccessActivities]);
 
       $scope = $rootScope.$new();
       $scope.filters = {};
@@ -24,7 +27,8 @@
 
     describe('on init', () => {
       it('displays a list of case type categories for which the user has permission to see the activities', () => {
-        expect(activityFilters.isolateScope().caseTypeCategories).toEqual([CaseTypeCategory.getAll()[1]]);
+        expect(activityFilters.isolateScope().caseTypeCategories)
+          .toEqual([categoryWhereUserCanAccessActivities]);
       });
 
       it('does not filter the activity list with case type category', () => {
@@ -38,7 +42,8 @@
         });
 
         it('filters the activity list with the first available case type category', () => {
-          expect(activityFilters.isolateScope().filters.case_type_category).toEqual(CaseTypeCategory.getAll()[1].name);
+          expect(activityFilters.isolateScope().filters.case_type_category)
+            .toEqual(categoryWhereUserCanAccessActivities.name);
         });
       });
     });

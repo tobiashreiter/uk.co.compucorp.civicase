@@ -1,3 +1,5 @@
+$civicase-activity-filter-category-dropdown: 170px;
+
 .civicase__activity-filter {
   background: $gray-light;
   padding: 16px 40px;
@@ -25,7 +27,7 @@
 
       label { /* stylelint-disable selector-max-compound-selectors */
         font-weight: $font-weight-content;
-        margin-left: 5px;
+        margin-left: $basic-gutter;
         position: relative;
         top: 3px;
       }
@@ -78,13 +80,13 @@
 
 .civicase__activity-filter__case-type-categories {
   display: inline-block;
-  margin-left: 5px;
-  width: 170px;
+  margin-left: $basic-gutter;
+  width: $civicase-activity-filter-category-dropdown;
 }
 
 .civicase__activity-filter__category {
   vertical-align: top;
-  width: 180px;
+  width: $civicase-activity-filter-category-dropdown;
 
   .crm-i {
     color: $gray-dark;
@@ -108,7 +110,7 @@
 .civicase__activity-filter__star,
 .civicase__activity-filter__more {
   background: none !important;
-  padding: 5px;
+  padding: $basic-gutter;
   text-transform: initial;
 
   .material-icons {
@@ -151,8 +153,8 @@
   > * {
     display: inline-block;
     margin-bottom: 15px;
-    margin-left: 5px;
-    margin-right: 5px;
+    margin-left: $basic-gutter;
+    margin-right: $basic-gutter;
     vertical-align: top;
   }
 }
@@ -161,7 +163,7 @@
   .civicase__activity-filter__header {
     border-bottom: 1px solid $gray-light;
     display: block;
-    margin-top: 5px;
+    margin-top: $basic-gutter;
   }
 }
 
@@ -186,7 +188,7 @@
     .civicase__activity-filter__attachment,
     .civicase__activity-filter__star,
     .civicase__activity-filter__more {
-      padding: 5px 2px;
+      padding: $basic-gutter 2px;
     }
   }
 }

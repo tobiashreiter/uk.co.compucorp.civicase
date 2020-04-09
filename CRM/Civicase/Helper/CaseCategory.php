@@ -237,7 +237,7 @@ class CRM_Civicase_Helper_CaseCategory {
    * @return array
    *   Case category access.
    */
-  public static function getCaseTypeCategoriesWithAccessToActivities($contactId = NULL) {
+  public static function getWhereUserCanAccessActivities($contactId = NULL) {
     $caseTypeCategories = CaseType::buildOptions('case_type_category', 'validate');
     $caseCategoryPermission = new CaseCategoryPermission();
     $permissionsToCheck = ['access my cases and activities', 'access all cases and activities'];
