@@ -1,7 +1,7 @@
 /* eslint-env jasmine */
 
 (function (_, $) {
-  fdescribe('WebformsCaseAction', function () {
+  describe('WebformsCaseAction', function () {
     var WebformsCaseAction, attributes, CaseActionsData, CasesData;
 
     beforeEach(module('civicase', 'civicase.data'));
@@ -28,8 +28,20 @@
           attributes.mode = 'case-details';
         });
 
-        it('displays the action link', function () {
-          expect(WebformsCaseAction.isActionAllowed(webformAction, cases, attributes)).toBeTrue();
+        describe('when webforms are present', () => {
+          it('displays the action link', function () {
+            expect(WebformsCaseAction.isActionAllowed(webformAction, cases, attributes)).toBeTrue();
+          });
+        });
+
+        describe('when webforms are not present', () => {
+          beforeEach(function () {
+            webformAction.items = [];
+          });
+
+          it('displays the action link', function () {
+            expect(WebformsCaseAction.isActionAllowed(webformAction, cases, attributes)).toBeFalse();
+          });
         });
       });
 
