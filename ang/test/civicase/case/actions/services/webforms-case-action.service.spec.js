@@ -1,43 +1,57 @@
 /* eslint-env jasmine */
 
 (function (_, $) {
-  describe('WebformsCaseAction', function () {
-    var WebformsCaseAction, attributes;
+  fdescribe('WebformsCaseAction', function () {
+    var WebformsCaseAction, attributes, CaseActionsData, CasesData;
 
-    beforeEach(module('civicase'));
+    beforeEach(module('civicase', 'civicase.data'));
 
-    beforeEach(inject(function (_WebformsCaseAction_) {
+    beforeEach(inject(function (_WebformsCaseAction_, _CaseActionsData_, _CasesData_) {
       WebformsCaseAction = _WebformsCaseAction_;
+      CaseActionsData = _CaseActionsData_;
+      CasesData = _CasesData_.get().values;
     }));
 
     describe('isActionAllowed()', function () {
+      let webformAction, cases;
+
       beforeEach(function () {
         attributes = {};
+        cases = [CasesData[0]];
+        webformAction = _.find(CaseActionsData.values, function (action) {
+          return action.action === 'Webforms';
+        });
       });
 
-      describe('when attribute.mode is set to case-details', function () {
+      describe('when used inside case details page', function () {
         beforeEach(function () {
           attributes.mode = 'case-details';
         });
 
-        it('should return true', function () {
-          expect(WebformsCaseAction.isActionAllowed(null, null, attributes)).toBeTrue();
+        it('displays the action link', function () {
+          expect(WebformsCaseAction.isActionAllowed(webformAction, cases, attributes)).toBeTrue();
         });
       });
 
-      describe('when attribute.mode is set to case-bulk-actions', function () {
-        beforeEach(function () {
-          attributes.mode = 'case-bulk-actions';
+      describe('when used outside of case details page', function () {
+        describe('when used inside bulk action', () => {
+          beforeEach(function () {
+            attributes.mode = 'case-bulk-actions';
+          });
+
+          it('hides the action link', function () {
+            expect(WebformsCaseAction.isActionAllowed(webformAction, cases, attributes)).toBeFalse();
+          });
         });
 
-        it('should return false', function () {
-          expect(WebformsCaseAction.isActionAllowed(null, null, attributes)).toBeFalse();
-        });
-      });
+        describe('when used in other pages', function () {
+          beforeEach(function () {
+            attributes.mode = undefined;
+          });
 
-      describe('when attribute.mode is undefined', function () {
-        it('should return false', function () {
-          expect(WebformsCaseAction.isActionAllowed(null, null, attributes)).toBeFalse();
+          it('hides the action link', function () {
+            expect(WebformsCaseAction.isActionAllowed(webformAction, cases, attributes)).toBeFalse();
+          });
         });
       });
     });
