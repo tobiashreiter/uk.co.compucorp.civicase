@@ -48,10 +48,13 @@
       _.each(caseObj.contacts, function (currentCase) {
         contacts.push(currentCase.contact_id);
       });
-      _.each(caseObj.allActivities, function (activity) {
-        contacts = contacts.concat(activity.assignee_contact_id);
-        contacts = contacts.concat(activity.target_contact_id);
-        contacts.push(activity.source_contact_id);
+
+      _.each(caseObj.activity_summary, function (activityGroup) {
+        _.each(activityGroup, function (activity) {
+          contacts = contacts.concat(activity.assignee_contact_id);
+          contacts = contacts.concat(activity.target_contact_id);
+          contacts.push(activity.source_contact_id);
+        });
       });
 
       return contacts;
