@@ -21,26 +21,13 @@
 
     (function init () {
       if (_.isEmpty($scope.case.activity_count)) {
-        $scope.case.activity_count = getActivitiesCount();
+        $scope.case.activity_count = {};
         $scope.availableActivityTypes = getAvailableActivityTypes(
           $scope.case.activity_count, definition);
       } else {
         initWatchers();
       }
     })();
-
-    /**
-     * Returns the current activities count using all the activities included in the case.
-     *
-     * @returns {object} in the form of { activity_type_id: count }
-     */
-    function getActivitiesCount () {
-      return _.transform($scope.case.allActivities, function (activitiesCount, activity) {
-        var currentCount = activitiesCount[activity.activity_type_id] || 0;
-
-        activitiesCount[activity.activity_type_id] = currentCount + 1;
-      }, {});
-    }
 
     /**
      * Returns a list of activity types that can be created for the case. Cases
