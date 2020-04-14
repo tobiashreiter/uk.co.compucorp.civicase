@@ -74,10 +74,8 @@ function civicrm_api3_activity_movebyquery(array $params) {
     }
 
     $result = CRM_Activity_Page_AJAX::_convertToCaseActivity($caseActivityParams);
-    if (empty($result['error_msg'])) {
-      if (!empty($result['newId'])) {
-        $activityIds[] = $result['newId'];
-      }
+    if (empty($result['error_msg']) && !empty($result['newId'])) {
+      $activityIds[] = $result['newId'];
     }
   }
 
