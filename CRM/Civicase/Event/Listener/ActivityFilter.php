@@ -1,7 +1,9 @@
 <?php
 
+use Civi\API\Event\PrepareEvent;
+
 /**
- * Class CRM_Civicase_ActivityFilter
+ * Class CRM_Civicase_Event_Listener_ActivityFilter
  *
  * Enhance the `Activity.get` API by allowing the option `case_filter`.
  * This accepts any argument supported by `Case.getdetails`.
@@ -14,7 +16,7 @@
  * ));
  * @endCode
  */
-class CRM_Civicase_ActivityFilter {
+class CRM_Civicase_Event_Listener_ActivityFilter {
 
   /**
    * Whenever there's a call for `Activity.get case_filter=...`, translate
@@ -23,7 +25,7 @@ class CRM_Civicase_ActivityFilter {
    * @param \Civi\API\Event\PrepareEvent $e
    * @throws \API_Exception
    */
-  public static function onPrepare(\Civi\API\Event\PrepareEvent $e) {
+  public static function onPrepare(PrepareEvent $e) {
     $apiRequest = $e->getApiRequest();
 
     // Only apply to `Activity.get case_filter=...`
@@ -37,7 +39,7 @@ class CRM_Civicase_ActivityFilter {
       throw new API_Exception("case_filter and case_id are mutually exclusive");
     }
 
-    CRM_Civicase_ActivityFilter::updateParams($apiRequest['params']);
+    self::updateParams($apiRequest['params']);
 
     $e->setApiRequest($apiRequest);
   }

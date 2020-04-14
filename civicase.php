@@ -47,7 +47,7 @@ function civicase_civicrm_config(&$config) {
   }
   Civi::$statics[__FUNCTION__] = 1;
 
-  Civi::dispatcher()->addListener('civi.api.prepare', ['CRM_Civicase_ActivityFilter', 'onPrepare'], 10);
+  Civi::dispatcher()->addListener('civi.api.prepare', ['CRM_Civicase_Event_Listener_ActivityFilter', 'onPrepare'], 10);
   Civi::dispatcher()->addListener('civi.api.respond', ['CRM_Civicase_Event_Listener_CaseTypeCategoryIsActiveToggler', 'onRespond'], 10);
 }
 
