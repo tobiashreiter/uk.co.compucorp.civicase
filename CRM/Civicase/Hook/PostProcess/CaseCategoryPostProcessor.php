@@ -1,8 +1,6 @@
 <?php
 
-use CRM_Civicase_Service_CaseCategoryMenu as CaseCategoryMenuService;
-use CRM_Civicase_Service_CaseCategoryCustomDataType as CaseCategoryCustomDataType;
-use CRM_Civicase_Service_CaseCategoryCustomFieldExtends as CaseCategoryCustomFieldExtends;
+use CRM_Civicase_Factory_CaseTypeCategoryEventHandler as CaseTypeCategoryEventHandlerFactory;
 
 /**
  * Class CRM_Civicase_Hook_PostProcess_CaseCategoryPostProcessor.
@@ -25,53 +23,28 @@ class CRM_Civicase_Hook_PostProcess_CaseCategoryPostProcessor {
       return;
     }
 
-    $caseCategoryMenu = new CaseCategoryMenuService();
-    $caseCategoryCustomData = new CaseCategoryCustomDataType();
-    $caseCategoryCustomFieldExtends = new CaseCategoryCustomFieldExtends();
-
+    // Get object data from submitted from.
     $formValues = $form->_submitValues;
-    $formAction = $form->getVar('_action');
+    $caseCategoryValues = $form->getVar('_values');
+    $category = [
+      'id' => $form->getVar('_id'),
+      'name' => !empty($caseCategoryValues['name']) ? $caseCategoryValues['name'] : $formValues['label'],
+      'is_active' => $formValues['is_active'],
+      'icon' => $formValues['icon'],
+    ];
 
-    if ($formAction == CRM_Core_Action::DELETE) {
-      $caseCategoryValues = $form->getVar('_values');
-      $caseCategoryMenu->deleteItems($caseCategoryValues['name']);
-      $caseCategoryCustomFieldExtends->delete($caseCategoryValues['name']);
-      $caseCategoryCustomData->delete($caseCategoryValues['name']);
+    $op = $form->getVar('_action');
+    $handler = CaseTypeCategoryEventHandlerFactory::create();
+
+    if ($op == CRM_Core_Action::UPDATE) {
+      $handler->onUpdate($category['id'], $category['is_active'], $category['icon']);
     }
-
-    if ($formAction == CRM_Core_Action::ADD) {
-      $caseCategoryMenu->createItems($formValues['label']);
-      $caseCategoryCustomFieldExtends->create($formValues['label'], "Case ({$formValues['label']})");
-      $caseCategoryCustomData->create($formValues['label']);
+    elseif ($op == CRM_Core_Action::ADD) {
+      $handler->onCreate($category['name']);
     }
-
-    if ($formAction == CRM_Core_Action::UPDATE) {
-      $updateParams = [
-        'is_active' => !empty($formValues['is_active']) ? 1 : 0,
-        'icon' => 'crm-i ' . $formValues['icon'],
-      ];
-
-      $caseCategoryMenu->updateItems($form->getVar('_id'), $updateParams);
+    elseif ($op == CRM_Core_Action::DELETE) {
+      $handler->onDelete($category['name']);
     }
-  }
-
-  /**
-   * Returns the option value name given it's id.
-   *
-   * @param int $id
-   *   Option value id.
-   *
-   * @return string
-   *   Option value name.
-   */
-  private function getOptionValueName($id) {
-    $result = civicrm_api3('OptionValue', 'get', [
-      'option_group_id' => 'case_type_categories',
-      'id' => $id,
-      'return' => ['name'],
-    ]);
-
-    return $result['values'][$id]['name'];
   }
 
   /**
