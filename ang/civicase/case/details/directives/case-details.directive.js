@@ -34,6 +34,7 @@
    * @param {object} getCaseQueryParams get case query params service
    * @param {object} $route $route service
    * @param {object} $timeout $timeout service
+   * @param {object} crmStatus service to show status notifications
    * @param {object} CasesUtils cases utils service
    * @param {object} PrintMergeCaseAction print merge case action service
    * @param {object} ts ts service
@@ -43,7 +44,7 @@
    */
   function civicaseCaseDetailsController ($location, $sce, $rootScope, $scope,
     $document, BulkActions, CaseDetailsTabs, crmApi, formatActivity, formatCase,
-    getActivityFeedUrl, getCaseQueryParams, $route, $timeout,
+    getActivityFeedUrl, getCaseQueryParams, $route, $timeout, crmStatus,
     CasesUtils, PrintMergeCaseAction, ts, ActivityType, CaseStatus, CaseType) {
     // The ts() and hs() functions help load strings for this module.
     // TODO: Move the common logic into a common controller (based on the usage of ContactCaseTabCaseDetails)
@@ -203,7 +204,8 @@
     /**
      * Refreshes the Case Details data
      *
-     * @param {Array}   apiCalls extra api calls to load on refresh.
+     * @param {Array} apiCalls extra api calls to load on refresh.
+     * @returns {Promise} promise
      */
     $scope.refresh = function (apiCalls) {
       if (!_.isArray(apiCalls)) {
@@ -211,9 +213,16 @@
       }
 
       apiCalls.push(['Case', 'getdetails', caseGetParams()]);
-      crmApi(apiCalls, true).then(function (result) {
-        $scope.pushCaseData(result[apiCalls.length - 1].values[0]);
-      });
+
+      var promise = crmApi(apiCalls)
+        .then(function (result) {
+          $scope.pushCaseData(result[apiCalls.length - 1].values[0]);
+        });
+
+      return crmStatus({
+        start: 'Saving',
+        success: 'Saved'
+      }, promise);
     };
 
     $scope.selectTab = function (tab) {

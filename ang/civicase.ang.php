@@ -35,7 +35,6 @@ $options = [];
 $requires = [
   'crmAttachment',
   'crmUi',
-  'crmUtil',
   'ngRoute',
   'angularFileUpload',
   'bw.paging',
