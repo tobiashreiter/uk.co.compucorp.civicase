@@ -27,6 +27,11 @@ function _civicrm_api3_activity_Movebyquery_spec(array &$spec) {
     'description' => 'Array of parameters for Activity.Get API',
     'type' => CRM_Utils_Type::T_STRING,
   ];
+  $spec['subject'] = [
+    'title' => 'Activity Subject',
+    'description' => 'Activity Subject',
+    'type' => CRM_Utils_Type::T_STRING,
+  ];
 }
 
 /**
@@ -58,11 +63,20 @@ function civicrm_api3_activity_movebyquery(array $params) {
 
   $activityIds = [];
   foreach ($activities as $activityId) {
-    $activityIds[] = $activityId;
-    civicrm_api3('Activity', 'create', [
-      'id' => $activityId,
-      'case_id' => $params['case_id'],
-    ]);
+    $caseActivityParams = [
+      'activityID' => $activityId,
+      'caseID' => $params['case_id'],
+      'mode' => 'move',
+    ];
+
+    if (!empty($params['subject'])) {
+      $caseActivityParams['newSubject'] = $params['subject'];
+    }
+
+    $result = CRM_Activity_Page_AJAX::_convertToCaseActivity($caseActivityParams);
+    if (empty($result['error_msg']) && !empty($result['newId'])) {
+      $activityIds[] = $result['newId'];
+    }
   }
 
   return civicrm_api3_create_success($activityIds, $params, 'Activity', 'copybyquery');
