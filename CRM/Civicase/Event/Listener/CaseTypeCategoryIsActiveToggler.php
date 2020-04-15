@@ -19,10 +19,7 @@ class CRM_Civicase_Event_Listener_CaseTypeCategoryIsActiveToggler {
    */
   public static function onRespond(RespondEvent $e) {
     $apiRequest = $e->getApiRequest();
-    if ($apiRequest['entity'] != 'OptionValue' || $apiRequest['action'] != 'create') {
-      return;
-    }
-    if (!self::checkReferrer() || !self::checkOptionGroup($apiRequest['params']['option_group_id'])) {
+    if (!self::shouldRun($apiRequest)) {
       return;
     }
 
@@ -35,9 +32,29 @@ class CRM_Civicase_Event_Listener_CaseTypeCategoryIsActiveToggler {
   }
 
   /**
+   * Determines if the processing will run.
+   *
+   * @param array $apiRequest
+   *   Api request data.
+   *
+   * @return bool
+   *   TRUE if processing should run, FALSE otherwise.
+   */
+  protected static function shouldRun(array $apiRequest) {
+    if ($apiRequest['entity'] != 'OptionValue' || $apiRequest['action'] != 'create') {
+      return FALSE;
+    }
+    if (!self::isFromOptionGroupPage() || !self::isOfCaseTypeCategoryGroup($apiRequest['params']['id'])) {
+      return FALSE;
+    }
+
+    return TRUE;
+  }
+
+  /**
    * Checks the referer page for this request.
    *
-   * This check may be used for the sake of performance. As we have to listen
+   * This check is used for the sake of performance. As we have to listen
    * for events of all OptionValues to catch ones related to case type
    * categories, we may check first if request was sent by user from civicrm
    * admin page and not is triggered by some code, e.g. civicrm_api3().
@@ -45,35 +62,35 @@ class CRM_Civicase_Event_Listener_CaseTypeCategoryIsActiveToggler {
    * @return bool
    *   TRUE if request is sent from civicrm Option Groups page, FALSE otherwise.
    */
-  protected static function checkReferrer() {
-    return strpos($_SERVER['HTTP_REFERER'], '/civicrm/admin/options') != FALSE;
+  protected static function isFromOptionGroupPage() {
+    return strpos($_SERVER['HTTP_REFERER'], '/civicrm/admin/options') !== FALSE;
   }
 
   /**
    * Checks if OptionValue belongs to Case Type Categories option group.
    *
-   * @param int $optionGroupId
-   *   Case type category option group id or name. If is id then name would be
-   *   fetched from DB.
+   * @param int $categoryId
+   *   Case type category id.
    *
    * @return bool
    *   TRUE if option value belongs to Case Type Categories option group,
    *   FALSE otherwise.
    */
-  protected static function checkOptionGroup($optionGroupId) {
+  protected static function isOfCaseTypeCategoryGroup($categoryId) {
     $res = FALSE;
-    if (!$optionGroupId) {
+    if (!$categoryId) {
       return $res;
     }
 
     try {
-      // Load option group.
-      $optionGroup = civicrm_api3('OptionGroup', 'getsingle', [
-        'id' => $optionGroupId,
+      // Get related option group name.
+      $result = civicrm_api3('OptionValue', 'getsingle', [
+        'return' => ['option_group_id.name'],
+        'id' => $categoryId,
       ]);
 
-      // We're only interested in Case Type Categories option group.
-      if (!empty($optionGroup['name']) && $optionGroup['name'] == 'case_type_categories') {
+      // We're only interested in 'Case Type Categories' option group.
+      if ($result['option_group_id.name'] == 'case_type_categories') {
         $res = TRUE;
       }
     }
@@ -82,4 +99,5 @@ class CRM_Civicase_Event_Listener_CaseTypeCategoryIsActiveToggler {
 
     return $res;
   }
+
 }

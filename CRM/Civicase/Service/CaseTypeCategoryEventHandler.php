@@ -1,5 +1,9 @@
 <?php
 
+use CRM_Civicase_Service_CaseCategoryMenu as CaseCategoryMenu;
+use CRM_Civicase_Service_CaseCategoryCustomDataType as CaseCategoryCustomDataType;
+use CRM_Civicase_Service_CaseCategoryCustomFieldExtends as CaseCategoryCustomFieldExtends;
+
 /**
  * Class CRM_Civicase_Service_CaseTypeCategoryEventHandler.
  */
@@ -36,7 +40,7 @@ class CRM_Civicase_Service_CaseTypeCategoryEventHandler {
    * @param \CRM_Civicase_Service_CaseCategoryCustomFieldExtends $customFieldExtends
    *   Custom field handler.
    */
-  public function __construct($menu, $customData, $customFieldExtends) {
+  public function __construct(CaseCategoryMenu $menu, CaseCategoryCustomDataType $customData, CaseCategoryCustomFieldExtends $customFieldExtends) {
     $this->menu = $menu;
     $this->customData = $customData;
     $this->customFieldExtends = $customFieldExtends;
@@ -59,7 +63,7 @@ class CRM_Civicase_Service_CaseTypeCategoryEventHandler {
   }
 
   /**
-   * Perform actions on case type category create.
+   * Perform actions on case type category update.
    *
    * @param int $caseCategoryId
    *   Case type category id.
@@ -68,7 +72,7 @@ class CRM_Civicase_Service_CaseTypeCategoryEventHandler {
    * @param string $caseCategoryIcon
    *   (Optional) Case type category icon.
    */
-  public function OnUpdate($caseCategoryId, $caseCategoryStatus = NULL, $caseCategoryIcon = NULL){
+  public function onUpdate($caseCategoryId, $caseCategoryStatus = NULL, $caseCategoryIcon = NULL) {
     if (!$caseCategoryId) {
       return;
     }
@@ -81,9 +85,11 @@ class CRM_Civicase_Service_CaseTypeCategoryEventHandler {
       $updateParams['icon'] = 'crm-i ' . $caseCategoryIcon;
     }
 
-    if (!empty($updateParams)) {
-      $this->menu->updateItems($caseCategoryId, $updateParams);
+    if (empty($updateParams)) {
+      return;
     }
+
+    $this->menu->updateItems($caseCategoryId, $updateParams);
   }
 
   /**

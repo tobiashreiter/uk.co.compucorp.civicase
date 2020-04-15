@@ -26,24 +26,22 @@ class CRM_Civicase_Hook_PostProcess_CaseCategoryPostProcessor {
     // Get object data from submitted from.
     $formValues = $form->_submitValues;
     $caseCategoryValues = $form->getVar('_values');
-    $category = [
-      'id' => $form->getVar('_id'),
-      'name' => !empty($caseCategoryValues['name']) ? $caseCategoryValues['name'] : $formValues['label'],
-      'is_active' => $formValues['is_active'],
-      'icon' => $formValues['icon'],
-    ];
+    $categoryId = $form->getVar('_id');
+    $categoryName = !empty($caseCategoryValues['name']) ? $caseCategoryValues['name'] : $formValues['label'];
+    $categoryStatus = $formValues['is_active'];
+    $categoryIcon = $formValues['icon'];
 
-    $op = $form->getVar('_action');
+    $formAction = $form->getVar('_action');
     $handler = CaseTypeCategoryEventHandlerFactory::create();
 
-    if ($op == CRM_Core_Action::UPDATE) {
-      $handler->onUpdate($category['id'], $category['is_active'], $category['icon']);
+    if ($formAction == CRM_Core_Action::UPDATE) {
+      $handler->onUpdate($categoryId, $categoryStatus, $categoryIcon);
     }
-    elseif ($op == CRM_Core_Action::ADD) {
-      $handler->onCreate($category['name']);
+    elseif ($formAction == CRM_Core_Action::ADD) {
+      $handler->onCreate($categoryName);
     }
-    elseif ($op == CRM_Core_Action::DELETE) {
-      $handler->onDelete($category['name']);
+    elseif ($formAction == CRM_Core_Action::DELETE) {
+      $handler->onDelete($categoryName);
     }
   }
 
