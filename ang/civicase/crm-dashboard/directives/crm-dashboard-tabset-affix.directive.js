@@ -34,14 +34,38 @@
             offset: {
               top: $tabContainer.offset().top - (toolbarDrawerHeight + $civicrmMenu.height())
             }
-          }).on('affixed.bs.affix', function () {
-            $tabNavigation.css('top', $civicrmMenu.height() + toolbarDrawerHeight);
-            $parentContainer.css('padding-top', parentOriginalTopPadding + $tabNavigation.height());
-          }).on('affixed-top.bs.affix', function () {
-            $parentContainer.css('padding-top', parentOriginalTopPadding);
-            $tabNavigation.css('top', 'auto');
-          });
+          })
+            .on('affixed.bs.affix', handleTabNavigationAffix)
+            .on('affixed-top.bs.affix', handleTabNavigationRestore);
         });
+      }
+
+      /**
+       * Handles the changes that happen when the tab navigation is affixed.
+       * It adds top spacing to both the navigation menu and the dashboard to
+       * properly display the affixed elements.
+       */
+      function handleTabNavigationAffix () {
+        var $adminMenu = $('#admin-menu');
+        var adminMenuHeight = $adminMenu.is(':visible')
+          ? $adminMenu.height()
+          : 0;
+        var tabNavigationTopPosition = $civicrmMenu.height() + toolbarDrawerHeight +
+          adminMenuHeight;
+        var parentContainerPaddingTop = $tabNavigation.height() +
+          parentOriginalTopPadding + adminMenuHeight;
+
+        $tabNavigation.css('top', tabNavigationTopPosition);
+        $parentContainer.css('padding-top', parentContainerPaddingTop);
+      }
+
+      /**
+       * It restore the navigation tabs and the dashboard container to their
+       * original states.
+       */
+      function handleTabNavigationRestore () {
+        $parentContainer.css('padding-top', parentOriginalTopPadding);
+        $tabNavigation.css('top', 'auto');
       }
 
       /**
