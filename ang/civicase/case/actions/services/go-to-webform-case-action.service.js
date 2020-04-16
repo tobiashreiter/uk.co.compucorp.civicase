@@ -9,7 +9,7 @@
   function GoToWebformCaseAction ($window) {
     this.doAction = doAction;
     this.isActionAllowed = isActionAllowed;
-    this.isWebformContainsCaseTypeId = isWebformContainsCaseTypeId;
+    this.checkIfWebformContainsCaseTypeId = checkIfWebformContainsCaseTypeId;
 
     /**
      * Click event handler for the Action
@@ -40,7 +40,7 @@
      * @returns {boolean} - true if action is allowed, false otherwise.
      */
     function isActionAllowed (action, cases, attributes) {
-      return isWebformContainsCaseTypeId(action, cases[0].case_type_id);
+      return checkIfWebformContainsCaseTypeId(action, cases[0].case_type_id);
     }
 
     /**
@@ -48,7 +48,7 @@
      * @param {string} caseTypeID case type id
      * @returns {boolean} if webform contains sent case type id
      */
-    function isWebformContainsCaseTypeId (webform, caseTypeID) {
+    function checkIfWebformContainsCaseTypeId (webform, caseTypeID) {
       return webform.case_type_ids.indexOf(caseTypeID) !== -1;
     }
   }

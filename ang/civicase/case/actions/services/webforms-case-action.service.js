@@ -22,9 +22,7 @@
      * @returns {boolean} - true if action is allowed, false otherwise.
      */
     function isActionAllowed (action, cases, attributes) {
-      checkIfWebformsExist(action.items, cases);
       // Allow this action on Case details page only.
-
       return attributes && attributes.mode === 'case-details' &&
        checkIfWebformsExist(action.items, cases[0].case_type_id);
     }
@@ -38,7 +36,7 @@
      */
     function checkIfWebformsExist (webforms, caseTypeID) {
       return !!_.find(webforms, function (webform) {
-        return GoToWebformCaseAction.isWebformContainsCaseTypeId(webform, caseTypeID);
+        return GoToWebformCaseAction.checkIfWebformContainsCaseTypeId(webform, caseTypeID);
       });
     }
   }
