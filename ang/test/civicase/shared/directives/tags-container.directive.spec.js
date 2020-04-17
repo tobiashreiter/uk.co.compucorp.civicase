@@ -1,8 +1,8 @@
 /* eslint-env jasmine */
 
-(function () {
-  describe('civicaseTag', function () {
-    var $controller, $rootScope, $scope, mockTags;
+(() => {
+  describe('civicaseTag', () => {
+    let $controller, $rootScope, $scope, mockTags;
 
     beforeEach(module('civicase'));
 
@@ -22,21 +22,32 @@
       };
     }));
 
-    describe('on init', function () {
-      beforeEach(function () {
+    describe('on init', () => {
+      beforeEach(() => {
         initController(mockTags);
         $scope.$digest();
       });
 
-      it('converts the tags object into an array', function () {
+      it('converts the tags object into an array', () => {
         expect($scope.tagsArray).toEqual(Object.values(mockTags));
+      });
+    });
+
+    describe('when passing an empty object of tags', () => {
+      beforeEach(() => {
+        initController({});
+        $scope.$digest();
+      });
+
+      it('sets the tags array as empty', () => {
+        expect($scope.tagsArray).toEqual([]);
       });
     });
 
     /**
      * Initialise the controller
      *
-     * @param {Object} tags
+     * @param {object} tags a list of tags to include in the scope.
      */
     function initController (tags) {
       $scope = $rootScope.$new();

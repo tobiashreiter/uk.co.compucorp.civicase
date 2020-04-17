@@ -18,15 +18,17 @@
 
   /**
    * Controller function
+   *
+   * @param {object} $scope a reference to the scope object.
    */
   function civicaseTagsContainerController ($scope) {
     $scope.tagsArray = [];
 
     (function init () {
       $scope.$watch('tags', function () {
-        if ($scope.tags) {
-          $scope.tagsArray = Object.values($scope.tags);
-        }
+        $scope.tagsArray = $scope.tags
+          ? _.values($scope.tags)
+          : [];
       });
     }());
   }
