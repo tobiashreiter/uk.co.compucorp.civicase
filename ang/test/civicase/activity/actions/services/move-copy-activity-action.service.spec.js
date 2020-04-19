@@ -3,7 +3,7 @@
 (function (_, $) {
   describe('MoveCopyActivityAction', function () {
     var $q, $rootScope, MoveCopyActivityAction, activitiesMockData,
-      crmApiMock, dialogServiceMock;
+      crmApiMock, dialogServiceMock, originalDialogFunction;
 
     beforeEach(module('civicase', 'civicase.data', function ($provide) {
       crmApiMock = jasmine.createSpy('crmApi');
@@ -19,7 +19,14 @@
       $rootScope = _$rootScope_;
       activitiesMockData = _activitiesMockData_;
       MoveCopyActivityAction = _MoveCopyActivityAction_;
+      originalDialogFunction = $.fn.dialog;
+
+      spyOn($.fn, 'dialog');
     }));
+
+    afterEach(function () {
+      $.fn.dialog = originalDialogFunction;
+    });
 
     describe('Copy Activities bulk action', function () {
       var activities, modalOpenCall, model;
@@ -78,16 +85,13 @@
           beforeEach(function () {
             var saveMethod = modalOpenCall[3].buttons[0].click;
             model.case_id = _.uniqueId();
-            model.subject = 'subject';
             expectedActivitySavingCalls = [['Activity', 'copybyquery', {
               case_id: model.case_id,
-              subject: model.subject,
               id: $scope.selectedActivities.map(function (activity) {
                 return activity.id;
               })
             }]];
 
-            spyOn($.fn, 'dialog');
             spyOn($rootScope, '$broadcast');
             crmApiMock.and.returnValue($q.resolve([{ values: $scope.selectedActivities }]));
             saveMethod();
@@ -112,7 +116,6 @@
             var saveMethod = modalOpenCall[3].buttons[0].click;
             model.case_id = $scope.selectedActivities[0].case_id;
 
-            spyOn($.fn, 'dialog');
             spyOn($rootScope, '$broadcast');
             crmApiMock.and.returnValue($q.resolve([{ values: $scope.selectedActivities }]));
             saveMethod();
@@ -159,6 +162,31 @@
 
           it('defines an empty subject', function () {
             expect(model.subject).toBe($scope.selectedActivities[0].subject);
+          });
+        });
+
+        describe('when saving the copy action modal', function () {
+          var expectedActivitySavingCalls;
+
+          beforeEach(function () {
+            var saveMethod = modalOpenCall[3].buttons[0].click;
+            model.case_id = _.uniqueId();
+            model.subject = 'a sample subject';
+            expectedActivitySavingCalls = [['Activity', 'copybyquery', {
+              case_id: model.case_id,
+              subject: model.subject,
+              id: $scope.selectedActivities.map(function (activity) {
+                return activity.id;
+              })
+            }]];
+
+            crmApiMock.and.returnValue($q.resolve([{ values: $scope.selectedActivities }]));
+            saveMethod();
+            $rootScope.$digest();
+          });
+
+          it('saves a new copy of each of the activity and assigns it to the selected case using the new activity subject', function () {
+            expect(crmApiMock.calls.mostRecent().args[0]).toEqual(expectedActivitySavingCalls);
           });
         });
       });
@@ -221,16 +249,13 @@
           beforeEach(function () {
             var saveMethod = modalOpenCall[3].buttons[0].click;
             model.case_id = _.uniqueId();
-            model.subject = 'subject';
             expectedActivitySavingCalls = [['Activity', 'movebyquery', {
               case_id: model.case_id,
-              subject: model.subject,
               id: $scope.selectedActivities.map(function (activity) {
                 return activity.id;
               })
             }]];
 
-            spyOn($.fn, 'dialog');
             spyOn($rootScope, '$broadcast');
             crmApiMock.and.returnValue($q.resolve([{ values: $scope.selectedActivities }]));
             saveMethod();
@@ -255,7 +280,6 @@
             var saveMethod = modalOpenCall[3].buttons[0].click;
             model.case_id = $scope.selectedActivities[0].case_id;
 
-            spyOn($.fn, 'dialog');
             spyOn($rootScope, '$broadcast');
             crmApiMock.and.returnValue($q.resolve([{ values: $scope.selectedActivities }]));
             saveMethod();
@@ -302,6 +326,31 @@
 
           it('defines an empty subject', function () {
             expect(model.subject).toBe($scope.selectedActivities[0].subject);
+          });
+        });
+
+        describe('when saving the move action modal', function () {
+          var expectedActivitySavingCalls;
+
+          beforeEach(function () {
+            var saveMethod = modalOpenCall[3].buttons[0].click;
+            model.case_id = _.uniqueId();
+            model.subject = 'a sample subject';
+            expectedActivitySavingCalls = [['Activity', 'movebyquery', {
+              case_id: model.case_id,
+              subject: model.subject,
+              id: $scope.selectedActivities.map(function (activity) {
+                return activity.id;
+              })
+            }]];
+
+            crmApiMock.and.returnValue($q.resolve([{ values: $scope.selectedActivities }]));
+            saveMethod();
+            $rootScope.$digest();
+          });
+
+          it('moves the activity and assigns it to the selected case using the new activity subject', function () {
+            expect(crmApiMock.calls.mostRecent().args[0]).toEqual(expectedActivitySavingCalls);
           });
         });
       });
