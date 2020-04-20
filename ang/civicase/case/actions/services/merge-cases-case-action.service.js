@@ -3,13 +3,16 @@
 
   module.service('MergeCasesCaseAction', MergeCasesCaseAction);
 
+  /**
+   * Merge Cases action.
+   */
   function MergeCasesCaseAction () {
     /**
      * Click event handler for the Action
      *
-     * @param {Array} cases
-     * @param {Object} action
-     * @param {Function} callbackFn
+     * @param {object[]} cases a list of cases.
+     * @param {object} action data about the case action.
+     * @param {Function} callbackFn callback to execute after running the action.
      */
     this.doAction = function (cases, action, callbackFn) {
       var ts = CRM.ts('civicase');
