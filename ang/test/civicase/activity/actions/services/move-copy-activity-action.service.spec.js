@@ -138,7 +138,11 @@
 
       describe('when selecting a single activity and copying it to a new case', function () {
         beforeEach(function () {
-          $scope.selectedActivities = _.sample(activities, 1);
+          $scope.selectedActivities = _.chain(activities)
+            .sample(1)
+            .cloneDeep()
+            .value();
+          $scope.selectedActivities[0].type = 'Meeting';
 
           MoveCopyActivityAction.doAction($scope, { operation: 'copy' });
 
@@ -146,9 +150,8 @@
           model = modalOpenCall[2];
         });
 
-        it('displays the modal title as "Copy Type Activity"', function () {
-          // @FIX: the activity at this point only has the id, source_contact_id properties. The type field is not defined:
-          expect(modalOpenCall[3].title).toBe('Copy Activity');
+        it('displays the modal title as "Copy Meeting Activity"', function () {
+          expect(modalOpenCall[3].title).toBe('Copy Meeting Activity');
         });
 
         describe('the model', function () {
@@ -302,7 +305,11 @@
 
       describe('when selecting a single activity and moving it to a new case', function () {
         beforeEach(function () {
-          $scope.selectedActivities = _.sample(activities, 1);
+          $scope.selectedActivities = _.chain(activities)
+            .sample(1)
+            .cloneDeep()
+            .value();
+          $scope.selectedActivities[0].type = 'Meeting';
 
           MoveCopyActivityAction.doAction($scope, { operation: 'move' });
 
@@ -310,9 +317,8 @@
           model = modalOpenCall[2];
         });
 
-        it('displays the modal title as "Move Type Activity"', function () {
-          // @FIX: the activity at this point only has the id, source_contact_id properties. The type field is not defined:
-          expect(modalOpenCall[3].title).toBe('Move Activity');
+        it('displays the modal title as "Move Meeting Activity"', function () {
+          expect(modalOpenCall[3].title).toBe('Move Meeting Activity');
         });
 
         describe('the model', function () {
