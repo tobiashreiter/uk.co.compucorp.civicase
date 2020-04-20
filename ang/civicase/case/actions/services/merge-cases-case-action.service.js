@@ -5,8 +5,10 @@
 
   /**
    * Merge Cases action.
+   *
+   * @param {Function} ts a reference to the translation service.
    */
-  function MergeCasesCaseAction () {
+  function MergeCasesCaseAction (ts) {
     /**
      * Click event handler for the Action
      *
@@ -15,7 +17,6 @@
      * @param {Function} callbackFn callback to execute after running the action.
      */
     this.doAction = function (cases, action, callbackFn) {
-      var ts = CRM.ts('civicase');
       var msg = ts('Merge all activity records into a single case?');
 
       if (cases[0].case_type_id !== cases[1].case_type_id) {
