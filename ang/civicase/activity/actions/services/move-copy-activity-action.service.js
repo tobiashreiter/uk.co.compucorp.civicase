@@ -99,24 +99,19 @@
       var action = operation === 'copy' ? 'copybyquery' : 'movebyquery';
       var selectedActivitiesIds = _.map(activitiesObject.selectedActivities, 'id');
       var isSingleActivity = selectedActivitiesIds.length === 1;
+      var apiCallParams = { case_id: model.case_id };
 
       if (activitiesObject.isSelectAll) {
-        return [['Activity', action, {
-          params: activitiesObject.searchParams,
-          case_id: model.case_id
-        }]];
-      } else if (isSingleActivity) {
-        return [['Activity', action, {
-          case_id: model.case_id,
-          id: selectedActivitiesIds,
-          subject: model.subject
-        }]];
+        apiCallParams.params = activitiesObject.searchParams;
       } else {
-        return [['Activity', action, {
-          case_id: model.case_id,
-          id: selectedActivitiesIds
-        }]];
+        if (isSingleActivity) {
+          apiCallParams.subject = model.subject;
+        }
+
+        apiCallParams.id = selectedActivitiesIds;
       }
+
+      return [['Activity', action, apiCallParams]];
     }
   }
 })(angular, CRM.$, CRM._);
