@@ -16,7 +16,7 @@
      */
     this.doAction = function (cases, action, callbackFn) {
       var ts = CRM.ts('civicase');
-      var msg = ts('Merge all activitiy records into a single case?');
+      var msg = ts('Merge all activity records into a single case?');
 
       if (cases[0].case_type_id !== cases[1].case_type_id) {
         msg += '<br />' + ts('Warning: selected cases are of different types.');
