@@ -96,59 +96,22 @@
      * @returns {Array} api call configuration
      */
     function prepareApiCalls (activitiesObject, operation, model) {
-      if (activitiesObject.selectedActivities.length === 1) {
-        return prepareAPICallsForSingleActivity(activitiesObject, operation, model);
-      } else {
-        return prepareAPICallsForMultipleActivities(activitiesObject, operation, model);
-      }
-    }
-
-    /**
-     * Prepare the API calls for the move/copy operation
-     *
-     * @param {object} activitiesObject object containing configuration of activities
-     * @param {string} operation move or copy operation
-     * @param {object} model model object for dialog box
-     * @returns {Array} api call configuration
-     */
-    function prepareAPICallsForSingleActivity (activitiesObject, operation, model) {
-      var activity = activitiesObject.selectedActivities[0];
-
-      if (operation === 'copy') {
-        delete activity.id;
-      }
-
-      activity.subject = model.subject;
-      activity.case_id = model.case_id;
-
-      return [['Activity', 'create', activity]];
-    }
-
-    /**
-     * Prepare the API calls for the move/copy operation
-     *
-     * @param {object} activitiesObject object containing configuration of activities
-     * @param {string} operation move or copy operation
-     * @param {object} model model object for dialog box
-     * @returns {Array} api call configuration
-     */
-    function prepareAPICallsForMultipleActivities (activitiesObject, operation, model) {
       var action = operation === 'copy' ? 'copybyquery' : 'movebyquery';
+      var selectedActivitiesIds = _.map(activitiesObject.selectedActivities, 'id');
+      var isSingleActivity = selectedActivitiesIds.length === 1;
+      var apiCallParams = { case_id: model.case_id };
 
       if (activitiesObject.isSelectAll) {
-        return [['Activity', action, {
-          params: activitiesObject.searchParams,
-          case_id: model.case_id
-        }]];
+        apiCallParams.params = activitiesObject.searchParams;
       } else {
-        return [['Activity', action, {
-          case_id: model.case_id,
-          id: activitiesObject.selectedActivities.map(function (activity) {
-            return activity.id;
-          }),
-          subject: model.subject
-        }]];
+        if (isSingleActivity) {
+          apiCallParams.subject = model.subject;
+        }
+
+        apiCallParams.id = selectedActivitiesIds;
       }
+
+      return [['Activity', action, apiCallParams]];
     }
   }
 })(angular, CRM.$, CRM._);

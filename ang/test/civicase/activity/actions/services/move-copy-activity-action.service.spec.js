@@ -1,11 +1,11 @@
 /* eslint-env jasmine */
 
-(function (_, $) {
-  describe('MoveCopyActivityAction', function () {
-    var $q, $rootScope, MoveCopyActivityAction, activitiesMockData,
-      crmApiMock, dialogServiceMock;
+((_, $) => {
+  describe('MoveCopyActivityAction', () => {
+    let $q, $rootScope, MoveCopyActivityAction, activitiesMockData,
+      crmApiMock, dialogServiceMock, originalDialogFunction;
 
-    beforeEach(module('civicase', 'civicase.data', function ($provide) {
+    beforeEach(module('civicase', 'civicase.data', ($provide) => {
       crmApiMock = jasmine.createSpy('crmApi');
       dialogServiceMock = jasmine.createSpyObj('dialogService', ['open']);
 
@@ -19,33 +19,40 @@
       $rootScope = _$rootScope_;
       activitiesMockData = _activitiesMockData_;
       MoveCopyActivityAction = _MoveCopyActivityAction_;
+      originalDialogFunction = $.fn.dialog;
+
+      spyOn($.fn, 'dialog');
     }));
 
-    describe('Copy Activities bulk action', function () {
-      var activities, modalOpenCall, model;
-      var $scope = {};
+    afterEach(() => {
+      $.fn.dialog = originalDialogFunction;
+    });
 
-      beforeEach(function () {
-        var caseId = _.uniqueId();
+    describe('Copy Activities bulk action', () => {
+      let activities, modalOpenCall, model;
+      const $scope = {};
+
+      beforeEach(() => {
+        const caseId = _.uniqueId();
 
         activities = activitiesMockData.get();
 
-        activities.forEach(function (activity) {
+        activities.forEach((activity) => {
           activity.case_id = caseId;
         });
 
         $scope.selectedActivities = _.sample(activities, 2);
       });
 
-      describe('when selecting some activities and then copy them to a new case', function () {
-        beforeEach(function () {
+      describe('when selecting some activities and then copy them to a new case', () => {
+        beforeEach(() => {
           MoveCopyActivityAction.doAction($scope, { operation: 'copy' });
 
           modalOpenCall = dialogServiceMock.open.calls.mostRecent().args;
           model = modalOpenCall[2];
         });
 
-        it('opens a case selection modal', function () {
+        it('opens a case selection modal', () => {
           expect(dialogServiceMock.open).toHaveBeenCalledWith(
             'MoveCopyActCard',
             '~/civicase/activity/actions/services/move-copy-activity-action.html',
@@ -54,88 +61,88 @@
           );
         });
 
-        it('displays the title as "Copy 2 Activities"', function () {
+        it('displays the title as "Copy 2 Activities"', () => {
           expect(modalOpenCall[3].title).toBe('Copy 2 Activities');
         });
 
-        describe('the model', function () {
-          it('defines an empty case id', function () {
+        describe('the model', () => {
+          it('defines an empty case id', () => {
             expect(model.case_id).toBe('');
           });
 
-          it('does not display the subject', function () {
+          it('does not display the subject', () => {
             expect(model.isSubjectVisible).toBe(false);
           });
 
-          it('defines an empty subject', function () {
+          it('defines an empty subject', () => {
             expect(model.subject).toBe('');
           });
         });
 
-        describe('when saving the copy action modal', function () {
-          var expectedActivitySavingCalls;
+        describe('when saving the copy action modal', () => {
+          let expectedActivitySavingCalls;
 
-          beforeEach(function () {
-            var saveMethod = modalOpenCall[3].buttons[0].click;
+          beforeEach(() => {
+            const saveMethod = modalOpenCall[3].buttons[0].click;
             model.case_id = _.uniqueId();
-            model.subject = 'subject';
             expectedActivitySavingCalls = [['Activity', 'copybyquery', {
               case_id: model.case_id,
-              subject: model.subject,
-              id: $scope.selectedActivities.map(function (activity) {
+              id: $scope.selectedActivities.map((activity) => {
                 return activity.id;
               })
             }]];
 
-            spyOn($.fn, 'dialog');
             spyOn($rootScope, '$broadcast');
             crmApiMock.and.returnValue($q.resolve([{ values: $scope.selectedActivities }]));
             saveMethod();
             $rootScope.$digest();
           });
 
-          it('saves a new copy of each of the activities and assign them to the selected case', function () {
+          it('saves a new copy of each of the activities and assign them to the selected case', () => {
             expect(crmApiMock.calls.mostRecent().args[0]).toEqual(expectedActivitySavingCalls);
           });
 
-          it('emits a civicase activity updated event', function () {
+          it('emits a civicase activity updated event', () => {
             expect($rootScope.$broadcast).toHaveBeenCalledWith('civicase::activity::updated');
           });
 
-          it('closes the dialog', function () {
+          it('closes the dialog', () => {
             expect($.fn.dialog).toHaveBeenCalled();
           });
         });
 
-        describe('when the selected case is the same as the current case', function () {
-          beforeEach(function () {
-            var saveMethod = modalOpenCall[3].buttons[0].click;
+        describe('when the selected case is the same as the current case', () => {
+          beforeEach(() => {
+            const saveMethod = modalOpenCall[3].buttons[0].click;
             model.case_id = $scope.selectedActivities[0].case_id;
 
-            spyOn($.fn, 'dialog');
             spyOn($rootScope, '$broadcast');
             crmApiMock.and.returnValue($q.resolve([{ values: $scope.selectedActivities }]));
             saveMethod();
             $rootScope.$digest();
           });
 
-          it('does not request the activities data', function () {
+          it('does not request the activities data', () => {
             expect(crmApiMock).not.toHaveBeenCalled();
           });
 
-          it('does not emit the civicase activity updated event', function () {
+          it('does not emit the civicase activity updated event', () => {
             expect($rootScope.$broadcast).not.toHaveBeenCalledWith('civicase::activity::updated');
           });
 
-          it('closes the dialog', function () {
+          it('closes the dialog', () => {
             expect($.fn.dialog).toHaveBeenCalled();
           });
         });
       });
 
-      describe('when selecting a single activity and copying it to a new case', function () {
-        beforeEach(function () {
-          $scope.selectedActivities = _.sample(activities, 1);
+      describe('when selecting a single activity and copying it to a new case', () => {
+        beforeEach(() => {
+          $scope.selectedActivities = _.chain(activities)
+            .sample(1)
+            .cloneDeep()
+            .value();
+          $scope.selectedActivities[0].type = 'Meeting';
 
           MoveCopyActivityAction.doAction($scope, { operation: 'copy' });
 
@@ -143,52 +150,76 @@
           model = modalOpenCall[2];
         });
 
-        it('displays the modal title as "Copy Type Activity"', function () {
-          // @FIX: the activity at this point only has the id, source_contact_id properties. The type field is not defined:
-          expect(modalOpenCall[3].title).toBe('Copy Activity');
+        it('displays the modal title as "Copy Meeting Activity"', () => {
+          expect(modalOpenCall[3].title).toBe('Copy Meeting Activity');
         });
 
-        describe('the model', function () {
-          it('defines the case id the same as the selected activity', function () {
+        describe('the model', () => {
+          it('defines the case id the same as the selected activity', () => {
             expect(model.case_id).toBe($scope.selectedActivities[0].case_id);
           });
 
-          it('displays the subject', function () {
+          it('displays the subject', () => {
             expect(model.isSubjectVisible).toBe(true);
           });
 
-          it('defines an empty subject', function () {
+          it('defines an empty subject', () => {
             expect(model.subject).toBe($scope.selectedActivities[0].subject);
+          });
+        });
+
+        describe('when saving the copy action modal', () => {
+          let expectedActivitySavingCalls;
+
+          beforeEach(() => {
+            const saveMethod = modalOpenCall[3].buttons[0].click;
+            model.case_id = _.uniqueId();
+            model.subject = 'a sample subject';
+            expectedActivitySavingCalls = [['Activity', 'copybyquery', {
+              case_id: model.case_id,
+              subject: model.subject,
+              id: $scope.selectedActivities.map((activity) => {
+                return activity.id;
+              })
+            }]];
+
+            crmApiMock.and.returnValue($q.resolve([{ values: $scope.selectedActivities }]));
+            saveMethod();
+            $rootScope.$digest();
+          });
+
+          it('saves a new copy of each of the activity and assigns it to the selected case using the new activity subject', () => {
+            expect(crmApiMock.calls.mostRecent().args[0]).toEqual(expectedActivitySavingCalls);
           });
         });
       });
     });
 
-    describe('Move Activities bulk action', function () {
-      var activities, modalOpenCall, model;
-      var $scope = {};
+    describe('Move Activities bulk action', () => {
+      let activities, modalOpenCall, model;
+      const $scope = {};
 
-      beforeEach(function () {
-        var caseId = _.uniqueId();
+      beforeEach(() => {
+        const caseId = _.uniqueId();
 
         activities = activitiesMockData.get();
 
-        activities.forEach(function (activity) {
+        activities.forEach((activity) => {
           activity.case_id = caseId;
         });
 
         $scope.selectedActivities = _.sample(activities, 2);
       });
 
-      describe('when selecting some activities and then move them to a new case', function () {
-        beforeEach(function () {
+      describe('when selecting some activities and then move them to a new case', () => {
+        beforeEach(() => {
           MoveCopyActivityAction.doAction($scope, { operation: 'move' });
 
           modalOpenCall = dialogServiceMock.open.calls.mostRecent().args;
           model = modalOpenCall[2];
         });
 
-        it('opens a case selection modal', function () {
+        it('opens a case selection modal', () => {
           expect(dialogServiceMock.open).toHaveBeenCalledWith(
             'MoveCopyActCard',
             '~/civicase/activity/actions/services/move-copy-activity-action.html',
@@ -197,88 +228,88 @@
           );
         });
 
-        it('displays the title as "Move 2 Activities"', function () {
+        it('displays the title as "Move 2 Activities"', () => {
           expect(modalOpenCall[3].title).toBe('Move 2 Activities');
         });
 
-        describe('the model', function () {
-          it('defines an empty case id', function () {
+        describe('the model', () => {
+          it('defines an empty case id', () => {
             expect(model.case_id).toBe('');
           });
 
-          it('does not display the subject', function () {
+          it('does not display the subject', () => {
             expect(model.isSubjectVisible).toBe(false);
           });
 
-          it('defines an empty subject', function () {
+          it('defines an empty subject', () => {
             expect(model.subject).toBe('');
           });
         });
 
-        describe('when saving the move action modal', function () {
-          var expectedActivitySavingCalls;
+        describe('when saving the move action modal', () => {
+          let expectedActivitySavingCalls;
 
-          beforeEach(function () {
-            var saveMethod = modalOpenCall[3].buttons[0].click;
+          beforeEach(() => {
+            const saveMethod = modalOpenCall[3].buttons[0].click;
             model.case_id = _.uniqueId();
-            model.subject = 'subject';
             expectedActivitySavingCalls = [['Activity', 'movebyquery', {
               case_id: model.case_id,
-              subject: model.subject,
-              id: $scope.selectedActivities.map(function (activity) {
+              id: $scope.selectedActivities.map((activity) => {
                 return activity.id;
               })
             }]];
 
-            spyOn($.fn, 'dialog');
             spyOn($rootScope, '$broadcast');
             crmApiMock.and.returnValue($q.resolve([{ values: $scope.selectedActivities }]));
             saveMethod();
             $rootScope.$digest();
           });
 
-          it('moves each of the activities and assign them to the selected case', function () {
+          it('moves each of the activities and assign them to the selected case', () => {
             expect(crmApiMock.calls.mostRecent().args[0]).toEqual(expectedActivitySavingCalls);
           });
 
-          it('emits a civicase activity updated event', function () {
+          it('emits a civicase activity updated event', () => {
             expect($rootScope.$broadcast).toHaveBeenCalledWith('civicase::activity::updated');
           });
 
-          it('closes the dialog', function () {
+          it('closes the dialog', () => {
             expect($.fn.dialog).toHaveBeenCalled();
           });
         });
 
-        describe('when the selected case is the same as the current case', function () {
-          beforeEach(function () {
-            var saveMethod = modalOpenCall[3].buttons[0].click;
+        describe('when the selected case is the same as the current case', () => {
+          beforeEach(() => {
+            const saveMethod = modalOpenCall[3].buttons[0].click;
             model.case_id = $scope.selectedActivities[0].case_id;
 
-            spyOn($.fn, 'dialog');
             spyOn($rootScope, '$broadcast');
             crmApiMock.and.returnValue($q.resolve([{ values: $scope.selectedActivities }]));
             saveMethod();
             $rootScope.$digest();
           });
 
-          it('does not request the activities data', function () {
+          it('does not request the activities data', () => {
             expect(crmApiMock).not.toHaveBeenCalled();
           });
 
-          it('does not emit the civicase activity updated event', function () {
+          it('does not emit the civicase activity updated event', () => {
             expect($rootScope.$broadcast).not.toHaveBeenCalledWith('civicase::activity::updated');
           });
 
-          it('closes the dialog', function () {
+          it('closes the dialog', () => {
             expect($.fn.dialog).toHaveBeenCalled();
           });
         });
       });
 
-      describe('when selecting a single activity and moving it to a new case', function () {
-        beforeEach(function () {
-          $scope.selectedActivities = _.sample(activities, 1);
+      describe('when selecting a single activity and moving it to a new case', () => {
+        beforeEach(() => {
+          $scope.selectedActivities = _.chain(activities)
+            .sample(1)
+            .cloneDeep()
+            .value();
+          $scope.selectedActivities[0].type = 'Meeting';
 
           MoveCopyActivityAction.doAction($scope, { operation: 'move' });
 
@@ -286,22 +317,46 @@
           model = modalOpenCall[2];
         });
 
-        it('displays the modal title as "Move Type Activity"', function () {
-          // @FIX: the activity at this point only has the id, source_contact_id properties. The type field is not defined:
-          expect(modalOpenCall[3].title).toBe('Move Activity');
+        it('displays the modal title as "Move Meeting Activity"', () => {
+          expect(modalOpenCall[3].title).toBe('Move Meeting Activity');
         });
 
-        describe('the model', function () {
-          it('defines the case id the same as the selected activity', function () {
+        describe('the model', () => {
+          it('defines the case id the same as the selected activity', () => {
             expect(model.case_id).toBe($scope.selectedActivities[0].case_id);
           });
 
-          it('displays the subject', function () {
+          it('displays the subject', () => {
             expect(model.isSubjectVisible).toBe(true);
           });
 
-          it('defines an empty subject', function () {
+          it('defines an empty subject', () => {
             expect(model.subject).toBe($scope.selectedActivities[0].subject);
+          });
+        });
+
+        describe('when saving the move action modal', () => {
+          let expectedActivitySavingCalls;
+
+          beforeEach(() => {
+            const saveMethod = modalOpenCall[3].buttons[0].click;
+            model.case_id = _.uniqueId();
+            model.subject = 'a sample subject';
+            expectedActivitySavingCalls = [['Activity', 'movebyquery', {
+              case_id: model.case_id,
+              subject: model.subject,
+              id: $scope.selectedActivities.map((activity) => {
+                return activity.id;
+              })
+            }]];
+
+            crmApiMock.and.returnValue($q.resolve([{ values: $scope.selectedActivities }]));
+            saveMethod();
+            $rootScope.$digest();
+          });
+
+          it('moves the activity and assigns it to the selected case using the new activity subject', () => {
+            expect(crmApiMock.calls.mostRecent().args[0]).toEqual(expectedActivitySavingCalls);
           });
         });
       });
