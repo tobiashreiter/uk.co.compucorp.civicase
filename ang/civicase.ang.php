@@ -193,6 +193,7 @@ function add_webforms_case_action(&$options) {
           'title' => $webform['title'],
           'action' => 'GoToWebform',
           'path' => $webform['path'],
+          'case_type_ids' => $webform['case_type_ids'],
           'clientID' => $client,
           'icon' => 'fa-link',
         ];
