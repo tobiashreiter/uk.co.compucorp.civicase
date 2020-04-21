@@ -76,11 +76,11 @@
 
         <!-- Type -->
         <civicase-tooltip
-          tooltip-text="activity.type">
+          tooltip-text="civicaseTs(activity.type)">
           <span
             class="civicase__tooltip__ellipsis civicase__activity-type"
             ng-class="{'civicase__activity-type--completed': (activity.category.indexOf('task') > -1 && activity.is_completed)}">
-            {{ activity.type }}
+            {{ civicaseTs(activity.type) }}
           </span>
         </civicase-tooltip>
         <!-- End - Type -->

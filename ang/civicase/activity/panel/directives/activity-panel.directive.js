@@ -83,9 +83,11 @@
        * @returns {boolean} false
        */
       function onDeleteClickEvent () {
+        var activityTypeName = scope.civicaseTs(scope.activity.type);
+
         CRM.confirm({
           title: ts('Delete Activity'),
-          message: ts('Permanently delete this %1 activity?', { 1: scope.activity.type })
+          message: ts('Permanently delete this %1 activity?', { 1: activityTypeName })
         }).on('crmConfirm:yes', function () {
           $(element).children('.civicase__activity-panel__core_container').block();
           CRM.api3('Activity', 'delete', { id: scope.activity.id })
