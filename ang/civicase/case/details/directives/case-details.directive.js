@@ -27,7 +27,7 @@
    * @param {object} $document $document
    * @param {object} BulkActions bulk actions service
    * @param {object[]} CaseDetailsTabs list of case tabs
-   * @param {object} crmApi crm api service
+   * @param {object} civicaseCrmApi civicase crm api service
    * @param {object} formatActivity format activity service
    * @param {object} formatCase format case service
    * @param {object} getActivityFeedUrl get activity feed url service
@@ -43,7 +43,7 @@
    * @param {object} CaseType case type service
    */
   function civicaseCaseDetailsController ($location, $sce, $rootScope, $scope,
-    $document, BulkActions, CaseDetailsTabs, crmApi, formatActivity, formatCase,
+    $document, BulkActions, CaseDetailsTabs, civicaseCrmApi, formatActivity, formatCase,
     getActivityFeedUrl, getCaseQueryParams, $route, $timeout, crmStatus,
     CasesUtils, PrintMergeCaseAction, ts, ActivityType, CaseStatus, CaseType) {
     // The ts() and hs() functions help load strings for this module.
@@ -214,7 +214,7 @@
 
       apiCalls.push(['Case', 'getdetails', caseGetParams()]);
 
-      var promise = crmApi(apiCalls)
+      var promise = civicaseCrmApi(apiCalls)
         .then(function (result) {
           $scope.pushCaseData(result[apiCalls.length - 1].values[0]);
         });
@@ -433,7 +433,7 @@
       // Fetch extra info about the case
       if ($scope.item && $scope.item.id && !$scope.item.definition) {
         $scope.areDetailsLoaded = false;
-        crmApi('Case', 'getdetails', caseGetParams()).then(function (info) {
+        civicaseCrmApi('Case', 'getdetails', caseGetParams()).then(function (info) {
           $scope.pushCaseData(info.values[0]);
           $scope.areDetailsLoaded = true;
         });
