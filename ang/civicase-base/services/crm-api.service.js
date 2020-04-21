@@ -7,15 +7,7 @@
 
       crmApi(entity, action, params, message)
         .then(function (result) {
-          var isError = false;
-
-          if (_.isArray(result)) {
-            _.each(result, function (response) {
-              if (response.is_error) {
-                isError = true;
-              }
-            });
-          }
+          var isError = _.isArray(result) && _.some(result, 'is_error');
 
           isError ? deferred.reject(result) : deferred.resolve(result);
         });
