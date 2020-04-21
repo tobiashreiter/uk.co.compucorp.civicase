@@ -57,7 +57,7 @@
   function civicaseViewPeopleController ($q, $scope, allowMultipleCaseClients, crmApi, DateHelper,
     ts, RelationshipType) {
     // The ts() and hs() functions help load strings for this module.
-    var CONTACT_CANT_HAVE_ROLE_MESSAGE = 'Case clients cannot be selected for a case role. Please select another contact.';
+    var CONTACT_CANT_HAVE_ROLE_MESSAGE = ts('Case clients cannot be selected for a case role. Please select another contact.');
     var clients = _.indexBy($scope.item.client, 'contact_id');
     var item = $scope.item;
     var relTypes = RelationshipType.getAll();
@@ -636,7 +636,13 @@ included in the confirmation dialog.
             $.extend(role, { checked: selected.indexOf(contact.contact_id) >= 0 }, contact);
           }
         } else if (!$scope.rolesFilter || $scope.rolesFilter === 'client') {
-          caseRoles.push($.extend({ role: ts('Client'), checked: selected.indexOf(contact.contact_id) >= 0 }, contact));
+          var isChecked = selected.indexOf(contact.contact_id) >= 0;
+          var caseRole = $.extend({}, contact, {
+            role: ts('Client'),
+            checked: isChecked
+          });
+
+          caseRoles.push(caseRole);
         }
       });
 
