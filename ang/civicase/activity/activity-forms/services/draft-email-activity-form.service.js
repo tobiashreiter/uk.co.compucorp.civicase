@@ -34,7 +34,7 @@
       return getCrmUrl('civicrm/activity/email/' + options.action, {
         action: options.action,
         atype: activity.activity_type_id,
-        caseId: activity.case_id,
+        caseid: activity.case_id,
         cid: assigneeContactId,
         draft_id: activity.id,
         id: activity.id,
