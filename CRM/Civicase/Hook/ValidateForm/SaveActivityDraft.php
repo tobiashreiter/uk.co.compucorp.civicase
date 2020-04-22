@@ -67,8 +67,7 @@ class CRM_Civicase_Hook_ValidateForm_SaveActivityDraft {
       'id' => $form->getVar('_activityId'),
     ];
 
-    $isContactViewAction = $this->isFromContactViewPage() && !$caseId;
-    if ($isContactViewAction) {
+    if (!$caseId) {
       $params['target_contact_id'] = $form->getVar('_contactIds');
     }
     else {
@@ -122,7 +121,7 @@ class CRM_Civicase_Hook_ValidateForm_SaveActivityDraft {
       return CRM_Utils_System::url('civicrm/contact/view/case', "reset=1&action=view&cid={$form->getVar('_contactIds')[0]}&id={$caseId}&show=1&tab=Activities");
     }
 
-    if ($this->isFromContactViewPage()) {
+    if (strpos($referer, 'civicrm/contact/view') !== FALSE) {
       $cid = $this->getParameterFromUrl($referer, 'cid');
 
       return CRM_Utils_System::url('civicrm/contact/view', "&show=1&action=browse&cid={$cid}&selectedChild=activity");
@@ -145,16 +144,6 @@ class CRM_Civicase_Hook_ValidateForm_SaveActivityDraft {
     parse_str($urlParams, $urlParams);
 
     return !empty($urlParams[$parameterName]) ? $urlParams[$parameterName] : '';
-  }
-
-  /**
-   * Checks whether the referrer is the contact view page.
-   *
-   * @return bool
-   *   whether the referrer is the contact view page.
-   */
-  protected  function isFromContactViewPage() {
-    return strpos($_SERVER['HTTP_REFERER'], 'civicrm/contact/view') !== FALSE;
   }
 
   /**
