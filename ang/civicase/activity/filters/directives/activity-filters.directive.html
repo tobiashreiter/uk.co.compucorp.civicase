@@ -64,7 +64,7 @@
       <div civicase-activity-filters-contact="filters"></div>
 
       <select
-        ng-if="canSelectCaseTypeCategory"
+        ng-if="canSelectCaseTypeCategory && displayOptions.include_case"
         class="form-control civicase__activity-filter__case-type-categories"
         ng-model="filters['case_type_category']" crm-ui-select>
         <option value="">{{ ts('Case Type Categories') }}</option>
