@@ -18,7 +18,7 @@ class CRM_Civicase_Event_Listener_CaseTypeCategoryIsActiveToggler {
    *   Event data.
    */
   public static function onRespond(RespondEvent $e) {
-    $apiRequest = $e->getApiRequest();
+    $apiRequest = (array) $e->getApiRequest();
     if (!self::shouldRun($apiRequest)) {
       return;
     }
