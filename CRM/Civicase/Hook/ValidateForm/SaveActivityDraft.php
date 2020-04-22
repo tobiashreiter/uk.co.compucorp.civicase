@@ -122,28 +122,10 @@ class CRM_Civicase_Hook_ValidateForm_SaveActivityDraft {
     }
 
     if (strpos($referer, 'civicrm/contact/view') !== FALSE) {
-      $cid = $this->getParameterFromUrl($referer, 'cid');
+      $cid = $form->getVar('_contactIds')[0];
 
       return CRM_Utils_System::url('civicrm/contact/view', "&show=1&action=browse&cid={$cid}&selectedChild=activity");
     }
-  }
-
-  /**
-   * Get parameter from a URL string.
-   *
-   * @param string $url
-   *   URL.
-   * @param string $parameterName
-   *   Parameter Name.
-   *
-   * @return string
-   *   Parameter value from URL.
-   */
-  private function getParameterFromUrl($url, $parameterName) {
-    $urlParams = parse_url(htmlspecialchars_decode($url), PHP_URL_QUERY);
-    parse_str($urlParams, $urlParams);
-
-    return !empty($urlParams[$parameterName]) ? $urlParams[$parameterName] : '';
   }
 
   /**
