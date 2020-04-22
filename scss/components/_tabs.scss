@@ -22,9 +22,9 @@
         padding: $panel-body-padding !important;
       }
     }
+  }
 
-    .ui-tabs-panel {
-      padding: 18px; // 18px comes from the tab's header box shadow
-    }
+  #crm-container .civicase__tabs__panel {
+    padding: $panel-body-padding;
   }
 }
