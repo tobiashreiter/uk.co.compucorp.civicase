@@ -1,8 +1,8 @@
-(function (angular, _) {
-  var module = angular.module('civicase.data');
+((angular, _) => {
+  const module = angular.module('civicase.data');
 
   module.service('CasesData', function () {
-    var casesMockData = {
+    const casesMockData = {
       values: [
         {
           id: '141',
@@ -1697,7 +1697,7 @@
       ]
     };
 
-    _.each(casesMockData.values, function (caseObj) {
+    _.each(casesMockData.values, (caseObj) => {
       caseObj['api.Case.getcaselist.relatedCasesByContact'].values = [angular.copy(casesMockData.values[0])];
       caseObj['api.Case.getcaselist.linkedCases'].values = [angular.copy(casesMockData.values[1])];
     });
@@ -1708,9 +1708,9 @@
        *
        * @returns {Array} each array contains an object with the activity data.
        */
-      get: function () {
+      get: () => {
         return angular.copy(casesMockData);
       }
     };
   });
-}(angular, CRM._));
+})(angular, CRM._);

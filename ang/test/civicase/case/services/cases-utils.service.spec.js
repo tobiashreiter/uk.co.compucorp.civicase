@@ -1,11 +1,12 @@
 /* eslint-env jasmine */
-(function (_) {
-  describe('CasesUtils', function () {
+
+((_) => {
+  describe('CasesUtils', () => {
     var CasesData, ContactsCache, CasesUtils;
 
     beforeEach(module('civicase', 'civicase.data'));
 
-    beforeEach(inject(function (_ContactsCache_, _CasesData_, _CasesUtils_) {
+    beforeEach(inject((_ContactsCache_, _CasesData_, _CasesUtils_) => {
       ContactsCache = _ContactsCache_;
       CasesData = _CasesData_;
       CasesUtils = _CasesUtils_;
@@ -13,32 +14,33 @@
       spyOn(ContactsCache, 'add');
     }));
 
-    describe('fetchMoreContactsInformation()', function () {
-      beforeEach(function () {
-        var cases = CasesData.get().values[0];
+    describe('fetchMoreContactsInformation()', () => {
+      let contactsFetched, expectedContacts;
 
-        cases.contacts = [{ contact_id: 1 }];
-        cases.allActivities = [{}];
-        cases.allActivities[0].assignee_contact_id = [2];
-        cases.allActivities[0].target_contact_id = [3];
-        cases.allActivities[0].source_contact_id = 4;
+      beforeEach(() => {
+        const cases = CasesData.get().values[0];
+
+        cases.contacts = [{ contact_id: '1' }];
 
         CasesUtils.fetchMoreContactsInformation([cases]);
+
+        expectedContacts = ['1', '170', '202'];
+        contactsFetched = _.uniq(ContactsCache.add.calls.mostRecent().args[0]);
       });
 
-      it('fetches all contacts of the case', function () {
-        expect(ContactsCache.add).toHaveBeenCalledWith([1, 2, 3, 4]);
+      it('fetches all contacts of the case', () => {
+        expect(contactsFetched).toEqual(expectedContacts);
       });
     });
 
-    describe('getAllCaseClientContactIds()', function () {
-      var cases;
+    describe('getAllCaseClientContactIds()', () => {
+      let cases;
 
-      beforeEach(function () {
+      beforeEach(() => {
         cases = CasesData.get().values[0];
       });
 
-      it('fetches all client contact ids of the case', function () {
+      it('fetches all client contact ids of the case', () => {
         expect(CasesUtils.getAllCaseClientContactIds(cases.contacts)).toEqual(['170']);
       });
     });
