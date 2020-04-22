@@ -27,13 +27,14 @@
    * @param {object} $document $document
    * @param {object} BulkActions bulk actions service
    * @param {object[]} CaseDetailsTabs list of case tabs
-   * @param {object} crmApi crm api service
+   * @param {object} civicaseCrmApi civicase crm api service
    * @param {object} formatActivity format activity service
    * @param {object} formatCase format case service
    * @param {object} getActivityFeedUrl get activity feed url service
    * @param {object} getCaseQueryParams get case query params service
    * @param {object} $route $route service
    * @param {object} $timeout $timeout service
+   * @param {object} crmStatus service to show status notifications
    * @param {object} CasesUtils cases utils service
    * @param {object} PrintMergeCaseAction print merge case action service
    * @param {object} ts ts service
@@ -42,8 +43,8 @@
    * @param {object} CaseType case type service
    */
   function civicaseCaseDetailsController ($location, $sce, $rootScope, $scope,
-    $document, BulkActions, CaseDetailsTabs, crmApi, formatActivity, formatCase,
-    getActivityFeedUrl, getCaseQueryParams, $route, $timeout,
+    $document, BulkActions, CaseDetailsTabs, civicaseCrmApi, formatActivity, formatCase,
+    getActivityFeedUrl, getCaseQueryParams, $route, $timeout, crmStatus,
     CasesUtils, PrintMergeCaseAction, ts, ActivityType, CaseStatus, CaseType) {
     // The ts() and hs() functions help load strings for this module.
     // TODO: Move the common logic into a common controller (based on the usage of ContactCaseTabCaseDetails)
@@ -203,7 +204,8 @@
     /**
      * Refreshes the Case Details data
      *
-     * @param {Array}   apiCalls extra api calls to load on refresh.
+     * @param {Array} apiCalls extra api calls to load on refresh.
+     * @returns {Promise} promise
      */
     $scope.refresh = function (apiCalls) {
       if (!_.isArray(apiCalls)) {
@@ -211,9 +213,16 @@
       }
 
       apiCalls.push(['Case', 'getdetails', caseGetParams()]);
-      crmApi(apiCalls, true).then(function (result) {
-        $scope.pushCaseData(result[apiCalls.length - 1].values[0]);
-      });
+
+      var promise = civicaseCrmApi(apiCalls)
+        .then(function (result) {
+          $scope.pushCaseData(result[apiCalls.length - 1].values[0]);
+        });
+
+      return crmStatus({
+        start: 'Saving',
+        success: 'Saved'
+      }, promise);
     };
 
     $scope.selectTab = function (tab) {
@@ -424,7 +433,7 @@
       // Fetch extra info about the case
       if ($scope.item && $scope.item.id && !$scope.item.definition) {
         $scope.areDetailsLoaded = false;
-        crmApi('Case', 'getdetails', caseGetParams()).then(function (info) {
+        civicaseCrmApi('Case', 'getdetails', caseGetParams()).then(function (info) {
           $scope.pushCaseData(info.values[0]);
           $scope.areDetailsLoaded = true;
         });

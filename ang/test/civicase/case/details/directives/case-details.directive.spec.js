@@ -2,7 +2,7 @@
 (function (_) {
   describe('civicaseCaseDetails', function () {
     var element, controller, activitiesMockData, $controller, $compile,
-      $document, $rootScope, $scope, $provide, crmApi, crmApiMock, $q,
+      $document, $rootScope, $scope, $provide, civicaseCrmApi, civicaseCrmApiMock, $q,
       formatCase, CasesData, CasesUtils, $route;
 
     beforeEach(module('civicase.templates', 'civicase', 'civicase.data', function (_$provide_) {
@@ -15,7 +15,7 @@
 
     beforeEach(inject(function ($q) {
       var formatCaseMock = jasmine.createSpy('formatCase');
-      crmApiMock = jasmine.createSpy('crmApi').and.returnValue($q.resolve());
+      civicaseCrmApiMock = jasmine.createSpy('civicaseCrmApi').and.returnValue($q.resolve());
       $route = { current: { params: {} } };
 
       formatCaseMock.and.callFake(function (data) {
@@ -23,12 +23,12 @@
       });
 
       $provide.value('$route', $route);
-      $provide.value('crmApi', crmApiMock);
+      $provide.value('civicaseCrmApi', civicaseCrmApiMock);
       $provide.value('formatCase', formatCaseMock);
     }));
 
     beforeEach(inject(function (_$compile_, _$controller_, _$rootScope_,
-      _$document_, _activitiesMockData_, _CasesData_, _crmApi_, _$q_,
+      _$document_, _activitiesMockData_, _CasesData_, _civicaseCrmApi_, _$q_,
       _formatCase_, _CasesUtils_) {
       $compile = _$compile_;
       $document = _$document_;
@@ -39,10 +39,10 @@
       CasesUtils = _CasesUtils_;
       $scope = $rootScope.$new();
       $q = _$q_;
-      crmApi = _crmApi_;
+      civicaseCrmApi = _civicaseCrmApi_;
       formatCase = _formatCase_;
 
-      crmApi.and.returnValue($q.resolve(CasesData.get()));
+      civicaseCrmApi.and.returnValue($q.resolve(CasesData.get()));
       spyOn(CasesUtils, 'fetchMoreContactsInformation');
     }));
 
@@ -145,7 +145,7 @@
       });
 
       it('checks whether the user has permission to fetch case details', function () {
-        expect(crmApi).toHaveBeenCalledWith('Case', 'getdetails', jasmine.objectContaining({
+        expect(civicaseCrmApi).toHaveBeenCalledWith('Case', 'getdetails', jasmine.objectContaining({
           'case_type_id.case_type_category': 'cases'
         }));
       });
@@ -323,13 +323,13 @@
   });
 
   describe('civicaseCaseDetailsController', function () {
-    var $controller, $provide, $rootScope, $route, $scope, CasesData, CasesUtils, crmApiMock, loadFormBefore;
+    var $controller, $provide, $rootScope, $route, $scope, CasesData, CasesUtils, civicaseCrmApiMock, loadFormBefore;
 
     beforeEach(module('civicase', 'civicase.data', function (_$provide_) {
       $provide = _$provide_;
-      crmApiMock = jasmine.createSpy('crmApi');
+      civicaseCrmApiMock = jasmine.createSpy('civicaseCrmApi');
 
-      $provide.value('crmApi', crmApiMock);
+      $provide.value('civicaseCrmApi', civicaseCrmApiMock);
     }));
 
     beforeEach(inject(function (_$controller_, $q, _$rootScope_, _$route_, _CasesData_, _CasesUtils_) {
@@ -338,7 +338,7 @@
       $route = _$route_;
       CasesData = _CasesData_;
       CasesUtils = _CasesUtils_;
-      crmApiMock.and
+      civicaseCrmApiMock.and
         .returnValue($q.resolve({ values: CasesData.get() }));
     }));
 
@@ -349,7 +349,7 @@
         });
 
         it('requests the missing case details', function () {
-          expect(crmApiMock).toHaveBeenCalledWith(
+          expect(civicaseCrmApiMock).toHaveBeenCalledWith(
             'Case', 'getdetails', jasmine.any(Object)
           );
         });

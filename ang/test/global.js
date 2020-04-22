@@ -9,7 +9,8 @@
    * Dependency Injection for civicase module, defined in ang/civicase.ang.php
    * For unit testing they needs to be mentioned here
    */
-  CRM.angular.requires.civicase = ['civicase-base', 'crmAttachment', 'crmUi', 'crmUtil', 'ngRoute', 'angularFileUpload', 'bw.paging', 'crmRouteBinder', 'crmResource', 'ui.bootstrap', 'uibTabsetClass', 'dialogService'];
+  CRM.angular.requires.civicase = ['civicase-base', 'crmAttachment', 'crmUi', 'ngRoute', 'angularFileUpload', 'bw.paging', 'crmRouteBinder', 'crmResource', 'ui.bootstrap', 'uibTabsetClass', 'dialogService'];
+  CRM.angular.requires['civicase-base'] = ['crmUtil'];
 
   CRM.checkPerm = jasmine.createSpy('checkPerm');
   CRM.loadForm = jasmine.createSpy('loadForm');
