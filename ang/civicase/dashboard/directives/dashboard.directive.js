@@ -115,7 +115,7 @@
      */
     function prepareCaseFilterOption () {
       var options = [
-        { text: ts('My cases'), id: 'is_case_manager' },
+        { text: ts('My Cases'), id: 'is_case_manager' },
         { text: ts('Cases I am involved in'), id: 'is_involved' }
       ];
 
