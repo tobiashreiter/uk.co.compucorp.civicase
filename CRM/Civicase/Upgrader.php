@@ -307,7 +307,7 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
       'option_group_id' => 'activity_type',
       'label' => ts('File Upload'),
       'name' => 'File Upload',
-      // 'grouping' => '',
+      'grouping' => 'file',
       'is_reserved' => 0,
       'description' => ts('Add files to a case'),
       'component_id' => 'CiviCase',
@@ -558,7 +558,7 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
    *
    * @param CRM_Queue_TaskContext $context
    *   Context.
-   * @param \object $step
+   * @param object $step
    *   Step.
    *
    * @return true
