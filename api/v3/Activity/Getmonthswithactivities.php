@@ -1,5 +1,6 @@
 <?php
-use CRM_Civicase_ExtensionUtil as E;
+
+use CRM_Civicase_Event_Listener_ActivityFilter as CivicaseActivityFilter;
 
 /**
  * Activity.Getmonthswithactivities API specification
@@ -91,7 +92,7 @@ function get_records_from_activity_get_api($params) {
   $sql = CRM_Utils_SQL_Select::fragment();
 
   if (isset($params['case_filter'])) {
-    CRM_Civicase_ActivityFilter::updateParams($params);
+    CivicaseActivityFilter::updateParams($params);
   }
 
   _civicrm_api3_activity_get_extraFilters($params, $sql);
