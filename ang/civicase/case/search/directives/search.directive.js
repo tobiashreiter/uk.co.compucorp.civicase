@@ -277,6 +277,10 @@
           search[key] = val;
         }
       });
+
+      // Force 'false' value for empty boolean fields.
+      search.is_deleted = search.is_deleted === undefined ? false : search.is_deleted;
+
       return search;
     }
 
