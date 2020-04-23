@@ -43,6 +43,10 @@
         expect(activityCard.isolateScope().bootstrapThemeElement.is('#bootstrap-theme')).toBe(true);
       });
 
+      it('defines the "From" and "To" fields visibility as false', () => {
+        expect(activityCard.isolateScope().areFromAndToFieldsVisible).toBe(false);
+      });
+
       describe('when the activity does not belong to a case', () => {
         it('does not store a link to a case details page', () => {
           expect($scope.caseDetailUrl).not.toBeDefined();
@@ -94,6 +98,51 @@
       });
     });
 
+    describe('"From" and "To" fields visibility', () => {
+      beforeEach(() => {
+        $scope.activity = activitiesMockData.get()[0];
+      });
+
+      describe('when the activity is a communication of the "Print/Merge Document" type', () => {
+        beforeEach(() => {
+          $scope.activity.category = 'communication';
+          $scope.activity.type = 'Print/Merge Document';
+
+          initDirective();
+        });
+
+        it('does not show the "From" and "To" fields', () => {
+          expect(activityCard.isolateScope().areFromAndToFieldsVisible).toBe(false);
+        });
+      });
+
+      describe('when the activity is any communication other than the "Print/Merge Document" type', () => {
+        beforeEach(() => {
+          $scope.activity.category = 'communication';
+          $scope.activity.type = 'Email';
+
+          initDirective();
+        });
+
+        it('shows the "From" and "To" fields', () => {
+          expect(activityCard.isolateScope().areFromAndToFieldsVisible).toBe(true);
+        });
+      });
+
+      describe('when the activity is not a communication', () => {
+        beforeEach(() => {
+          $scope.activity.category = 'milestone';
+          $scope.activity.type = 'Open Case';
+
+          initDirective();
+        });
+
+        it('does not show the "From" and "To" fields', () => {
+          expect(activityCard.isolateScope().areFromAndToFieldsVisible).toBe(false);
+        });
+      });
+    });
+
     describe('when editing an activity in the popup', () => {
       let activity;
 
@@ -107,7 +156,7 @@
         expect(viewInPopup).toHaveBeenCalledWith(null, activity);
       });
 
-      it('listenes for the the form to be saved', () => {
+      it('listens for the the form to be saved', () => {
         expect(viewInPopupMockReturn.on).toHaveBeenCalledWith('crmFormSuccess', jasmine.any(Function));
       });
 
