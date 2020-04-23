@@ -64,10 +64,17 @@ class CRM_Civicase_Hook_ValidateForm_SaveActivityDraft {
     $params = [
       'activity_type_id' => $activityType,
       'status_id' => 'Draft',
-      'case_id' => $caseId,
       'id' => $form->getVar('_activityId'),
-      'assignee_id' => CRM_Core_Session::getLoggedInContactID(),
     ];
+
+    if (!$caseId) {
+      $params['target_contact_id'] = $form->getVar('_contactIds');
+    }
+    else {
+      $params['case_id'] = $caseId;
+      $params['assignee_contact_id'] = CRM_Core_Session::getLoggedInContactID();
+    }
+
     if (in_array($formName, $this->specialForms)) {
       $params['details'] = CRM_Utils_Array::value('html_message', $fields);
     }
@@ -115,28 +122,10 @@ class CRM_Civicase_Hook_ValidateForm_SaveActivityDraft {
     }
 
     if (strpos($referer, 'civicrm/contact/view') !== FALSE) {
-      $cid = $this->getParameterFromUrl($referer, 'cid');
+      $cid = $form->getVar('_contactIds')[0];
 
       return CRM_Utils_System::url('civicrm/contact/view', "&show=1&action=browse&cid={$cid}&selectedChild=activity");
     }
-  }
-
-  /**
-   * Get parameter from a URL string.
-   *
-   * @param string $url
-   *   URL.
-   * @param string $parameterName
-   *   Parameter Name.
-   *
-   * @return string
-   *   Parameter value from URL.
-   */
-  private function getParameterFromUrl($url, $parameterName) {
-    $urlParams = parse_url(htmlspecialchars_decode($url), PHP_URL_QUERY);
-    parse_str($urlParams, $urlParams);
-
-    return !empty($urlParams[$parameterName]) ? $urlParams[$parameterName] : '';
   }
 
   /**
