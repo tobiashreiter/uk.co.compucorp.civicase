@@ -60,9 +60,26 @@
         };
       });
 
-      describe('when getting the form URL', () => {
+      describe('when getting the form URL for a case activity', () => {
         beforeEach(() => {
           expectedActivityFormUrlParams.action = 'add';
+          activityFormUrl = DraftEmailActivityForm.getActivityFormUrl(activity);
+          expectedActivityFormUrl = getCrmUrl('civicrm/activity/email/add',
+            expectedActivityFormUrlParams);
+        });
+
+        it('returns the popup form URL for the draft activity in create mode by default', () => {
+          expect(activityFormUrl).toEqual(expectedActivityFormUrl);
+        });
+      });
+
+      describe('when getting the form URL for a standalone activity', () => {
+        beforeEach(() => {
+          expectedActivityFormUrlParams.action = 'add';
+
+          delete expectedActivityFormUrlParams.caseid;
+          delete activity.case_id;
+
           activityFormUrl = DraftEmailActivityForm.getActivityFormUrl(activity);
           expectedActivityFormUrl = getCrmUrl('civicrm/activity/email/add',
             expectedActivityFormUrlParams);
