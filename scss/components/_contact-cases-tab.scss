@@ -79,6 +79,10 @@
     margin-top: 5px;
   }
 
+  .civicase__summary-tab__description {
+    margin-bottom: 5px;
+  }
+
   .civicase__contact-card--client,
   .civicase__contact-card--manager {
     .material-icons {
@@ -108,6 +112,18 @@
 
   &:last-child {
     border-bottom: 0;
+  }
+
+  .civicase__summary-tab__subject {
+    textarea {
+      min-height: 65px;
+    }
+  }
+
+  .civicase__summary-tab__description {
+    textarea {
+      min-height: 85px;
+    }
   }
 }
 

@@ -26,6 +26,11 @@
 }
 
 .civicase__summary-tab__last-updated {
+  margin: 13px 0 0;
+  padding: 2px 4px;
+}
+
+.civicase__summary-tab__last-updated__label {
   color: $crm-gray-matte;
   line-height: 18px;
 }
