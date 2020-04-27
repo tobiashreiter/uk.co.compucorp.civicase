@@ -553,6 +553,7 @@ function civicase_civicrm_preProcess($formName, &$form) {
     new CRM_Civicase_Hook_PreProcess_CaseCategoryWordReplacementsForNewCase(),
     new CRM_Civicase_Hook_PreProcess_CaseCategoryWordReplacementsForChangeCase(),
     new CRM_Civicase_Hook_PreProcess_AddCaseAdminSettings(),
+    new CRM_Civicase_Hook_PreProcess_ActivityFormTitleWordReplacement(),
   ];
 
   foreach ($hooks as $hook) {
