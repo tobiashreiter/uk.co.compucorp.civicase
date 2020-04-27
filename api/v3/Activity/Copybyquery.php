@@ -27,6 +27,11 @@ function _civicrm_api3_activity_copybyquery_spec(array &$spec) {
     'description' => 'Array of parameters for Activity.Get API',
     'type' => CRM_Utils_Type::T_STRING,
   ];
+  $spec['subject'] = [
+    'title' => 'Activity Subject',
+    'description' => 'Activity Subject',
+    'type' => CRM_Utils_Type::T_STRING,
+  ];
 }
 
 /**
@@ -46,16 +51,30 @@ function _civicrm_api3_activity_copybyquery_spec(array &$spec) {
 function civicrm_api3_activity_copybyquery(array $params) {
   $activityQueryApiHelper = new CRM_Civicase_APIHelpers_ActivityQueryApi();
   $activityQueryApiHelper->validateParameters($params);
-  $activityApiParams = $activityQueryApiHelper->getActivityGetRequestApiParams($params);
   $genericApiHelper = new CRM_Civicase_APIHelpers_GenericApi();
-  $activities = $genericApiHelper->getEntityValues('Activity', $activityApiParams);
+
+  if (!empty($params['id'])) {
+    $activities = $genericApiHelper->getParameterValue($params, 'id');
+  }
+  else {
+    $activityApiParams = $activityQueryApiHelper->getActivityGetRequestApiParams($params);
+    $activities = array_column($genericApiHelper->getEntityValues('Activity', $activityApiParams, ['id']), 'id');
+  }
 
   $activityIds = [];
-  foreach ($activities as $activity) {
-    unset($activity['id']);
-    $activity['case_id'] = $params['case_id'];
-    $result = civicrm_api3('Activity', 'create', $activity);
-    $activityIds[] = $result['id'];
+  foreach ($activities as $activityId) {
+    $caseActivityParams = [
+      'activityID' => $activityId,
+      'caseID' => $params['case_id'],
+    ];
+    if (!empty($params['subject'])) {
+      $caseActivityParams['newSubject'] = $params['subject'];
+    }
+
+    $result = CRM_Activity_Page_AJAX::_convertToCaseActivity($caseActivityParams);
+    if (empty($result['error_msg']) && !empty($result['newId'])) {
+      $activityIds[] = $result['newId'];
+    }
   }
 
   return civicrm_api3_create_success($activityIds, $params, 'Activity', 'copybyquery');
