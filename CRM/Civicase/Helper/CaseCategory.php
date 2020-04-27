@@ -32,7 +32,8 @@ class CRM_Civicase_Helper_CaseCategory {
 
         return $caseTypeCategories[$caseCategoryId];
       }
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
       return NULL;
     }
 
@@ -117,7 +118,8 @@ class CRM_Civicase_Helper_CaseCategory {
         'name' => $optionName,
       ]);
 
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
       if (!$caseTypeCategoryName || strtolower($caseTypeCategoryName) == 'cases') {
         return [];
       }
@@ -218,6 +220,38 @@ class CRM_Civicase_Helper_CaseCategory {
       $permission = $caseCategoryPermission->replaceWords($permissionToCheck, $caseTypeCategoryName);
       if (CRM_Core_Permission::check($permission)) {
         $caseCategoryAccess[$id] = $caseTypeCategoryName;
+      }
+    }
+
+    return $caseCategoryAccess;
+  }
+
+  /**
+   * Returns the Case Type Categories the user can access the activities for.
+   *
+   * If the Contact Id is not passed, the logged in contact ID is used.
+   *
+   * @param int|null $contactId
+   *   The contact Id to check for.
+   *
+   * @return array
+   *   Case category access.
+   */
+  public static function getWhereUserCanAccessActivities($contactId = NULL) {
+    $caseTypeCategories = CaseType::buildOptions('case_type_category', 'validate');
+    $caseCategoryPermission = new CaseCategoryPermission();
+    $permissionsToCheck = ['access my cases and activities', 'access all cases and activities'];
+    $caseCategoryAccess = [];
+
+    foreach ($caseTypeCategories as $id => $caseTypeCategoryName) {
+      foreach ($permissionsToCheck as $permissionToCheck) {
+        $permission = $caseCategoryPermission->replaceWords($permissionToCheck, $caseTypeCategoryName);
+
+        if (CRM_Core_Permission::check($permission)) {
+          array_push($caseCategoryAccess, $caseTypeCategoryName);
+
+          continue 2;
+        }
       }
     }
 

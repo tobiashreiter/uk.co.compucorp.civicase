@@ -1,4 +1,4 @@
-(function (angular, $, _, CRM) {
+(function (angular, $, _, CRM, civicaseBaseSettings) {
   var module = angular.module('civicase-base');
 
   module.provider('CaseTypeCategory', CaseTypeCategoryProvider);
@@ -7,7 +7,9 @@
    * CaseTypeCategory Service Provider
    */
   function CaseTypeCategoryProvider () {
-    var allCaseTypeCategories = CRM['civicase-base'].caseTypeCategories;
+    var allCaseTypeCategories = civicaseBaseSettings.caseTypeCategories;
+    var caseTypeCategoriesWhereUserCanAccessActivities =
+    civicaseBaseSettings.caseTypeCategoriesWhereUserCanAccessActivities;
     var activeCaseTypeCategories = _.chain(allCaseTypeCategories)
       .filter(function (caseTypeCategory) {
         return caseTypeCategory.is_active === '1';
@@ -18,6 +20,7 @@
     this.$get = $get;
     this.getAll = getAll;
     this.findByName = findByName;
+    this.getCategoriesWithAccessToActivity = getCategoriesWithAccessToActivity;
 
     /**
      * Returns the case the category service.
@@ -27,7 +30,8 @@
     function $get () {
       return {
         getAll: getAll,
-        findByName: findByName
+        findByName: findByName,
+        getCategoriesWithAccessToActivity: getCategoriesWithAccessToActivity
       };
     }
 
@@ -44,6 +48,18 @@
     }
 
     /**
+     * Get a list of Case type categories of which,
+     * the logged in user can access activities.
+     *
+     * @returns {Array} list of case categories
+     */
+    function getCategoriesWithAccessToActivity () {
+      return _.filter(allCaseTypeCategories, function (caseTypeCategory) {
+        return caseTypeCategoriesWhereUserCanAccessActivities.indexOf(caseTypeCategory.name) !== -1;
+      });
+    }
+
+    /**
      * Find case type category by name
      *
      * @param {string} caseTypeCategoryName case type category name
@@ -55,4 +71,4 @@
       });
     }
   }
-})(angular, CRM.$, CRM._, CRM);
+})(angular, CRM.$, CRM._, CRM, CRM['civicase-base']);

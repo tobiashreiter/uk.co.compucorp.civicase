@@ -10,6 +10,7 @@
       scope: {
         params: '=civicaseActivityFeed',
         showBulkActions: '=',
+        canSelectCaseTypeCategory: '=',
         caseTypeId: '=',
         refreshCase: '=?refreshCallback',
         hideQuickNavWhenDetailsIsVisible: '='
@@ -435,6 +436,11 @@
         }
         if (key === 'activity_type_id' || key === 'activitySet') {
           setActivityTypeIDsFilter(params);
+        } else if (key === 'case_type_category') {
+          if (val.length > 0 && $scope.displayOptions.include_case) {
+            params.case_filter = params.case_filter || {};
+            params.case_filter['case_type_id.case_type_category'] = val;
+          }
         } else if (val) {
           if (key === 'text') {
             params.subject = { LIKE: '%' + val + '%' };
