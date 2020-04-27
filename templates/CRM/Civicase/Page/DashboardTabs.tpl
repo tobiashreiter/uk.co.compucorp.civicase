@@ -6,7 +6,7 @@
     <li class=""><a href="#myactivities" data-toggle="tab">My Activities</a></li>
   </ul>
   <div class="tab-content">
-    <div class="tab-pane" id="dashboard">
+    <div class="tab-pane civicase__tabs__panel" id="dashboard">
       {include file="CRM/Contact/Page/DashBoardDashlet.tpl"}
     </div>
     <div class="tab-pane civicase__crm-dashboard__myactivities-tab" id="myactivities">
