@@ -18,7 +18,7 @@
       beforeEach(function () {
         attributes = {};
         cases = [CasesData[0]];
-        webformAction = _.find(CaseActionsData.values, function (action) {
+        webformAction = _.find(CaseActionsData.get(), function (action) {
           return action.action === 'Webforms';
         });
       });
