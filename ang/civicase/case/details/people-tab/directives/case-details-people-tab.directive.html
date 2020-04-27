@@ -7,7 +7,7 @@
   </ul>
   <!-- End Nav Tabs -->
   <!-- Case Role Tab -->
-  <div class="civicase__people-tab__sub-tab" ng-if="tab == 'roles'">
+  <div class="civicase__people-tab__sub-tab" ng-show="tab == 'roles'">
     <div class="civicase__people-tab__search">
       <div class="btn-group btn-group-md pull-right">
         <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -30,11 +30,28 @@
         <input type="radio" value="checked" ng-model="rolesSelectionMode" id="rolesSelectionMode-checked"/>
         <label for="rolesSelectionMode-checked" class="people-selection-radio">Selected records only</label>
       </div>
-      <div class="civicase__people-tab__select-box">
-        <select class="form-control" crm-ui-select ng-model="rolesSelectedTask" ng-change="doContactTask('roles')" ng-disabled="!getSelectedContacts('roles').length" >
-          <option value="">{{ ts('Actions') }}</option>
-          <option ng-repeat="(key, opt) in contactTasks" value="{{ key }}">{{ opt.title }}</option>
-        </select>
+      <div class="civicase__bulkactions-actions-dropdown">
+        <div class="btn-group">
+          <button
+            type="button" class="btn btn-default"
+            ng-disabled="!getSelectedContacts('roles').length"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{ ts('Actions') }}
+          </button>
+          <button
+            type="button" class="btn btn-default dropdown-toggle"
+            ng-disabled="!getSelectedContacts('roles').length"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li ng-repeat="(key, opt) in contactTasks">
+              <a href ng-click="doBulkAction(key, opt)">
+                {{ ts(opt.title) }}
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
     <div class="civicase__people-tab__filter">
@@ -43,7 +60,7 @@
         page="rolesPage"
         page-size="25"
         total="rolesCount"
-        ng-if="rolesCount > 25"
+        ng-show="rolesCount > 25"
         show-prev-next="true"
         show-first-last="true"
         text-first="{{ ts('<< First') }}"
@@ -150,7 +167,7 @@
         page="rolesPage"
         page-size="25"
         total="rolesCount"
-        ng-if="rolesCount > 25"
+        ng-show="rolesCount > 25"
         show-prev-next="true"
         show-first-last="true"
         text-first="{{ ts('<< First') }}"
@@ -163,7 +180,7 @@
   </div>
   <!-- End Case Roles Tab -->
   <!-- Case Relationship tab -->
-  <div class="civicase__people-tab__sub-tab" ng-if="tab == 'relations'">
+  <div class="civicase__people-tab__sub-tab" ng-show="tab == 'relations'">
     <div class="civicase__people-tab__search">
       <div class="btn-group btn-group-md pull-right">
         <a ng-if="item.client.length === 1" class="btn btn-primary crm-popup" crm-popup-form-success="getRelations()" ng-href="{{ 'civicrm/contact/view/rel' | civicaseCrmUrl:{ action: 'add', reset: 1, cid: item.client[0].contact_id } }}">
@@ -201,7 +218,7 @@
         page="relationsPage"
         page-size="25"
         total="relationsCount"
-        ng-if="relationsCount > 25"
+        ng-show="relationsCount > 25"
         show-prev-next="true"
         show-first-last="true"
         text-first="{{ ts('<< First') }}"
@@ -284,7 +301,7 @@
         page="relationsPage"
         page-size="25"
         total="relationsCount"
-        ng-if="relationsCount > 25"
+        ng-show="relationsCount > 25"
         show-prev-next="true"
         show-first-last="true"
         text-first="{{ ts('<< First') }}"
