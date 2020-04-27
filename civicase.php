@@ -406,6 +406,7 @@ function civicase_civicrm_postProcess($formName, &$form) {
   $hooks = [
     new CRM_Civicase_Hook_PostProcess_SetUserContextForSaveAndNewCase(),
     new CRM_Civicase_Hook_PostProcess_CaseCategoryPostProcessor(),
+    new CRM_Civicase_Hook_PostProcess_ActivityFormStatusWordReplacement(),
   ];
 
   foreach ($hooks as $hook) {

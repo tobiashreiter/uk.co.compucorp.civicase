@@ -3,17 +3,21 @@
 
   module.service('MergeCasesCaseAction', MergeCasesCaseAction);
 
-  function MergeCasesCaseAction () {
+  /**
+   * Merge Cases action.
+   *
+   * @param {Function} ts a reference to the translation service.
+   */
+  function MergeCasesCaseAction (ts) {
     /**
      * Click event handler for the Action
      *
-     * @param {Array} cases
-     * @param {Object} action
-     * @param {Function} callbackFn
+     * @param {object[]} cases a list of cases.
+     * @param {object} action data about the case action.
+     * @param {Function} callbackFn callback to execute after running the action.
      */
     this.doAction = function (cases, action, callbackFn) {
-      var ts = CRM.ts('civicase');
-      var msg = ts('Merge all activitiy records into a single case?');
+      var msg = ts('Merge all activity records into a single case?');
 
       if (cases[0].case_type_id !== cases[1].case_type_id) {
         msg += '<br />' + ts('Warning: selected cases are of different types.');

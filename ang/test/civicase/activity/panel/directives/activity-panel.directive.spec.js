@@ -122,6 +122,7 @@
     function initDirective () {
       $scope.refreshFunction = refreshFunction;
       $scope.viewingActivity = formatActivity(activitiesMockData.get()[0]);
+      $scope.viewingActivity.type = 'Meeting';
 
       activityPanel = $compile('<div civicase-activity-panel="viewingActivity" refresh-callback="refreshFunction""></div>')($scope);
       $rootScope.$digest();
