@@ -8,8 +8,8 @@ use function ts as civicaseTs;
 /**
  * Activity Form Status Word Replacement.
  *
- * Replaces the "saved activity type" status message with one appropriate for the
- * case category the activity belongs to.
+ * Replaces the "saved activity type" status message with one appropriate
+ * for the case category the activity belongs to.
  */
 class CRM_Civicase_Hook_PostProcess_ActivityFormStatusWordReplacement {
 
@@ -20,12 +20,12 @@ class CRM_Civicase_Hook_PostProcess_ActivityFormStatusWordReplacement {
    * activity's case category, and adds the replaced title. We keep the original
    * status message text.
    *
-   * @param String $formName
+   * @param string $formName
    *   The Form class name.
-   * @param Object $form
+   * @param CRM_Core_Form $form
    *   The Form instance.
    */
-  public function run($formName, $form) {
+  public function run($formName, CRM_Core_Form $form) {
     $caseId = $form->getVar('_caseId');
 
     if (!$this->shouldRun($form)) {
@@ -37,33 +37,35 @@ class CRM_Civicase_Hook_PostProcess_ActivityFormStatusWordReplacement {
     $translatedActivityTypeName = civicaseTs($form->getVar('_activityTypeName'));
 
     // Gets and resets the status message from the activity form:
-    $statusMessages = Session::singleton()->getStatus(true);
+    $statusMessages = Session::singleton()->getStatus(TRUE);
 
     Session::setStatus(
       $statusMessages[0]['text'],
       ts('%1 Saved', [1 => $translatedActivityTypeName]),
-      'success'
+      $statusMessages[0]['type']
     );
   }
 
   /**
-   * Allows the hook to run when all of the following is true:
+   * Allows the hook to run when all of the following is true.
    *
    * - The current form is for an activity.
    * - The activity belongs to a case.
    * - The form is for either creating or updating the activity.
    *
-   * @param Object $form
+   * @param CRM_Core_Form $form
    *   The Form instance.
-   * @return Bool
+   *
+   * @return bool
    *   True if the hook class should run.
    */
-  private function shouldRun($form) {
+  private function shouldRun(CRM_Core_Form $form) {
     $isActivityForm = get_class($form) === 'CRM_Case_Form_Activity';
-    $isCaseActivity = !!$form->getVar('_caseId');
+    $isCaseActivity = !empty($form->getVar('_caseId'));
     $isCreateOrUpdateAction = $form->getVar('_action') === CRM_Core_Action::ADD ||
       $form->getVar('_action') === CRM_Core_Action::UPDATE;
 
     return $isActivityForm && $isCaseActivity && $isCreateOrUpdateAction;
   }
+
 }
