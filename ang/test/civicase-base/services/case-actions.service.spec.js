@@ -8,7 +8,7 @@
 
     beforeEach(inject((_CaseActions_, _CaseActionsData_) => {
       CaseActions = _CaseActions_;
-      CaseActionsData = _CaseActionsData_.values;
+      CaseActionsData = _CaseActionsData_.get();
     }));
 
     describe('when getting all case actions', () => {

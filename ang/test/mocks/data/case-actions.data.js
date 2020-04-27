@@ -1,4 +1,4 @@
-(function () {
+(function (angular, _) {
   const module = angular.module('civicase.data');
 
   CRM.civicase.caseActions = [{
@@ -35,7 +35,9 @@
     }]
   }];
 
-  module.constant('CaseActionsData', {
-    values: CRM.civicase.caseActions
+  module.service('CaseActionsData', function () {
+    this.get = function () {
+      return _.clone(CRM.civicase.caseActions);
+    };
   });
-}());
+}(angular, CRM._));
