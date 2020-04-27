@@ -30,16 +30,23 @@
     function getActivityFormUrl (activity, optionsWithoutDefaults) {
       var options = _.defaults({}, optionsWithoutDefaults, { action: 'add' });
       var assigneeContactId = _.first(activity.assignee_contact_id);
-
-      return getCrmUrl('civicrm/activity/email/' + options.action, {
+      var draftFormParameters = {
         action: options.action,
         atype: activity.activity_type_id,
-        caseId: activity.case_id,
         cid: assigneeContactId,
         draft_id: activity.id,
         id: activity.id,
         reset: '1'
-      });
+      };
+
+      if (activity.case_id) {
+        draftFormParameters.caseid = activity.case_id;
+      }
+
+      return getCrmUrl(
+        'civicrm/activity/email/' + options.action,
+        draftFormParameters
+      );
     }
   }
 })(CRM._, angular, CRM.url);
