@@ -316,6 +316,18 @@ describe('Case Details People Tab', () => {
     });
   });
 
+  describe('bulk action', () => {
+    beforeEach(() => {
+      spyOn($scope, 'doContactTask');
+
+      $scope.doBulkAction('1');
+    });
+
+    it('performs the clicked bulk action', () => {
+      expect($scope.rolesSelectedTask).toBe('1');
+      expect($scope.doContactTask).toHaveBeenCalledWith('roles');
+    });
+  });
   /**
    * Initializes the controller.
    *
