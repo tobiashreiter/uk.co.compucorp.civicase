@@ -113,9 +113,6 @@ As such you can send an email to the case client and now refer to for example th
 
 Link to extension: https://github.com/civicrm/org.civicrm.casetokens
 
-## Known Bug - Disable Case Category
-In this release (1.0.0-beta.4) there’s a known bug where disabled case type categories are not being hidden from main menu. This will be fixed in a future release.
-
 ![Screenshot](img/category-disable.png)
 
 ## More
