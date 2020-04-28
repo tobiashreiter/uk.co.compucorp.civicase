@@ -75,6 +75,12 @@
     right: 0;
     top: 100% !important;
   }
+
+  .civicase__bulkactions-actions-dropdown {
+    .dropdown-menu {
+      right: auto;
+    }
+  }
 }
 
 .civicase__people-tab__selection {
