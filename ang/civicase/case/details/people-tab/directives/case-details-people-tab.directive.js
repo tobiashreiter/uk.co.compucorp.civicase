@@ -173,6 +173,14 @@
     };
 
     /**
+     * @param {string} key key of the bulk action
+     */
+    $scope.doBulkAction = function (key) {
+      $scope.rolesSelectedTask = key;
+      $scope.doContactTask('roles');
+    };
+
+    /**
      * Update the contacts with the task
      *
      * @param {string} tab tab
