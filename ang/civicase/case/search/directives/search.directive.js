@@ -109,7 +109,6 @@
      */
     $scope.doSearch = function () {
       $scope.filterDescription = buildDescription();
-      $scope.expanded = false;
       $rootScope.$broadcast('civicase::case-search::filters-updated', {
         selectedFilters: formatSearchFilters($scope.filters)
       });
@@ -125,6 +124,14 @@
       };
       $scope.filters = {};
       $scope.doSearch();
+    };
+
+    /**
+     * Executes the search and hides the search form.
+     */
+    $scope.handleSearchSubmit = function () {
+      $scope.doSearch();
+      $scope.expanded = false;
     };
 
     /**
@@ -291,9 +298,7 @@
     function filtersWatcher () {
       setCaseTypesBasedOnCategory();
 
-      if (!$scope.expanded) {
-        $scope.doSearch();
-      }
+      $scope.doSearch();
     }
 
     /**

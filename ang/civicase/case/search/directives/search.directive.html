@@ -11,7 +11,7 @@
       <button class="btn btn-primary btn-sm pull-right civicase__case-filter-panel__button" ng-click="expanded = true" ng-show="!expanded">
         <i class="fa fa-gear"></i> {{ filterDescription.length ? ts('Edit Search') : ts('Other Criteria') }}
       </button>
-      <button class="btn btn-primary btn-sm pull-right civicase__case-filter-panel__button" ng-click="doSearch()" ng-show="expanded">
+      <button class="btn btn-primary btn-sm pull-right civicase__case-filter-panel__button" ng-click="handleSearchSubmit()" ng-show="expanded">
         <i class="fa fa-search"></i> {{ ts('Search') }}
       </button>
     </form>

@@ -156,8 +156,8 @@
             $scope.$digest();
           });
 
-          it('does not calls $scope.doSearch()', () => {
-            expect($scope.doSearch).not.toHaveBeenCalled();
+          it('calls $scope.doSearch()', () => {
+            expect($scope.doSearch).toHaveBeenCalled();
           });
         });
       });
@@ -239,7 +239,7 @@
       });
     });
 
-    describe('doSearch()', () => {
+    describe('handling search submit event', () => {
       beforeEach(() => {
         originalParentScope = $scope.$parent;
         $scope.$parent = {};
@@ -248,7 +248,7 @@
       beforeEach(() => {
         $scope.expanded = true;
         $scope.filters.case_manager = [203];
-        $scope.doSearch();
+        $scope.handleSearchSubmit();
       });
 
       afterEach(() => {
