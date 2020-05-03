@@ -58,6 +58,13 @@
       { id: 'client', text: ts('Client') }
     ];
 
+    $scope.caseManagerIsMe = caseManagerIsMe;
+    $scope.clearSearch = clearSearch;
+    $scope.doSearch = doSearch;
+    $scope.handleSearchSubmit = handleSearchSubmit;
+    $scope.isEnabled = isEnabled;
+    $scope.toggleIsDeleted = toggleIsDeleted;
+
     (function init () {
       bindRouteParamsToScope();
       applyDefaultFilters();
@@ -68,71 +75,6 @@
       requestCaseRoles().then(addCaseRolesToContactRoles);
       setRelationshipTypeByFilterValues();
     }());
-
-    /**
-     * Check/Uncheck `Show deleted` filters
-     *
-     * @param {object} $event - event object of Event API
-     */
-    $scope.toggleIsDeleted = function ($event) {
-      var pressedSpaceOrEnter = $event.type === 'keydown' && ($event.keyCode === 32 || $event.keyCode === 13);
-
-      if ($event.type === 'click' || pressedSpaceOrEnter) {
-        $scope.filters.is_deleted = !$scope.filters.is_deleted;
-        $event.preventDefault();
-      }
-    };
-
-    /**
-     * Show filter only when not hidden
-     * This is configured from the backend
-     *
-     * @param {string} field - key of the field to be checked for
-     * @returns {boolean} - boolean value if the filter is enabled
-     */
-    $scope.isEnabled = function (field) {
-      return !$scope.hiddenFilters || !$scope.hiddenFilters[field];
-    };
-
-    /**
-     * Checks if the current logged in user is a case manager
-     *
-     * @returns {boolean} if the current logged in user is a case manager
-     */
-    $scope.caseManagerIsMe = function () {
-      return $scope.filters.case_manager && $scope.filters.case_manager.length === 1 && parseInt($scope.filters.case_manager[0], 10) === CRM.config.user_contact_id;
-    };
-
-    /**
-     * Setup filter params and call search API
-     * to feed results for cases
-     */
-    $scope.doSearch = function () {
-      $scope.filterDescription = buildDescription();
-      $rootScope.$broadcast('civicase::case-search::filters-updated', {
-        selectedFilters: formatSearchFilters($scope.filters)
-      });
-    };
-
-    /**
-     * Resets filter options and reload search items
-     */
-    $scope.clearSearch = function () {
-      $scope.contactRoleFilter = {
-        selectedContacts: null,
-        selectedContactRoles: ['all-case-roles']
-      };
-      $scope.filters = {};
-      $scope.doSearch();
-    };
-
-    /**
-     * Executes the search and hides the search form.
-     */
-    $scope.handleSearchSubmit = function () {
-      $scope.doSearch();
-      $scope.expanded = false;
-    };
 
     /**
      * Adds the given case roles to the list of contact roles.
@@ -226,6 +168,15 @@
     }
 
     /**
+     * Checks if the current logged in user is a case manager
+     *
+     * @returns {boolean} if the current logged in user is a case manager
+     */
+    function caseManagerIsMe () {
+      return $scope.filters.case_manager && $scope.filters.case_manager.length === 1 && parseInt($scope.filters.case_manager[0], 10) === CRM.config.user_contact_id;
+    }
+
+    /**
      * Watches changes to the case role filters, prepares the params to be sent
      * to the API and appends them to the filters object.
      */
@@ -263,6 +214,29 @@
         }
       }
     }
+
+    /**
+     * Resets filter options and reload search items
+     */
+    function clearSearch () {
+      $scope.contactRoleFilter = {
+        selectedContacts: null,
+        selectedContactRoles: ['all-case-roles']
+      };
+      $scope.filters = {};
+      $scope.doSearch();
+    };
+
+    /**
+     * Setup filter params and call search API
+     * to feed results for cases
+     */
+    function doSearch () {
+      $scope.filterDescription = buildDescription();
+      $rootScope.$broadcast('civicase::case-search::filters-updated', {
+        selectedFilters: formatSearchFilters($scope.filters)
+      });
+    };
 
     /**
      * Watcher for expanded state and update tableHeader top offset likewise
@@ -322,6 +296,14 @@
     }
 
     /**
+     * Executes the search and hides the search form.
+     */
+    function handleSearchSubmit () {
+      $scope.doSearch();
+      $scope.expanded = false;
+    };
+
+    /**
      * All subscribers are initiated here
      */
     function initSubscribers () {
@@ -337,6 +319,17 @@
       $scope.$watch('caseTypeCategory', setCaseTypesBasedOnCategory);
       $scope.$watchCollection('filters', filtersWatcher);
       $scope.$watchCollection('contactRoleFilter', caseRoleWatcher);
+    }
+
+    /**
+     * Show filter only when not hidden
+     * This is configured from the backend
+     *
+     * @param {string} field - key of the field to be checked for
+     * @returns {boolean} - boolean value if the filter is enabled
+     */
+    function isEnabled (field) {
+      return !$scope.hiddenFilters || !$scope.hiddenFilters[field];
     }
 
     /**
@@ -464,6 +457,20 @@
         $scope.relationshipType = ['is_case_manager'];
       } else if (isFilterEqualToLoggedInUser('contact_involved')) {
         $scope.relationshipType = ['is_involved'];
+      }
+    }
+
+    /**
+     * Check/Uncheck `Show deleted` filters
+     *
+     * @param {object} $event - event object of Event API
+     */
+    function toggleIsDeleted ($event) {
+      var pressedSpaceOrEnter = $event.type === 'keydown' && ($event.keyCode === 32 || $event.keyCode === 13);
+
+      if ($event.type === 'click' || pressedSpaceOrEnter) {
+        $scope.filters.is_deleted = !$scope.filters.is_deleted;
+        $event.preventDefault();
       }
     }
   });
