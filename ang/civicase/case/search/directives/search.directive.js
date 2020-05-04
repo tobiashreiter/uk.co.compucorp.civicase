@@ -60,7 +60,6 @@
 
     $scope.caseManagerIsMe = caseManagerIsMe;
     $scope.clearSearch = clearSearch;
-    $scope.doSearch = doSearch;
     $scope.handleSearchSubmit = handleSearchSubmit;
     $scope.isEnabled = isEnabled;
     $scope.toggleIsDeleted = toggleIsDeleted;
@@ -224,8 +223,8 @@
         selectedContactRoles: ['all-case-roles']
       };
       $scope.filters = {};
-      $scope.doSearch();
-    };
+      doSearch();
+    }
 
     /**
      * Setup filter params and call search API
@@ -236,7 +235,7 @@
       $rootScope.$broadcast('civicase::case-search::filters-updated', {
         selectedFilters: formatSearchFilters($scope.filters)
       });
-    };
+    }
 
     /**
      * Watcher for expanded state and update tableHeader top offset likewise
@@ -271,8 +270,7 @@
      */
     function filtersWatcher () {
       setCaseTypesBasedOnCategory();
-
-      $scope.doSearch();
+      doSearch();
     }
 
     /**
@@ -299,9 +297,9 @@
      * Executes the search and hides the search form.
      */
     function handleSearchSubmit () {
-      $scope.doSearch();
+      doSearch();
       $scope.expanded = false;
-    };
+    }
 
     /**
      * All subscribers are initiated here

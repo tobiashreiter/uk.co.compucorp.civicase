@@ -2,8 +2,9 @@
 (($, _) => {
   describe('civicaseSearch', () => {
     let $controller, $rootScope, $scope, CaseFilters, CaseStatuses, CaseTypes, crmApi, currentCaseCategory,
-      affixOriginalFunction, offsetOriginalFunction, originalDoSearch, originalParentScope, affixReturnValue,
+      affixOriginalFunction, offsetOriginalFunction, originalParentScope, affixReturnValue,
       originalBindToRoute;
+    const SEARCH_EVENT_NAME = 'civicase::case-search::filters-updated';
 
     beforeEach(module('civicase.templates', 'civicase', 'civicase.data', ($provide) => {
       crmApi = jasmine.createSpy('crmApi');
@@ -36,6 +37,7 @@
       CRM.$.fn.affix.and.returnValue(affixReturnValue);
       originalBindToRoute = $scope.$bindToRoute;
       $scope.$bindToRoute = jasmine.createSpy('$bindToRoute');
+      spyOn($rootScope, '$broadcast');
 
       initController();
     });
@@ -130,13 +132,7 @@
 
       describe('$scope.filters', () => {
         beforeEach(() => {
-          originalDoSearch = $scope.doSearch;
-          $scope.doSearch = jasmine.createSpy('doSearch');
           $scope.filters = CaseFilters.filter;
-        });
-
-        afterEach(() => {
-          $scope.doSearch = originalDoSearch;
         });
 
         describe('when $scope.expanded is false', () => {
@@ -145,8 +141,8 @@
             $scope.$digest();
           });
 
-          it('calls $scope.doSearch()', () => {
-            expect($scope.doSearch).toHaveBeenCalled();
+          it('executes the search', () => {
+            expect($rootScope.$broadcast).toHaveBeenCalledWith(SEARCH_EVENT_NAME, jasmine.any(Object));
           });
         });
 
@@ -156,8 +152,8 @@
             $scope.$digest();
           });
 
-          it('calls $scope.doSearch()', () => {
-            expect($scope.doSearch).toHaveBeenCalled();
+          it('executes the search', () => {
+            expect($rootScope.$broadcast).toHaveBeenCalledWith(SEARCH_EVENT_NAME, jasmine.any(Object));
           });
         });
       });
@@ -266,22 +262,16 @@
 
     describe('clearSearch()', () => {
       beforeEach(() => {
-        originalDoSearch = $scope.doSearch;
-        $scope.doSearch = jasmine.createSpy('doSearch');
         $scope.filters = CaseFilters.filter;
         $scope.clearSearch();
-      });
-
-      afterEach(() => {
-        $scope.doSearch = originalDoSearch;
       });
 
       it('clears filters object', () => {
         expect($scope.filters).toEqual({});
       });
 
-      it('calls doSearch()', () => {
-        expect($scope.doSearch).toHaveBeenCalled();
+      it('executes the search', () => {
+        expect($rootScope.$broadcast).toHaveBeenCalledWith(SEARCH_EVENT_NAME, jasmine.any(Object));
       });
     });
 
