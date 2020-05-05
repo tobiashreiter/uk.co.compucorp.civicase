@@ -62,7 +62,7 @@
           expectedUrl = '/expected-url';
         });
 
-        it('redirects the user the user context URL provided by the response', () => {
+        it('redirects the user context URL provided by the response', () => {
           expect($window.location.href).toBe(expectedUrl);
         });
       });
