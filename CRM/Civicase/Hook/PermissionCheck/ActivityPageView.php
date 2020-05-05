@@ -12,8 +12,10 @@ class CRM_Civicase_Hook_PermissionCheck_ActivityPageView {
    *   Permission name.
    * @param bool $granted
    *   Whether permission is granted or not.
+   * @param int|null $contactId
+   *   The contact ID to check permission for.
    */
-  public function run($permission, &$granted) {
+  public function run($permission, &$granted, $contactId) {
     if (!$this->shouldRun($permission)) {
       return;
     }
