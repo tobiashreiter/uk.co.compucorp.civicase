@@ -37,7 +37,7 @@
 
   module.service('CaseActionsData', function () {
     this.get = function () {
-      return _.clone(CRM.civicase.caseActions);
+      return _.cloneDeep(CRM.civicase.caseActions);
     };
   });
 }(angular, CRM._));
