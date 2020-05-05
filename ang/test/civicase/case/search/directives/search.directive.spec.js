@@ -1,9 +1,9 @@
 /* eslint-env jasmine */
 (($, _) => {
   describe('civicaseSearch', () => {
-    let $controller, $rootScope, $scope, CaseFilters, CaseStatuses, CaseTypes, crmApi, currentCaseCategory,
-      affixOriginalFunction, offsetOriginalFunction, originalParentScope, affixReturnValue,
-      originalBindToRoute;
+    let $controller, $rootScope, $scope, $timeout, CaseFilters, CaseStatuses, CaseTypes,
+      crmApi, currentCaseCategory, affixOriginalFunction, offsetOriginalFunction,
+      originalParentScope, affixReturnValue, originalBindToRoute;
     const SEARCH_EVENT_NAME = 'civicase::case-search::filters-updated';
 
     beforeEach(module('civicase.templates', 'civicase', 'civicase.data', ($provide) => {
@@ -12,11 +12,12 @@
       $provide.value('crmApi', crmApi);
     }));
 
-    beforeEach(inject((_$controller_, $q, _$rootScope_, _CaseFilters_, _CaseStatuses_, _CaseTypesMockData_,
-      _currentCaseCategory_) => {
+    beforeEach(inject((_$controller_, $q, _$rootScope_, _$timeout_, _CaseFilters_,
+      _CaseStatuses_, _CaseTypesMockData_, _currentCaseCategory_) => {
       $controller = _$controller_;
       $rootScope = _$rootScope_;
       $scope = $rootScope.$new();
+      $timeout = _$timeout_;
       CaseFilters = _CaseFilters_;
       CaseStatuses = _CaseStatuses_.values;
       CaseTypes = _CaseTypesMockData_.get();
@@ -130,30 +131,26 @@
         });
       });
 
-      describe('$scope.filters', () => {
+      describe('on init', () => {
         beforeEach(() => {
           $scope.filters = CaseFilters.filter;
         });
 
-        describe('when $scope.expanded is false', () => {
-          beforeEach(() => {
-            $scope.expanded = false;
-            $scope.$digest();
-          });
-
-          it('executes the search', () => {
-            expect($rootScope.$broadcast).toHaveBeenCalledWith(SEARCH_EVENT_NAME, jasmine.any(Object));
+        describe('as soon as the component starts', () => {
+          it('does not execute the search', () => {
+            expect($rootScope.$broadcast).not
+              .toHaveBeenCalledWith(SEARCH_EVENT_NAME, jasmine.any(Object));
           });
         });
 
-        describe('when $scope.expanded is true', () => {
+        describe('after the component starts', () => {
           beforeEach(() => {
-            $scope.expanded = true;
-            $scope.$digest();
+            $timeout.flush();
           });
 
           it('executes the search', () => {
-            expect($rootScope.$broadcast).toHaveBeenCalledWith(SEARCH_EVENT_NAME, jasmine.any(Object));
+            expect($rootScope.$broadcast)
+              .toHaveBeenCalledWith(SEARCH_EVENT_NAME, jasmine.any(Object));
           });
         });
       });

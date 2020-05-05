@@ -43,6 +43,7 @@
 
     $scope.caseRelationshipOptions = caseRelationshipConfig;
     $scope.caseStatusOptions = _.map(caseStatuses, mapSelectOptions);
+    $scope.caseTypeOptions = [];
     $scope.checkPerm = CRM.checkPerm;
     $scope.customGroups = CustomSearchField.getAll();
     $scope.filterDescription = buildDescription();
@@ -73,6 +74,12 @@
       setCustomSearchFieldsAsSearchFilters();
       requestCaseRoles().then(addCaseRolesToContactRoles);
       setRelationshipTypeByFilterValues();
+
+      // We need to wait for sibling components to render before we
+      // trigger the initial search:
+      $timeout(function () {
+        doSearch();
+      });
     }());
 
     /**
@@ -265,15 +272,6 @@
     }
 
     /**
-     * Watcher for filter collection to update the search
-     * Only works when dropdown is unexpanded
-     */
-    function filtersWatcher () {
-      setCaseTypesBasedOnCategory();
-      doSearch();
-    }
-
-    /**
      * Returns case types filtered by given category
      *
      * @param {string} categoryName category name
@@ -314,8 +312,6 @@
     function initiateWatchers () {
       $scope.$watch('expanded', expandedWatcher);
       $scope.$watch('relationshipType', relationshipTypeWatcher);
-      $scope.$watch('caseTypeCategory', setCaseTypesBasedOnCategory);
-      $scope.$watchCollection('filters', filtersWatcher);
       $scope.$watchCollection('contactRoleFilter', caseRoleWatcher);
     }
 
