@@ -64,7 +64,7 @@
 
     /**
      * Get a list of Case type categories of which,
-     * the logged in user can access activities.
+     * the logged in user can basic case information.
      *
      * @returns {Array} list of case categories
      */
