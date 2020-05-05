@@ -61,6 +61,7 @@
 
     $scope.caseManagerIsMe = caseManagerIsMe;
     $scope.clearSearch = clearSearch;
+    $scope.doSearchIfNotExpanded = doSearchIfNotExpanded;
     $scope.handleSearchSubmit = handleSearchSubmit;
     $scope.isEnabled = isEnabled;
     $scope.toggleIsDeleted = toggleIsDeleted;
@@ -242,6 +243,17 @@
       $rootScope.$broadcast('civicase::case-search::filters-updated', {
         selectedFilters: formatSearchFilters($scope.filters)
       });
+    }
+
+    /**
+     * Executes the search as long as the component is not expanded.
+     */
+    function doSearchIfNotExpanded () {
+      if ($scope.expanded) {
+        return;
+      }
+
+      doSearch();
     }
 
     /**

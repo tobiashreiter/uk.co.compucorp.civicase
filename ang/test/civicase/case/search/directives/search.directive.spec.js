@@ -190,6 +190,34 @@
       });
     });
 
+    describe('automatically searching when not expanding', () => {
+      describe('when the search is not expanded', () => {
+        beforeEach(() => {
+          $scope.expanded = false;
+
+          $scope.doSearchIfNotExpanded();
+        });
+
+        it('executes the search', () => {
+          expect($rootScope.$broadcast)
+            .toHaveBeenCalledWith(SEARCH_EVENT_NAME, jasmine.any(Object));
+        });
+      });
+
+      describe('when the search is expanded', () => {
+        beforeEach(() => {
+          $scope.expanded = true;
+
+          $scope.doSearchIfNotExpanded();
+        });
+
+        it('does not execute the search', () => {
+          expect($rootScope.$broadcast)
+            .not.toHaveBeenCalledWith(SEARCH_EVENT_NAME, jasmine.any(Object));
+        });
+      });
+    });
+
     describe('accepting URL values for the relationship type filter', () => {
       describe('when setting the case manager as the logged in user', () => {
         beforeEach(() => {
