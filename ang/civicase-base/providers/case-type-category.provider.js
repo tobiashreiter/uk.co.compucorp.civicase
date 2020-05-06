@@ -8,10 +8,13 @@
    */
   function CaseTypeCategoryProvider () {
     var allCaseTypeCategories = civicaseBaseSettings.caseTypeCategories;
+
     var caseTypeCategoriesWhereUserCanAccessActivities =
     civicaseBaseSettings.caseTypeCategoriesWhereUserCanAccessActivities;
+
     var caseTypeCategoriesWhereUserCanAccessBasicCaseInformation =
     civicaseBaseSettings.caseTypeCategoriesWhereUserCanAccessBasicCaseInformation;
+
     var activeCaseTypeCategories = _.chain(allCaseTypeCategories)
       .filter(function (caseTypeCategory) {
         return caseTypeCategory.is_active === '1';

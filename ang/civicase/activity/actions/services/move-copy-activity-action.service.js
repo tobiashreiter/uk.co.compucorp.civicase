@@ -43,8 +43,7 @@
         case_id: (activities.length > 1 || isSelectAll) ? '' : activitiesCopy[0].case_id,
         isSubjectVisible: activities.length === 1,
         subject: (activities.length > 1 || isSelectAll) ? '' : activitiesCopy[0].subject,
-        caseTypeCategoryIDsWithAccessToBasicCaseInformation: _.keys(CaseTypeCategory.getCategoriesWithAccessToBasicCaseInformation()),
-        caseTypeCategoriesWithAccessToBasicCaseInformation: _.values(CaseTypeCategory.getCategoriesWithAccessToBasicCaseInformation())
+        getCaseListApiParams: getCaseListApiParams
       };
 
       dialogService.open('MoveCopyActCard', '~/civicase/activity/actions/services/move-copy-activity-action.html', model, {
@@ -64,6 +63,20 @@
           }
         }]
       });
+    }
+
+    /**
+     * @returns {object} api parameters for Case.getlist
+     */
+    function getCaseListApiParams () {
+      return {
+        'case_type_id.case_type_category': _.keys(CaseTypeCategory.getCategoriesWithAccessToBasicCaseInformation())[0],
+        params: {
+          'case_id.case_type_id.case_type_category': {
+            IN: _.values(CaseTypeCategory.getCategoriesWithAccessToBasicCaseInformation())
+          }
+        }
+      };
     }
 
     /**
