@@ -180,7 +180,8 @@
      * @returns {boolean} if the current logged in user is a case manager
      */
     function caseManagerIsMe () {
-      return $scope.filters.case_manager && $scope.filters.case_manager.length === 1 && parseInt($scope.filters.case_manager[0], 10) === CRM.config.user_contact_id;
+      return !!$scope.filters.case_manager && $scope.filters.case_manager.length === 1 &&
+        parseInt($scope.filters.case_manager[0], 10) === CRM.config.user_contact_id;
     }
 
     /**

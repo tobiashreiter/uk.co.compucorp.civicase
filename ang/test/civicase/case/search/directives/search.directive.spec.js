@@ -201,35 +201,35 @@
       });
     });
 
-    describe('caseManagerIsMe()', () => {
-      describe('when case_manager is me', () => {
+    describe('checking when the case manager is the logged in user', () => {
+      describe('when case manager filter is the logged in user', () => {
         beforeEach(() => {
           $scope.filters.case_manager = [203];
         });
 
-        it('should return true', () => {
+        it('returns true', () => {
           expect($scope.caseManagerIsMe()).toBe(true);
         });
       });
 
-      describe('when case_manager is not me', () => {
-        describe('when case id is different', () => {
+      describe('when the case manager filter is not the logged in user', () => {
+        describe('when the case manager id is different', () => {
           beforeEach(() => {
             $scope.filters.case_manager = [201];
           });
 
-          it('should return false', () => {
+          it('returns false', () => {
             expect($scope.caseManagerIsMe()).toBe(false);
           });
         });
 
-        describe('when case id undefined', () => {
+        describe('when the case manager id is undefined', () => {
           beforeEach(() => {
             $scope.filters.case_manager = undefined;
           });
 
-          it('should return undefined', () => {
-            expect($scope.caseManagerIsMe()).toBeUndefined();
+          it('returns false', () => {
+            expect($scope.caseManagerIsMe()).toBe(false);
           });
         });
       });
@@ -321,16 +321,16 @@
         $scope.$parent = originalParentScope;
       });
 
-      it('should build filter description', () => {
+      it('builds the filter description', () => {
         expect($scope.filterDescription).toEqual([{ label: 'Case Manager', text: 'Me' }]);
       });
 
-      it('should close the dropdown', () => {
+      it('closes the dropdown', () => {
         expect($scope.expanded).toBe(false);
       });
     });
 
-    describe('clearSearch()', () => {
+    describe('when the search filters are cleared', () => {
       beforeEach(() => {
         $scope.filters = CaseFilters.filter;
         $scope.clearSearch();
@@ -342,12 +342,6 @@
 
       it('executes the search', () => {
         expect($rootScope.$broadcast).toHaveBeenCalledWith(SEARCH_EVENT_NAME, jasmine.any(Object));
-      });
-    });
-
-    describe('mapSelectOptions()', () => {
-      it('returns a mapped response', () => {
-        expect($scope.caseTypeOptions[0]).toEqual(jasmine.objectContaining({ id: jasmine.any(String), text: jasmine.any(String), color: jasmine.any(String), icon: jasmine.any(String) }));
       });
     });
 
