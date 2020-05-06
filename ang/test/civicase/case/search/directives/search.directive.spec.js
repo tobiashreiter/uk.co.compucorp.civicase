@@ -1,9 +1,10 @@
 /* eslint-env jasmine */
-(($, _) => {
+(($, _, crmCheckPerm) => {
   describe('civicaseSearch', () => {
-    let $controller, $rootScope, $scope, $timeout, CaseFilters, CaseStatuses, CaseTypes,
-      crmApi, currentCaseCategory, affixOriginalFunction, offsetOriginalFunction,
-      originalParentScope, affixReturnValue, originalBindToRoute;
+    let $controller, $rootScope, $scope, $timeout, CaseFilters, CaseStatuses, caseTypeCategoriesMockData,
+      CaseTypes, crmApi, currentCaseCategory, customSearchFields, affixOriginalFunction,
+      offsetOriginalFunction, originalParentScope, affixReturnValue, originalBindToRoute;
+
     const SEARCH_EVENT_NAME = 'civicase::case-search::filters-updated';
 
     beforeEach(module('civicase.templates', 'civicase', 'civicase.data', ($provide) => {
@@ -13,7 +14,8 @@
     }));
 
     beforeEach(inject((_$controller_, $q, _$rootScope_, _$timeout_, _CaseFilters_,
-      _CaseStatuses_, _CaseTypesMockData_, _currentCaseCategory_) => {
+      _CaseStatuses_, _caseTypeCategoriesMockData_, _CaseTypesMockData_, _currentCaseCategory_,
+      _CustomSearchField_) => {
       $controller = _$controller_;
       $rootScope = _$rootScope_;
       $scope = $rootScope.$new();
@@ -21,6 +23,8 @@
       CaseFilters = _CaseFilters_;
       CaseStatuses = _CaseStatuses_.values;
       CaseTypes = _CaseTypesMockData_.get();
+      caseTypeCategoriesMockData = _caseTypeCategoriesMockData_;
+      customSearchFields = _CustomSearchField_.getAll();
       currentCaseCategory = _currentCaseCategory_;
 
       crmApi.and.returnValue($q.resolve({ values: [] }));
@@ -49,33 +53,74 @@
       $scope.$bindToRoute = originalBindToRoute;
     });
 
-    describe('$scope variables', () => {
-      it('checks $scope.caseTypeOptions', () => {
-        expect($scope.caseTypeOptions).toEqual(jasmine.any(Object));
+    describe('scope variables', () => {
+      describe('case type options', () => {
+        let expectedOptions;
+
+        beforeEach(() => {
+          const selectedCaseTypeCategory = _.find(caseTypeCategoriesMockData, (caseCategory) => {
+            return caseCategory.name.toLowerCase() === $scope.filters.case_type_category
+              .toLowerCase();
+          });
+          expectedOptions = _.chain(CaseTypes)
+            .filter((caseType) => {
+              return caseType.case_type_category === selectedCaseTypeCategory.value;
+            })
+            .map(getSelect2Options)
+            .value();
+        });
+
+        it('contains a select2-friendly list of case type options limited by the case category included in the filters object', () => {
+          expect($scope.caseTypeOptions).toEqual(expectedOptions);
+        });
       });
 
-      it('checks $scope.caseStatusOptions', () => {
-        expect($scope.caseStatusOptions).toEqual(jasmine.any(Object));
+      describe('case status options', () => {
+        let expectedOptions;
+
+        beforeEach(() => {
+          expectedOptions = _.map(CaseStatuses, getSelect2Options);
+        });
+
+        it('contains a select2-friendly list of case status options', () => {
+          expect($scope.caseStatusOptions).toEqual(expectedOptions);
+        });
       });
 
-      it('checks $scope.customGroups', () => {
-        expect($scope.customGroups).toEqual(jasmine.any(Object));
+      describe('custom field groups', () => {
+        it('contains a list of custom fields group and the fields that can be used to search for their custom data', () => {
+          expect($scope.customGroups).toEqual(customSearchFields);
+        });
       });
 
-      it('checks $scope.caseRelationshipOptions', () => {
-        expect($scope.caseRelationshipOptions).toEqual(jasmine.any(Object));
+      describe('case relationship options', () => {
+        it('contains a list of case relationship options', () => {
+          expect($scope.caseRelationshipOptions).toEqual([
+            { text: ts('All Cases'), id: 'all' },
+            { text: ts('My Cases'), id: 'is_case_manager' },
+            { text: ts('Cases I am involved'), id: 'is_involved' }
+          ]);
+        });
       });
 
-      it('checks $scope.checkPerm', () => {
-        expect($scope.checkPerm).toEqual(jasmine.any(Function));
+      describe('check permision service', () => {
+        it('provides a reference to the CRM check permission service', () => {
+          expect($scope.checkPerm).toEqual(crmCheckPerm);
+        });
       });
 
-      it('checks $scope.filterDescription', () => {
-        expect($scope.filterDescription).toEqual(jasmine.any(Array));
+      describe('filter description', () => {
+        it('contains an empty list of descriptions by default', () => {
+          expect($scope.filterDescription).toEqual([]);
+        });
       });
 
-      it('checks $scope.filters', () => {
-        expect($scope.filterDescription).toEqual(jasmine.any(Object));
+      describe('filters', () => {
+        it('filters by the current case category', () => {
+          expect($scope.filters).toEqual({
+            case_type_category: currentCaseCategory
+          });
+        });
       });
     });
 
@@ -438,6 +483,22 @@
     });
 
     /**
+     * Converts the given option object to one that is understood
+     * to Select2.
+     *
+     * @param {object} option the original option object.
+     * @returns {object} a select2 option object.
+     */
+    function getSelect2Options (option) {
+      return {
+        id: option.value || option.name,
+        text: option.label || option.title,
+        color: option.color,
+        icon: option.icon
+      };
+    }
+
+    /**
      * Initiate controller
      */
     function initController () {
@@ -449,4 +510,4 @@
       });
     }
   });
-})(CRM.$, CRM._);
+})(CRM.$, CRM._, CRM.checkPerm);
