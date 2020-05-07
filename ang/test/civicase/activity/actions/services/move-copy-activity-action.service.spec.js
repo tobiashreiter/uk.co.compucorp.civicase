@@ -3,7 +3,7 @@
 ((_, $) => {
   describe('MoveCopyActivityAction', () => {
     let $q, $rootScope, MoveCopyActivityAction, activitiesMockData,
-      crmApiMock, dialogServiceMock, originalDialogFunction;
+      crmApiMock, dialogServiceMock, originalDialogFunction, CaseTypeCategory;
 
     beforeEach(module('civicase', 'civicase.data', ($provide) => {
       crmApiMock = jasmine.createSpy('crmApi');
@@ -14,10 +14,11 @@
     }));
 
     beforeEach(inject(function (_$q_, _$rootScope_, _activitiesMockData_,
-      _MoveCopyActivityAction_) {
+      _MoveCopyActivityAction_, _CaseTypeCategory_) {
       $q = _$q_;
       $rootScope = _$rootScope_;
       activitiesMockData = _activitiesMockData_;
+      CaseTypeCategory = _CaseTypeCategory_;
       MoveCopyActivityAction = _MoveCopyActivityAction_;
       originalDialogFunction = $.fn.dialog;
 
@@ -76,6 +77,33 @@
 
           it('defines an empty subject', () => {
             expect(model.subject).toBe('');
+          });
+        });
+
+        describe('when fetching list of cases', () => {
+          let expectedApiParams;
+          let getCaseListApiParams;
+
+          beforeEach(() => {
+            getCaseListApiParams = modalOpenCall[2].getCaseListApiParams;
+            spyOn(CaseTypeCategory, 'getCategoriesWithAccessToBasicCaseInformation')
+              .and.returnValue({
+                1: 'Cases',
+                2: 'CTC2'
+              });
+
+            expectedApiParams = {
+              'case_type_id.case_type_category': '1',
+              params: {
+                'case_id.case_type_id.case_type_category': {
+                  IN: ['Cases', 'CTC2']
+                }
+              }
+            };
+          });
+
+          it('displays cases from those case type categories for which user has "basic case information" permission', () => {
+            expect(getCaseListApiParams()).toEqual(expectedApiParams);
           });
         });
 
@@ -332,6 +360,33 @@
 
           it('defines an empty subject', () => {
             expect(model.subject).toBe($scope.selectedActivities[0].subject);
+          });
+        });
+
+        describe('when fetching list of cases', () => {
+          let expectedApiParams;
+          let getCaseListApiParams;
+
+          beforeEach(() => {
+            getCaseListApiParams = modalOpenCall[2].getCaseListApiParams;
+            spyOn(CaseTypeCategory, 'getCategoriesWithAccessToBasicCaseInformation')
+              .and.returnValue({
+                1: 'Cases',
+                2: 'CTC2'
+              });
+
+            expectedApiParams = {
+              'case_type_id.case_type_category': '1',
+              params: {
+                'case_id.case_type_id.case_type_category': {
+                  IN: ['Cases', 'CTC2']
+                }
+              }
+            };
+          });
+
+          it('displays cases from those case type categories for which user has "basic case information" permission', () => {
+            expect(getCaseListApiParams()).toEqual(expectedApiParams);
           });
         });
 

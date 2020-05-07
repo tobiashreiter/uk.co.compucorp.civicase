@@ -10,8 +10,9 @@
    * @param {object} crmApi service to call civicrm api
    * @param {object} dialogService service for opening dialog box
    * @param {Function} ts the translation service
+   * @param {object} CaseTypeCategory the case type category service
    */
-  function MoveCopyActivityAction ($rootScope, crmApi, dialogService, ts) {
+  function MoveCopyActivityAction ($rootScope, crmApi, dialogService, ts, CaseTypeCategory) {
     /**
      * Perform the action
      *
@@ -41,7 +42,8 @@
         ts: ts,
         case_id: (activities.length > 1 || isSelectAll) ? '' : activitiesCopy[0].case_id,
         isSubjectVisible: activities.length === 1,
-        subject: (activities.length > 1 || isSelectAll) ? '' : activitiesCopy[0].subject
+        subject: (activities.length > 1 || isSelectAll) ? '' : activitiesCopy[0].subject,
+        getCaseListApiParams: getCaseListApiParams
       };
 
       dialogService.open('MoveCopyActCard', '~/civicase/activity/actions/services/move-copy-activity-action.html', model, {
@@ -61,6 +63,25 @@
           }
         }]
       });
+    }
+
+    /**
+     * @returns {object} api parameters for Case.getlist
+     */
+    function getCaseListApiParams () {
+      var firstCaseTypeCategoryId =
+        _.keys(CaseTypeCategory.getCategoriesWithAccessToBasicCaseInformation())[0];
+      var allCaseTypeCategoryNames =
+        _.values(CaseTypeCategory.getCategoriesWithAccessToBasicCaseInformation());
+
+      return {
+        'case_type_id.case_type_category': firstCaseTypeCategoryId,
+        params: {
+          'case_id.case_type_id.case_type_category': {
+            IN: allCaseTypeCategoryNames
+          }
+        }
+      };
     }
 
     /**

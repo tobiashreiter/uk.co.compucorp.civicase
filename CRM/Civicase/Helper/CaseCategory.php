@@ -215,10 +215,11 @@ class CRM_Civicase_Helper_CaseCategory {
     $caseCategoryPermission = new CaseCategoryPermission();
     $permissionToCheck = 'basic case information';
     $caseCategoryAccess = [];
+    $contactId = $contactId ? $contactId : CRM_Core_Session::getLoggedInContactID();
 
     foreach ($caseTypeCategories as $id => $caseTypeCategoryName) {
       $permission = $caseCategoryPermission->replaceWords($permissionToCheck, $caseTypeCategoryName);
-      if (CRM_Core_Permission::check($permission)) {
+      if (CRM_Core_Permission::check($permission, $contactId)) {
         $caseCategoryAccess[$id] = $caseTypeCategoryName;
       }
     }
@@ -242,12 +243,12 @@ class CRM_Civicase_Helper_CaseCategory {
     $caseCategoryPermission = new CaseCategoryPermission();
     $permissionsToCheck = ['access my cases and activities', 'access all cases and activities'];
     $caseCategoryAccess = [];
-
+    $contactId = $contactId ? $contactId : CRM_Core_Session::getLoggedInContactID();
     foreach ($caseTypeCategories as $id => $caseTypeCategoryName) {
       foreach ($permissionsToCheck as $permissionToCheck) {
         $permission = $caseCategoryPermission->replaceWords($permissionToCheck, $caseTypeCategoryName);
 
-        if (CRM_Core_Permission::check($permission)) {
+        if (CRM_Core_Permission::check($permission, $contactId)) {
           array_push($caseCategoryAccess, $caseTypeCategoryName);
 
           continue 2;

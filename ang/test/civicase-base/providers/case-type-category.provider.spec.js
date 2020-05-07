@@ -50,6 +50,19 @@
       });
     });
 
+    describe('when case type categories with access to basic case information are requested', () => {
+      beforeEach(() => {
+        CRM['civicase-base'].caseTypeCategoriesWhereUserCanAccessBasicCaseInformation = ['awards'];
+
+        module('civicase-base');
+        injectDependencies();
+      });
+
+      it('returns all available case type categories', () => {
+        expect(CaseTypeCategory.getCategoriesWithAccessToBasicCaseInformation()).toEqual(['awards']);
+      });
+    });
+
     /**
      * Injects and hoists the dependencies needed by this spec.
      */
