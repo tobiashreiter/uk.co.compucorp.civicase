@@ -100,4 +100,21 @@ class CRM_Civicase_Service_CaseCategoryPermission {
     );
   }
 
+  /**
+   * The basic civicase permission set.
+   *
+   * @param array $caseCategoryPermissions
+   *   Case category permissions.
+   *
+   * @return array
+   *   The basic permission set.
+   */
+  public function getBasicCasePermissions(array $caseCategoryPermissions) {
+    return [
+      $caseCategoryPermissions['ACCESS_MY_CASE_CATEGORY_AND_ACTIVITIES']['name'],
+      $caseCategoryPermissions['ACCESS_CASE_CATEGORY_AND_ACTIVITIES']['name'],
+      $caseCategoryPermissions['BASIC_CASE_CATEGORY_INFO']['name'],
+    ];
+  }
+
 }

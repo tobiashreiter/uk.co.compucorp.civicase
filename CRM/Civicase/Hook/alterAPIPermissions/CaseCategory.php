@@ -6,7 +6,7 @@ use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
 /**
  * Class CRM_Civicase_Hook_APIPermissions_alterPermissions.
  */
-class CRM_Civicase_Hook_alterAPIPermissions_Case {
+class CRM_Civicase_Hook_alterAPIPermissions_CaseCategory {
 
   /**
    * Case category name.
@@ -56,7 +56,7 @@ class CRM_Civicase_Hook_alterAPIPermissions_Case {
   private function alterApiPermissions($entity, array &$permissions) {
     $permissionService = new CaseCategoryPermission();
     $caseCategoryPermissions = $permissionService->get($this->caseCategoryName);
-    $basicCasePermissions = $this->getBasicCasePermissions($caseCategoryPermissions);
+    $basicCasePermissions = $permissionService->getBasicCasePermissions($caseCategoryPermissions);
 
     $permissions['case']['getfiles'] = [
       [
@@ -107,26 +107,6 @@ class CRM_Civicase_Hook_alterAPIPermissions_Case {
         $permissions['case'][$actionName][$key] = $permissionService->replaceWords($permissionName, $this->caseCategoryName);
       }
     }
-  }
-
-  /**
-   * The basic civicase permission set.
-   *
-   * Most of the overridden Case API permission use this set of permissions
-   * so it made sense to extract to a function so it can be used.
-   *
-   * @param array $caseCategoryPermissions
-   *   Case category permissions.
-   *
-   * @return array
-   *   The basic permission set.
-   */
-  private function getBasicCasePermissions(array $caseCategoryPermissions) {
-    return [
-      $caseCategoryPermissions['ACCESS_MY_CASE_CATEGORY_AND_ACTIVITIES']['name'],
-      $caseCategoryPermissions['ACCESS_CASE_CATEGORY_AND_ACTIVITIES']['name'],
-      $caseCategoryPermissions['BASIC_CASE_CATEGORY_INFO']['name'],
-    ];
   }
 
   /**
@@ -222,7 +202,14 @@ class CRM_Civicase_Hook_alterAPIPermissions_Case {
       return;
     }
 
-    return $this->getCaseTypeCategoryNameFromOptions($params[$key]);
+    $caseTypeCategoryParam = $params[$key];
+    if (array_key_exists('IN', $caseTypeCategoryParam)) {
+      foreach ($caseTypeCategoryParam['IN'] as $caseCategory) {
+        return $this->getCaseTypeCategoryNameFromOptions($caseCategory);
+      }
+    }
+
+    return $this->getCaseTypeCategoryNameFromOptions($caseTypeCategoryParam);
   }
 
   /**
