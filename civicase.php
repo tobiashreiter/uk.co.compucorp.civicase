@@ -441,7 +441,8 @@ function civicase_civicrm_permission(&$permissions) {
  */
 function civicase_civicrm_apiWrappers(&$wrappers, $apiRequest) {
   if ($apiRequest['entity'] == 'Case') {
-    $wrappers[] = new CRM_Civicase_APIHelpers_CaseList();
+    $wrappers[] = new CRM_Civicase_Api_Wrapper_CaseList();
+    $wrappers[] = new CRM_Civicase_Api_Wrapper_CaseGetList();
   }
 }
 
@@ -452,7 +453,8 @@ function civicase_civicrm_apiWrappers(&$wrappers, $apiRequest) {
  */
 function civicase_civicrm_alterAPIPermissions($entity, $action, &$params, &$permissions) {
   $hooks = [
-    new CRM_Civicase_Hook_alterAPIPermissions_Case(),
+    new CRM_Civicase_Hook_alterAPIPermissions_CaseCategory(),
+    new CRM_Civicase_Hook_alterAPIPermissions_CaseGetList(),
   ];
 
   foreach ($hooks as $hook) {
@@ -504,7 +506,7 @@ function civicase_civicrm_navigationMenu(&$menu) {
  * Implements hook_civicrm_selectWhereClause().
  */
 function civicase_civicrm_selectWhereClause($entity, &$clauses) {
-  if ($entity === 'Case' && CRM_Core_Permission::check('basic case information')) {
+  if ($entity === 'Case') {
     unset($clauses['id']);
   }
 }
