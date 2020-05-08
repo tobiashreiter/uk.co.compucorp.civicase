@@ -69,19 +69,7 @@
      * @returns {object} api parameters for Case.getlist
      */
     function getCaseListApiParams () {
-      var firstCaseTypeCategoryId =
-        _.keys(CaseTypeCategory.getCategoriesWithAccessToBasicCaseInformation())[0];
-      var allCaseTypeCategoryNames =
-        _.values(CaseTypeCategory.getCategoriesWithAccessToBasicCaseInformation());
-
-      return {
-        'case_type_id.case_type_category': firstCaseTypeCategoryId,
-        params: {
-          'case_id.case_type_id.case_type_category': {
-            IN: allCaseTypeCategoryNames
-          }
-        }
-      };
+      return {};
     }
 
     /**
