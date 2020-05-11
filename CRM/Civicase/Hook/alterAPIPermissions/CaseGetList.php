@@ -50,7 +50,7 @@ class CRM_Civicase_Hook_alterAPIPermissions_CaseGetList {
   }
 
   /**
-   * Checks if hook should run or not.
+   * Alters the permissions for Case.getlist and CaseContact.get endpoints.
    *
    * @param string $entity
    *   The API entity.

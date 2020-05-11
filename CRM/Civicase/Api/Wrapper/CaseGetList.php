@@ -9,7 +9,12 @@ use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 class CRM_Civicase_Api_Wrapper_CaseGetList implements API_Wrapper {
 
   /**
-   * {@inheritdoc}
+   * Makes some changes to API input when entity is Case and action is getlist.
+   *
+   * The API input is validated when the case type category parameter is passed
+   * to make sure that the user is not passing a case category it does not have
+   * access to. When this parameter is absent, it is added so that the user is
+   * restricted to the case type category it has access to.
    */
   public function fromApiInput($apiRequest) {
     if (!$this->canHandleTheRequest($apiRequest)) {
@@ -23,7 +28,9 @@ class CRM_Civicase_Api_Wrapper_CaseGetList implements API_Wrapper {
       $this->validateCaseTypeCategoryParameter($caseCategoryParameterValue, $accessibleCaseCategories);
     }
     else {
-      $apiRequest['params']['params']['case_id.case_type_id.case_type_category'] = ['IN' => $accessibleCaseCategories];
+      $apiRequest['params']['params']['case_id.case_type_id.case_type_category'] = [
+        'IN' => $accessibleCaseCategories,
+      ];
     }
 
     return $apiRequest;
@@ -38,7 +45,7 @@ class CRM_Civicase_Api_Wrapper_CaseGetList implements API_Wrapper {
   }
 
   /**
-   * Checks whether the request can be handled or not.
+   * Handles request coming from Case.getlist API.
    *
    * @param array $apiRequest
    *   API Request.
