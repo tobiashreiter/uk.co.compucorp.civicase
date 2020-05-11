@@ -44,8 +44,7 @@ class CRM_Civicase_Hook_alterAPIPermissions_CaseGetList {
    */
   private function addApiPermission($caseCategoryName, array &$permissions) {
     $permissionService = new CaseCategoryPermission();
-    $caseCategoryPermissions = $permissionService->get($caseCategoryName);
-    $basicCasePermissions = $permissionService->getBasicCasePermissions($caseCategoryPermissions);
+    $basicCasePermissions = $permissionService->getBasicCasePermissions($caseCategoryName);
     $permissions['case']['getlist'] = [$basicCasePermissions];
     $permissions['case_contact']['get'] = [$basicCasePermissions];
   }
