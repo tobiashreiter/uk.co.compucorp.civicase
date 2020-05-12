@@ -1,5 +1,5 @@
 <div class="panel panel-default civicase__summary-tab__basic-details">
-  <div class="panel-body">
+  <div ng-if="item && areDetailsLoaded" class="panel-body">
     <div class="civicase__summary-tab__subject-container">
       <div class="civicase__summary-tab__subject">
         <p crm-editable="item" data-field="subject" data-type="text" data-placeholder="Click to add subject" crm-form-success="onChangeSubject($data)"></p>
@@ -49,6 +49,24 @@
           {{item.status_count.scheduled.overdue}} overdue
         </div>
       </a>
+    </div>
+  </div>
+
+  <!-- Placeholder -->
+  <div ng-if="!areDetailsLoaded" class="panel-body">
+    <div class="civicase__summary-tab__subject-container">
+      <div class="civicase__loading-placeholder__oneline" style="width: 12em;"></div>
+      <div class="civicase__loading-placeholder__oneline" style="width: 18em; margin-top: 8px;"></div>
+      <div class="civicase__loading-placeholder__oneline" style="width: 8em; margin-top: 8px;"></div>
+    </div>
+    <div class="civicase__summary-activity-count">
+      <div class="civicase__loading-placeholder__oneline civicase__summary-activity-count__number" style="display: inline-block; width: 1em;"></div>
+    </div>
+    <div class="civicase__summary-activity-count">
+      <div class="civicase__loading-placeholder__oneline civicase__summary-activity-count__number" style="display: inline-block; width: 1em;"></div>
+    </div>
+    <div class="civicase__summary-activity-count">
+      <div class="civicase__loading-placeholder__oneline civicase__summary-activity-count__number" style="display: inline-block; width: 1em;"></div>
     </div>
   </div>
 </div>

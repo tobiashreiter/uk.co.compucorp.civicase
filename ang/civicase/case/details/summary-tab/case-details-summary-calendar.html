@@ -1,8 +1,13 @@
-<civicase-activities-calendar
-  class="
-    civicase__summary-tab-tile
-    panel civicase__panel-transparent-header
-    civicase__summary-tab-tile--fixed"
-  case-id="item.id"
-  refresh-callback="refresh">
-</civicase-activities-calendar>
+<div
+  class="panel civicase__summary-tab-tile civicase__panel-transparent-header civicase__summary-tab-tile--fixed">
+  <div ng-if="item && areDetailsLoaded">
+    <civicase-activities-calendar
+      case-id="item.id"
+      refresh-callback="refresh">
+    </civicase-activities-calendar>
+  </div>
+  <div ng-if="!areDetailsLoaded">
+    <civicase-activities-calendar-placeholder>
+    </civicase-activities-calendar-placeholder>
+  </div>
+</div>

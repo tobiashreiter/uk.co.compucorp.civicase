@@ -13,9 +13,7 @@
     /**
      * @returns {string} Returns placeholder HTMl template url.
      */
-    this.getPlaceholderUrl = function () {
-      return '~/civicase/case/details/directives/placeholder/summary.html';
-    };
+    this.getPlaceholderUrl = _.noop;
 
     /**
      * @returns {string} Returns tab content HTMl template url.
