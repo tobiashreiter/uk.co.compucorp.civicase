@@ -11,13 +11,6 @@
    */
   function ActivitiesCaseTab ($location, crmApi) {
     /**
-     * @returns {string} Returns placeholder HTMl template url.
-     */
-    this.getPlaceholderUrl = function () {
-      return '~/civicase/case/details/directives/placeholder/activity.html';
-    };
-
-    /**
      * @returns {string} Returns tab content HTMl template url.
      */
     this.activeTabContentUrl = function () {

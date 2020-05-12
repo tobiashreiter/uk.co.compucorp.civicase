@@ -416,7 +416,6 @@
       });
 
       if (activeCaseTab && activeCaseTab.service) {
-        $scope.activeTabPlaceholderUrl = activeCaseTab.service.getPlaceholderUrl();
         $scope.activeTabContentUrl = activeCaseTab.service.activeTabContentUrl();
       }
     }

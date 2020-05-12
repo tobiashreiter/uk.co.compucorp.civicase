@@ -63,10 +63,6 @@
         element.isolateScope().$digest();
       });
 
-      it('should return active tab placeholder url', function () {
-        expect(element.isolateScope().activeTabPlaceholderUrl).toEqual('~/civicase/case/details/directives/placeholder/people.html');
-      });
-
       it('should return active tab content url', function () {
         expect(element.isolateScope().activeTabContentUrl).toEqual('~/civicase/case/details/directives/tab-content/people.html');
       });

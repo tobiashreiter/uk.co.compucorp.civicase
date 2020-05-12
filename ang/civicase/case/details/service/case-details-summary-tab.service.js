@@ -11,11 +11,6 @@
    */
   function SummaryCaseTab ($location, crmApi) {
     /**
-     * @returns {string} Returns placeholder HTMl template url.
-     */
-    this.getPlaceholderUrl = _.noop;
-
-    /**
      * @returns {string} Returns tab content HTMl template url.
      */
     this.activeTabContentUrl = function () {
