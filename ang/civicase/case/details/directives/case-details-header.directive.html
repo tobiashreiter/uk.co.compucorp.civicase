@@ -1,5 +1,5 @@
 <div class="panel-header">
-  <div ng-if="item && areDetailsLoaded" class="civicase__case-header">
+  <div ng-if="isMainContentVisible()" class="civicase__case-header">
     <div crm-ui-debug="item"></div>
     <button class="civicase__case-header__expand_button" ng-click="focusToggle()">
       <i class="material-icons">keyboard_arrow_{{isFocused ? 'right' : 'left'}}</i>
@@ -91,7 +91,7 @@
   </div>
 
   <!-- Placeholder -->
-  <div ng-if="!areDetailsLoaded" class="civicase__case-header">
+  <div ng-if="isPlaceHolderVisible()" class="civicase__case-header">
     <button class="civicase__case-header__expand_button">
       <i class="material-icons">keyboard_arrow_right</i>
     </button>

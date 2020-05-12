@@ -65,6 +65,8 @@
     $scope.CRM = CRM;
     $scope.tabs = CaseDetailsTabs;
     $scope.trustAsHtml = $sce.trustAsHtml;
+    $scope.isMainContentVisible = isMainContentVisible;
+    $scope.isPlaceHolderVisible = isPlaceHolderVisible;
 
     (function init () {
       $scope.$watch('activeTab', activeTabWatcher);
@@ -472,6 +474,20 @@
      */
     function redirectToCaseList () {
       return $route.updateParams({ caseId: null });
+    }
+
+    /**
+     * @returns {boolean} if place holder should be visible
+     */
+    function isPlaceHolderVisible () {
+      return !$scope.areDetailsLoaded;
+    }
+
+    /**
+     * @returns {boolean} if main content should be visible
+     */
+    function isMainContentVisible () {
+      return $scope.item && $scope.areDetailsLoaded;
     }
   }
 })(angular, CRM.$, CRM._);

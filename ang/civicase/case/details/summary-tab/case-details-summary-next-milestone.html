@@ -1,8 +1,8 @@
 <div class="panel civicase__summary-tab-tile civicase__panel-transparent-header civicase__summary-tab-tile--responsive">
-  <div ng-if="item && areDetailsLoaded" class="panel-heading">
+  <div ng-if="isMainContentVisible()" class="panel-heading">
     <h3 class="panel-title">Next Milestone</h3>
   </div>
-  <div ng-if="item && areDetailsLoaded" class="panel-body">
+  <div ng-if="isMainContentVisible()" class="panel-body">
     <div
       case-activity-card="item.activity_summary.milestone[0]"
       crm-popup-form-success="pushCaseData($data.civicase_reload[0])"
@@ -14,8 +14,8 @@
   </div>
 
   <!-- Placeholder -->
-  <div ng-if="!areDetailsLoaded" class="civicase__loading-placeholder__oneline" style="width: 12em; margin-bottom: 10px;"></div>
-  <div ng-if="!areDetailsLoaded" class="panel-body">
+  <div ng-if="isPlaceHolderVisible()" class="civicase__loading-placeholder__oneline" style="width: 12em; margin-bottom: 10px;"></div>
+  <div ng-if="isPlaceHolderVisible()" class="panel-body">
     <div class="civicase__activity-card civicase__activity-card--big">
       <div class="panel panel-default">
         <div class="panel-body">
