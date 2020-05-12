@@ -1,0 +1,15 @@
+<div class="panel civicase__summary-tab-tile civicase__panel-transparent-header civicase__summary-tab-tile--responsive">
+  <div class="panel-heading">
+    <h3 class="panel-title">Next Milestone</h3>
+  </div>
+  <div class="panel-body">
+    <div
+      case-activity-card="item.activity_summary.milestone[0]"
+      crm-popup-form-success="pushCaseData($data.civicase_reload[0])"
+      refresh-callback="refresh"
+      mode="big"
+      type="'milestone'"
+      case="item">
+    </div>
+  </div>
+</div>
