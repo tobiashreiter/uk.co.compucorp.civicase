@@ -28,7 +28,9 @@
       viewInPopup = _viewInPopup_;
 
       $scope = $rootScope.$new();
-      $scope.activity = {};
+      $scope.activity = {
+        type: 'Meeting'
+      };
 
       $('<div id="bootstrap-theme"></div>').appendTo('body');
       initDirective();
@@ -65,6 +67,7 @@
           });
           $scope.activity = _.sample(activitiesMockData.get());
           $scope.activity.case_id = _.uniqueId();
+          $scope.activity.type = 'Meeting';
           $scope.activity.case = {
             case_id: $scope.activity.case_id,
             case_type_id: caseTypeId
@@ -101,6 +104,7 @@
     describe('"From" and "To" fields visibility', () => {
       beforeEach(() => {
         $scope.activity = activitiesMockData.get()[0];
+        $scope.activity.type = 'Meeting';
       });
 
       describe('when the activity is a communication of the "Print/Merge Document" type', () => {
@@ -148,6 +152,7 @@
 
       beforeEach(() => {
         activity = activitiesMockData.get()[0];
+        activity.type = 'Meeting';
 
         activityCard.isolateScope().viewInPopup(null, activity);
       });

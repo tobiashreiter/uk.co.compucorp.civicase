@@ -1,4 +1,4 @@
-(function (_, angular, checkPerm, loadForm, getCrmUrl) {
+(function (angular) {
   var module = angular.module('civicase');
 
   module.controller('AddCaseDashboardActionButtonController', AddCaseDashboardActionButtonController);
@@ -7,11 +7,13 @@
    * Add Case Dashboard Action Button Controller
    *
    * @param {object} $scope scope object
+   * @param {object} $window window object
    * @param {object} ts ts
-   * @param {object} $location the location service
    * @param {object} AddCase Add Case Service
+   * @param {string} currentCaseCategory the current case category name
    */
-  function AddCaseDashboardActionButtonController ($scope, ts, $location, AddCase) {
+  function AddCaseDashboardActionButtonController ($scope, $window, ts, AddCase,
+    currentCaseCategory) {
     $scope.ts = ts;
 
     $scope.clickHandler = clickHandler;
@@ -22,19 +24,27 @@
      */
     function clickHandler () {
       AddCase.clickHandler({
-        caseTypeCategoryName: getCaseTypeCategory()
+        callbackFn: redirectToUserContext,
+        caseTypeCategoryName: currentCaseCategory
       });
     }
 
     /**
-     * Returns the case type category as defined in the URL parameters.
+     * Redirects the user to the user context as provided by the case form
+     * response.
      *
-     * @returns {string} the case type category
+     * @param {object} event add case form event reference.
+     * @param {object} response add case form response.
      */
-    function getCaseTypeCategory () {
-      var currentUrlParams = $location.search();
+    function redirectToUserContext (event, response) {
+      var hasNoUserContext = !response.userContext;
+      var isCreatingMoreCases = response.buttonName === 'upload_new';
 
-      return currentUrlParams.case_type_category;
+      if (hasNoUserContext || isCreatingMoreCases) {
+        return;
+      }
+
+      $window.location.href = response.userContext;
     }
   }
-})(CRM._, angular, CRM.checkPerm, CRM.loadForm, CRM.url);
+})(angular);
