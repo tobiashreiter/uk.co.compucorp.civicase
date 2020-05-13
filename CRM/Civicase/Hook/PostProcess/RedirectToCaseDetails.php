@@ -1,7 +1,5 @@
 <?php
 
-use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
-
 /**
  * Redirect to case details post process hook.
  */
@@ -21,12 +19,10 @@ class CRM_Civicase_Hook_PostProcess_RedirectToCaseDetails {
     }
 
     $caseId = $form->getVar('_caseId');
-    $caseCategoryName = CaseCategoryHelper::getCategoryName($caseId);
-    $caseDetailsUrl = 'civicrm/case/a/?case_type_category=' . $caseCategoryName
-      . '#/case/list?caseId=' . $caseId;
+    $caseDetailsUrl = CRM_Civicase_Helper_CaseUrl::getDetailsPage($caseId);
 
     CRM_Core_Session::singleton()
-      ->pushUserContext(CRM_Utils_System::url($caseDetailsUrl, NULL, TRUE));
+      ->pushUserContext($caseDetailsUrl);
   }
 
   /**
