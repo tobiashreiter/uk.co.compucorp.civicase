@@ -1,6 +1,6 @@
 <?php
 
-use CRM_Civicase_Service_CaseCategorySetting as CaseCategorySetting;
+use CRM_Civicase_ExtensionUtil as ExtensionUtil;
 
 /**
  * Class CRM_Civicase_Hook_PreProcess_AddCaseAdminSettings.
@@ -21,30 +21,53 @@ class CRM_Civicase_Hook_PreProcess_AddCaseAdminSettings {
     }
 
     $settings = $form->getVar('_settings');
-    $settings['civicaseAllowCaseLocks'] = CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME;
-    $this->setCaseCategoryWebformSettings($form, $settings);
 
+    $this->addCivicaseSettingsToForm($settings);
     $form->setVar('_settings', $settings);
+
+    $this->addScriptFile();
   }
 
   /**
-   * Sets webform settings for case categories.
+   * Takes civicase setting names and adds them to the admin form.
    *
-   * @param CRM_Core_Form $form
-   *   Form object class.
+   * The settings are taken from the civicase settings file. This function is
+   * needed to properly display these settings on the form.
+   *
    * @param array $settings
    *   Settings array.
    */
-  private function setCaseCategoryWebformSettings(CRM_Core_Form &$form, array &$settings) {
-    $caseSetting = new CaseCategorySetting();
-    $caseCategoryWebFormSetting = $caseSetting->getForWebform();
-    $settingKeys = array_keys($caseCategoryWebFormSetting);
+  private function addCivicaseSettingsToForm(array &$settings) {
+    $civicaseSettings = $this->getCiviCaseSettings();
+    $settingKeys = array_keys($civicaseSettings);
 
     foreach ($settingKeys as $settingKey) {
       $settings[$settingKey] = CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME;
     }
+  }
 
-    $form->assign('caseCategoryWebFormSetting', $caseCategoryWebFormSetting);
+  /**
+   * Adds a custom JS file to the Civicase settings admin form.
+   *
+   * This JS file handles custom logic needed to display or hide certain
+   * fields in the admin form.
+   */
+  private function addScriptFile() {
+    CRM_Core_Resources::singleton()
+      ->addScriptFile('uk.co.compucorp.civicase', 'js/civicase-settings-form.js');
+  }
+
+  /**
+   * Returns the list of settings defined in the civicase settings file.
+   *
+   * @return array
+   *   The civicase settings.
+   */
+  private function getCiviCaseSettings() {
+    $settingsPath = CRM_Core_Resources::singleton()
+      ->getPath(ExtensionUtil::LONG_NAME, 'settings/CiviCase.setting.php');
+
+    return require $settingsPath;
   }
 
   /**
