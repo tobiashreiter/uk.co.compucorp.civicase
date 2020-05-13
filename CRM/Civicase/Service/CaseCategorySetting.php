@@ -41,6 +41,10 @@ class CRM_Civicase_Service_CaseCategorySetting {
         'name' => str_replace(' ', '', $this->replaceWords('civicaseAllowCaseWebform', $caseCategoryName)),
         'type' => 'Boolean',
         'quick_form_type' => 'YesNo',
+        'html_attributes' => [
+          'data-case-category-name' => $caseCategoryName,
+          'class' => 'civicase__settings__allow-webform',
+        ],
         'default' => FALSE,
         'html_type' => 'radio',
         'add' => '4.7',
@@ -59,6 +63,8 @@ class CRM_Civicase_Service_CaseCategorySetting {
         'type' => 'String',
         'quick_form_type' => 'Element',
         'html_attributes' => [
+          'data-case-category-name' => $caseCategoryName,
+          'class' => 'civicase__settings__webform-url',
           'size' => 64,
           'maxlength' => 64,
         ],
