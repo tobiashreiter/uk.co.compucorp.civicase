@@ -1,9 +1,11 @@
 /* eslint-env jasmine */
-(($, _) => {
+(($, _, crmCheckPerm) => {
   describe('civicaseSearch', () => {
-    let $controller, $rootScope, $scope, CaseFilters, CaseStatuses, CaseTypes, crmApi, currentCaseCategory,
-      affixOriginalFunction, offsetOriginalFunction, originalDoSearch, originalParentScope, affixReturnValue,
-      originalBindToRoute;
+    let $controller, $rootScope, $scope, $timeout, CaseFilters, CaseStatuses, caseTypeCategoriesMockData,
+      CaseTypes, crmApi, currentCaseCategory, customSearchFields, affixOriginalFunction,
+      offsetOriginalFunction, originalParentScope, affixReturnValue, originalBindToRoute;
+
+    const SEARCH_EVENT_NAME = 'civicase::case-search::filters-updated';
 
     beforeEach(module('civicase.templates', 'civicase', 'civicase.data', ($provide) => {
       crmApi = jasmine.createSpy('crmApi');
@@ -11,14 +13,18 @@
       $provide.value('crmApi', crmApi);
     }));
 
-    beforeEach(inject((_$controller_, $q, _$rootScope_, _CaseFilters_, _CaseStatuses_, _CaseTypesMockData_,
-      _currentCaseCategory_) => {
+    beforeEach(inject((_$controller_, $q, _$rootScope_, _$timeout_, _CaseFilters_,
+      _CaseStatuses_, _caseTypeCategoriesMockData_, _CaseTypesMockData_, _currentCaseCategory_,
+      _CustomSearchField_) => {
       $controller = _$controller_;
       $rootScope = _$rootScope_;
       $scope = $rootScope.$new();
+      $timeout = _$timeout_;
       CaseFilters = _CaseFilters_;
       CaseStatuses = _CaseStatuses_.values;
       CaseTypes = _CaseTypesMockData_.get();
+      caseTypeCategoriesMockData = _caseTypeCategoriesMockData_;
+      customSearchFields = _CustomSearchField_.getAll();
       currentCaseCategory = _currentCaseCategory_;
 
       crmApi.and.returnValue($q.resolve({ values: [] }));
@@ -36,6 +42,7 @@
       CRM.$.fn.affix.and.returnValue(affixReturnValue);
       originalBindToRoute = $scope.$bindToRoute;
       $scope.$bindToRoute = jasmine.createSpy('$bindToRoute');
+      spyOn($rootScope, '$broadcast');
 
       initController();
     });
@@ -46,33 +53,74 @@
       $scope.$bindToRoute = originalBindToRoute;
     });
 
-    describe('$scope variables', () => {
-      it('checks $scope.caseTypeOptions', () => {
-        expect($scope.caseTypeOptions).toEqual(jasmine.any(Object));
+    describe('scope variables', () => {
+      describe('case type options', () => {
+        let expectedOptions;
+
+        beforeEach(() => {
+          const selectedCaseTypeCategory = _.find(caseTypeCategoriesMockData, (caseCategory) => {
+            return caseCategory.name.toLowerCase() === $scope.filters.case_type_category
+              .toLowerCase();
+          });
+          expectedOptions = _.chain(CaseTypes)
+            .filter((caseType) => {
+              return caseType.case_type_category === selectedCaseTypeCategory.value;
+            })
+            .map(getSelect2Options)
+            .value();
+        });
+
+        it('contains a select2-friendly list of case type options limited by the case category included in the filters object', () => {
+          expect($scope.caseTypeOptions).toEqual(expectedOptions);
+        });
       });
 
-      it('checks $scope.caseStatusOptions', () => {
-        expect($scope.caseStatusOptions).toEqual(jasmine.any(Object));
+      describe('case status options', () => {
+        let expectedOptions;
+
+        beforeEach(() => {
+          expectedOptions = _.map(CaseStatuses, getSelect2Options);
+        });
+
+        it('contains a select2-friendly list of case status options', () => {
+          expect($scope.caseStatusOptions).toEqual(expectedOptions);
+        });
       });
 
-      it('checks $scope.customGroups', () => {
-        expect($scope.customGroups).toEqual(jasmine.any(Object));
+      describe('custom field groups', () => {
+        it('contains a list of custom fields group and the fields that can be used to search for their custom data', () => {
+          expect($scope.customGroups).toEqual(customSearchFields);
+        });
       });
 
-      it('checks $scope.caseRelationshipOptions', () => {
-        expect($scope.caseRelationshipOptions).toEqual(jasmine.any(Object));
+      describe('case relationship options', () => {
+        it('contains a list of case relationship options', () => {
+          expect($scope.caseRelationshipOptions).toEqual([
+            { text: ts('All Cases'), id: 'all' },
+            { text: ts('My Cases'), id: 'is_case_manager' },
+            { text: ts('Cases I am involved'), id: 'is_involved' }
+          ]);
+        });
       });
 
-      it('checks $scope.checkPerm', () => {
-        expect($scope.checkPerm).toEqual(jasmine.any(Function));
+      describe('check permision service', () => {
+        it('provides a reference to the CRM check permission service', () => {
+          expect($scope.checkPerm).toEqual(crmCheckPerm);
+        });
       });
 
-      it('checks $scope.filterDescription', () => {
-        expect($scope.filterDescription).toEqual(jasmine.any(Array));
+      describe('filter description', () => {
+        it('contains an empty list of descriptions by default', () => {
+          expect($scope.filterDescription).toEqual([]);
+        });
       });
 
-      it('checks $scope.filters', () => {
-        expect($scope.filterDescription).toEqual(jasmine.any(Object));
+      describe('filters', () => {
+        it('filters by the current case category', () => {
+          expect($scope.filters).toEqual({
+            case_type_category: currentCaseCategory
+          });
+        });
       });
     });
 
@@ -128,71 +176,89 @@
         });
       });
 
-      describe('$scope.filters', () => {
+      describe('on init', () => {
         beforeEach(() => {
-          originalDoSearch = $scope.doSearch;
-          $scope.doSearch = jasmine.createSpy('doSearch');
           $scope.filters = CaseFilters.filter;
         });
 
-        afterEach(() => {
-          $scope.doSearch = originalDoSearch;
-        });
-
-        describe('when $scope.expanded is false', () => {
-          beforeEach(() => {
-            $scope.expanded = false;
-            $scope.$digest();
-          });
-
-          it('calls $scope.doSearch()', () => {
-            expect($scope.doSearch).toHaveBeenCalled();
+        describe('as soon as the component starts', () => {
+          it('does not execute the search', () => {
+            expect($rootScope.$broadcast).not
+              .toHaveBeenCalledWith(SEARCH_EVENT_NAME, jasmine.any(Object));
           });
         });
 
-        describe('when $scope.expanded is true', () => {
+        describe('after the component starts', () => {
           beforeEach(() => {
-            $scope.expanded = true;
-            $scope.$digest();
+            $timeout.flush();
           });
 
-          it('does not calls $scope.doSearch()', () => {
-            expect($scope.doSearch).not.toHaveBeenCalled();
+          it('executes the search', () => {
+            expect($rootScope.$broadcast)
+              .toHaveBeenCalledWith(SEARCH_EVENT_NAME, jasmine.any(Object));
           });
         });
       });
     });
 
-    describe('caseManagerIsMe()', () => {
-      describe('when case_manager is me', () => {
+    describe('checking when the case manager is the logged in user', () => {
+      describe('when case manager filter is the logged in user', () => {
         beforeEach(() => {
           $scope.filters.case_manager = [203];
         });
 
-        it('should return true', () => {
+        it('returns true', () => {
           expect($scope.caseManagerIsMe()).toBe(true);
         });
       });
 
-      describe('when case_manager is not me', () => {
-        describe('when case id is different', () => {
+      describe('when the case manager filter is not the logged in user', () => {
+        describe('when the case manager id is different', () => {
           beforeEach(() => {
             $scope.filters.case_manager = [201];
           });
 
-          it('should return false', () => {
+          it('returns false', () => {
             expect($scope.caseManagerIsMe()).toBe(false);
           });
         });
 
-        describe('when case id undefined', () => {
+        describe('when the case manager id is undefined', () => {
           beforeEach(() => {
             $scope.filters.case_manager = undefined;
           });
 
-          it('should return undefined', () => {
-            expect($scope.caseManagerIsMe()).toBeUndefined();
+          it('returns false', () => {
+            expect($scope.caseManagerIsMe()).toBe(false);
           });
+        });
+      });
+    });
+
+    describe('automatically searching when not expanding', () => {
+      describe('when the search is not expanded', () => {
+        beforeEach(() => {
+          $scope.expanded = false;
+
+          $scope.doSearchIfNotExpanded();
+        });
+
+        it('executes the search', () => {
+          expect($rootScope.$broadcast)
+            .toHaveBeenCalledWith(SEARCH_EVENT_NAME, jasmine.any(Object));
+        });
+      });
+
+      describe('when the search is expanded', () => {
+        beforeEach(() => {
+          $scope.expanded = true;
+
+          $scope.doSearchIfNotExpanded();
+        });
+
+        it('does not execute the search', () => {
+          expect($rootScope.$broadcast)
+            .not.toHaveBeenCalledWith(SEARCH_EVENT_NAME, jasmine.any(Object));
         });
       });
     });
@@ -239,7 +305,7 @@
       });
     });
 
-    describe('doSearch()', () => {
+    describe('handling search submit event', () => {
       beforeEach(() => {
         originalParentScope = $scope.$parent;
         $scope.$parent = {};
@@ -248,46 +314,34 @@
       beforeEach(() => {
         $scope.expanded = true;
         $scope.filters.case_manager = [203];
-        $scope.doSearch();
+        $scope.handleSearchSubmit();
       });
 
       afterEach(() => {
         $scope.$parent = originalParentScope;
       });
 
-      it('should build filter description', () => {
+      it('builds the filter description', () => {
         expect($scope.filterDescription).toEqual([{ label: 'Case Manager', text: 'Me' }]);
       });
 
-      it('should close the dropdown', () => {
+      it('closes the dropdown', () => {
         expect($scope.expanded).toBe(false);
       });
     });
 
-    describe('clearSearch()', () => {
+    describe('when the search filters are cleared', () => {
       beforeEach(() => {
-        originalDoSearch = $scope.doSearch;
-        $scope.doSearch = jasmine.createSpy('doSearch');
         $scope.filters = CaseFilters.filter;
         $scope.clearSearch();
-      });
-
-      afterEach(() => {
-        $scope.doSearch = originalDoSearch;
       });
 
       it('clears filters object', () => {
         expect($scope.filters).toEqual({});
       });
 
-      it('calls doSearch()', () => {
-        expect($scope.doSearch).toHaveBeenCalled();
-      });
-    });
-
-    describe('mapSelectOptions()', () => {
-      it('returns a mapped response', () => {
-        expect($scope.caseTypeOptions[0]).toEqual(jasmine.objectContaining({ id: jasmine.any(String), text: jasmine.any(String), color: jasmine.any(String), icon: jasmine.any(String) }));
+      it('executes the search', () => {
+        expect($rootScope.$broadcast).toHaveBeenCalledWith(SEARCH_EVENT_NAME, jasmine.any(Object));
       });
     });
 
@@ -423,6 +477,22 @@
     });
 
     /**
+     * Converts the given option object to one that is understood
+     * to Select2.
+     *
+     * @param {object} option the original option object.
+     * @returns {object} a select2 option object.
+     */
+    function getSelect2Options (option) {
+      return {
+        id: option.value || option.name,
+        text: option.label || option.title,
+        color: option.color,
+        icon: option.icon
+      };
+    }
+
+    /**
      * Initiate controller
      */
     function initController () {
@@ -434,4 +504,4 @@
       });
     }
   });
-})(CRM.$, CRM._);
+})(CRM.$, CRM._, CRM.checkPerm);
