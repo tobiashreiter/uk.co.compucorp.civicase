@@ -9,7 +9,7 @@
   function CaseTypeCategoryProvider () {
     var allCaseTypeCategories = civicaseBaseSettings.caseTypeCategories;
     var caseTypeCategoriesWhereUserCanAccessActivities =
-    civicaseBaseSettings.caseTypeCategoriesWhereUserCanAccessActivities;
+      civicaseBaseSettings.caseTypeCategoriesWhereUserCanAccessActivities;
     var activeCaseTypeCategories = _.chain(allCaseTypeCategories)
       .filter(function (caseTypeCategory) {
         return caseTypeCategory.is_active === '1';
@@ -20,7 +20,6 @@
     this.$get = $get;
     this.getAll = getAll;
     this.findByName = findByName;
-    this.getCategoriesWithAccessToActivity = getCategoriesWithAccessToActivity;
 
     /**
      * Returns the case the category service.
@@ -31,7 +30,7 @@
       return {
         getAll: getAll,
         findByName: findByName,
-        getCategoriesWithAccessToActivity: getCategoriesWithAccessToActivity
+        getCategoriesWithAccessToActivity: getCategoriesWithAccessToActivity,
       };
     }
 

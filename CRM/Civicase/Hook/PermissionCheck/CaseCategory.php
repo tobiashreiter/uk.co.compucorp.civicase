@@ -30,11 +30,13 @@ class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
    *   Permission name.
    * @param bool $granted
    *   Whether permission is granted or not.
+   * @param int|null $contactId
+   *   The contact ID to check permission for.
    */
-  public function run($permission, &$granted) {
+  public function run($permission, &$granted, $contactId) {
     $this->caseCategoryPermission = new CaseCategoryPermission();
 
-    if (!$this->shouldRun($permission, $granted)) {
+    if (!$this->shouldRun($permission, $granted, $contactId)) {
       return;
     }
 
@@ -117,14 +119,16 @@ class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
    *   Permission name.
    * @param bool $granted
    *   Whether permission is granted or not.
+   * @param int|null $contactId
+   *   The contact ID to check permission for.
    *
    * @return bool
    *   returns a boolean to determine if hook will run or not.
    */
-  private function shouldRun($permission, $granted) {
+  private function shouldRun($permission, $granted, $contactId) {
     $defaultCasePermissions = array_column($this->caseCategoryPermission->get(), 'name');
 
-    return in_array($permission, $defaultCasePermissions) && !$granted;
+    return in_array($permission, $defaultCasePermissions) && !$granted && !$contactId;
   }
 
   /**

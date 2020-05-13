@@ -79,6 +79,18 @@
           });
         });
 
+        describe('when fetching list of cases', () => {
+          let getCaseListApiParams;
+
+          beforeEach(() => {
+            getCaseListApiParams = modalOpenCall[2].getCaseListApiParams;
+          });
+
+          it('displays cases from those case type categories for which user has "basic case information" permission', () => {
+            expect(getCaseListApiParams()).toEqual({});
+          });
+        });
+
         describe('when saving the copy action modal', () => {
           let expectedActivitySavingCalls;
 
@@ -332,6 +344,18 @@
 
           it('defines an empty subject', () => {
             expect(model.subject).toBe($scope.selectedActivities[0].subject);
+          });
+        });
+
+        describe('when fetching list of cases', () => {
+          let getCaseListApiParams;
+
+          beforeEach(() => {
+            getCaseListApiParams = modalOpenCall[2].getCaseListApiParams;
+          });
+
+          it('displays cases from those case type categories for which user has "basic case information" permission', () => {
+            expect(getCaseListApiParams()).toEqual({});
           });
         });
 

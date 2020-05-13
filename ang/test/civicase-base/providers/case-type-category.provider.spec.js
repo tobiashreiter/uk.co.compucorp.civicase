@@ -49,7 +49,6 @@
         expect(CaseTypeCategory.getCategoriesWithAccessToActivity()).toEqual(expectedResults);
       });
     });
-
     /**
      * Injects and hoists the dependencies needed by this spec.
      */

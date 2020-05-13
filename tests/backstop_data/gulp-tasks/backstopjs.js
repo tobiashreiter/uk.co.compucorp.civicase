@@ -20,7 +20,7 @@ var path = require('path');
 var PluginError = require('plugin-error');
 var puppeteer = require('puppeteer');
 
-var BACKSTOP_DIR = 'tests/backstop_data/';
+var BACKSTOP_DIR = '.';
 var CACHE = {
   caseId: null,
   emptyCaseId: null,
@@ -32,9 +32,9 @@ var CONFIG_TPL = {
   root: '%{path-to-site-root}'
 };
 var FILES = {
-  siteConfig: path.join(BACKSTOP_DIR, 'site-config.json'),
-  temp: path.join(BACKSTOP_DIR, 'backstop.temp.json'),
-  tpl: path.join(BACKSTOP_DIR, 'backstop.tpl.json')
+  siteConfig: 'site-config.json',
+  temp: 'backstop.temp.json',
+  tpl: 'backstop.tpl.json'
 };
 var RECORD_IDENTIFIERS = {
   activeContactDisplayName: 'Arnold Backstop',
@@ -69,7 +69,7 @@ var createUniqueCustomGroup = createUniqueRecordFactory('CustomGroup', ['title']
  * @returns {Array} of the list of the scenarios
  */
 function buildScenariosList (group) {
-  const dirPath = path.join(BACKSTOP_DIR, 'scenarios');
+  const dirPath = 'scenarios';
 
   return _(fs.readdirSync(dirPath))
     .filter(scenario => {
@@ -83,7 +83,7 @@ function buildScenariosList (group) {
       const url = replaceUrlVars(scenario.url);
 
       return _.assign({}, scenario, {
-        cookiePath: path.join(BACKSTOP_DIR, 'cookies', 'admin.json'),
+        cookiePath: path.join('cookies', 'admin.json'),
         count: '(' + (index + 1) + ' of ' + scenarios.length + ')',
         url: url
       });
@@ -134,10 +134,6 @@ function createTempConfig () {
   var content = JSON.parse(fs.readFileSync(FILES.tpl));
 
   content.scenarios = list;
-
-  ['bitmaps_reference', 'bitmaps_test', 'html_report', 'ci_report', 'engine_scripts'].forEach(path => {
-    content.paths[path] = BACKSTOP_DIR + content.paths[path];
-  });
 
   return JSON.stringify(content);
 }
@@ -354,7 +350,7 @@ function runBackstopJS (command) {
   if (touchSiteConfigFile()) {
     throwError(
       'No site-config.json file detected!\n' +
-      `\tOne has been created for you under ${path.basename(BACKSTOP_DIR)}\n` +
+      '\tOne has been created for you \n' +
       '\tPlease insert the real value for each placeholder and try again'
     );
   }
@@ -364,7 +360,7 @@ function runBackstopJS (command) {
 
     gulp.src(FILES.tpl)
       .pipe(file(path.basename(FILES.temp), createTempConfig()))
-      .pipe(gulp.dest(BACKSTOP_DIR))
+      .pipe(gulp.dest('.'))
       .on('end', async () => {
         try {
           (typeof argv.skipCookies === 'undefined') && await writeCookies();

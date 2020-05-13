@@ -25,8 +25,6 @@
   },
   "homepage": "https://github.com/compucorp/uk.co.compucorp.civicase#readme",
   "devDependencies": {
-    "ansi-colors": "^4.1.1",
-    "backstopjs": "^4.3.2",
     "civicrm-cv": "^0.1.2",
     "civicrm-scssroot": "git://github.com/totten/civicrm-scssroot.git#v0.1.1",
     "eslint": "^6.5.1",
@@ -37,13 +35,9 @@
     "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
-    "fs": "0.0.1-security",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^7.0.1",
-    "gulp-clean": "^0.4.0",
     "gulp-clean-css": "^4.2.0",
-    "gulp-file": "^0.4.0",
-    "gulp-notify": "^3.2.0",
     "gulp-postcss": "^8.0.0",
     "gulp-rename": "^1.4.0",
     "gulp-sass": "^4.0.2",
@@ -61,12 +55,9 @@
     "lint-staged": "^9.4.2",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
-    "path": "^0.12.7",
-    "plugin-error": "^1.0.1",
     "postcss-discard-duplicates": "^4.0.2",
     "postcss-prefix-selector": "^1.7.2",
     "stylelint": "^11.1.1",
-    "stylelint-config-sass-guidelines": "^6.1.0",
-    "yargs": "^14.2.0"
+    "stylelint-config-sass-guidelines": "^6.1.0"
   }
 }
