@@ -1,6 +1,5 @@
 <?php
 
-use CRM_Civicase_Service_CaseCategorySetting as CaseCategorySetting;
 use CRM_Civicase_ExtensionUtil as ExtensionUtil;
 
 /**
@@ -24,7 +23,6 @@ class CRM_Civicase_Hook_PreProcess_AddCaseAdminSettings {
     $settings = $form->getVar('_settings');
 
     $this->addCivicaseSettingsToForm($settings);
-    $this->setCaseCategoryWebformSettings($form, $settings);
     $form->setVar('_settings', $settings);
   }
 
@@ -57,26 +55,6 @@ class CRM_Civicase_Hook_PreProcess_AddCaseAdminSettings {
       ->getPath(ExtensionUtil::LONG_NAME, 'settings/CiviCase.setting.php');
 
     return require $settingsPath;
-  }
-
-  /**
-   * Sets webform settings for case categories.
-   *
-   * @param CRM_Core_Form $form
-   *   Form object class.
-   * @param array $settings
-   *   Settings array.
-   */
-  private function setCaseCategoryWebformSettings(CRM_Core_Form &$form, array &$settings) {
-    $caseSetting = new CaseCategorySetting();
-    $caseCategoryWebFormSetting = $caseSetting->getForWebform();
-    $settingKeys = array_keys($caseCategoryWebFormSetting);
-
-    foreach ($settingKeys as $settingKey) {
-      $settings[$settingKey] = CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME;
-    }
-
-    $form->assign('caseCategoryWebFormSetting', $caseCategoryWebFormSetting);
   }
 
   /**
