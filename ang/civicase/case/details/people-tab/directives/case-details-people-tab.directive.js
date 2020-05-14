@@ -301,9 +301,7 @@
       };
 
       return _.map(item.client, function (client) {
-        params.contact_id_a = client.contact_id;
-
-        return ['Relationship', 'create', params];
+        return ['Relationship', 'create', _.extend({ contact_id_a: client.contact_id }, params)];
       });
     }
 
