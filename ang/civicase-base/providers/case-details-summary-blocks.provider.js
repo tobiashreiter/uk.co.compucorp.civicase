@@ -25,7 +25,7 @@
     /**
      * Adds the given dashboard action items to the list.
      *
-     * @param {ButtonConfig[]} itemsConfig a list of dashboard action items configurations.
+     * @param {BlockConfig[]} itemsConfig a list of dashboard action items configurations.
      */
     function addItems (itemsConfig) {
       caseDetailsSummaryBlocks = caseDetailsSummaryBlocks.concat(itemsConfig);
@@ -34,7 +34,7 @@
 })(angular, CRM.$, CRM._);
 
 /**
- * @typedef {object} ButtonConfig
+ * @typedef {object} BlockConfig
  * @property {string} templateUrl
  * @property {number} weight
  */

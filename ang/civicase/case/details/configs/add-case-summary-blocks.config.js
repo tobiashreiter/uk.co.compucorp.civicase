@@ -14,10 +14,10 @@
         weight: 0
       }, {
         templateUrl: '~/civicase/case/details/summary-tab/case-details-summary-next-non-milestone-activity.html',
-        weight: 0
+        weight: 5
       }, {
         templateUrl: '~/civicase/case/details/summary-tab/case-details-summary-calendar.html',
-        weight: 0
+        weight: 10
       }
     ];
 
