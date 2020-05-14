@@ -240,6 +240,25 @@
         message: ts('Remove %1 as %2?', { 1: role.display_name, 2: role.role })
       }).on('crmConfirm:yes', function () {
         var apiCalls = [unassignRoleCall(role)];
+
+        if (!role.relationship_type_id) {
+          var newClientIDs = _.chain($scope.item.client)
+            .map(function (client) {
+              return client.contact_id;
+            })
+            .filter(function (clientID) {
+              return clientID !== role.contact_id;
+            })
+            .value();
+
+          if (newClientIDs.length > 0) {
+            updateRelationshipWhenClientIsModified(
+              apiCalls,
+              role.contact_id,
+              newClientIDs[0]);
+          }
+        }
+
         apiCalls.push(['Activity', 'create', {
           case_id: item.id,
           target_contact_id: role.contact_id,
@@ -358,7 +377,7 @@
     function getReplaceClientApiCalls (contactPromptResult) {
       var activitySubject = getActivitySubjectForReplaceCaseContact(contactPromptResult);
       var apiCalls = [
-        unassignRoleCall(contactPromptResult.role),
+        // unassignRoleCall(contactPromptResult.role),
         getCreateRoleActivityApiCall({
           activity_type_id: 'Reassigned Case',
           subject: activitySubject,
@@ -373,9 +392,27 @@
         }]
       ];
 
+      updateRelationshipWhenClientIsModified(
+        apiCalls,
+        contactPromptResult.role.contact_id,
+        contactPromptResult.contact.id);
+
       return apiCalls;
     }
 
+    /**
+     * @param {object[]} apiCalls list of api calls
+     * @param {string} oldClientID old client id
+     * @param {string} newClientID new client id
+     */
+    function updateRelationshipWhenClientIsModified (apiCalls, oldClientID, newClientID) {
+      apiCalls.push(['Relationship', 'get', {
+        case_id: item.id,
+        is_active: true,
+        contact_id_a: oldClientID,
+        'api.Relationship.update': { contact_id_a: newClientID }
+      }]);
+    }
     /**
      * Returns the API calls necessary to replace the case role and record the event as an activity.
      *
