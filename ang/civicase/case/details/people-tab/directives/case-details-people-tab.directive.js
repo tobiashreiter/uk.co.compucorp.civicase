@@ -242,21 +242,12 @@
         var apiCalls = [unassignRoleCall(role)];
 
         if (!role.relationship_type_id) {
-          var newClientIDs = _.chain($scope.item.client)
-            .map(function (client) {
-              return client.contact_id;
-            })
-            .filter(function (clientID) {
-              return clientID !== role.contact_id;
-            })
-            .value();
-
-          if (newClientIDs.length > 0) {
-            updateRelationshipWhenClientIsModified(
-              apiCalls,
-              role.contact_id,
-              newClientIDs[0]);
-          }
+          apiCalls.push(['Relationship', 'get', {
+            case_id: item.id,
+            is_active: 1,
+            contact_id_a: role.contact_id,
+            'api.Relationship.create': { is_active: 0, end_date: 'now' }
+          }]);
         }
 
         apiCalls.push(['Activity', 'create', {
@@ -375,7 +366,7 @@
     function getReplaceClientApiCalls (contactPromptResult) {
       var activitySubject = getActivitySubjectForReplaceCaseContact(contactPromptResult);
       var apiCalls = [
-        // unassignRoleCall(contactPromptResult.role),
+        unassignRoleCall(contactPromptResult.role),
         getCreateRoleActivityApiCall({
           activity_type_id: 'Reassigned Case',
           subject: activitySubject,
@@ -387,30 +378,18 @@
         ['CaseContact', 'create', {
           case_id: item.id,
           contact_id: contactPromptResult.contact.id
+        }],
+        ['Relationship', 'get', {
+          case_id: item.id,
+          is_active: true,
+          contact_id_a: contactPromptResult.role.contact_id,
+          'api.Relationship.update': { contact_id_a: contactPromptResult.contact.id }
         }]
       ];
-
-      updateRelationshipWhenClientIsModified(
-        apiCalls,
-        contactPromptResult.role.contact_id,
-        contactPromptResult.contact.id);
 
       return apiCalls;
     }
 
-    /**
-     * @param {object[]} apiCalls list of api calls
-     * @param {string} oldClientID old client id
-     * @param {string} newClientID new client id
-     */
-    function updateRelationshipWhenClientIsModified (apiCalls, oldClientID, newClientID) {
-      apiCalls.push(['Relationship', 'get', {
-        case_id: item.id,
-        is_active: true,
-        contact_id_a: oldClientID,
-        'api.Relationship.update': { contact_id_a: newClientID }
-      }]);
-    }
     /**
      * Returns the API calls necessary to replace the case role and record the event as an activity.
      *
@@ -456,6 +435,19 @@
         ['CaseContact', 'create', {
           case_id: item.id,
           contact_id: contactPromptResult.contact.id
+        }],
+        ['Relationship', 'get', {
+          case_id: item.id,
+          is_active: 1,
+          'api.Relationship.create': {
+            id: false,
+            contact_id_a: contactPromptResult.contact.id,
+            start_date: 'now',
+            contact_id_b: '$value.contact_id_b',
+            relationship_type_id: '$value.relationship_type_id',
+            description: '$value.description',
+            case_id: '$value.case_id'
+          }
         }]
       ];
 
