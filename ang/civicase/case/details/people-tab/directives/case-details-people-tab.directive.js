@@ -241,6 +241,7 @@
       }).on('crmConfirm:yes', function () {
         var apiCalls = [unassignRoleCall(role)];
 
+        // when client
         if (!role.relationship_type_id) {
           apiCalls.push(['Relationship', 'get', {
             case_id: item.id,
@@ -257,6 +258,7 @@
           activity_type_id: role.relationship_type_id ? 'Remove Case Role' : 'Remove Client From Case',
           subject: ts('%1 removed as %2', { 1: role.display_name, 2: role.role })
         }]);
+
         $scope.refresh(apiCalls);
       });
     };
