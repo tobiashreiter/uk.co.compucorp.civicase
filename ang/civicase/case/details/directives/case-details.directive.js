@@ -41,11 +41,13 @@
    * @param {object} ActivityType activity type service
    * @param {object} CaseStatus case status service
    * @param {object} CaseType case type service
+   * @param {object} CaseDetailsSummaryBlocks case details summary blocks
    */
   function civicaseCaseDetailsController ($location, $sce, $rootScope, $scope,
     $document, BulkActions, CaseDetailsTabs, civicaseCrmApi, formatActivity, formatCase,
     getActivityFeedUrl, getCaseQueryParams, $route, $timeout, crmStatus,
-    CasesUtils, PrintMergeCaseAction, ts, ActivityType, CaseStatus, CaseType) {
+    CasesUtils, PrintMergeCaseAction, ts, ActivityType, CaseStatus, CaseType,
+    CaseDetailsSummaryBlocks) {
     // The ts() and hs() functions help load strings for this module.
     // TODO: Move the common logic into a common controller (based on the usage of ContactCaseTabCaseDetails)
     $scope.ts = ts;
@@ -58,10 +60,13 @@
     $scope.relatedCasesPager = { total: 0, size: 5, num: 0, range: {} };
     $scope.getActivityFeedUrl = getActivityFeedUrl;
     $scope.bulkAllowed = BulkActions.isAllowed();
+    $scope.caseDetailsSummaryBlocks = CaseDetailsSummaryBlocks;
     $scope.caseTypesLength = _.size(caseTypes);
     $scope.CRM = CRM;
     $scope.tabs = CaseDetailsTabs;
     $scope.trustAsHtml = $sce.trustAsHtml;
+    $scope.isMainContentVisible = isMainContentVisible;
+    $scope.isPlaceHolderVisible = isPlaceHolderVisible;
 
     (function init () {
       $scope.$watch('activeTab', activeTabWatcher);
@@ -411,7 +416,6 @@
       });
 
       if (activeCaseTab && activeCaseTab.service) {
-        $scope.activeTabPlaceholderUrl = activeCaseTab.service.getPlaceholderUrl();
         $scope.activeTabContentUrl = activeCaseTab.service.activeTabContentUrl();
       }
     }
@@ -469,6 +473,20 @@
      */
     function redirectToCaseList () {
       return $route.updateParams({ caseId: null });
+    }
+
+    /**
+     * @returns {boolean} if place holder should be visible
+     */
+    function isPlaceHolderVisible () {
+      return !$scope.areDetailsLoaded;
+    }
+
+    /**
+     * @returns {boolean} if main content should be visible
+     */
+    function isMainContentVisible () {
+      return $scope.item && $scope.areDetailsLoaded;
     }
   }
 })(angular, CRM.$, CRM._);

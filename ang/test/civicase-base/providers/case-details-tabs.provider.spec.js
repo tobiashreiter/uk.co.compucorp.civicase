@@ -98,7 +98,6 @@
      * Mock case tab service.
      */
     function TestCaseTab () {
-      this.getPlaceholderUrl = _.noop;
       this.activeTabContentUrl = _.noop;
     }
   });

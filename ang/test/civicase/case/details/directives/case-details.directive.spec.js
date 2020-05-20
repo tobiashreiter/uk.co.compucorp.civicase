@@ -63,10 +63,6 @@
         element.isolateScope().$digest();
       });
 
-      it('should return active tab placeholder url', function () {
-        expect(element.isolateScope().activeTabPlaceholderUrl).toEqual('~/civicase/case/details/directives/placeholder/people.html');
-      });
-
       it('should return active tab content url', function () {
         expect(element.isolateScope().activeTabContentUrl).toEqual('~/civicase/case/details/directives/tab-content/people.html');
       });
@@ -111,6 +107,42 @@
 
         it('does not fire the case details unfocused event', function () {
           expect($rootScope.$broadcast).not.toHaveBeenCalled();
+        });
+      });
+    });
+
+    describe('visibility of content and placeholders', () => {
+      beforeEach(function () {
+        compileDirective();
+      });
+
+      describe('when case is being loaded', () => {
+        beforeEach(() => {
+          element.isolateScope().item = null;
+          element.isolateScope().areDetailsLoaded = false;
+        });
+
+        it('hides the main content', () => {
+          expect(element.isolateScope().isMainContentVisible()).toBeFalsy();
+        });
+
+        it('shows the main content', () => {
+          expect(element.isolateScope().isPlaceHolderVisible()).toBeTruthy();
+        });
+      });
+
+      describe('when case is loaded', () => {
+        beforeEach(() => {
+          element.isolateScope().item = CasesData.get().values[0];
+          element.isolateScope().areDetailsLoaded = true;
+        });
+
+        it('hides the main content', () => {
+          expect(element.isolateScope().isMainContentVisible()).toBeTruthy();
+        });
+
+        it('shows the main content', () => {
+          expect(element.isolateScope().isPlaceHolderVisible()).toBeFalsy();
         });
       });
     });
