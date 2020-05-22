@@ -243,12 +243,7 @@
 
         // when client
         if (!role.relationship_type_id) {
-          apiCalls.push(['Relationship', 'get', {
-            case_id: item.id,
-            is_active: 1,
-            contact_id_a: role.contact_id,
-            'api.Relationship.create': { is_active: 0, end_date: 'now' }
-          }]);
+          getApiParamsToSetRelationshipsAsInactiveWhenClientIsRemoved(role, apiCalls);
         }
 
         apiCalls.push(['Activity', 'create', {
@@ -360,6 +355,52 @@
     }
 
     /**
+     * @param {object} role role object
+     * @param {object[]} apiCalls list of api calls
+     */
+    function getApiParamsToSetRelationshipsAsInactiveWhenClientIsRemoved (role, apiCalls) {
+      apiCalls.push(['Relationship', 'get', {
+        case_id: item.id,
+        is_active: 1,
+        contact_id_a: role.contact_id,
+        'api.Relationship.create': { is_active: 0, end_date: 'now' }
+      }]);
+    }
+
+    /**
+     * @param {object} contactPromptResult contact prompt result object
+     * @param {object[]} apiCalls list of api calls
+     */
+    function getApiParamsToReassignExistingRelationshipsToNewClient (contactPromptResult, apiCalls) {
+      apiCalls.push(['Relationship', 'get', {
+        case_id: item.id,
+        is_active: true,
+        contact_id_a: contactPromptResult.role.contact_id,
+        'api.Relationship.update': { contact_id_a: contactPromptResult.contact.id }
+      }]);
+    }
+
+    /**
+     * @param {object} contactPromptResult contact prompt result object
+     * @param {object[]} apiCalls list of api calls
+     */
+    function getApiParamsToDuplicateExistingRelationshipsToNewClient (contactPromptResult, apiCalls) {
+      apiCalls.push(['Relationship', 'get', {
+        case_id: item.id,
+        is_active: 1,
+        'api.Relationship.create': {
+          id: false,
+          contact_id_a: contactPromptResult.contact.id,
+          start_date: 'now',
+          contact_id_b: '$value.contact_id_b',
+          relationship_type_id: '$value.relationship_type_id',
+          description: '$value.description',
+          case_id: '$value.case_id'
+        }
+      }]);
+    }
+
+    /**
      * Returns the API calls necessary to replace the case client and record the event as an activity.
      *
      * @param {ContactPromptResult} contactPromptResult the contact returned by the confirm dialog
@@ -380,14 +421,10 @@
         ['CaseContact', 'create', {
           case_id: item.id,
           contact_id: contactPromptResult.contact.id
-        }],
-        ['Relationship', 'get', {
-          case_id: item.id,
-          is_active: true,
-          contact_id_a: contactPromptResult.role.contact_id,
-          'api.Relationship.update': { contact_id_a: contactPromptResult.contact.id }
         }]
       ];
+
+      getApiParamsToReassignExistingRelationshipsToNewClient(contactPromptResult, apiCalls);
 
       return apiCalls;
     }
@@ -437,21 +474,10 @@
         ['CaseContact', 'create', {
           case_id: item.id,
           contact_id: contactPromptResult.contact.id
-        }],
-        ['Relationship', 'get', {
-          case_id: item.id,
-          is_active: 1,
-          'api.Relationship.create': {
-            id: false,
-            contact_id_a: contactPromptResult.contact.id,
-            start_date: 'now',
-            contact_id_b: '$value.contact_id_b',
-            relationship_type_id: '$value.relationship_type_id',
-            description: '$value.description',
-            case_id: '$value.case_id'
-          }
         }]
       ];
+
+      getApiParamsToDuplicateExistingRelationshipsToNewClient(contactPromptResult, apiCalls);
 
       $scope.refresh(apiCalls);
     }
