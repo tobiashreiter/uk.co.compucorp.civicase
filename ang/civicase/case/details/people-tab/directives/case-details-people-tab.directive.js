@@ -387,6 +387,7 @@
     function getApiParamsToDuplicateExistingRelationshipsToNewClient (contactPromptResult, apiCalls) {
       apiCalls.push(['Relationship', 'get', {
         case_id: item.id,
+        contact_id_a: item.client[0].contact_id,
         is_active: 1,
         'api.Relationship.create': {
           id: false,

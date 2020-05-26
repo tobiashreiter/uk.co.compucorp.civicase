@@ -263,6 +263,7 @@ describe('Case Details People Tab', () => {
         expect($scope.refresh).toHaveBeenCalledWith(jasmine.arrayContaining([
           ['Relationship', 'get', {
             case_id: $scope.item.id,
+            contact_id_a: $scope.item.client[0].contact_id,
             is_active: 1,
             'api.Relationship.create': {
               id: false,
