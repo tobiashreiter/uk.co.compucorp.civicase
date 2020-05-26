@@ -409,7 +409,6 @@
     function getReplaceClientApiCalls (contactPromptResult) {
       var activitySubject = getActivitySubjectForReplaceCaseContact(contactPromptResult);
       var apiCalls = [
-        unassignRoleCall(contactPromptResult.role),
         getCreateRoleActivityApiCall({
           activity_type_id: 'Reassigned Case',
           subject: activitySubject,
@@ -418,9 +417,13 @@
             contactPromptResult.role.contact_id
           ]
         }),
-        ['CaseContact', 'create', {
+        ['CaseContact', 'get', {
           case_id: item.id,
-          contact_id: contactPromptResult.contact.id
+          contact_id: contactPromptResult.role.contact_id,
+          'api.CaseContact.create': {
+            case_id: item.id,
+            contact_id: parseInt(contactPromptResult.contact.id)
+          }
         }]
       ];
 

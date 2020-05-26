@@ -296,21 +296,15 @@ describe('Case Details People Tab', () => {
         $rootScope.$digest();
       });
 
-      it('removes the existing client from the case', () => {
+      it('replaces the old client with the new selected contact', () => {
         expect($scope.refresh).toHaveBeenCalledWith(jasmine.arrayContaining([
           ['CaseContact', 'get', {
             case_id: $scope.item.id,
             contact_id: previousContact.contact_id,
-            'api.CaseContact.delete': {}
-          }]
-        ]));
-      });
-
-      it('creates a new client using the selected contact', () => {
-        expect($scope.refresh).toHaveBeenCalledWith(jasmine.arrayContaining([
-          ['CaseContact', 'create', {
-            case_id: $scope.item.id,
-            contact_id: contact.contact_id
+            'api.CaseContact.create': {
+              case_id: $scope.item.id,
+              contact_id: parseInt(contact.contact_id)
+            }
           }]
         ]));
       });
