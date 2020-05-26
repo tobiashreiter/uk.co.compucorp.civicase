@@ -95,7 +95,9 @@ function civicrm_api3_case_getdetails(array $params) {
   }
 
   if (!empty($params['exclude_for_client_id'])) {
-    $sql->where("a.id NOT IN (SELECT case_id FROM civicrm_case_contact WHERE contact_id = {$params['exclude_for_client_id']})");
+    $sql->where('a.id NOT IN (SELECT case_id FROM civicrm_case_contact WHERE contact_id = #contact_id', [
+      '#contact_id' => $params['exclude_for_client_id'],
+    ]);
   }
 
   // Filter deleted contacts from results.
