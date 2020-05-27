@@ -240,6 +240,12 @@
         message: ts('Remove %1 as %2?', { 1: role.display_name, 2: role.role })
       }).on('crmConfirm:yes', function () {
         var apiCalls = [unassignRoleCall(role)];
+
+        // when client
+        if (!role.relationship_type_id) {
+          getApiParamsToSetRelationshipsAsInactiveWhenClientIsRemoved(role, apiCalls);
+        }
+
         apiCalls.push(['Activity', 'create', {
           case_id: item.id,
           target_contact_id: role.contact_id,
@@ -247,6 +253,7 @@
           activity_type_id: role.relationship_type_id ? 'Remove Case Role' : 'Remove Client From Case',
           subject: ts('%1 removed as %2', { 1: role.display_name, 2: role.role })
         }]);
+
         $scope.refresh(apiCalls);
       });
     };
@@ -282,9 +289,7 @@
       };
 
       return _.map(item.client, function (client) {
-        params.contact_id_a = client.contact_id;
-
-        return ['Relationship', 'create', params];
+        return ['Relationship', 'create', _.extend({ contact_id_a: client.contact_id }, params)];
       });
     }
 
@@ -350,6 +355,53 @@
     }
 
     /**
+     * @param {object} role role object
+     * @param {object[]} apiCalls list of api calls
+     */
+    function getApiParamsToSetRelationshipsAsInactiveWhenClientIsRemoved (role, apiCalls) {
+      apiCalls.push(['Relationship', 'get', {
+        case_id: item.id,
+        is_active: 1,
+        contact_id_a: role.contact_id,
+        'api.Relationship.create': { is_active: 0, end_date: 'now' }
+      }]);
+    }
+
+    /**
+     * @param {object} contactPromptResult contact prompt result object
+     * @param {object[]} apiCalls list of api calls
+     */
+    function getApiParamsToReassignExistingRelationshipsToNewClient (contactPromptResult, apiCalls) {
+      apiCalls.push(['Relationship', 'get', {
+        case_id: item.id,
+        is_active: true,
+        contact_id_a: contactPromptResult.role.contact_id,
+        'api.Relationship.update': { contact_id_a: contactPromptResult.contact.id }
+      }]);
+    }
+
+    /**
+     * @param {object} contactPromptResult contact prompt result object
+     * @param {object[]} apiCalls list of api calls
+     */
+    function getApiParamsToDuplicateExistingRelationshipsToNewClient (contactPromptResult, apiCalls) {
+      apiCalls.push(['Relationship', 'get', {
+        case_id: item.id,
+        contact_id_a: item.client[0].contact_id,
+        is_active: 1,
+        'api.Relationship.create': {
+          id: false,
+          contact_id_a: contactPromptResult.contact.id,
+          start_date: 'now',
+          contact_id_b: '$value.contact_id_b',
+          relationship_type_id: '$value.relationship_type_id',
+          description: '$value.description',
+          case_id: '$value.case_id'
+        }
+      }]);
+    }
+
+    /**
      * Returns the API calls necessary to replace the case client and record the event as an activity.
      *
      * @param {ContactPromptResult} contactPromptResult the contact returned by the confirm dialog
@@ -358,7 +410,6 @@
     function getReplaceClientApiCalls (contactPromptResult) {
       var activitySubject = getActivitySubjectForReplaceCaseContact(contactPromptResult);
       var apiCalls = [
-        unassignRoleCall(contactPromptResult.role),
         getCreateRoleActivityApiCall({
           activity_type_id: 'Reassigned Case',
           subject: activitySubject,
@@ -367,11 +418,17 @@
             contactPromptResult.role.contact_id
           ]
         }),
-        ['CaseContact', 'create', {
+        ['CaseContact', 'get', {
           case_id: item.id,
-          contact_id: contactPromptResult.contact.id
+          contact_id: contactPromptResult.role.contact_id,
+          'api.CaseContact.create': {
+            case_id: item.id,
+            contact_id: parseInt(contactPromptResult.contact.id)
+          }
         }]
       ];
+
+      getApiParamsToReassignExistingRelationshipsToNewClient(contactPromptResult, apiCalls);
 
       return apiCalls;
     }
@@ -423,6 +480,8 @@
           contact_id: contactPromptResult.contact.id
         }]
       ];
+
+      getApiParamsToDuplicateExistingRelationshipsToNewClient(contactPromptResult, apiCalls);
 
       $scope.refresh(apiCalls);
     }

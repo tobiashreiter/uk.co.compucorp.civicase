@@ -24,6 +24,12 @@ function _civicrm_api3_case_getdetails_spec(array &$spec) {
     'type' => CRM_Utils_Type::T_INT,
   ];
 
+  $spec['exclude_for_client_id'] = [
+    'title' => 'Exclude For Client ID',
+    'description' => "Contact id of the Client to be excluded",
+    'type' => CRM_Utils_Type::T_INT,
+  ];
+
   $spec['contact_involved'] = [
     'title' => 'Contact Involved',
     'description' => 'Id of the contact involved as case roles',
@@ -86,6 +92,12 @@ function civicrm_api3_case_getdetails(array $params) {
   // Add clause to search by non manager role and non client.
   if (!empty($params['contact_involved'])) {
     CRM_Civicase_APIHelpers_CasesByContactInvolved::filter($sql, $params['contact_involved']);
+  }
+
+  if (!empty($params['exclude_for_client_id'])) {
+    $sql->where('a.id NOT IN (SELECT case_id FROM civicrm_case_contact WHERE contact_id = #contact_id)', [
+      '#contact_id' => $params['exclude_for_client_id'],
+    ]);
   }
 
   // Filter deleted contacts from results.

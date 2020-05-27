@@ -25,7 +25,9 @@ describe('Case Details People Tab', () => {
     crmConfirmYesEvent.preventDefault = jasmine.createSpy('preventDefault');
     CRM.confirm = function (options) {
       crmConfirmDialog.append(options.message);
-      options.open();
+      if (options.open) {
+        options.open();
+      }
 
       return crmConfirmDialog;
     };
@@ -257,6 +259,25 @@ describe('Case Details People Tab', () => {
         ]));
       });
 
+      it('duplicates all existing relations for current case for the new client', () => {
+        expect($scope.refresh).toHaveBeenCalledWith(jasmine.arrayContaining([
+          ['Relationship', 'get', {
+            case_id: $scope.item.id,
+            contact_id_a: $scope.item.client[0].contact_id,
+            is_active: 1,
+            'api.Relationship.create': {
+              id: false,
+              contact_id_a: contact.contact_id,
+              start_date: 'now',
+              contact_id_b: '$value.contact_id_b',
+              relationship_type_id: '$value.relationship_type_id',
+              description: '$value.description',
+              case_id: '$value.case_id'
+            }
+          }]
+        ]));
+      });
+
       it('closes the contact selection dialog', () => {
         expect(crmConfirmYesEvent.preventDefault).not.toHaveBeenCalled();
       });
@@ -276,21 +297,26 @@ describe('Case Details People Tab', () => {
         $rootScope.$digest();
       });
 
-      it('removes the existing client from the case', () => {
+      it('replaces the old client with the new selected contact', () => {
         expect($scope.refresh).toHaveBeenCalledWith(jasmine.arrayContaining([
           ['CaseContact', 'get', {
             case_id: $scope.item.id,
             contact_id: previousContact.contact_id,
-            'api.CaseContact.delete': {}
+            'api.CaseContact.create': {
+              case_id: $scope.item.id,
+              contact_id: parseInt(contact.contact_id)
+            }
           }]
         ]));
       });
 
-      it('creates a new client using the selected contact', () => {
+      it('updates all existing relationships for the old contact with the new client', () => {
         expect($scope.refresh).toHaveBeenCalledWith(jasmine.arrayContaining([
-          ['CaseContact', 'create', {
+          ['Relationship', 'get', {
             case_id: $scope.item.id,
-            contact_id: contact.contact_id
+            is_active: true,
+            contact_id_a: previousContact.contact_id,
+            'api.Relationship.update': { contact_id_a: contact.contact_id }
           }]
         ]));
       });
@@ -312,6 +338,50 @@ describe('Case Details People Tab', () => {
 
       it('closes the contact selection dialog', () => {
         expect(crmConfirmYesEvent.preventDefault).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when unassigning a client', () => {
+      let sampleContact;
+
+      beforeEach(() => {
+        sampleContact = CRM._.sample(ContactsData.values);
+
+        $scope.unassignRole({
+          contact_id: sampleContact.contact_id,
+          display_name: sampleContact.display_name,
+          role: 'Client'
+        });
+
+        crmConfirmDialog.trigger(crmConfirmYesEvent);
+        $rootScope.$digest();
+      });
+
+      it('deletes the client', () => {
+        expect($scope.refresh).toHaveBeenCalledWith(jasmine.arrayContaining([['CaseContact', 'get', {
+          case_id: $scope.item.id,
+          contact_id: sampleContact.contact_id,
+          'api.CaseContact.delete': {}
+        }]]));
+      });
+
+      it('makes the exisiting relationships with the client as inactive', () => {
+        expect($scope.refresh).toHaveBeenCalledWith(jasmine.arrayContaining([['Relationship', 'get', {
+          case_id: $scope.item.id,
+          is_active: 1,
+          contact_id_a: sampleContact.contact_id,
+          'api.Relationship.create': { is_active: 0, end_date: 'now' }
+        }]]));
+      });
+
+      it('creates an activity about removing the client', () => {
+        expect($scope.refresh).toHaveBeenCalledWith(jasmine.arrayContaining([['Activity', 'create', {
+          case_id: $scope.item.id,
+          target_contact_id: sampleContact.contact_id,
+          status_id: 'Completed',
+          activity_type_id: 'Remove Client From Case',
+          subject: sampleContact.display_name + ' removed as Client'
+        }]]));
       });
     });
   });

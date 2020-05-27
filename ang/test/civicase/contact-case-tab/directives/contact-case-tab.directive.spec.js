@@ -77,7 +77,7 @@
         expect(crmApi.calls.allArgs()).toContain(jasmine.arrayContaining([
           jasmine.objectContaining({
             cases: ['Case', 'getcaselist', jasmine.objectContaining({
-              contact_id: { '!=': $scope.contactId },
+              exclude_for_client_id: $scope.contactId,
               contact_involved: $scope.contactId,
               'case_type_id.case_type_category': 2,
               is_deleted: 0
