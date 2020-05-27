@@ -433,6 +433,8 @@ function setupData () {
     data_type: 'String',
     html_type: 'Text'
   });
+
+  return Promise.resolve();
 }
 
 /**
