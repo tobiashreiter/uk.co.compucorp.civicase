@@ -87,6 +87,25 @@
       "onReadyScript": "manage-cases/files-tab-upload-file.js"
     },
     {
+      "label": "Manage Cases - Case Overview - Linked Cases Panel",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=Summary",
+      "waitForLoadingComplete": ".civicase__summary-tab",
+      "selectors": [
+        ".civicase__summary-tab__other-cases"
+      ],
+      "apiCalls": [
+        "setting.create civicaseAllowLinkedCasesTab=0"
+      ]
+    },
+    {
+      "label": "Manage Cases - Case Overview - Linked Cases Tab",
+      "url": "{url}/civicrm/case/a/#/case/list?caseId={caseId}&tab=LinkedCases",
+      "waitForLoadingComplete": "#crm-main-content-wrapper",
+      "apiCalls": [
+        "setting.create civicaseAllowLinkedCasesTab=1"
+      ]
+    }
+    {
       "label": "Manage Cases - List - Bulk action with checkbox selected and dropdown opened",
       "url": "{url}/civicrm/case/a/#/case/list",
       "onReadyScript": "manage-cases/bulk-actions.js"
