@@ -567,7 +567,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
     $operator = '=';
 
     if (!empty($spec['htmlType']) && in_array($spec['htmlType'], ['CheckBox', 'MultiSelect'])){
-      $value = "'%" . CRM_Core_DAO::VALUE_SEPARATOR . $optionValue . CRM_Core_DAO::VALUE_SEPARATOR . "%'";
+      $value = "%" . CRM_Core_DAO::VALUE_SEPARATOR . $optionValue . CRM_Core_DAO::VALUE_SEPARATOR . "%";
       $operator = 'LIKE';
     }
 
