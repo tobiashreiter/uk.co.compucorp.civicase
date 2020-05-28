@@ -1,9 +1,14 @@
 <?php
 
+/**
+ * Class CRM_Civicase_Form_Report_BaseExtendedReport.
+ */
 abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Report_ExtendedReport {
 
   /**
-   * @var
+   * Aggregate date fields.
+   *
+   * @var array
    */
   protected $aggregateDateFields;
 
@@ -12,7 +17,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    *
    * @var string
    */
-  protected $_filterPane;
+  protected $filterPane;
 
   /**
    * Date SQL grouping options.
@@ -21,7 +26,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    */
   protected $dateSqlGrouping = [
     'month' => "%Y-%m",
-    'year' => "%Y"
+    'year' => "%Y",
   ];
 
   /**
@@ -32,7 +37,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   protected $dataFunctions = [
     'COUNT' => 'COUNT',
     'COUNT UNIQUE' => 'COUNT UNIQUE',
-    'SUM' => 'SUM'
+    'SUM' => 'SUM',
   ];
 
   /**
@@ -41,7 +46,6 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * @var array
    */
   protected $dateGroupingOptions = ['month' => 'Month', 'year' => 'Year'];
-
 
   /**
    * CRM_Civicase_Form_Report_BaseExtendedReport constructor.
@@ -63,7 +67,9 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   }
 
   /**
-   * Function that allows additional filter fields provided by extending class to be added to the
+   * Function that allows additional filter fields.
+   *
+   * These fields are provided by extending class to be added to the
    * where clause for the report.
    */
   abstract protected function addAdditionalFiltersToWhereClause();
@@ -72,16 +78,18 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * Returns additional filter fields provided by extending report class.
    *
    * @return array
+   *   Additional filters.
    */
   abstract protected function getAdditionalFilterFields();
 
-
   /**
-   * This function provides the template name to use for the filter fields. Overriding
-   * this will allow extending class to provide its own default filter template in case
-   * it needs to provide additional filter fields.
-   * q
+   * This function provides the template name to use for the filter fields.
+   *
+   * Overriding this will allow extending class to provide its own default
+   * filter template in case it needs to provide additional filter fields.
+   *
    * @return string
+   *   Template name.
    */
   protected function getFiltersTemplateName() {
     return 'Filters';
@@ -96,7 +104,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * @return array
    *   Custom fields meta data.
    */
-  private function getCustomFieldsMeta($customFields) {
+  private function getCustomFieldsMeta(array $customFields) {
     $optionGroupIds = [];
     $sortedLists = [];
     foreach ($customFields as $customField) {
@@ -120,10 +128,10 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   }
 
   /**
-   *  Add the fields to select the aggregate fields to the report.
+   * Add the fields to select the aggregate fields to the report.
    *
-   * This function is overridden because of a bug that does not allow the custom fields to
-   * appear in the Filters tab in the base class.
+   * This function is overridden because of a bug that does not allow
+   * the custom fields to appear in the Filters tab in the base class.
    */
   protected function addAggregateSelectorsToForm() {
     if (!$this->isPivot) {
@@ -261,22 +269,32 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   }
 
   /**
-   * This function is overridden because of a bug that selects wrong data for custom fields
-   * extending an entity when there are multiple instances of the Entity in columns.
-   * For example, there are more than one Contact Entity columns, for Case client contact, and also
-   * Case roles contacts, the custom field value for the other Contact custom fields is selected
-   * wrongly because the db alias of the first Contact entity is used in all case. This is fixed
-   * by using the table key to form the alias rather than the original table name which is same for
-   * all Contact entity data.
+   * Overrides function in base class.
+   *
+   * This function is overridden because of a bug that selects wrong data
+   * for custom fields extending an entity when there are multiple instances
+   * of the Entity in columns.
+   *
+   * For example, there are more than one Contact Entity columns, for
+   * Case client contact, and also Case roles contacts, the custom field
+   * value for the other Contact custom fields is selected wrongly because
+   * the db alias of the first Contact entity is used in all case.
+   * This is fixed by using the table key to form the alias rather than the
+   * original table name which is same for all Contact entity data.
    *
    * @param string $field
+   *   Custom field.
    * @param string $prefixLabel
+   *   Prefix label.
    * @param string $prefix
+   *   Prefix.
    * @param array $customFieldMeta
+   *   Custom field meta data.
    *
    * @return mixed
+   *   Custom field meta data.
    */
-  protected function getCustomFieldMetadata($field, $prefixLabel, $prefix = '', $customFieldMeta) {
+  protected function getCustomFieldMetadata($field, $prefixLabel, $prefix = '', array $customFieldMeta = []) {
     $field = array_merge($field, [
       'name' => $field['column_name'],
       'title' => $prefixLabel . $field['label'],
@@ -320,18 +338,26 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   }
 
   /**
-   * This function is overridden because there is an issue with the naming for the
-   * custom group panel labels on the filter section in the UI. The group title for the
-   * custom groups can not be passed in when defining the fields hence the need to override
-   * this function.
+   * Overrides function in base class.
    *
-   * @param string $field
+   * This function is overridden because there is an issue with the
+   * naming for the custom group panel labels on the filter section
+   * in the UI.
+   * The group title for the custom groups can not be passed in when defining
+   * the fields hence the need to override this function.
+   *
+   * @param array $field
+   *   Field data.
    * @param string $currentTable
+   *   Current table.
    * @param string $prefix
+   *   Prefix.
    * @param string $prefixLabel
+   *   Prefix label.
    * @param string $tableKey
+   *   Table key.
    */
-  protected function addCustomTableToColumns($field, $currentTable, $prefix, $prefixLabel, $tableKey) {
+  protected function addCustomTableToColumns(array $field, $currentTable, $prefix, $prefixLabel, $tableKey) {
     $entity = $field['extends'];
     if (in_array($entity, ['Individual', 'Organization', 'Household'])) {
       $entity = 'Contact';
@@ -356,10 +382,13 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   }
 
   /**
+   * Overriddes function in base class.
+   *
    * This function is overridden because of custom JOINs for the
    * Case activity pivot report that are not available in base class.
    *
    * @return array
+   *   Available Joins.
    */
   public function getAvailableJoins() {
     $availableJoins = parent::getAvailableJoins();
@@ -373,19 +402,22 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
       ],
       'case_tags' => [
         'callback' => 'joinEntityTagFromCase',
-      ]
+      ],
     ];
 
     return array_merge($availableJoins, $joins);
   }
 
   /**
-   * Function  overridden to allow NULL values in the results rows to show as 'NULL'
-   * rather than as an empty string.
+   * Overrides function in base class.
+   *
+   * Function  overridden to allow NULL values in the results rows to
+   * show as 'NULL' rather than as an empty string.
    *
    * @param array $rows
+   *   Result rows.
    */
-  public function alterRollupRows(&$rows) {
+  public function alterRollupRows(array &$rows) {
     array_walk($rows, [$this, 'replaceNullRowValues']);
     if (count($rows) === 1) {
       // If the report only returns one row there is no rollup.
@@ -407,7 +439,8 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
 
     $altered = [];
     $fieldsToUnSetForSubtotalLines = [];
-    //on this first round we'll get a list of keys that are not groupbys or stats
+    // On this first round we'll get a list of keys that are not
+    // groupbys or stats.
     foreach (array_keys($firstRow) as $rowField) {
       if (!array_key_exists($rowField, $groupBys) && substr($rowField, -4) != '_sum' && !substr($rowField, -7) != '_count') {
         $fieldsToUnSetForSubtotalLines[] = $rowField;
@@ -432,23 +465,30 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   }
 
   /**
-   * Overridden to allow the alterRollupRows function use this function since the
-   * original function in base class is private and the `alterRollupRows` won't work
-   * without this.
+   * Overrides function in base class.
+   *
+   * Overridden to allow the alterRollupRows function use this function
+   * since the original function in base class is private and the
+   * `alterRollupRows` won't work without this.
    *
    * @param array $row
-   * @param array $nextRow
+   *   Result row.
+   * @param mixed $nextRow
+   *   Result next row.
    * @param array $groupBys
+   *   Group bys.
    * @param mixed $rowNumber
+   *   Row number.
    * @param mixed $statLayers
-   *
+   *   Statistic layers.
    * @param mixed $groupByLabels
+   *   Group by labels.
    * @param mixed $altered
+   *   Altered.
    * @param mixed $fieldsToUnSetForSubtotalLines
-   *
-   * @return mixed
+   *   Fields to unset.
    */
-  private function alterRowForRollup(&$row, $nextRow, &$groupBys, $rowNumber, $statLayers, $groupByLabels, $altered, $fieldsToUnSetForSubtotalLines) {
+  private function alterRowForRollup(array &$row, $nextRow, array &$groupBys, $rowNumber, $statLayers, $groupByLabels, $altered, $fieldsToUnSetForSubtotalLines) {
     foreach ($groupBys as $field => $groupBy) {
       if (($rowNumber + 1) < $statLayers) {
         continue;
@@ -469,7 +509,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   }
 
   /**
-   * Replace NULL row values with the 'NULL' keyword
+   * Replace NULL row values with the 'NULL' keyword.
    */
   private function replaceNullRowValues(&$row, $key) {
     foreach ($row as $field => $value) {
@@ -480,15 +520,16 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   }
 
   /**
-   * Add Select for pivot chart style report
+   * Add Select for pivot chart style report.
    *
    * @param string $fieldName
+   *   Field name.
    * @param string $dbAlias
+   *   Db alias.
    * @param array $spec
-   *
-   * @throws Exception
+   *   Specifications.
    */
-  function addColumnAggregateSelect($fieldName, $dbAlias, $spec) {
+  public function addColumnAggregateSelect($fieldName, $dbAlias, array $spec) {
     if (empty($fieldName)) {
       $this->addAggregateTotal($fieldName);
       return;
@@ -509,7 +550,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
     ];
 
     if ($this->getFilterFieldValue($spec)) {
-      // for now we will literally just handle IN
+      // For now we will literally just handle IN.
       if ($filterSpec['field']['op'] == 'in') {
         $options = array_intersect_key($options, array_flip($filterSpec['field']['value']));
         $this->_aggregatesIncludeNULL = FALSE;
@@ -532,11 +573,11 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
       ], '_', "{$fieldName}_" . strtolower(str_replace(' ', '', $optionValue)));
 
       $selectSql = $this->getColumnSqlAggregateExpression($spec, $dbAlias, $fieldAlias, $optionValue, $optionLabel);
-      $aggregateExpression = rtrim($selectSql , "AS {$fieldAlias} ");
+      $aggregateExpression = rtrim($selectSql, "AS {$fieldAlias} ");
       $aggregateExpression = ltrim($aggregateExpression, " , ");
 
-      $aggregates[] =  $aggregateExpression;
-      $this->_select .= $selectSql ;
+      $aggregates[] = $aggregateExpression;
+      $this->_select .= $selectSql;
       $this->_columnHeaders[$fieldAlias] = [
         'title' => !empty($optionLabel) ? $optionLabel : 'NULL',
         'type' => CRM_Utils_Type::T_INT,
@@ -550,23 +591,32 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   }
 
   /**
-   * Returns the SQL aggregate expression for a selected column field. The overral expression will depend on
-   * the data aggregate function used, the field to aggregate on (if applicable).
+   * Returns the SQL aggregate expression for a selected column field.
+   *
+   * The overral expression will depend on the data aggregate function used,
+   * the field to aggregate on (if applicable).
    *
    * @param array $spec
+   *   Specification.
    * @param string $dbAlias
+   *   Db alias.
    * @param string $fieldAlias
+   *   Field alias.
    * @param mixed $optionValue
+   *   Option value.
+   * @param string $optionLabel
+   *   Option label.
    *
    * @return string
+   *   SQL expression.
    */
-  private function getColumnSqlAggregateExpression($spec, $dbAlias, $fieldAlias, $optionValue, $optionLabel) {
+  private function getColumnSqlAggregateExpression(array $spec, $dbAlias, $fieldAlias, $optionValue, $optionLabel) {
     $dataFunction = $this->_params['data_function'];
     $field = $dbAlias;
     $value = $optionValue;
     $operator = '=';
 
-    if (!empty($spec['htmlType']) && in_array($spec['htmlType'], ['CheckBox', 'MultiSelect'])){
+    if (!empty($spec['htmlType']) && in_array($spec['htmlType'], ['CheckBox', 'MultiSelect'])) {
       $value = "%" . CRM_Core_DAO::VALUE_SEPARATOR . $optionValue . CRM_Core_DAO::VALUE_SEPARATOR . "%";
       $operator = 'LIKE';
     }
@@ -595,14 +645,19 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   }
 
   /**
-   * Returns the SQL expression for COUNT aggregate
+   * Returns the SQL expression for COUNT aggregate.
    *
    * @param string $field
+   *   Field.
    * @param mixed $value
+   *   Value.
    * @param string $operator
+   *   SQL operator.
    * @param string $fieldAlias
+   *   Field alias.
    *
    * @return string
+   *   SQL statement.
    */
   protected function getSqlAggregateForCount($field, $value, $operator, $fieldAlias) {
     $value = (!empty($value) || $value == 0) ? "'{$value}'" : '';
@@ -610,14 +665,19 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   }
 
   /**
-   * Returns the SQL expression for COUNT UNIQUE aggregate
+   * Returns the SQL expression for COUNT UNIQUE aggregate.
    *
    * @param string $field
+   *   Field name.
    * @param mixed $value
+   *   Field value.
    * @param string $operator
+   *   SQL operator.
    * @param string $fieldAlias
+   *   Field alias.
    *
    * @return string
+   *   SQL statement.
    */
   protected function getSqlAggregateForCountUnique($field, $value, $operator, $fieldAlias) {
     $value = (!empty($value) || $value === 0) ? "'{$value}'" : '';
@@ -627,26 +687,32 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   }
 
   /**
-   * Returns the SQL expression for SUM aggregate
+   * Returns the SQL expression for SUM aggregate.
    *
    * @param string $field
+   *   Field name.
    * @param mixed $value
+   *   Field value.
    * @param string $operator
+   *   SQL operator.
    * @param string $fieldAlias
+   *   Field alias.
    *
    * @return string
+   *   SQL aggregate.
    */
   protected function getSqlAggregateForSum($field, $value, $operator, $fieldAlias) {
     $value = (!empty($value) || $value == 0) ? "'{$value}'" : '';
     $dataFunctionFieldAlias = $this->getDbAliasForAggregateOnField();
 
-    return  " , SUM( CASE WHEN {$field} {$operator} $value THEN {$dataFunctionFieldAlias} ELSE 0 END ) AS $fieldAlias ";
+    return " , SUM( CASE WHEN {$field} {$operator} $value THEN {$dataFunctionFieldAlias} ELSE 0 END ) AS $fieldAlias ";
   }
 
   /**
    * Returns the db Alias for the field on which to aggregate on.
    *
    * @return string
+   *   DB alias.
    */
   private function getDbAliasForAggregateOnField() {
     $dataFunctionField = $this->_params['data_function_field'];
@@ -656,14 +722,19 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   }
 
   /**
-   *  This function is overridden because we need to extend the functionality by providing a
-   * function to fetch options when a date field is selected as a column header field.
+   * Overrides function in base class.
+   *
+   * This function is overridden because we need to extend
+   * the functionality by providing a function to fetch options
+   * when a date field is selected as a column header field.
    *
    * @param array $spec
+   *   Specifications.
    *
    * @return array
+   *   Custom field options.
    */
-  protected function getCustomFieldOptions($spec) {
+  protected function getCustomFieldOptions(array $spec) {
     $options = [];
     if (!empty($spec['options'])) {
       return $spec['options'];
@@ -696,7 +767,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
       }
       $options = civicrm_api('option_value', 'get', [
         'version' => 3,
-        'options' => ['limit' => 50,],
+        'options' => ['limit' => 50],
         'option_group_id' => $spec['option_group_id'],
       ]);
     }
@@ -708,10 +779,12 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * Returns options for a date field when selected as a column header.
    *
    * @param array $spec
+   *   Specifications.
    *
    * @return array
+   *   Date column options.
    */
-  public function getDateColumnOptions($spec) {
+  public function getDateColumnOptions(array $spec) {
     $this->from();
     $this->where();
     $dateGrouping = $this->_params['aggregate_column_date_grouping'];
@@ -731,15 +804,18 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   }
 
   /**
-   * Adds the SQl expression for the total aggregate for the column fields for each row in the
-   * result set.
+   * Adds the SQl expression for the total aggregate.
+   *
+   * Adds for the column fields for each row in the result set.
    *
    * @param string $fieldName
+   *   Field name.
    * @param array $aggregates
+   *   Aggregates.
    */
-  protected function addAggregateTotalField($fieldName, $aggregates) {
+  protected function addAggregateTotalField($fieldName, array $aggregates) {
     $fieldAlias = "{$fieldName}_total";
-    $sumOfAggregates =  implode(' + ', $aggregates);
+    $sumOfAggregates = implode(' + ', $aggregates);
     $this->_select .= ', ' . "{$sumOfAggregates} as {$fieldAlias}";
     $this->_columnHeaders[$fieldAlias] = [
       'title' => ts('Total'),
@@ -750,24 +826,41 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   }
 
   /**
-   * This function is overridden to allow date fields to be part of fields to be selected in the
-   * column header fields which is not possible in the original function in base class.
+   * Overrides function in base class.
+   *
+   * This function is overridden to allow date fields to be part
+   * of fields to be selected in the column header fields which is not
+   * possible in the original function in base class.
    *
    * @param array $specs
+   *   Specifications.
    * @param string $tableName
+   *   Table name.
    * @param string|null $daoName
+   *   DAO name.
    * @param string|null $tableAlias
+   *   Table alias.
    * @param array $defaults
+   *   Defaults.
    * @param array $options
+   *   Options.
    *
    * @return array
+   *   Column lists.
    */
-  protected function buildColumns($specs, $tableName, $daoName = NULL, $tableAlias = NULL, $defaults = [], $options = []) {
+  protected function buildColumns(array $specs, $tableName, $daoName = NULL, $tableAlias = NULL, array $defaults = [], array $options = []) {
 
     if (!$tableAlias) {
       $tableAlias = str_replace('civicrm_', '', $tableName);
     }
-    $types = ['filters', 'group_bys', 'order_bys', 'join_filters', 'aggregate_columns', 'aggregate_rows'];
+    $types = [
+      'filters',
+      'group_bys',
+      'order_bys',
+      'join_filters',
+      'aggregate_columns',
+      'aggregate_rows',
+    ];
     $columns = [$tableName => array_fill_keys($types, [])];
     if (!empty($daoName)) {
       $columns[$tableName]['bao'] = $daoName;
@@ -798,7 +891,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
           // Options can change TRUE to FALSE for a field, but not vice versa.
           $spec['is_' . $type] = $options[$type];
         }
-        if (!isset($spec['is_' . $type]))    {
+        if (!isset($spec['is_' . $type])) {
           $spec['is_' . $type] = FALSE;
         }
       }
@@ -864,27 +957,32 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   }
 
   /**
-   * Function is overrridden to allow row total to be re-calculated since the
-   * SQL WITH ROLLUP Group function does not yield reliable results for the row totals based
-   * on new Data aggregate functions introduced.
+   * Overrides function in base class.
+   *
+   * Function is overrridden to allow row total to be re-calculated
+   * since the SQL WITH ROLLUP Group function does not yield reliable
+   * results for the row totals based on new Data aggregate functions
+   * introduced.
    *
    * @param array $rows
+   *   Result rows.
    * @param bool $pager
+   *   Pager.
    */
-  public function formatDisplay(&$rows, $pager = TRUE) {
-    // set pager based on if any limit was applied in the query.
+  public function formatDisplay(array &$rows, $pager = TRUE) {
+    // Set pager based on if any limit was applied in the query.
     if ($pager) {
       $this->setPager();
     }
 
-    // unset columns not to be displayed.
+    // Unset columns not to be displayed.
     foreach ($this->_columnHeaders as $key => $value) {
       if (!empty($value['no_display'])) {
         unset($this->_columnHeaders[$key]);
       }
     }
 
-    // unset columns not to be displayed.
+    // Unset columns not to be displayed.
     if (!empty($rows)) {
       foreach ($this->_noDisplay as $noDisplayField) {
         foreach ($rows as $rowNum => $row) {
@@ -893,35 +991,40 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
       }
     }
 
-    // build array of section totals
+    // Build array of section totals.
     $this->sectionTotals();
 
-    //adjust row total
+    // Adjust row total.
     $this->adjustRowTotal($rows);
 
-    // process grand-total row
+    // Process grand-total row.
     $this->grandTotal($rows);
 
-    // use this method for formatting rows for display purpose.
+    // Use this method for formatting rows for display purpose.
     $this->alterDisplay($rows);
     CRM_Utils_Hook::alterReportVar('rows', $rows, $this);
 
-    // use this method for formatting custom rows for display purpose.
+    // Use this method for formatting custom rows for display purpose.
     $this->alterCustomDataDisplay($rows);
   }
 
   /**
-   * Since we have introduced other data aggregate functions like COUNT UNIQUE, SUM,
-   * the SQL WITH ROLLUP Group function does not yield reliable results for the row totals.
-   * This function sums the individual column totals and adjusts the total accordingly.
+   * Adjusts row total.
+   *
+   * Since we have introduced other data aggregate functions like COUNT UNIQUE,
+   * SUM,the SQL WITH ROLLUP Group function does not yield reliable results
+   * for the row totals.
+   * This function sums the individual column totals and adjusts the total
+   * accordingly.
    *
    * @param array $rows
+   *   Result rows.
    */
-  private function adjustRowTotal(&$rows) {
+  private function adjustRowTotal(array &$rows) {
     if (empty($rows)) {
       return;
     }
-    //the rollup row is the last row.
+    // The rollup row is the last row.
     end($rows);
     $rollupRowKey = key($rows);
     reset($rows);
@@ -929,7 +1032,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
     unset($rows[$rollupRowKey]);
     $adjustedRollup = [];
     foreach ($rollupRow as $key => $value) {
-      $adjustedRollup[$key] =  array_sum(array_column($rows, $key));
+      $adjustedRollup[$key] = array_sum(array_column($rows, $key));
     }
 
     $rows[$rollupRowKey] = $adjustedRollup;
@@ -939,8 +1042,10 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * Overriden so we can add some more default values.
    *
    * @param bool $freeze
+   *   TO freeze or not.
    *
    * @return array
+   *   Default values.
    */
   public function setDefaultValues($freeze = TRUE) {
     parent::setDefaultValues();
@@ -952,17 +1057,21 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
       $this->_defaults['charts'] = FALSE;
     }
 
-
     return $this->_defaults;
   }
 
   /**
+   * Overrides function in base class.
+   *
    * Overridden so that when custom fields are selected to be aggregated on,
-   * the SQL joins for the custom field table will be included in the overral query.
+   * the SQL joins for the custom field table will be included in
+   * the overral query.
    *
    * @param string $table
+   *   Table name.
    *
    * @return bool
+   *   If custom table or not.
    */
   protected function isCustomTableSelected($table) {
     $selected = array_merge(
@@ -987,6 +1096,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * Returns the metadata for the selected data function field.
    *
    * @return array
+   *   Selected data field.
    */
   protected function getSelectedDataFunctionField() {
     $metadata = $this->getMetadataByType('metadata');
@@ -998,10 +1108,13 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   }
 
   /**
-   * Overridden so that the template file name is gotten from the extended report class within
-   * Civicase.
+   * Overrides function in base class.
+   *
+   * Overridden so that the template file name is gotten from the
+   * extended report class within Civicase.
    *
    * @return string
+   *   Template file name.
    */
   public function getTemplateFileName() {
     $defaultTpl = parent::getTemplateFileName();
@@ -1016,7 +1129,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
       $defaultTpl = 'CRM/Report/Form.tpl';
     }
 
-    if ($this->_filterPane) {
+    if ($this->filterPane) {
       $defaultTpl = 'CRM/Report/Form/Tabs/FilterPane.tpl';
     }
 
@@ -1027,13 +1140,19 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * Overridden to allow date row date fields to be grouped on month/year.
    *
    * @param string $tableAlias
+   *   Table alias.
    * @param array $selectedField
+   *   Selected field.
    * @param string $fieldAlias
+   *   Field alias.
    * @param string $title
+   *   Title.
    */
-  protected function addRowHeader($tableAlias, $selectedField, $fieldAlias, $title = '') {
+  protected function addRowHeader($tableAlias, array $selectedField, $fieldAlias, $title = '') {
     if (empty($tableAlias)) {
-      $this->_select = 'SELECT 1 '; // add a fake value just to save lots of code to calculate whether a comma is required later
+      // Add a fake value just to save lots of code to calculate whether
+      // a comma is required later.
+      $this->_select = 'SELECT 1 ';
       $this->_rollup = NULL;
       $this->_noGroupBY = TRUE;
       return;
@@ -1051,7 +1170,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
       $this->_groupByArray[] = $fieldAlias;
     }
     $this->_groupBy = "GROUP BY $fieldAlias " . $this->_rollup;
-    $this->_columnHeaders[$fieldAlias] = ['title' => $title,];
+    $this->_columnHeaders[$fieldAlias] = ['title' => $title];
     $key = array_search($fieldAlias, $this->_noDisplay);
     if (is_int($key)) {
       unset($this->_noDisplay[$key]);
@@ -1059,8 +1178,10 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   }
 
   /**
-   * This function is overridden so that we can a report class can define additional extra filters
-   * and modify the where clause.
+   * Overrides function in base class.
+   *
+   * This function is overridden so that we can a report class
+   * can define additional extra filters and modify the where clause.
    */
   public function storeWhereHavingClauseArray() {
     $filters = $this->getSelectedFilters();
@@ -1085,12 +1206,15 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   }
 
   /**
-   * This function is overridden so as to allow the extending report class to provide the
-   * filters template to use for the filters.
+   * Overrides function in base class.
    *
-   * Also overridden to allow fields extending contacts, i.e custom fields and contact fields
-   * to be sorted into a separate array so that when more than one contact entity is joined to
-   * the report, the filter fields can be organized and displayed per contact entity.
+   * This function is overridden so as to allow the extending report
+   * class to provide the filters template to use for the filters.
+   *
+   * Also overridden to allow fields extending contacts, i.e custom
+   * fields and contact fields to be sorted into a separate array so that
+   * when more than one contact entity is joined to the report, the filter
+   * fields can be organized and displayed per contact entity.
    */
   public function addFilters() {
     foreach (['filters', 'join_filters'] as $filterString) {
@@ -1105,16 +1229,21 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
         $paneName = preg_replace("/[^A-Z0-9_-]/i", '', $groupTitle);
         $filterExtendsContact = FALSE;
         if ($filterString === 'filters') {
-          if ($this->_filterPane && $this->_filterPane != $paneName) {
+          if ($this->filterPane && $this->filterPane != $paneName) {
             continue;
           }
-          $filterExtendsContact = (!empty($field['extends']) && in_array($field['extends'], ['Individual', 'Household', 'Organization'])) ||
+          $filterExtendsContact = (!empty($field['extends']) &&
+              in_array($field['extends'], [
+                'Individual',
+                'Household',
+                'Organization',
+              ])) ||
             $field['table_name'] == 'civicrm_contact';
           $filterGroups[$table] = [
             'group_title' => $groupTitle,
             'pane_name' => $paneName,
             'use_accordian_for_field_selection' => TRUE,
-            'group_extends_contact' => $filterExtendsContact
+            'group_extends_contact' => $filterExtendsContact,
           ];
           if (!empty($_POST["hidden_{$paneName}"]) ||
             CRM_Utils_Array::value("hidden_{$paneName}", $this->_formValues)
@@ -1123,12 +1252,11 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
           }
           $filterPaneGroups[$paneName] = [
             'table_name' => $table,
-            'group_extends_contact' => $filterExtendsContact
+            'group_extends_contact' => $filterExtendsContact,
           ];
           if ($filterExtendsContact) {
             $filterExtendsContactGroup[$field['table_key']] = [
-              'group_field_label' => !empty($this->_columns[$field['table_key']]['prefix_label']) ?
-                $this->_columns[$field['table_key']]['prefix_label'] : '',
+              'group_field_label' => !empty($this->_columns[$field['table_key']]['prefix_label']) ? $this->_columns[$field['table_key']]['prefix_label'] : '',
             ];
           }
         }
@@ -1137,7 +1265,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
         if ($filterExtendsContact) {
           $filtersGroupedByTableKeys[$table][$field['table_key']][$prefix . $fieldName] = $field;
         }
-        if ($filterGroups[$table]['open'] == 'true' || $this->_filterPane && $this->_filterPane == $paneName)  {
+        if ($filterGroups[$table]['open'] == 'true' || $this->filterPane && $this->filterPane == $paneName) {
           $this->addFilterFieldsToReport($field, $fieldName, $table, $count, $prefix);
         }
       }
@@ -1159,13 +1287,17 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   }
 
   /**
+   * Overrides function in base class.
+   *
    * This function is overridden so that the additional filters provided by
    * report class extending this class will be part of the statistics filter
    * array and the label and values will be visible on the report UI.
    *
-   * Also data function and data aggregate field are added to the groups statistics array.
+   * Also data function and data aggregate field are added to the
+   * groups statistics array.
    *
    * @return array
+   *   Statistics data.
    */
   public function statistics(&$rows) {
     $stats = parent::statistics($rows);
@@ -1174,20 +1306,20 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
       if (!empty($this->_params[$key])) {
         $stats['filters'][] = [
           'title' => $value['label'],
-          'value' => 'is equal to ' . $this->_params[$key]
+          'value' => 'is equal to ' . $this->_params[$key],
         ];
       }
     }
 
     $stats['groups'][] = [
       'title' => 'Aggregate Function',
-      'value' => $this->_params['data_function']
+      'value' => $this->_params['data_function'],
     ];
 
     if ($this->_params['data_function'] !== 'COUNT') {
       $stats['groups'][] = [
         'title' => 'Aggregate Field On',
-        'value' => $this->getTitleForAggregateOnField()
+        'value' => $this->getTitleForAggregateOnField(),
       ];
     }
 
@@ -1195,31 +1327,44 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   }
 
   /**
-   * A function that allows the selected field to be altered and the ID replaced
-   * with the field option label for display in the results set.
+   * Allows the selected field to be altered.
+   *
+   * The ID is replaced with the field option label for display
+   * in the results set.
    *
    * @param mixed $value
+   *   Value data.
    * @param array $row
+   *   Result row.
    * @param string $selectedField
-   * @param array $fieldAlterMap
+   *   Selected field.
+   * @param mixed $fieldAlterMap
+   *   Field alter map.
    * @param array $fieldSpecs
+   *   Field specifications.
    *
    * @return mixed
+   *   Altered row field display.
    */
-  protected function alterGenericSelect($value, $row, $selectedField, $fieldAlterMap, $fieldSpecs) {
+  protected function alterGenericSelect($value, array $row, $selectedField, $fieldAlterMap, array $fieldSpecs) {
     return $this->alterRowFieldDisplay($value, $fieldSpecs);
   }
 
   /**
-   * A function that allows the a field to be altered and the field ID replaced
-   * with the field label for display in the results set.
+   * Allows the a field to be altered.
+   *
+   * The field ID replaced with the field label for display
+   * in the results set.
    *
    * @param mixed $value
+   *   Value data.
    * @param array $fieldSpecs
+   *   Field specs.
    *
    * @return mixed
+   *   Altered row display.
    */
-  private function alterRowFieldDisplay($value, $fieldSpecs) {
+  private function alterRowFieldDisplay($value, array $fieldSpecs) {
     if (empty($fieldSpecs['options'])) {
       return 'NULL';
     }
@@ -1230,9 +1375,10 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   }
 
   /**
-   * Returns the field title for the aggregate on field
+   * Returns the field title for the aggregate on field.
    *
    * @return string
+   *   Aggregate field title.
    */
   private function getTitleForAggregateOnField() {
     $dataFunctionField = $this->_params['data_function_field'];
@@ -1249,17 +1395,17 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * is suppressed rather than loading the whole form regions.
    */
   public function buildQuickForm() {
-    $this->_filterPane = CRM_Utils_Array::value('filterPane', $_GET);
-    if (!$this->_filterPane) {
+    $this->filterPane = CRM_Utils_Array::value('filterPane', $_GET);
+    if (!$this->filterPane) {
       parent::buildQuickForm();
     }
     else {
-      $this->_filterPane = CRM_Utils_Array::value('filterPane', $_GET);
-      if ($this->_filterPane) {
+      $this->filterPane = CRM_Utils_Array::value('filterPane', $_GET);
+      if ($this->filterPane) {
         $this->addFilters();
       }
-      $this->add('hidden', "hidden_{$this->_filterPane}", 1);
-      $this->assign('filterPane', $this->_filterPane);
+      $this->add('hidden', "hidden_{$this->filterPane}", 1);
+      $this->assign('filterPane', $this->filterPane);
       $this->assign('suppressForm', TRUE);
     }
   }
@@ -1273,9 +1419,9 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * expanded.
    *
    * @param array $params
-   *   Params
+   *   Params.
    */
-  public function setParams($params) {
+  public function setParams(array $params) {
     if (empty($params)) {
       $this->_params = $params;
       return;
@@ -1297,17 +1443,18 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
             'title' => $this->getMetadataByType('fields')[$fieldName]['title'],
           ];
         }
-        // We use array_merge to re-index from 0
+        // We use array_merge to re-index from 0.
         $params['extended_fields'] = array_merge($this->_formValues['extended_fields']);
       }
     }
     $params['order_bys'] = $params['extended_order_bys'] = $this->getConfiguredOrderBys($params);
-    // Renumber from 0
+    // Renumber from 0.
     $params['extended_order_bys'] = array_merge($params['extended_order_bys']);
 
-    $paneValues = array_filter($this->_submitValues, function($key) {
+    $paneValues = array_filter($this->_submitValues, function ($key) {
       return strpos($key, 'hidden_') === 0;
     }, ARRAY_FILTER_USE_KEY);
     $this->_params = array_merge($params, $paneValues);
   }
+
 }
