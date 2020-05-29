@@ -381,6 +381,8 @@ function runBackstopJS (command) {
 
 /**
  * Setups the data needed for some of the backstop tests.
+ *
+ * @returns {Promise} An empty promise that is resolved when the task is done.
  */
 function setupData () {
   var activeCaseId = getActiveCaseId();
