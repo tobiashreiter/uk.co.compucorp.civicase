@@ -3,7 +3,7 @@
 
   module.factory('formatCase', function (formatActivity, ContactsCache, CaseStatus, CaseType) {
     var caseTypes = CaseType.getAll();
-    var caseStatuses = CaseStatus.getAll();
+    var caseStatuses = CaseStatus.getAll(true);
 
     return function (item) {
       item.client = [];
