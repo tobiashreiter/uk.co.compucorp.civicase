@@ -54,7 +54,7 @@ module.exports = function (config) {
       return obj;
     })({}),
     ngHtml2JsPreprocessor: {
-      stripPrefix: 'ext/uk.co.compucorp.civicase/ang',
+      stripPrefix: '.*uk.co.compucorp.civicase/ang',
       prependPrefix: '~',
       moduleName: 'civicase.templates'
     },
@@ -64,15 +64,13 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['ChromeHeadless'],
+    browsers: ['ChromeHeadlessBrowser'],
     customLaunchers: {
-      ChromeHeadless: {
-        base: 'Chrome',
+      ChromeHeadlessBrowser: {
+        base: 'ChromeHeadless',
         flags: [
-          '--headless',
-          '--disable-gpu',
-          // Without a remote debugging port, Google Chrome exits immediately.
-          '--remote-debugging-port=9222'
+          '--no-sandbox',
+          '--disable-dev-shm-usage'
         ]
       }
     }
