@@ -31,6 +31,23 @@
       });
     });
 
+    describe('when a case type category is requested by lower case name, but it is stored in capital case', () => {
+      var expectedResult;
+
+      beforeEach(() => {
+        module('civicase-base');
+        injectDependencies();
+
+        expectedResult = _.find(CRM['civicase-base'].caseTypeCategories, function (caseTypeCategory) {
+          return caseTypeCategory.name === 'Cases';
+        });
+      });
+
+      it('returns the case type category which matches the name even if the category was stored in capital case', () => {
+        expect(CaseTypeCategory.findByName('cases')).toEqual(expectedResult);
+      });
+    });
+
     describe('when case type categories with access to activities are requested', () => {
       var expectedResults;
 

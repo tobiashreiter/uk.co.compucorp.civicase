@@ -30,7 +30,7 @@
       return {
         getAll: getAll,
         findByName: findByName,
-        getCategoriesWithAccessToActivity: getCategoriesWithAccessToActivity,
+        getCategoriesWithAccessToActivity: getCategoriesWithAccessToActivity
       };
     }
 
@@ -66,7 +66,7 @@
      */
     function findByName (caseTypeCategoryName) {
       return _.find(allCaseTypeCategories, function (category) {
-        return category.name === caseTypeCategoryName;
+        return category.name.toLowerCase() === caseTypeCategoryName.toLowerCase();
       });
     }
   }
