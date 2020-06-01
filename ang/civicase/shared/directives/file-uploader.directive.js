@@ -14,7 +14,6 @@
   });
 
   /**
-   *
    * @param {object} $scope controllers scope object
    * @param {object} crmApi service to access civicrm api
    * @param {object} crmBlocker crm blocker service
@@ -28,6 +27,11 @@
     $scope.ts = CRM.ts('civicase');
     $scope.selectedTags = [];
     $scope.allTags = [];
+    $scope.uploader = createUploader();
+
+    $scope.deleteActivity = deleteActivity;
+    $scope.isUploadActive = isUploadActive;
+    $scope.saveActivity = saveActivity;
 
     (function init () {
       initActivity();
@@ -39,47 +43,67 @@
       $scope.$watchCollection('ctx.id', initActivity);
     }());
 
-    $scope.isUploadActive = function () {
-      return ($scope.uploader.queue.length > 0);
-    };
+    /**
+     * Returns Uploader Object
+     *
+     * @returns {object} File Uploader object
+     */
+    function createUploader () {
+      return new FileUploader({
+        url: CRM.url('civicrm/ajax/attachment'),
+        onAfterAddingFile: function onAfterAddingFile (item) {
+          item.crmData = { description: '' };
+        },
+        onSuccessItem: function onSuccessItem (item, response, status, headers) {
+          var ok = status === 200 && _.isObject(response) && response.file && (response.file.is_error === 0);
 
-    $scope.uploader = new FileUploader({
-      url: CRM.url('civicrm/ajax/attachment'),
-      onAfterAddingFile: function onAfterAddingFile (item) {
-        item.crmData = { description: '' };
-      },
-      onSuccessItem: function onSuccessItem (item, response, status, headers) {
-        var ok = status === 200 && _.isObject(response) && response.file && (response.file.is_error === 0);
+          if (!ok) {
+            this.onErrorItem(item, response, status, headers);
+          }
+        },
+        onErrorItem: function onErrorItem (item, response, status, headers) {
+          var msg = (response && response.file && response.file.error_message) ? response.file.error_message : $scope.ts('Unknown error');
 
-        if (!ok) {
-          this.onErrorItem(item, response, status, headers);
+          CRM.alert(item.file.name + ' - ' + msg, $scope.ts('Attachment failed'), 'error');
+        },
+        // Like uploadAll(), but it returns a promise.
+        uploadAllWithPromise: function () {
+          var dfr = $q.defer();
+          var self = this;
+
+          self.onCompleteAll = function () {
+            dfr.resolve();
+            self.onCompleteAll = null;
+          };
+          self.uploadAll();
+          return dfr.promise;
         }
-      },
-      onErrorItem: function onErrorItem (item, response, status, headers) {
-        var msg = (response && response.file && response.file.error_message) ? response.file.error_message : $scope.ts('Unknown error');
+      });
+    }
 
-        CRM.alert(item.file.name + ' - ' + msg, $scope.ts('Attachment failed'), 'error');
-      },
-      // Like uploadAll(), but it returns a promise.
-      uploadAllWithPromise: function () {
-        var dfr = $q.defer();
-        var self = this;
-
-        self.onCompleteAll = function () {
-          dfr.resolve();
-          self.onCompleteAll = null;
-        };
-        self.uploadAll();
-        return dfr.promise;
-      }
-    });
-
-    $scope.deleteActivity = function deleteActivity () {
+    /**
+     * Deletes Activity
+     */
+    function deleteActivity () {
       $scope.uploader.clearQueue();
       initActivity();
-    };
+    }
 
-    $scope.saveActivity = function saveActivity () {
+    /**
+     * Checks if uploading is in progress
+     *
+     * @returns {boolean} if uploading is in progress
+     */
+    function isUploadActive () {
+      return ($scope.uploader.queue.length > 0);
+    }
+
+    /**
+     * Saves actvitiy
+     *
+     * @returns {Promise} promise
+     */
+    function saveActivity () {
       var promise = crmApi('Activity', 'create', $scope.activity)
         .then(function (r) {
           var target = { entity_table: 'civicrm_activity', entity_id: r.id };
@@ -103,7 +127,7 @@
         start: $scope.ts('Uploading...'),
         success: $scope.ts('Uploaded')
       }, promise));
-    };
+    }
 
     /**
      * Initialise Activity
