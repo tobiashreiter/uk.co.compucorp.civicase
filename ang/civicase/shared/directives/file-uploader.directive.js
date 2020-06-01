@@ -5,7 +5,7 @@
     return {
       restrict: 'A',
       templateUrl: '~/civicase/shared/directives/file-uploader.directive.html',
-      controller: caseFilesUploaderController,
+      controller: civicaseFilesUploaderController,
       scope: {
         ctx: '=civicaseFileUploader',
         onUpload: '@'
@@ -13,7 +13,17 @@
     };
   });
 
-  function caseFilesUploaderController ($scope, crmApi, crmBlocker, crmStatus, FileUploader, $q, $timeout) {
+  /**
+   *
+   * @param {object} $scope controllers scope object
+   * @param {object} crmApi service to access civicrm api
+   * @param {object} crmBlocker crm blocker service
+   * @param {object} crmStatus crm status service
+   * @param {Function} FileUploader file uploader service
+   * @param {object} $q angular queue service
+   * @param {object} $timeout timeout service
+   */
+  function civicaseFilesUploaderController ($scope, crmApi, crmBlocker, crmStatus, FileUploader, $q, $timeout) {
     $scope.block = crmBlocker();
     $scope.ts = CRM.ts('civicase');
 
@@ -29,7 +39,7 @@
     $scope.uploader = new FileUploader({
       url: CRM.url('civicrm/ajax/attachment'),
       onAfterAddingFile: function onAfterAddingFile (item) {
-        item.crmData = {description: ''};
+        item.crmData = { description: '' };
       },
       onSuccessItem: function onSuccessItem (item, response, status, headers) {
         var ok = status === 200 && _.isObject(response) && response.file && (response.file.is_error === 0);
@@ -43,7 +53,7 @@
 
         CRM.alert(item.file.name + ' - ' + msg, $scope.ts('Attachment failed'), 'error');
       },
-      /** Like uploadAll(), but it returns a promise. */
+      // Like uploadAll(), but it returns a promise.
       uploadAllWithPromise: function () {
         var dfr = $q.defer();
         var self = this;
@@ -65,13 +75,15 @@
     $scope.saveActivity = function saveActivity () {
       var promise = crmApi('Activity', 'create', $scope.activity)
         .then(function (r) {
-          var target = {entity_table: 'civicrm_activity', entity_id: r.id};
+          var target = { entity_table: 'civicrm_activity', entity_id: r.id };
           _.each($scope.uploader.getNotUploadedItems(), function (item) {
-            item.formData = [_.extend({crm_attachment_token: CRM.crmAttachment.token}, target, item.crmData)];
+            item.formData = [
+              _.extend({ crm_attachment_token: CRM.crmAttachment.token }, target, item.crmData)
+            ];
           });
           return $scope.uploader.uploadAllWithPromise();
         }).then(function () {
-          return pwait(1000); // Let the user absorb what happened.
+          return delayPromiseBy(1000); // Let the user absorb what happened.
         }).then(function () {
           $scope.uploader.clearQueue();
           initActivity();
@@ -80,9 +92,15 @@
           }
         });
 
-      return $scope.block(crmStatus({start: $scope.ts('Uploading...'), success: $scope.ts('Uploaded')}, promise));
+      return $scope.block(crmStatus({
+        start: $scope.ts('Uploading...'),
+        success: $scope.ts('Uploaded')
+      }, promise));
     };
 
+    /**
+     * Initialise Activity
+     */
     function initActivity () {
       $scope.activity = {
         case_id: $scope.ctx.id,
@@ -91,8 +109,13 @@
       };
     }
 
-    // TODO: Test interrupted transfer.
-    function pwait (delay) {
+    /**
+     * TODO: Test interrupted transfer.
+     *
+     * @param {number} delay timedelay in millisecond
+     * @returns {object} Promise
+     */
+    function delayPromiseBy (delay) {
       var dfr = $q.defer();
       $timeout(function () { dfr.resolve(); }, delay);
       return dfr.promise;
