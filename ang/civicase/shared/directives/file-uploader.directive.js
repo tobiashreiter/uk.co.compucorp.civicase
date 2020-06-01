@@ -26,9 +26,16 @@
   function civicaseFilesUploaderController ($scope, crmApi, crmBlocker, crmStatus, FileUploader, $q, $timeout) {
     $scope.block = crmBlocker();
     $scope.ts = CRM.ts('civicase');
+    $scope.selectedTags = [];
+    $scope.allTags = [];
 
     (function init () {
       initActivity();
+      getTags()
+        .then(function (tags) {
+          $scope.allTags = tags;
+        });
+
       $scope.$watchCollection('ctx.id', initActivity);
     }());
 
@@ -119,6 +126,21 @@
       var dfr = $q.defer();
       $timeout(function () { dfr.resolve(); }, delay);
       return dfr.promise;
+    }
+
+    /**
+     * Get the tags for Activities from API end point
+     *
+     * @returns {Promise} api call promise
+     */
+    function getTags () {
+      return crmApi('Tag', 'get', {
+        sequential: 1,
+        used_for: { LIKE: '%civicrm_activity%' },
+        options: { limit: 0 }
+      }).then(function (data) {
+        return data.values;
+      });
     }
   }
 })(angular, CRM.$, CRM._);

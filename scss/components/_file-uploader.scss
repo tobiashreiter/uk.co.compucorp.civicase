@@ -75,6 +75,16 @@
   .btn-default {
     border-color: inherit;
   }
+
+  .civicase__tags-selector {
+    .col-sm-5,
+    .col-xs-7,
+    .select2-container {
+      margin-bottom: 5px;
+      padding: 0;
+      width: 100% !important;
+    }
+  }
 }
 
 .civicase__file-upload-container--upload-active {
