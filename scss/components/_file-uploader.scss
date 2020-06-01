@@ -77,6 +77,14 @@
   }
 
   .civicase__tags-selector {
+    margin-bottom: 25px;
+    margin-top: -10px;
+
+    .col-sm-5,
+    .col-xs-7 {
+      float: none;
+    }
+
     .col-sm-5,
     .col-xs-7,
     .select2-container {
