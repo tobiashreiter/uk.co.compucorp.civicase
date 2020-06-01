@@ -162,6 +162,7 @@ function civicase_civicrm_alterMenu(&$items) {
   $items['civicrm/activity/email/add']['ids_arguments']['json'][] = 'civicase_reload';
   $items['civicrm/activity/pdf/add']['ids_arguments']['json'][] = 'civicase_reload';
   $items['civicrm/case/cd/edit']['ids_arguments']['json'][] = 'civicase_reload';
+  $items['civicrm/export/standalone']['ids_arguments']['json'][] = 'civicase_reload';
 }
 
 /**

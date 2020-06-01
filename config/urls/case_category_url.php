@@ -32,6 +32,14 @@ return [
     'url_type' => CaseCategoryFromUrl::CASE_TYPE_URL,
     'param' => 'caseID',
   ],
+  'civicrm/case/report/print' => [
+    'url_type' => CaseCategoryFromUrl::CASE_TYPE_URL,
+    'param' => 'caseID',
+  ],
+  'civicrm/export/standalone' => [
+    'url_type' => CaseCategoryFromUrl::CASE_TYPE_URL,
+    'param' => 'id',
+  ],
   'civicrm/activity' => [
     'url_type' => CaseCategoryFromUrl::ACTIVITY_TYPE_URL,
     'param' => 'id',
