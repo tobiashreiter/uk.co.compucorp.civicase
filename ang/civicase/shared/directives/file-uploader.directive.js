@@ -25,9 +25,8 @@
   function civicaseFilesUploaderController ($scope, crmApi, crmBlocker, crmStatus, FileUploader, $q, $timeout) {
     $scope.block = crmBlocker();
     $scope.ts = CRM.ts('civicase');
-    $scope.selectedTags = [];
-    $scope.allTags = [];
     $scope.uploader = createUploader();
+    $scope.tags = { all: [], selected: [] };
 
     $scope.deleteActivity = deleteActivity;
     $scope.isUploadActive = isUploadActive;
@@ -37,7 +36,7 @@
       initActivity();
       getTags()
         .then(function (tags) {
-          $scope.allTags = tags;
+          $scope.tags.all = tags;
         });
 
       $scope.$watchCollection('ctx.id', initActivity);
@@ -105,8 +104,11 @@
      */
     function saveActivity () {
       var promise = crmApi('Activity', 'create', $scope.activity)
-        .then(function (r) {
-          var target = { entity_table: 'civicrm_activity', entity_id: r.id };
+        .then(function (activity) {
+          saveTags(activity.id);
+
+          var target = { entity_table: 'civicrm_activity', entity_id: activity.id };
+
           _.each($scope.uploader.getNotUploadedItems(), function (item) {
             item.formData = [
               _.extend({ crm_attachment_token: CRM.crmAttachment.token }, target, item.crmData)
@@ -130,9 +132,22 @@
     }
 
     /**
+     * @param {number} activityID activity id
+     * @returns {Promise} promise
+     */
+    function saveTags (activityID) {
+      return crmApi('EntityTag', 'create', {
+        entity_table: 'civicrm_activity',
+        tag_id: $scope.tags.selected,
+        entity_id: activityID
+      });
+    }
+
+    /**
      * Initialise Activity
      */
     function initActivity () {
+      $scope.tags.selected = [];
       $scope.activity = {
         case_id: $scope.ctx.id,
         activity_type_id: 'File Upload',
