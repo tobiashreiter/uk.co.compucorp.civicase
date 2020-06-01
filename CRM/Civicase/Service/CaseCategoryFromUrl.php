@@ -105,13 +105,26 @@ class CRM_Civicase_Service_CaseCategoryFromUrl {
       return $caseCategory;
     }
 
+    return $this->getParamValueFromEntryUrl($caseTypeCategoryParam);
+  }
+
+  /**
+   * Returns the parameter value from the Entry URL.
+   *
+   * @param string $param
+   *   Parameter Name.
+   *
+   * @return mixed|null
+   *   Parameter value.
+   */
+  private function getParamValueFromEntryUrl($param) {
     $entryURL = CRM_Utils_Request::retrieve('entryURL', 'String');
 
     $urlParams = parse_url(htmlspecialchars_decode($entryURL), PHP_URL_QUERY);
     parse_str($urlParams, $urlParams);
 
-    if (!empty($urlParams[$caseTypeCategoryParam])) {
-      return $urlParams[$caseTypeCategoryParam];
+    if (!empty($urlParams[$param])) {
+      return $urlParams[$param];
     }
 
     return NULL;
@@ -157,6 +170,10 @@ class CRM_Civicase_Service_CaseCategoryFromUrl {
    */
   private function getCaseCategoryNameFromCaseIdInUrl($caseIdParamName) {
     $caseId = CRM_Utils_Request::retrieve($caseIdParamName, 'Integer');
+
+    if (!$caseId) {
+      $caseId = $this->getParamValueFromEntryUrl($caseIdParamName);
+    }
 
     return CaseCategoryHelper::getCategoryName($caseId);
   }
