@@ -40,6 +40,15 @@
       } else {
         delete $scope.fileFilter.params['activity_type_id.grouping'];
       }
+
+      if ($scope.customFilters.tag_id) {
+        if ($scope.customFilters.tag_id.length > 0) {
+          var tagid = $scope.customFilters.tag_id;
+          $scope.fileFilter.params.tag_id = tagid.length === 1 ? tagid[0] : { IN: tagid };
+        } else {
+          delete $scope.fileFilter.params.tag_id;
+        }
+      }
     }
   }
 })(angular, CRM.$, CRM._);

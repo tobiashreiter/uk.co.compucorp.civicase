@@ -146,17 +146,21 @@ function _civicrm_api3_case_getfiles_select(array $params) {
   $select = CRM_Utils_SQL_Select::from('civicrm_case_activity caseact')
     ->strict()
     ->join('ef', 'INNER JOIN civicrm_entity_file ef ON (ef.entity_table = "civicrm_activity" AND ef.entity_id = caseact.activity_id) ')
+    ->join('et', 'LEFT JOIN civicrm_entity_tag et ON (et.entity_table = "civicrm_activity" AND et.entity_id = caseact.activity_id) ')
     ->join('f', 'INNER JOIN civicrm_file f ON ef.file_id = f.id')
     ->select('caseact.case_id as case_id, caseact.activity_id as activity_id, f.id as id, act.activity_date_time')
     ->distinct();
 
   if (isset($params['case_id'])) {
-    // Isn't there some helper which will let us do more
-    // advanced SQL with $params['case_id']?
     $select->where('caseact.case_id = #caseIDs', [
       'caseIDs' => $params['case_id'],
-    ]
-    );
+    ]);
+  }
+
+  if (isset($params['tag_id'])) {
+    $select->where('et.tag_id = #tag_id', [
+      'tag_id' => $params['tag_id'],
+    ]);
   }
 
   $select->join('act', 'INNER JOIN civicrm_activity act ON ((caseact.activity_id = act.id OR caseact.activity_id = act.original_id) AND act.is_current_revision=1)');
