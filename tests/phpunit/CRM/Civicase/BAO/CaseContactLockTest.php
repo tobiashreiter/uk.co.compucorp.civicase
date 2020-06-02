@@ -29,10 +29,17 @@ class CRM_Civicase_BAO_CaseContactLockTest extends PHPUnit_Framework_TestCase
   public function testCreateLocks() {
     $cases = $contacts = array();
     $caseType = CaseTypeFabricator::fabricate();
+    $creator = ContactFabricator::fabricate();
 
     for ($i = 0; $i < 3; $i++) {
-      $case = CaseFabricator::fabricate(array('case_type_id' => $caseType['id']));
       $contact = ContactFabricator::fabricate();
+      $case = CaseFabricator::fabricate(
+        array(
+          'case_type_id' => $caseType['id'],
+          'contact_id' => $contact['id'],
+          'creator_id' => $creator['id'],
+        )
+      );
 
       $cases[] = $case['id'];
       $contacts[] = $contact['id'];
