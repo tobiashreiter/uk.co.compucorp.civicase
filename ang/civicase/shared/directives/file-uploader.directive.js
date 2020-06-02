@@ -5,7 +5,7 @@
     return {
       restrict: 'A',
       templateUrl: '~/civicase/shared/directives/file-uploader.directive.html',
-      controller: civicaseFilesUploaderController,
+      controller: 'civicaseFilesUploaderController',
       scope: {
         ctx: '=civicaseFileUploader',
         onUpload: '@'
@@ -13,6 +13,7 @@
     };
   });
 
+  module.controller('civicaseFilesUploaderController', civicaseFilesUploaderController);
   /**
    * @param {object} $scope controllers scope object
    * @param {object} crmApi service to access civicrm api

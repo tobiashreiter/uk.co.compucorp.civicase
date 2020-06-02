@@ -7,7 +7,9 @@
     var crmBlocker = jasmine.createSpy('crmBlocker');
 
     crmBlocker.and.callFake(function (callable) {
-      return callable();
+      if (callable) {
+        return callable();
+      }
     });
 
     return crmBlocker;
