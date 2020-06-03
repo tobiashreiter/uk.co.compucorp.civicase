@@ -25,6 +25,10 @@
   margin-left: 16px;
   width: 180px;
 
+  .select2-container {
+    height: auto !important;
+  }
+
   &:not(:nth-child(2)) {
     .form-control:not(.select2-container) {
       width: 180px;

@@ -6,14 +6,10 @@
  */
 
 /**
- * Case.Getfiles API specification (optional).
- *
- * This is used for documentation and validation.
+ * Case.Getfiles API specification.
  *
  * @param array $spec
  *   description of fields supported by this API call.
- *
- * @see http://wiki.civicrm.org/confluence/display/CRMDOC/API+Architecture+Standards
  */
 function _civicrm_api3_case_getfiles_spec(array &$spec) {
   $spec['case_id'] = [
@@ -53,10 +49,7 @@ function _civicrm_api3_case_getfiles_spec(array &$spec) {
  *   Parameters.
  *
  * @return array
- *   API result descriptor
- * @see civicrm_api3_create_success
- * @see civicrm_api3_create_error
- * @throws API_Exception
+ *   API result.
  */
 function civicrm_api3_case_getfiles(array $params) {
   $params = _civicrm_api3_case_getfiles_format_params($params);
@@ -105,15 +98,16 @@ function _civicrm_api3_case_getfiles_format_params(array $params) {
 }
 
 /**
- * Case.getfiles find.
+ * Find files function.
  *
  * @param array $params
  *   Parameters.
  * @param array $options
- *   Options.
+ *   Parameter options.
  *
  * @return array
- *   Ex: array(0 => array('case_id' => 1, 'activity_id' => 4, 'file_id' => 7))
+ *   Ex: array(0 => array('case_id' => 123,
+ *   'activity_id' => 456, 'file_id' => 789)).
  */
 function _civicrm_api3_case_getfiles_find(array $params, array $options) {
   $select = _civicrm_api3_case_getfiles_select($params);
@@ -134,13 +128,13 @@ function _civicrm_api3_case_getfiles_find(array $params, array $options) {
 }
 
 /**
- * Case.getfiles select.
+ * Return select query for getting files.
  *
  * @param array $params
  *   Parameters.
  *
  * @return CRM_Utils_SQL_Select
- *   Select Query.
+ *   Query select class.
  */
 function _civicrm_api3_case_getfiles_select(array $params) {
   $select = CRM_Utils_SQL_Select::from('civicrm_case_activity caseact')
@@ -158,16 +152,22 @@ function _civicrm_api3_case_getfiles_select(array $params) {
   }
 
   if (isset($params['tag_id'])) {
-    $select->where('et.tag_id = #tag_id', [
-      'tag_id' => $params['tag_id'],
-    ]);
+    $tagIdParam = $params['tag_id'];
+
+    if (!is_array($tagIdParam)) {
+      $tagIdParam = ['=' => $tagIdParam];
+    }
+
+    $tagIDSQL = CRM_Core_DAO::createSQLFilter('et.tag_id', $tagIdParam);
+
+    $select->where($tagIDSQL);
   }
 
   $select->join('act', 'INNER JOIN civicrm_activity act ON ((caseact.activity_id = act.id OR caseact.activity_id = act.original_id) AND act.is_current_revision=1)');
   if (isset($params['text'])) {
     // The end of the uri contains a hash which we want to ignore.
     // So we match from the start of the file uri as a cheap fix. CRM-20096.
-    $select->where('act.subject LIKE @q OR act.details LIKE @q OR f.description LIKE @q OR f.uri LIKE @s', [
+    $select->where('act.subject LIKE @q OR act.details LIKE @q OR f.description LIKE @q OR f.uri LIKE @q OR f.uri LIKE @s', [
       'q' => '%' . $params['text'] . '%',
       's' => $params['text'] . '%',
     ]
@@ -263,16 +263,16 @@ function _civicrm_api3_case_getfiles_xref(array $matches) {
     // WISH: $result[$xrefName] = civicrm_api3(
     // $apiEntity, 'get', array('id'=>array('IN', $ids)))['values'];.
     foreach ($ids as $id) {
-      $params = array(
+      $params = [
         'id' => $id,
-      );
+      ];
 
       if ($xrefName == 'activity') {
-        $params['return'] = array('subject', 'details', 'activity_type_id', 'status_id', 'source_contact_name',
+        $params['return'] = ['subject', 'details', 'activity_type_id', 'status_id', 'source_contact_name',
           'target_contact_name', 'assignee_contact_name', 'activity_date_time', 'is_star',
           'original_id', 'tag_id.name', 'tag_id.description', 'tag_id.color', 'file_id',
           'is_overdue', 'case_id',
-        );
+        ];
       }
 
       $result[$xrefName][$id] = civicrm_api3($apiEntity, 'getsingle', $params);
