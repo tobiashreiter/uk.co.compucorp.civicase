@@ -25,6 +25,7 @@
    * @param {object} $rootScope $rootScope
    * @param {object} $scope $scope
    * @param {object} $document $document
+   * @param {boolean} allowLinkedCasesTab allow linked case page setting value
    * @param {object} BulkActions bulk actions service
    * @param {object[]} CaseDetailsTabs list of case tabs
    * @param {object} civicaseCrmApi civicase crm api service
@@ -44,10 +45,10 @@
    * @param {object} CaseDetailsSummaryBlocks case details summary blocks
    */
   function civicaseCaseDetailsController ($location, $sce, $rootScope, $scope,
-    $document, BulkActions, CaseDetailsTabs, civicaseCrmApi, formatActivity, formatCase,
-    getActivityFeedUrl, getCaseQueryParams, $route, $timeout, crmStatus,
-    CasesUtils, PrintMergeCaseAction, ts, ActivityType, CaseStatus, CaseType,
-    CaseDetailsSummaryBlocks) {
+    $document, allowLinkedCasesTab, BulkActions, CaseDetailsTabs, civicaseCrmApi,
+    formatActivity, formatCase, getActivityFeedUrl, getCaseQueryParams, $route,
+    $timeout, crmStatus, CasesUtils, PrintMergeCaseAction, ts, ActivityType,
+    CaseStatus, CaseType, CaseDetailsSummaryBlocks) {
     // The ts() and hs() functions help load strings for this module.
     // TODO: Move the common logic into a common controller (based on the usage of ContactCaseTabCaseDetails)
     $scope.ts = ts;
@@ -57,6 +58,7 @@
     var panelLimit = 5;
 
     $scope.areDetailsLoaded = false;
+    $scope.areRelatedCasesVisibleOnSummaryTab = false;
     $scope.relatedCasesPager = { total: 0, size: 5, num: 0, range: {} };
     $scope.getActivityFeedUrl = getActivityFeedUrl;
     $scope.bulkAllowed = BulkActions.isAllowed();
@@ -200,6 +202,8 @@
         delete ($scope.item.tag_id);
         _.assign($scope.item, formatCaseDetails(data));
         $scope.allowedCaseStatuses = getAllowedCaseStatuses($scope.item.definition);
+        $scope.areRelatedCasesVisibleOnSummaryTab = !allowLinkedCasesTab &&
+          $scope.item.relatedCases.length > 0;
 
         $scope.$broadcast('updateCaseData');
         $scope.$emit('civicase::ActivitiesCalendar::reload');
