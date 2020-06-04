@@ -4,7 +4,25 @@
 <form>
   <fieldset ng-disabled="block.check()">
   <!-- Activity Feed -->
-  <div class="civicase__activity-feed__list"  ng-show="fileLists.result.count">
+  <div
+    class="civicase__activity-feed__list civicase__animated-checkbox-card"
+    ng-class="{
+      'civicase__animated-checkbox-card--expanded': showCheckboxes && bulkAllowed
+    }"
+    ng-show="fileLists.result.count"
+    ng-repeat="activity in activities">
+    <span
+      class="civicase__checkbox civicase__checkbox--bulk-action"
+      role="checkbox"
+      tabindex="0"
+      aria-labelledby="Select/Unselect"
+      ng-click="toggleSelected(activity); $event.stopPropagation();">
+      <i
+        ng-if="findActivityById(selectedActivities, activity.id)"
+        class="civicase__checkbox--checked material-icons">
+        check_box
+      </i>
+    </span>
     <div class="civicase__activity-feed__list-item">
       <div
         case-activity-card="activity"
@@ -12,7 +30,6 @@
         refresh-on-checkbox-toggle="true"
         bulk-allowed="bulkAllowed"
         refresh-callback="refresh"
-        ng-repeat="activity in activities"
         >
       </div>
     </div>
