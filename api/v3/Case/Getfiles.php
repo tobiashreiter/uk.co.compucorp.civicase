@@ -31,6 +31,12 @@ function _civicrm_api3_case_getfiles_spec(array &$spec) {
     ],
   ];
 
+  $spec['tag_id'] = [
+    'title' => 'Tag Id',
+    'description' => 'A single tag Id or array of Tag Ids',
+    'type' => CRM_Utils_Type::T_STRING,
+  ];
+
   $fileFields = CRM_Core_BAO_File::fields();
   $spec['mime_type'] = $fileFields['mime_type'];
   $spec['mime_type_cat'] = [
@@ -152,15 +158,7 @@ function _civicrm_api3_case_getfiles_select(array $params) {
   }
 
   if (isset($params['tag_id'])) {
-    $tagIdParam = $params['tag_id'];
-
-    if (!is_array($tagIdParam)) {
-      $tagIdParam = ['=' => $tagIdParam];
-    }
-
-    $tagIDSQL = CRM_Core_DAO::createSQLFilter('et.tag_id', $tagIdParam);
-
-    $select->where($tagIDSQL);
+    $select->where(_civicase_get_tag_id_sql($params['tag_id']));
   }
 
   $select->join('act', 'INNER JOIN civicrm_activity act ON ((caseact.activity_id = act.id OR caseact.activity_id = act.original_id) AND act.is_current_revision=1)');
@@ -234,6 +232,23 @@ function _civicrm_api3_case_getfiles_select(array $params) {
 
   $select->orderBy(['act.activity_date_time DESC, act.id DESC, f.id DESC']);
   return $select;
+}
+
+/**
+ * Returns the sql query to filter by tags.
+ *
+ * @param mixed $tagIdParam
+ *   Parameters.
+ *
+ * @return null|string|array
+ *   Sql Query.
+ */
+function _civicase_get_tag_id_sql($tagIdParam) {
+  if (!is_array($tagIdParam)) {
+    $tagIdParam = ['=' => $tagIdParam];
+  }
+
+  return CRM_Core_DAO::createSQLFilter('et.tag_id', $tagIdParam);
 }
 
 /**
