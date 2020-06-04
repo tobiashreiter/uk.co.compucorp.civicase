@@ -15,7 +15,7 @@
     <input
       type="search" class="form-control"
       placeholder="{{ ts('Contains text') }}"
-      ng-model="fileFilter.params.text"/>
+      ng-model="fileFilterParams.text"/>
     <span class="input-group-addon">
       <i class="material-icons">search</i>
     </span>
@@ -29,7 +29,7 @@
         placeholder: ts('File Types...'),
         data: fileCategoriesIT
       }"
-      ng-model="fileFilter.params.mime_type_cat"/>
+      ng-model="fileFilterParams.mime_type_cat"/>
   </div>
   <div class="civicase__file-filters input-group">
     <select class="form-control" ng-model="customFilters.grouping" crm-ui-select>

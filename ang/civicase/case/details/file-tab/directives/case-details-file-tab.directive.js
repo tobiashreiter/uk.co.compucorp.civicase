@@ -21,20 +21,28 @@
    * @param {object} $scope controllers scope object
    * @param {object} BulkActions bulk actions service
    * @param {object} civicaseCrmApi service to call civicrm backend
+   * @param {Function} formatActivity format activity service
    */
-  function civicaseCaseDetailsFileTabController ($scope, BulkActions, civicaseCrmApi) {
+  function civicaseCaseDetailsFileTabController ($scope, BulkActions, civicaseCrmApi, formatActivity) {
     $scope.ts = CRM.ts('civicase');
     $scope.bulkAllowed = BulkActions.isAllowed();
     $scope.isSelectAll = false;
+    $scope.isLoading = true;
     $scope.selectedActivities = [];
     $scope.totalCount = 0;
+    $scope.fileFilterParams = {
+      case_id: $scope.item.id,
+      text: '',
+      options: { xref: 1, limit: 0 }
+    };
 
     $scope.findActivityById = findActivityById;
     $scope.toggleSelected = toggleSelected;
     $scope.refresh = refresh;
 
     (function init () {
-      $scope.$watchCollection('fileLists.result', fileListsWatcher);
+      getActivities();
+      $scope.$watchCollection('fileFilterParams', getActivities);
       $scope.$on('civicase::bulk-actions::bulk-selections', bulkSelectionsListener);
     }());
 
@@ -63,31 +71,6 @@
     }
 
     /**
-     * Watcher function for fileLists.result collection
-     *
-     * @param {object} response response
-     */
-    function fileListsWatcher (response) {
-      if (!response) {
-        return;
-      }
-
-      // prettier html
-      $scope.values = response.values;
-      $scope.xref = response.xref;
-      // Pre-sorting: (a) cast to array and (b) ensure stable check of isSameDate()
-      $scope.activities = response.xref ? _.sortBy(response.xref.activity, 'activity_date_time').reverse() : [];
-      $scope.totalCount = $scope.activities.length;
-      $scope.filesByAct = {};
-      _.each(response.values, function (match) {
-        if (!$scope.filesByAct[match.activity_id]) {
-          $scope.filesByAct[match.activity_id] = [];
-        }
-        $scope.filesByAct[match.activity_id].push(response.xref.file[match.id]);
-      });
-    }
-
-    /**
      * Find activity by given ID
      *
      * @param {Array} searchIn - array of activities to search into
@@ -96,6 +79,37 @@
      */
     function findActivityById (searchIn, activityID) {
       return _.find(searchIn, { id: activityID });
+    }
+
+    /**
+     * Get List of Activities
+     */
+    function getActivities () {
+      $scope.isLoading = true;
+
+      civicaseCrmApi('Case', 'getfiles', $scope.fileFilterParams)
+        .then(function (result) {
+          $scope.activities = result.xref
+            ? _.chain(result.xref.activity)
+              .each(formatActivity)
+              .sortBy('activity_date_time')
+              .reverse()
+              .value()
+            : [];
+
+          $scope.totalCount = $scope.activities.length;
+          $scope.filesByAct = {};
+
+          _.each(result.values, function (match) {
+            if (!$scope.filesByAct[match.activity_id]) {
+              $scope.filesByAct[match.activity_id] = [];
+            }
+            $scope.filesByAct[match.activity_id].push(result.xref.file[match.id]);
+          });
+        })
+        .finally(function () {
+          $scope.isLoading = false;
+        });
     }
 
     /**

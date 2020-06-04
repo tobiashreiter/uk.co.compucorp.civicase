@@ -1,9 +1,3 @@
-<div crm-ui-debug="fileLists"></div>
-<div civicase-util="caseutil"></div>
-<div civicase-api3-ctrl="fileLists"
-  civicase-api3="['Case','getfiles', {case_id: item.id, text: '', options: {xref:1, limit:0}}]"
-  on-refresh="caseutil.formatActivities(result.xref.activity)">
-</div>
 <div civicase-file-uploader="item" on-upload="fileLists.refresh()"></div>
 <div class="civicase__file-tab-actions">
   <civicase-bulk-actions-checkboxes
@@ -30,9 +24,9 @@
       </button>
       <ul
         class="dropdown-menu" refresh-callback="refresh"
-        civicase-activity-actions mode="case-activity-bulk-action"
+        civicase-activity-actions mode="case-files-activity-bulk-action"
         selected-activities="selectedActivities" is-select-all="isSelectAll"
-        total-count="totalCount" params="combinedFilterParams">
+        total-count="totalCount" params="fileFilterParams">
       </ul>
     </div>
   </span>
@@ -43,8 +37,12 @@
     is-select-all="isSelectAll">
   </civicase-bulk-actions-message>
 
-  <div civicase-file-filter="fileLists" class="civicase__file-tab-filters"></div>
+  <div
+    civicase-file-filter="fileFilterParams"
+    is-loading="isLoading"
+    activities="activities"
+    class="civicase__file-tab-filters">
+  </div>
 </div>
-<!-- Files Activities List -->
+
 <div civicase-file-list></div>
-<!-- End - Files Activities List -->
