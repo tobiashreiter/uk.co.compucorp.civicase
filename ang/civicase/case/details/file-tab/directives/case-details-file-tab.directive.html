@@ -31,12 +31,6 @@
     </div>
   </span>
 
-  <civicase-bulk-actions-message
-    selected-items="selectedActivities.length" total-count="totalCount"
-    is-select-all-available="true" show-checkboxes="showCheckboxes"
-    is-select-all="isSelectAll">
-  </civicase-bulk-actions-message>
-
   <div
     civicase-file-filter="fileFilterParams"
     is-loading="isLoading"
@@ -44,5 +38,11 @@
     class="civicase__file-tab-filters">
   </div>
 </div>
+
+<civicase-bulk-actions-message
+  selected-items="selectedActivities.length" total-count="totalCount"
+  is-select-all-available="true" show-checkboxes="showCheckboxes"
+  is-select-all="isSelectAll">
+</civicase-bulk-actions-message>
 
 <div civicase-file-list></div>
