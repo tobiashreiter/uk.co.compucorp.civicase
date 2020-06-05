@@ -7,9 +7,10 @@
       templateUrl: '~/civicase/case/details/file-tab/directives/file-filter.directive.html',
       controller: 'civicaseFileFilterController',
       scope: {
+        activities: '=',
         fileFilterParams: '=civicaseFileFilter',
         isLoading: '=',
-        activities: '='
+        refresh: '<'
       }
     };
   });
@@ -20,16 +21,19 @@
    * Controller for civicaseFileFilter directive
    *
    * @param {object} $scope $scope
+   * @param {object} $timeout $timeout
    * @param {object} ActivityCategory ActivityCategory
    * @param {object} FileCategory FileCategory
    */
-  function civicaseFileFilterController ($scope, ActivityCategory, FileCategory) {
+  function civicaseFileFilterController ($scope, $timeout, ActivityCategory, FileCategory) {
     $scope.ts = CRM.ts('civicase');
     $scope.fileCategoriesIT = FileCategory.getAll();
     $scope.activityCategories = ActivityCategory.getAll();
     $scope.customFilters = {
       grouping: ''
     };
+
+    $scope.refreshWithTimeout = refreshWithTimeout;
 
     (function init () {
       $scope.$watchCollection('customFilters', customFiltersWatcher);
@@ -60,6 +64,17 @@
       } else {
         delete $scope.fileFilterParams.tag_id;
       }
+    }
+
+    /**
+     * Call refresh function inside a timeout
+     *
+     * When `ng-change` is mentioned in `crm-entityref` directive, the change
+     * listener gets fired before the ng-model is changed.
+     * This function is created to avoid this problem
+     */
+    function refreshWithTimeout () {
+      $timeout($scope.refresh);
     }
   }
 })(angular, CRM.$, CRM._);

@@ -4,6 +4,7 @@
       placeholder="{{ ts('Tagged') }}"
       ng-list class="form-control"
       ng-model="customFilters.tag_id"
+      ng-change="refreshWithTimeout()"
       crm-entityref="{
         entity: 'Tag',
         select: {multiple: true},
@@ -15,6 +16,7 @@
     <input
       type="search" class="form-control"
       placeholder="{{ ts('Contains text') }}"
+      ng-change="refresh()"
       ng-model="fileFilterParams.text"/>
     <span class="input-group-addon">
       <i class="material-icons">search</i>
@@ -29,6 +31,7 @@
         placeholder: ts('File Types...'),
         data: fileCategoriesIT
       }"
+      ng-change="refresh()"
       ng-model="fileFilterParams.mime_type_cat"/>
   </div>
   <div class="civicase__file-filters input-group">

@@ -39,10 +39,11 @@
     $scope.findActivityById = findActivityById;
     $scope.toggleSelected = toggleSelected;
     $scope.refresh = refresh;
+    $scope.getActivities = getActivities;
 
     (function init () {
       getActivities();
-      $scope.$watchCollection('fileFilterParams', getActivities);
+
       $scope.$on('civicase::bulk-actions::bulk-selections', bulkSelectionsListener);
     }());
 
@@ -98,14 +99,6 @@
             : [];
 
           $scope.totalCount = $scope.activities.length;
-          $scope.filesByAct = {};
-
-          _.each(result.values, function (match) {
-            if (!$scope.filesByAct[match.activity_id]) {
-              $scope.filesByAct[match.activity_id] = [];
-            }
-            $scope.filesByAct[match.activity_id].push(result.xref.file[match.id]);
-          });
         })
         .finally(function () {
           $scope.isLoading = false;
