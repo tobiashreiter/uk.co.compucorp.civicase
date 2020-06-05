@@ -30,12 +30,14 @@
       var downloadAllParams = {};
 
       if ($scope.mode === 'case-activity-feed') {
-        downloadAllParams.activity_id = $scope.selectedActivities[0].id;
+        downloadAllParams.activity_ids = [$scope.selectedActivities[0].id];
       } else if ($scope.mode === 'case-files-activity-bulk-action') {
         if ($scope.isSelectAll) {
           downloadAllParams.searchParams = $scope.params;
         } else {
-          downloadAllParams.activity_ids = $scope.selectedActivities;
+          downloadAllParams.activity_ids = $scope.selectedActivities.map(function (activity) {
+            return activity.id;
+          });
         }
       }
 

@@ -11,12 +11,13 @@ class CRM_Civicase_Page_ActivityFiles {
    * Download all activity files contained in a single zip file.
    */
   public static function downloadAll() {
-    $activity = self::getActivityFromRequest();
+    $activities = self::getActivityFromRequest();
 
-    $zipName = self::getZipName($activity);
+    $zipName = self::getZipName($activities);
     $zipDestination = self::getDestinationPath();
     $zipFullPath = $zipDestination . '/' . $zipName;
-    $files = self::getActivityFilePaths($activity['id']);
+    $files = self::getActivityFilePaths($activities);
+
     $zipFileResource = self::createZipFile($zipFullPath, $files);
 
     unlink($zipFullPath);
@@ -30,32 +31,33 @@ class CRM_Civicase_Page_ActivityFiles {
    * throws a 404 status code.
    */
   private static function getActivityFromRequest() {
-    $activityId = CRM_Utils_Array::value('activity_id', $_GET);
+    $activityIds = CRM_Utils_Array::value('activity_ids', $_GET);
+    $searchParams = CRM_Utils_Array::value('searchParams', $_GET);
 
-    self::validateActivityId($activityId);
+    if (!empty($activityIds)) {
+      $activityResult = civicrm_api3('Activity', 'get', [
+        'id' => ['IN' => $activityIds],
+        'return' => ['activity_type_id.label'],
+      ]);
+    }
+    elseif (!empty($searchParams)) {
+      $activityResult = civicrm_api3('Case', 'getfiles', $searchParams);
 
-    $activityResult = civicrm_api3('Activity', 'get', [
-      'id' => $activityId,
-      'return' => ['activity_type_id.label'],
-    ]);
+      // Case.getfiles api returns activity id in "activity_id" instead of "id".
+      // Hence reassigning to make it similar like Activity.get.
+      foreach ($activityResult['values'] as &$activity) {
+        $activity['id'] = $activity['activity_id'];
+      }
+    }
+    else {
+      return self::throwStatusCode(404);
+    }
 
     if ($activityResult['count'] === 0) {
       return self::throwStatusCode(404);
     }
 
-    return CRM_Utils_Array::first($activityResult['values']);
-  }
-
-  /**
-   * Validates the provided activity id. If not, it returns a 404 status code.
-   *
-   * @param string|null $activityId
-   *   Activity ID.
-   */
-  private static function validateActivityId($activityId) {
-    if (empty($activityId)) {
-      self::throwStatusCode(400);
-    }
+    return $activityResult['values'];
   }
 
   /**
@@ -74,16 +76,24 @@ class CRM_Civicase_Page_ActivityFiles {
    *
    * Ex: Activity Open Case 123.zip.
    *
-   * @param array $activity
+   * @param array $activities
    *   Activity.
    *
    * @return string
    *   Zip File name.
    */
-  private static function getZipName(array $activity) {
-    $name = 'Activity ' . $activity['activity_type_id.label'] . ' ' . $activity['id'];
+  private static function getZipName(array $activities) {
+    $zipName = '';
 
-    return CRM_Utils_String::munge($name, ' ') . '.zip';
+    if (count($activities) === 1) {
+      $activity = CRM_Utils_Array::first($activities);
+      $name = 'Activity ' . $activity['activity_type_id.label'] . ' ' . $activity['id'];
+
+      return CRM_Utils_String::munge($name, ' ') . '.zip';
+    }
+    else {
+      return 'Activities.zip';
+    }
   }
 
   /**
@@ -101,18 +111,21 @@ class CRM_Civicase_Page_ActivityFiles {
   /**
    * Returns a list of file paths that are part of a given activity.
    *
-   * @param int|string $activityId
+   * @param array $activities
    *   Activity ID.
    *
    * @return array
    *   Activity file paths.
    */
-  private static function getActivityFilePaths($activityId) {
+  private static function getActivityFilePaths(array $activities) {
     $filePaths = [];
-    $activityFiles = CRM_Core_BAO_File::getEntityFile('civicrm_activity', $activityId);
 
-    foreach ($activityFiles as $activityFile) {
-      $filePaths[] = $activityFile['fullPath'];
+    foreach ($activities as $activity) {
+      $activityFiles = CRM_Core_BAO_File::getEntityFile('civicrm_activity', $activity['id']);
+
+      foreach ($activityFiles as $activityFile) {
+        $filePaths[] = $activityFile['fullPath'];
+      }
     }
 
     return $filePaths;
