@@ -44,6 +44,32 @@
         $scope.selectedActivities = _.sample(activities, 2);
       });
 
+      describe('when placed inside files tab bulk action', () => {
+        var returnValue;
+
+        beforeEach(() => {
+          $scope.mode = 'case-files-activity-bulk-action';
+          returnValue = MoveCopyActivityAction.isActionEnabled($scope);
+        });
+
+        it('hides the action', () => {
+          expect(returnValue).toBe(false);
+        });
+      });
+
+      describe('when placed anywhere other than files tab bulk action', () => {
+        var returnValue;
+
+        beforeEach(() => {
+          $scope.mode = 'somewhere-else';
+          returnValue = MoveCopyActivityAction.isActionEnabled($scope);
+        });
+
+        it('displays the action', () => {
+          expect(returnValue).toBe(true);
+        });
+      });
+
       describe('when selecting some activities and then copy them to a new case', () => {
         beforeEach(() => {
           MoveCopyActivityAction.doAction($scope, { operation: 'copy' });

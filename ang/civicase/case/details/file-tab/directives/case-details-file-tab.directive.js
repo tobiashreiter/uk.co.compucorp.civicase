@@ -9,11 +9,11 @@
         item: '=civicaseCaseDetailsFileTab',
         refresh: '=?refreshCallback'
       },
-      controller: civicaseCaseDetailsFileTabController
+      controller: 'civicaseCaseDetailsFileTabController'
     };
   });
 
-  module.controller('civicaseCaseDetailsFileTab', civicaseCaseDetailsFileTabController);
+  module.controller('civicaseCaseDetailsFileTabController', civicaseCaseDetailsFileTabController);
 
   /**
    * Controller function for the directive
