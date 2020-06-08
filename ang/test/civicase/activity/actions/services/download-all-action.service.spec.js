@@ -94,6 +94,7 @@
         describe('when select all is turned off', () => {
           beforeEach(() => {
             $scope.mode = 'case-files-activity-bulk-action';
+            $scope.isSelectAll = false;
             $scope.selectedActivities = [{ id: '1' }, { id: '2' }];
             DownloadAllActivityAction.doAction($scope);
           });
