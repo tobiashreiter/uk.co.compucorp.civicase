@@ -15,14 +15,51 @@
     }));
 
     describe('visibility of action', () => {
-      describe('when used inside activity feed and activity is of type File Upload', () => {
+      describe('when used inside activity feed menu and activity is of type File Upload', () => {
         beforeEach(() => {
-          $scope.mode = 'case-activity-feed';
+          $scope.mode = 'case-activity-feed-menu';
           $scope.selectedActivities = [{ type: 'File Upload' }];
+          $scope.isSelectAll = false;
         });
 
         it('enables the action', () => {
           expect(DownloadAllActivityAction.isActionEnabled($scope)).toBe(true);
+        });
+      });
+
+      describe('when used inside activity feed bulk action and all activities are of type File Upload', () => {
+        beforeEach(() => {
+          $scope.mode = 'case-activity-bulk-action';
+          $scope.selectedActivities = [{ type: 'File Upload' }];
+          $scope.isSelectAll = false;
+        });
+
+        it('enables the action', () => {
+          expect(DownloadAllActivityAction.isActionEnabled($scope)).toBe(true);
+        });
+      });
+
+      describe('when used inside activity feed bulk action and select all is true', () => {
+        beforeEach(() => {
+          $scope.mode = 'case-activity-bulk-action';
+          $scope.selectedActivities = [{ type: 'File Upload' }];
+          $scope.isSelectAll = true;
+        });
+
+        it('disables the action', () => {
+          expect(DownloadAllActivityAction.isActionEnabled($scope)).toBe(false);
+        });
+      });
+
+      describe('when used inside activity feed bulk action and one of the selected activiy is not File Upload type', () => {
+        beforeEach(() => {
+          $scope.mode = 'case-activity-bulk-action';
+          $scope.selectedActivities = [{ type: 'Something Else' }];
+          $scope.isSelectAll = false;
+        });
+
+        it('disables the action', () => {
+          expect(DownloadAllActivityAction.isActionEnabled($scope)).toBe(false);
         });
       });
 
@@ -39,7 +76,7 @@
 
       describe('when used inside activity feed and activity is not of type File Upload', () => {
         beforeEach(() => {
-          $scope.mode = 'case-activity-feed';
+          $scope.mode = 'case-activity-feed-menu';
           $scope.selectedActivities = [{ type: 'Not File Upload' }];
         });
 
@@ -77,7 +114,7 @@
 
       describe('when used inside the activity feed', () => {
         beforeEach(() => {
-          $scope.mode = 'case-activity-feed';
+          $scope.mode = 'case-activity-feed-menu';
           $scope.selectedActivities = [{ id: '1' }];
           DownloadAllActivityAction.doAction($scope);
         });

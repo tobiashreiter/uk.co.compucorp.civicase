@@ -1,5 +1,5 @@
 <div civicase-file-uploader="item" on-upload="fileLists.refresh()"></div>
-<div class="civicase__file-tab-actions">
+<div class="civicase__case-tab__actions">
   <civicase-bulk-actions-checkboxes
     everything-count="totalCount"
     displayed-count="totalCount"
@@ -35,7 +35,7 @@
     civicase-file-filter="fileFilterParams"
     is-loading="isLoading"
     activities="activities"
-    refresh="getActivities"
+    refresh="loadActivities"
     class="civicase__file-tab-filters">
   </div>
 </div>

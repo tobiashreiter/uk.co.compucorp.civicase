@@ -16,9 +16,20 @@
      * @returns {boolean} if the action is enabled
      */
     this.isActionEnabled = function ($scope) {
-      return ($scope.mode === 'case-activity-feed' &&
-          $scope.selectedActivities[0].type === 'File Upload') ||
-        ($scope.mode === 'case-files-activity-bulk-action');
+      var isCaseActivityFeedMenu = $scope.mode === 'case-activity-feed-menu';
+      var isCaseActivityBulkAction = $scope.mode === 'case-activity-bulk-action';
+      var isCaseFilesTabBulkAction = $scope.mode === 'case-files-activity-bulk-action';
+      var areAllSelectedActivitiesFileUploadType = _.every($scope.selectedActivities, {
+        type: 'File Upload'
+      });
+
+      var showActionInActivityFeed = (
+        (isCaseActivityFeedMenu || isCaseActivityBulkAction) &&
+        areAllSelectedActivitiesFileUploadType &&
+        !$scope.isSelectAll
+      );
+
+      return showActionInActivityFeed || isCaseFilesTabBulkAction;
     };
 
     /**
@@ -29,9 +40,13 @@
     this.doAction = function ($scope) {
       var downloadAllParams = {};
 
-      if ($scope.mode === 'case-activity-feed') {
-        downloadAllParams.activity_ids = [$scope.selectedActivities[0].id];
-      } else if ($scope.mode === 'case-files-activity-bulk-action') {
+      var isCaseActivityFeedMenu = $scope.mode === 'case-activity-feed-menu';
+      var isCaseActivityBulkAction = $scope.mode === 'case-activity-bulk-action';
+      var isCaseFilesTabBulkAction = $scope.mode === 'case-files-activity-bulk-action';
+
+      if (isCaseActivityFeedMenu || isCaseActivityBulkAction) {
+        downloadAllParams.activity_ids = _.map($scope.selectedActivities, 'id');
+      } else if (isCaseFilesTabBulkAction) {
         if ($scope.isSelectAll) {
           downloadAllParams.searchParams = $scope.params;
         } else {

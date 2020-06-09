@@ -24,7 +24,6 @@
    * @param {Function} formatActivity format activity service
    */
   function civicaseCaseDetailsFileTabController ($scope, BulkActions, civicaseCrmApi, formatActivity) {
-    $scope.ts = CRM.ts('civicase');
     $scope.bulkAllowed = BulkActions.isAllowed();
     $scope.isSelectAll = false;
     $scope.isLoading = true;
@@ -39,16 +38,18 @@
     $scope.findActivityById = findActivityById;
     $scope.toggleSelected = toggleSelected;
     $scope.refresh = refresh;
-    $scope.getActivities = getActivities;
+    $scope.loadActivities = loadActivities;
 
     (function init () {
-      getActivities();
+      loadActivities();
 
       $scope.$on('civicase::bulk-actions::bulk-selections', bulkSelectionsListener);
     }());
 
     /**
      * Bulk Selection Event Listener
+     * Performs different types of bulk action actions(select/deselect etc)
+     * based on sent parameters
      *
      * @param {object} event event
      * @param {string} condition condition
@@ -85,7 +86,7 @@
     /**
      * Get List of Activities
      */
-    function getActivities () {
+    function loadActivities () {
       $scope.isLoading = true;
 
       civicaseCrmApi('Case', 'getfiles', $scope.fileFilterParams)
