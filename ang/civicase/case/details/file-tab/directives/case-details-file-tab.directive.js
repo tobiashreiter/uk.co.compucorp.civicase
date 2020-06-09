@@ -114,9 +114,7 @@
     function refresh (apiCalls) {
       if (!_.isArray(apiCalls)) apiCalls = [];
 
-      civicaseCrmApi(apiCalls, true).then(function (result) {
-        $scope.fileLists.refresh();
-      });
+      civicaseCrmApi(apiCalls, true).then(loadActivities);
     }
 
     /**
