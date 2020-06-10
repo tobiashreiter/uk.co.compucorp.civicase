@@ -128,6 +128,20 @@
       </span>
     </div>
     <div class="civicase__contact-cases-tab__panel-row clearfix">
+      <!-- Last Activity -->
+      <div class="civicase__contact-cases-tab__panel-fields">
+        <div class="civicase__contact-cases-tab__panel-field-title">
+          {{ ts('Last Activity') }}
+        </div>
+        <div
+          case-activity-card="item.activity_summary.last[0]"
+          refresh-callback="refresh"
+          case="item"
+          crm-popup-form-success="pushCaseData($data.civicase_reload[0])"
+        >
+        </div>
+      </div>
+      <!-- End Last Activity -->
       <!-- Next Activity -->
       <div class="civicase__contact-cases-tab__panel-fields">
         <div class="civicase__contact-cases-tab__panel-field-title">
