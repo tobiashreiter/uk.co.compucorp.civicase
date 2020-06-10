@@ -20,7 +20,6 @@
      * @param {object} $scope scope object reference.
      */
     function civicaseContactCardController ($scope) {
-      $scope.ts = CRM.ts('civicase');
       $scope.url = CRM.url;
       $scope.mainContact = null;
 
