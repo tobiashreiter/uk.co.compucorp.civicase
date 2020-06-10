@@ -128,20 +128,16 @@
       </span>
     </div>
     <div class="civicase__contact-cases-tab__panel-row clearfix">
-      <!-- Last Activity -->
+      <!-- Case Summary -->
       <div class="civicase__contact-cases-tab__panel-fields">
         <div class="civicase__contact-cases-tab__panel-field-title">
-          {{ ts('Last Activity') }}
+          {{ ts('Summary') }}
         </div>
-        <div
-          case-activity-card="item.activity_summary.last[0]"
-          refresh-callback="refresh"
-          case="item"
-          crm-popup-form-success="pushCaseData($data.civicase_reload[0])"
-        >
+        <div>
+          {{ item.subject }}
         </div>
       </div>
-      <!-- End Last Activity -->
+      <!--End Case Summary -->
       <!-- Next Activity -->
       <div class="civicase__contact-cases-tab__panel-fields">
         <div class="civicase__contact-cases-tab__panel-field-title">
@@ -156,6 +152,20 @@
         </div>
       </div>
       <!-- End Next Activity -->
+      <!-- Last Activity -->
+      <div class="civicase__contact-cases-tab__panel-fields">
+        <div class="civicase__contact-cases-tab__panel-field-title">
+          {{ ts('Last Activity') }}
+        </div>
+        <div
+          case-activity-card="item.activity_summary.last[0]"
+          refresh-callback="refresh"
+          case="item"
+          crm-popup-form-success="pushCaseData($data.civicase_reload[0])"
+        >
+        </div>
+      </div>
+      <!-- End Last Activity -->
       <!-- Upcoming Tasks Counts -->
       <div class="civicase__contact-cases-tab__panel-fields">
         <div class="civicase__contact-cases-tab__panel-field-title">
@@ -239,16 +249,6 @@
         </span>
       </div>
       <!-- End Case Status -->
-      <!-- Case Summary -->
-      <div class="civicase__contact-cases-tab__panel-fields">
-        <div class="civicase__contact-cases-tab__panel-field-title">
-          Summary
-        </div>
-        <div>
-          {{item.subject}}
-        </div>
-      </div>
-      <!--End Case Summary -->
       <!-- Contact Role -->
       <div class="civicase__contact-cases-tab__panel-fields" ng-if="item.contact_role">
         <div class="civicase__contact-cases-tab__panel-field-title">
