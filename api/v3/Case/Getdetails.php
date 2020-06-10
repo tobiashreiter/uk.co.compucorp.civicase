@@ -156,8 +156,16 @@ function civicrm_api3_case_getdetails(array $params) {
         }
       }
 
+      // Get last activity.
+      $lastActivity = _civicrm_api3_case_get_activities($ids, 1, [
+        'check_permissions' => !empty($params['check_permissions']),
+        'status_id.filter' => CRM_Activity_BAO_Activity::COMPLETED,
+        'sequential' => 1,
+      ]);
+      $case['activity_summary']['last'] = $lastActivity['values'];
+
       // Get next activities.
-      $activities = _civicrm_api3_case_get_activities($ids, [
+      $activities = _civicrm_api3_case_get_activities($ids, 0, [
         'check_permissions' => !empty($params['check_permissions']),
         'status_id.filter' => CRM_Activity_BAO_Activity::INCOMPLETE,
       ]);
