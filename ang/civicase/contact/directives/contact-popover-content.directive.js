@@ -6,6 +6,7 @@
       controller: 'civicaseContactPopoverContentController',
       templateUrl: '~/civicase/contact/directives/contact-popover-content.directive.html',
       scope: {
+        caseId: '<?',
         contactId: '<'
       }
     };

@@ -28,7 +28,20 @@
   <div class="civicase__contact-popover__column">
     <div class="civicase__contact-popover__detail-group">
       <div class="civicase__contact-popover__detail-header"><strong>Primary Email</strong></div>
-      <div class="civicase__contact-popover__detail-value">{{contact.email}}</div>
+      <div class="civicase__contact-popover__detail-value">
+        <a
+          ng-if="caseId" class="crm-popup"
+          ng-href="{{ 'civicrm/activity/email/add' | civicaseCrmUrl:{ action: 'add', caseid: caseId, reset: 1, cid: contactId } }}"
+        >
+          {{contact.email}}
+        </a>
+        <a
+          ng-if="!caseId" class="crm-popup"
+          ng-href="{{ 'civicrm/activity/email/add' | civicaseCrmUrl:{ action: 'add', reset: 1, cid: contactId } }}"
+        >
+          {{contact.email}}
+        </a>
+      </div>
     </div>
     <div class="civicase__contact-popover__detail-group">
       <div class="civicase__contact-popover__detail-header"><strong>Groups</strong></div>
