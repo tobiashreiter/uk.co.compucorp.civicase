@@ -59,7 +59,13 @@
           <!-- End - Rating -->
 
           <!-- Avatar -->
-          <span ng-if="activity.assignee_contact_name" civicase-contact-card avatar="true" contacts="activity.assignee_contact_name"></span>
+          <span
+            ng-if="activity.assignee_contact_name"
+            civicase-contact-card
+            avatar="true"
+            case-id="activity.case_id"
+            contacts="activity.assignee_contact_name"
+          ></span>
           <!-- End - Avatar -->
         </span>
       </div>
@@ -88,8 +94,12 @@
       <div class="civicase__activity-card-row" ng-if="activity.target_contact_name">
         <!-- With -->
         <span class="civicase__activity-with">With:&nbsp;</span>
-        <div class="civicase__contact-card" civicase-contact-card contacts="activity.target_contact_name">
-        </div>
+        <div
+          class="civicase__contact-card"
+          civicase-contact-card
+          case-id="activity.case_id"
+          contacts="activity.target_contact_name"
+        ></div>
         <!-- End - With -->
       </div>
     </div>

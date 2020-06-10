@@ -8,6 +8,7 @@
       controller: civicaseContactCardController,
       templateUrl: '~/civicase/contact/directives/contact-card.directive.html',
       scope: {
+        caseId: '<?caseId',
         data: '=contacts',
         isAvatar: '=avatar',
         noIcon: '=noIcon'

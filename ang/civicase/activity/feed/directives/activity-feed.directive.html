@@ -65,9 +65,12 @@
                 ng-class="{'civicase__activity-feed__list__vertical_bar': $index< activityGroup.activities.length - 1 && activity.source_contact_id}"
                 class="civicase__activity-feed__list-item">
                 <span
-                  ng-if="activity.source_contact_id" civicase-contact-card avatar="true"
-                  contacts="activity.source_contact_id">
-                </span>
+                  ng-if="activity.source_contact_id"
+                  civicase-contact-card
+                  avatar="true"
+                  case-id="activity.case_id"
+                  contacts="activity.source_contact_id"
+                ></span>
                 <div class="civicase__activity-feed__activity-container">
                   <div
                     case-activity-card="activity"

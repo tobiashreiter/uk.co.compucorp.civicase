@@ -37,7 +37,13 @@
           </a>
           <!-- End - Rating -->
           <!-- Contact icons -->
-          <span ng-if="activity.assignee_contact_name" civicase-contact-card avatar="true" contacts="activity.assignee_contact_name"></span>
+          <span
+            ng-if="activity.assignee_contact_name"
+            civicase-contact-card
+            avatar="true"
+            case-id="activity.case_id"
+            contacts="activity.assignee_contact_name"
+          ></span>
           <!-- End contact icons -->
           <!-- 3 dot menu -->
           <div ng-include="'~/civicase/activity/card/directives/activity-card-menu.html'"></div>
@@ -80,7 +86,12 @@
         <!-- With -->
         <div class="civicase__activity-card-row">
           <span class="civicase__activity-with">With:&nbsp;</span>
-          <span class="civicase__contact-card" civicase-contact-card contacts="activity.target_contact_name"></span>
+          <span
+            class="civicase__contact-card"
+            civicase-contact-card
+            case-id="activity.case_id"
+            contacts="activity.target_contact_name"
+          ></span>
         </div>
         <!-- End - With -->
       </div>
