@@ -65,6 +65,18 @@
   }
 }
 
+.civicase__case-header__webform-dropdown {
+  background: $crm-white;
+  border: 1px solid $crm-grayblue-dark;
+  color: $gray-darker;
+  margin-left: $case-gutter-width !important;
+  margin-top: 3px;
+
+  +.dropdown-menu {
+    margin-top: -10px;
+  }
+}
+
 .civicase__case-header__content__first-row {
   display: flex;
   min-height: 42px;
