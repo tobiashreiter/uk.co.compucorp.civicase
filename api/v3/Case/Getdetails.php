@@ -155,23 +155,11 @@ function civicrm_api3_case_getdetails(array $params) {
           $categories[$grouping][] = $allTypes[] = $val['value'];
         }
       }
-      $activities = civicrm_api3('Activity', 'get', [
-        'return' => [
-          'activity_type_id', 'subject', 'activity_date_time', 'status_id',
-          'case_id', 'target_contact_name', 'assignee_contact_name',
-          'is_overdue', 'is_star', 'file_id', 'tag_id.name',
-          'tag_id.description', 'tag_id.color',
-        ],
+
+      // Get next activities.
+      $activities = _civicrm_api3_case_get_activities($ids, [
         'check_permissions' => !empty($params['check_permissions']),
-        'case_id' => ['IN' => $ids],
-        'is_current_revision' => 1,
-        'is_test' => 0,
-        'activity_type_id' => ['!=' => 'Bulk Email'],
         'status_id.filter' => CRM_Activity_BAO_Activity::INCOMPLETE,
-        'options' => [
-          'limit' => 0,
-          'sort' => 'activity_date_time',
-        ],
       ]);
       foreach ($activities['values'] as $act) {
         foreach ((array) $act['case_id'] as $actCaseId) {
@@ -260,6 +248,45 @@ function civicrm_api3_case_getdetails(array $params) {
     }
   }
   return $resultMetadata + $result;
+}
+
+/**
+ * Returns activities related to the cases.
+ *
+ * @param array $case_ids
+ *   Cases ids.
+ * @param int $limit
+ *   (Optional) Maximum number of items to fetch, defaults to no limit.
+ * @param array $params
+ *   (Optional) Additional api request parameters.
+ *
+ * @return array
+ *   Civicrm api request result with activities.
+ *
+ * @throws \CiviCRM_API3_Exception
+ *   Civicrm exception.
+ */
+function _civicrm_api3_case_get_activities(array $case_ids, $limit = 0, array $params = []) {
+  $default_params = [
+    'return' => [
+      'activity_type_id', 'subject', 'activity_date_time', 'status_id',
+      'case_id', 'target_contact_name', 'assignee_contact_name',
+      'is_overdue', 'is_star', 'file_id', 'tag_id.name',
+      'tag_id.description', 'tag_id.color',
+    ],
+    'case_id' => ['IN' => $case_ids],
+    'is_current_revision' => 1,
+    'is_test' => 0,
+    'activity_type_id' => ['!=' => 'Bulk Email'],
+    'options' => [
+      'limit' => $limit,
+      'sort' => 'activity_date_time',
+    ],
+  ];
+
+  $params = array_merge($default_params, $params);
+
+  return civicrm_api3('Activity', 'get', $params);
 }
 
 /**
