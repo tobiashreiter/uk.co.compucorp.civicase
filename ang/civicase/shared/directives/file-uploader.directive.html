@@ -40,6 +40,12 @@
           </div>
         </div>
 
+        <civicase-tags-selector
+          ng-if="tags.all.length > 0"
+          model="tags.selected"
+          all-tags="tags.all">
+        </civicase-tags-selector>
+
         <div class="clearfix">
           <div class="pull-right">
             <button type="button" class="btn btn-default cancel" ng-click="deleteActivity()" >
