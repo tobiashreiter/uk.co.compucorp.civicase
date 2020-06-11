@@ -45,24 +45,26 @@
    * @param {object} BrowserCache the browser cache service reference.
    * @param {object} CaseStatus the case status service reference.
    * @param {object} CaseType the case type service reference.
+   * @param {object} CaseTypeFilterer the case type filterer service reference.
    */
-  function civicaseCaseOverviewController ($scope, crmApi, BrowserCache, CaseStatus, CaseType) {
+  function civicaseCaseOverviewController ($scope, crmApi, BrowserCache, CaseStatus,
+    CaseType, CaseTypeFilterer) {
     var BROWSER_CACHE_IDENTIFIER = 'civicase.CaseOverview.hiddenCaseStatuses';
+    var MAXIMUM_CASE_TYPES_TO_DISPLAY_BREAKDOWN = 1;
+    var allCaseStatusNames = _.map(CaseStatus.getAll(), 'name');
+    var caseStatusesIndexedByName = _.indexBy(CaseStatus.getAll(), 'name');
 
-    $scope.getItemsForCaseType = CaseType.getItemsForCaseType;
+    $scope.caseStatuses = [];
+    $scope.caseTypes = [];
+    $scope.hiddenCaseStatuses = {};
     $scope.summaryData = [];
-    $scope.caseStatuses = _.chain(CaseStatus.getAll())
-      .sortBy(function (status) { return status.weight; })
-      .indexBy('weight')
-      .value();
+
+    $scope.areAllStatusesHidden = areAllStatusesHidden;
+    $scope.getItemsForCaseType = CaseType.getItemsForCaseType;
+    $scope.toggleBreakdownVisibility = toggleBreakdownVisibility;
+    $scope.toggleStatusVisibility = toggleStatusVisibility;
 
     (function init () {
-      getCaseTypes();
-      // We hide the breakdown when there's only one case type
-      if ($scope.caseTypesLength < 2) {
-        $scope.showBreakdown = false;
-      }
-
       $scope.$watch('caseFilter', caseFilterWatcher, true);
       loadHiddenCaseStatuses();
     }());
@@ -72,37 +74,75 @@
      *
      * @returns {boolean} true when all statuses are hidden.
      */
-    $scope.areAllStatusesHidden = function () {
+    function areAllStatusesHidden () {
       return _.filter($scope.caseStatuses, function (status) {
         return !status.isHidden;
       }).length === 0;
-    };
-
-    /**
-     * Toggle status view
-     *
-     * @param {document#event:mousedown} $event the toggle DOM event.
-     * @param {number} index of the case status
-     */
-    $scope.toggleStatusVisibility = function ($event, index) {
-      $scope.caseStatuses[index + 1].isHidden = !$scope.caseStatuses[index + 1].isHidden;
-      storeHiddenCaseStatuses();
-      $event.stopPropagation();
-    };
-
-    /**
-     * Toggles the visibility of the breakdown dropdown
-     */
-    $scope.toggleBrekdownVisibility = function () {
-      $scope.showBreakdown = !$scope.showBreakdown;
-    };
+    }
 
     /**
      * Watcher function for caseFilter
+     *
+     * @param {object} caseFilters parameters to use for filtering the stats data.
      */
-    function caseFilterWatcher () {
-      getCaseTypes();
-      loadStatsData();
+    function caseFilterWatcher (caseFilters) {
+      var caseStatusNames;
+
+      $scope.caseTypes = getFilteredCaseTypes(caseFilters);
+      caseStatusNames = getCaseStatusNamesBelongingToCaseTypes($scope.caseTypes);
+      $scope.caseStatuses = getSortedCaseStatusesByName(caseStatusNames);
+      $scope.showBreakdown = $scope.caseTypes.length <=
+        MAXIMUM_CASE_TYPES_TO_DISPLAY_BREAKDOWN;
+
+      loadStatsData(caseFilters);
+      $scope.$emit('civicase::custom-scrollbar::recalculate');
+    }
+
+    /**
+     * Given a list of case types, it will return a unique list of
+     * case status names as defined for each one of the case types.
+     *
+     * Note: When a case type supports all statuses, it does not store any status
+     * names under `definition.statuses`. If the statuses definition is empty we
+     * must assume the case supports all statuses.
+     *
+     * @param {object[]} caseTypes a list of case type objects.
+     * @returns {string[]} a list of case sttus names.
+     */
+    function getCaseStatusNamesBelongingToCaseTypes (caseTypes) {
+      return _.chain(caseTypes)
+        .map(function (caseType) {
+          return caseType.definition.statuses || allCaseStatusNames;
+        })
+        .flatten()
+        .unique()
+        .value();
+    }
+
+    /**
+     * @param {object} caseFilters parameters to use for filtering case types.
+     * @returns {object[]} a list of filtered case types.
+     */
+    function getFilteredCaseTypes (caseFilters) {
+      return CaseTypeFilterer.filter({
+        case_type_category: caseFilters['case_type_id.case_type_category'],
+        id: caseFilters.case_type_id
+      });
+    }
+
+    /**
+     * @param {string[]} caseStatusNames a list of case status names.
+     * @returns {object[]} the full case status details belonging to the
+     *   given case status names.
+     */
+    function getSortedCaseStatusesByName (caseStatusNames) {
+      return _.chain(caseStatusNames)
+        .map(function (caseStatusName) {
+          return caseStatusesIndexedByName[caseStatusName];
+        })
+        .sortBy('weight')
+        .indexBy('value')
+        .value();
     }
 
     /**
@@ -110,20 +150,23 @@
      * previously hidden and marks them as such.
      */
     function loadHiddenCaseStatuses () {
-      var hiddenCaseStatuses = BrowserCache.get(BROWSER_CACHE_IDENTIFIER, []);
+      var hiddenCaseStatusesIds = BrowserCache.get(BROWSER_CACHE_IDENTIFIER, []);
+      $scope.hiddenCaseStatuses = {};
 
-      hiddenCaseStatuses.forEach(function (caseStatusId) {
-        $scope.caseStatuses[caseStatusId].isHidden = true;
+      _.forEach(hiddenCaseStatusesIds, function (caseStatusId) {
+        $scope.hiddenCaseStatuses[caseStatusId] = true;
       });
     }
 
     /**
      * Loads Stats data
+     *
+     * @param {object} caseFilters parameters to use for filtering the stats data.
      */
-    function loadStatsData () {
+    function loadStatsData (caseFilters) {
       var apiCalls = [];
 
-      var params = angular.copy($scope.caseFilter || {});
+      var params = angular.copy(caseFilters || {});
       // status id should not be added to getstats,
       // because case overview section shows all statuses
       delete params.status_id;
@@ -135,39 +178,38 @@
     }
 
     /**
-     * Get Case Types based on filters
-     *
-     * @returns {Promise} promise
-     */
-    function getCaseTypes () {
-      var params = {
-        sequential: 1,
-        case_type_category: $scope.caseFilter['case_type_id.case_type_category'],
-        id: $scope.caseFilter.case_type_id,
-        is_active: 1
-      };
-
-      return crmApi('CaseType', 'get', params)
-        .then(function (data) {
-          $scope.caseTypes = data.values;
-          $scope.caseTypesLength = _.size($scope.caseTypes);
-          $scope.$emit('civicase::custom-scrollbar::recalculate');
-        });
-    }
-
-    /**
      * Stores in the browser cache the id values of the case statuses that have been
      * hidden.
      */
     function storeHiddenCaseStatuses () {
-      var hiddenCaseStatusesIds = _.chain($scope.caseStatuses)
-        .pick(function (caseStatus, key) {
-          return caseStatus.isHidden;
+      var hiddenCaseStatusesIds = _.chain($scope.hiddenCaseStatuses)
+        .pick(function (caseStatusIsHidden) {
+          return caseStatusIsHidden;
         })
         .keys()
         .value();
 
       BrowserCache.set(BROWSER_CACHE_IDENTIFIER, hiddenCaseStatusesIds);
+    }
+
+    /**
+     * Toggles the visibility of the breakdown dropdown
+     */
+    function toggleBreakdownVisibility () {
+      $scope.showBreakdown = !$scope.showBreakdown;
+    }
+
+    /**
+     * Toggle status visibility.
+     *
+     * @param {document#event:mousedown} $event the toggle DOM event.
+     * @param {number} caseStatusId the id for the case status to hide or show.
+     */
+    function toggleStatusVisibility ($event, caseStatusId) {
+      $scope.hiddenCaseStatuses[caseStatusId] = !$scope.hiddenCaseStatuses[caseStatusId];
+
+      storeHiddenCaseStatuses();
+      $event.stopPropagation();
     }
   }
 })(angular, CRM.$, CRM._);
