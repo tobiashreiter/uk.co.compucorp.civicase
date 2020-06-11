@@ -1,0 +1,123 @@
+name: Backstop Tests
+
+on:
+  pull_request:
+    types:
+      - labeled
+
+jobs:
+  run-backstop-tests:
+    if: github.event.label.name == 'run backstop'
+    runs-on: ubuntu-latest
+    container:
+      image: compucorp/civicrm-buildkit:1.0.0-chrome
+
+    env:
+      CIVICRM_EXTENSIONS_DIR: site/web/sites/all/modules/civicrm/tools/extensions
+      DRUPAL_THEME_DIR: site/web/sites/all/themes
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+        - 3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Install dependencies to run the server
+        run: |
+          apt-get update
+          apt-get install apache2 libapache2-mod-php7.2 php7.2-mysql php7.2-curl php7.2-simplexml -y
+          a2enmod rewrite
+          apache2ctl restart
+
+      - name: Config mysql database as per CiviCRM requirement
+        run: echo "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));" | mysql -u root --password=root --host=mysql
+
+      - name: Config amp
+        run : |
+          amp config:set --db_type=mysql_dsn --mysql_dsn='mysql://root:root@mysql:3306' --httpd_type=apache24 --httpd_restart_command='sudo /usr/sbin/apache2ctl graceful' --perm_type=worldWritable --hosts_type=file
+          echo "IncludeOptional /github/home/.amp/apache.d/*.conf" >> /etc/apache2/apache2.conf
+          /usr/sbin/apache2ctl restart
+
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '10.15.3'
+
+      - name: Build Drupal site
+        run: |
+          civibuild create drupal-clean --civi-ver 5.24.6 --web-root $GITHUB_WORKSPACE/site
+          chmod -R 777 /__w/uk.co.compucorp.civicase/uk.co.compucorp.civicase
+
+      - name: Installing CiviCase and Shoreditch
+        working-directory: ${{ env.CIVICRM_EXTENSIONS_DIR }}
+        run: |
+          git clone https://github.com/compucorp/uk.co.compucorp.civicase.git
+          git clone --depth 1 https://github.com/civicrm/org.civicrm.shoreditch.git
+          cv en shoreditch civicase
+          drush cvapi Extension.upgrade
+          drush en civicrmtheme -y
+          drush dl bootstrap -y
+          drush en bootstrap -y
+          drush vset theme_default bootstrap
+
+      - name: Installing Shoreditch Companion Theme
+        working-directory: ${{ env.DRUPAL_THEME_DIR }}
+        run: |
+          mkdir shoreditch_companion_d7_theme
+          cd shoreditch_companion_d7_theme/
+          git clone https://github.com/compucorp/shoreditch-companion-d7-theme.git
+          drush en -y shoreditch_companion_d7_theme
+          drush vset civicrmtheme_theme_admin shoreditch_companion_d7_theme
+
+          drush sql-query "UPDATE block SET status = 0 WHERE theme='shoreditch_companion_d7_theme' AND module='civicrm' AND delta IN ('1', '2', '3', '4', '5');" -y
+          drush sql-query "UPDATE block SET status = 0 WHERE theme='shoreditch_companion_d7_theme' AND module='search' AND delta='form';" -y
+          drush sql-query "UPDATE block SET status = 0 WHERE theme='shoreditch_companion_d7_theme' AND module='system' AND delta IN ('navigation', 'powered-by');" -y
+
+          drush cc all && drush cc civicrm
+
+      - name: Create site-config.json for Backstop tests
+        working-directory: ${{ env.CIVICRM_EXTENSIONS_DIR }}/uk.co.compucorp.civicase
+        run: |
+          cd tests/backstop_data
+          touch site-config.json
+          echo "{" >> site-config.json
+          echo '"url": "http://localhost:7979",' >> site-config.json
+          echo '"drush_alias": "",' >> site-config.json
+          echo '"root": "/__w/uk.co.compucorp.civicase/uk.co.compucorp.civicase/site/web"' >> site-config.json
+          echo "}" >> site-config.json
+
+      - name: Reference Screenshots in "master" Branch
+        continue-on-error: true
+        working-directory: ${{ env.CIVICRM_EXTENSIONS_DIR }}/uk.co.compucorp.civicase/tests/backstop_data
+        run: |
+          git reset --hard
+          git checkout "${{ github.head_ref }}"
+          npm install
+          npx gulp backstopjs:setup-data
+          npx gulp backstopjs:reference
+
+      - name: Test Screenshots in "${{ github.head_ref }}" Branch
+        working-directory: ${{ env.CIVICRM_EXTENSIONS_DIR }}/uk.co.compucorp.civicase/tests/backstop_data
+        continue-on-error: true
+        run: |
+          git reset --hard
+          git checkout "${{ github.head_ref }}"
+          npx gulp backstopjs:test
+
+      - name: Prepare test report for download
+        if: ${{ always() }}
+        working-directory: ${{ env.CIVICRM_EXTENSIONS_DIR }}/uk.co.compucorp.civicase/tests/backstop_data
+        run: |
+          mkdir backstop_report
+          cp -r html_report backstop_report
+          cp -r screenshots backstop_report
+
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: backstop-report
+          path: ${{ env.CIVICRM_EXTENSIONS_DIR }}/uk.co.compucorp.civicase/tests/backstop_data/backstop_report
