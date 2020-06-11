@@ -12,7 +12,15 @@
     };
   });
 
-  module.controller('civicaseContactPopoverContentController', function ($scope, ContactsCache) {
+  module.controller('civicaseContactPopoverContentController', civicaseContactPopoverContentController);
+
+  /**
+   * Contact Popover Content directive's controller.
+   *
+   * @param {object} $scope Scope object.
+   * @param {object} ContactsCache Contacts Cache service reference.
+   */
+  function civicaseContactPopoverContentController ($scope, ContactsCache) {
     $scope.contact = ContactsCache.getCachedContact($scope.contactId);
     $scope.getEmailUrl = getEmailUrl;
 
@@ -32,5 +40,5 @@
 
       return getCrmUrl('civicrm/activity/email/add', emailUrlParameters);
     }
-  });
+  }
 })(angular, CRM.url);
