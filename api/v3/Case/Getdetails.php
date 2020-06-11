@@ -157,15 +157,19 @@ function civicrm_api3_case_getdetails(array $params) {
       }
 
       // Get last activity.
-      $lastActivity = _civicrm_api3_case_get_activities($ids, 1, [
+      $lastActivity = _civicrm_api3_case_get_activities($ids, [
         'check_permissions' => !empty($params['check_permissions']),
         'status_id.filter' => CRM_Activity_BAO_Activity::COMPLETED,
         'sequential' => 1,
+        'options' => [
+          'limit' => 1,
+          'sort' => 'activity_date_time DESC',
+        ],
       ]);
       $case['activity_summary']['last'] = $lastActivity['values'];
 
       // Get next activities.
-      $activities = _civicrm_api3_case_get_activities($ids, 0, [
+      $activities = _civicrm_api3_case_get_activities($ids, [
         'check_permissions' => !empty($params['check_permissions']),
         'status_id.filter' => CRM_Activity_BAO_Activity::INCOMPLETE,
       ]);
@@ -263,8 +267,6 @@ function civicrm_api3_case_getdetails(array $params) {
  *
  * @param array $case_ids
  *   Cases ids.
- * @param int $limit
- *   (Optional) Maximum number of items to fetch, defaults to no limit.
  * @param array $params
  *   (Optional) Additional api request parameters.
  *
@@ -274,7 +276,7 @@ function civicrm_api3_case_getdetails(array $params) {
  * @throws \CiviCRM_API3_Exception
  *   Civicrm exception.
  */
-function _civicrm_api3_case_get_activities(array $case_ids, $limit = 0, array $params = []) {
+function _civicrm_api3_case_get_activities(array $case_ids, array $params = []) {
   $default_params = [
     'return' => [
       'activity_type_id', 'subject', 'activity_date_time', 'status_id',
@@ -287,7 +289,7 @@ function _civicrm_api3_case_get_activities(array $case_ids, $limit = 0, array $p
     'is_test' => 0,
     'activity_type_id' => ['!=' => 'Bulk Email'],
     'options' => [
-      'limit' => $limit,
+      'limit' => 0,
       'sort' => 'activity_date_time',
     ],
   ];
