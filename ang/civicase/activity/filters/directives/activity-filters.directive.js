@@ -170,7 +170,7 @@
             label: ts('Tagged'),
             html_type: 'Autocomplete-Select',
             entity: 'Tag',
-            api_params: { used_for: { LIKE: '%civicrm_activity%' } }
+            api_params: { used_for: { LIKE: '%civicrm_activity%' }, is_tagset: 0 }
           },
           {
             name: 'text',
