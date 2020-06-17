@@ -32,7 +32,7 @@
      * @param {object} element element
      */
     function activityFiltersLink ($scope, element) {
-      var ts = $scope.ts = CRM.ts('civicase');
+      var ts = $scope.ts;
 
       $scope.combinedFilterParams = {};
       $scope.activityCategories = prepareActivityCategories();

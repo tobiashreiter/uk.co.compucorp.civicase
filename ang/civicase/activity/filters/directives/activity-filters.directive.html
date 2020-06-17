@@ -76,8 +76,7 @@
       <input
         ng-if="activityCategories"
         class="form-control civicase__activity-filter__category"
-        placeholder="{{ ts('All Activity Categories') }}"
-        crm-ui-select="{allowClear: true, multiple: true, data: activityCategories}"
+        crm-ui-select="{allowClear: true, data: activityCategories, placeholder: ts('All Activity Categories')}"
         ng-model="filters['activity_type_id.grouping']" />
 
       <button
