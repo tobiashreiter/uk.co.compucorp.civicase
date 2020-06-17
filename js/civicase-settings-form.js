@@ -2,10 +2,15 @@
   $(document).on('crmLoad', function () {
     var $allowWebformCheckBoxes = $('.civicase__settings__allow-webform');
     var $webformUrlFields = $('.civicase__settings__webform-url');
+    var $showWebforms = $('.civicase__settings__show-webform');
+    var $webformButtonLabel = $('.civicase__settings__webform-button-label');
 
     (function init () {
       showHideWebformUrlFields();
+      showWebformsDropdownButtonLabel();
+
       $allowWebformCheckBoxes.change(showHideRelatedFormUrlField);
+      $showWebforms.change(showWebformsDropdownButtonLabel);
     })();
 
     /**
@@ -14,6 +19,17 @@
     function showHideWebformUrlFields () {
       $allowWebformCheckBoxes.filter(':checked')
         .each(showHideRelatedFormUrlField);
+    }
+
+    /**
+     * Toggles the visibility of webforms button label text box
+     */
+    function showWebformsDropdownButtonLabel () {
+      var isWebformsDropdownVisible = parseInt($showWebforms.filter(':checked').val());
+
+      isWebformsDropdownVisible
+        ? $webformButtonLabel.parents('tr').show()
+        : $webformButtonLabel.parents('tr').hide();
     }
 
     /**

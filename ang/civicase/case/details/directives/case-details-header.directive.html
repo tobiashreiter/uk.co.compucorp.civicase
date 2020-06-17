@@ -37,7 +37,6 @@
             </li>
           </ul>
         </div>
-        <!-- End - Case Webform Dropdown -->
       </div>
       <div class="civicase__case-header__dates">
         <span>{{ CRM.utils.formatDate(item.start_date) || '. . .' }}</span> -
@@ -85,6 +84,26 @@
     </div>
 
     <div class="civicase__case-header__action-menu">
+      <!-- Case Webform Dropdown -->
+      <div
+        ng-if="isCaseWebformDropdownVisible"
+        class="btn-group btn-group-md">
+        <button
+          type="button"
+          class="btn btn-primary civicase__case-header__webform-dropdown"
+          data-toggle="dropdown">
+          {{ getWebformDropdownButtonLabel() }}
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-right">
+          <li ng-repeat="action in webformsAction.items" ng-if="isGoToWebformAllowed(action)">
+            <a href ng-click="openWebform(action)" title="{{action.title}}">
+              <i class="fa {{action.icon}}"></i> {{ action.title }}
+            </a>
+          </li>
+        </ul>
+      </div>
+      <!-- End - Case Webform Dropdown -->
       <div class="btn-group btn-group-md">
         <button
           type="button"

@@ -70,11 +70,13 @@
   border: 1px solid $crm-grayblue-dark;
   color: $gray-darker;
   margin-left: $case-gutter-width !important;
-  margin-top: 3px;
+  width: 160px;
 
-  +.dropdown-menu {
-    margin-top: -10px;
+  /* stylelint-disable selector-max-compound-selectors */
+  +.dropdown-menu > li a {
+    max-width: 160px;
   }
+  /* stylelint-enable selector-max-compound-selectors */
 }
 
 .civicase__case-header__content__first-row {

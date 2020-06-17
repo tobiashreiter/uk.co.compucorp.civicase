@@ -18,15 +18,25 @@
    * @param {*} CaseActions case action service
    * @param {*} WebformsCaseAction webform case action service
    * @param {*} GoToWebformCaseAction go to webform case action service
+   * @param {*} webformsList configuration for webforms list
    */
-  function civicaseCaseDetailsHeaderController ($scope, CaseActions, WebformsCaseAction, GoToWebformCaseAction) {
+  function civicaseCaseDetailsHeaderController ($scope, CaseActions,
+    WebformsCaseAction, GoToWebformCaseAction, webformsList) {
     $scope.webformsAction = CaseActions.findByActionName('Webforms');
     $scope.isGoToWebformAllowed = isGoToWebformAllowed;
     $scope.openWebform = openWebform;
+    $scope.getWebformDropdownButtonLabel = getWebformDropdownButtonLabel;
 
     (function init () {
       $scope.$watch('item', itemWatcher);
     })();
+
+    /**
+     * @returns {string} label for webform dropdown button
+     */
+    function getWebformDropdownButtonLabel () {
+      return webformsList.buttonLabel;
+    }
 
     /**
      * @param {object} action action object
@@ -48,8 +58,10 @@
      * It checks if the Case Webform Dropdown is visible
      */
     function itemWatcher () {
-      $scope.isCaseWebformDropdownVisible = WebformsCaseAction.isActionAllowed(
-        $scope.webformsAction, [$scope.item], { mode: 'case-details' });
+      $scope.isCaseWebformDropdownVisible = webformsList.isVisible &&
+        WebformsCaseAction.isActionAllowed(
+          $scope.webformsAction, [$scope.item], { mode: 'case-details' }
+        );
     }
   }
 })(angular, CRM.$, CRM._);
