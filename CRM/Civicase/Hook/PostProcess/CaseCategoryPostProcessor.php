@@ -43,6 +43,9 @@ class CRM_Civicase_Hook_PostProcess_CaseCategoryPostProcessor {
     elseif ($formAction == CRM_Core_Action::DELETE) {
       $handler->onDelete($categoryName);
     }
+
+    // Flush all caches using the API.
+    civicrm_api3('System', 'flush');
   }
 
   /**
