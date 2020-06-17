@@ -5,12 +5,14 @@
     return {
       restrict: 'A',
       templateUrl: '~/civicase/case/details/file-tab/directives/file-filter.directive.html',
-      controller: civicaseFileFilterController,
+      controller: 'civicaseFileFilterController',
       scope: {
         fileFilter: '=civicaseFileFilter'
       }
     };
   });
+
+  module.controller('civicaseFileFilterController', civicaseFileFilterController);
 
   /**
    * Controller for civicaseFileFilter directive
@@ -39,6 +41,22 @@
         $scope.fileFilter.params['activity_type_id.grouping'] = { LIKE: '%' + $scope.customFilters.grouping + '%' };
       } else {
         delete $scope.fileFilter.params['activity_type_id.grouping'];
+      }
+
+      if ($scope.customFilters.tag_id) {
+        applyTagsFilter();
+      }
+    }
+
+    /**
+     * Apply Tags filter
+     */
+    function applyTagsFilter () {
+      if ($scope.customFilters.tag_id.length > 0) {
+        var tagid = $scope.customFilters.tag_id;
+        $scope.fileFilter.params.tag_id = tagid.length === 1 ? tagid[0] : { IN: tagid };
+      } else {
+        delete $scope.fileFilter.params.tag_id;
       }
     }
   }

@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Activity.getfiles file.
+ * Case.getfiles.
  */
 
 /**
@@ -31,6 +31,12 @@ function _civicrm_api3_case_getfiles_spec(array &$spec) {
     ],
   ];
 
+  $spec['tag_id'] = [
+    'title' => 'Tag Id',
+    'description' => 'A single tag Id or array of Tag Ids',
+    'type' => CRM_Utils_Type::T_STRING,
+  ];
+
   $fileFields = CRM_Core_BAO_File::fields();
   $spec['mime_type'] = $fileFields['mime_type'];
   $spec['mime_type_cat'] = [
@@ -38,7 +44,6 @@ function _civicrm_api3_case_getfiles_spec(array &$spec) {
     'title' => 'General file category',
     'description' => 'A general category. May be a single category ("doc") or multiple (["IN",["doc","sheet"]]).',
   ];
-
 }
 
 /**
@@ -141,17 +146,19 @@ function _civicrm_api3_case_getfiles_select(array $params) {
   $select = CRM_Utils_SQL_Select::from('civicrm_case_activity caseact')
     ->strict()
     ->join('ef', 'INNER JOIN civicrm_entity_file ef ON (ef.entity_table = "civicrm_activity" AND ef.entity_id = caseact.activity_id) ')
+    ->join('et', 'LEFT JOIN civicrm_entity_tag et ON (et.entity_table = "civicrm_activity" AND et.entity_id = caseact.activity_id) ')
     ->join('f', 'INNER JOIN civicrm_file f ON ef.file_id = f.id')
     ->select('caseact.case_id as case_id, caseact.activity_id as activity_id, f.id as id, act.activity_date_time')
     ->distinct();
 
   if (isset($params['case_id'])) {
-    // Isn't there some helper which will let us do more advanced
-    // SQL with $params['case_id']?
     $select->where('caseact.case_id = #caseIDs', [
       'caseIDs' => $params['case_id'],
-    ]
-    );
+    ]);
+  }
+
+  if (isset($params['tag_id'])) {
+    $select->where(_civicase_get_tag_id_sql($params['tag_id']));
   }
 
   $select->join('act', 'INNER JOIN civicrm_activity act ON ((caseact.activity_id = act.id OR caseact.activity_id = act.original_id) AND act.is_current_revision=1)');
@@ -228,6 +235,23 @@ function _civicrm_api3_case_getfiles_select(array $params) {
 }
 
 /**
+ * Returns the sql query to filter by tags.
+ *
+ * @param mixed $tagIdParam
+ *   Parameters.
+ *
+ * @return null|string|array
+ *   Sql Query.
+ */
+function _civicase_get_tag_id_sql($tagIdParam) {
+  if (!is_array($tagIdParam)) {
+    $tagIdParam = ['=' => $tagIdParam];
+  }
+
+  return CRM_Core_DAO::createSQLFilter('et.tag_id', $tagIdParam);
+}
+
+/**
  * Lookup any cross-references in the `getfiles` data.
  *
  * @param array $matches
@@ -251,8 +275,8 @@ function _civicrm_api3_case_getfiles_xref(array $matches) {
   foreach ($types as $typeSpec) {
     [$idField, $xrefName, $apiEntity] = $typeSpec;
     $ids = array_unique(CRM_Utils_Array::collect($idField, $matches));
-    // WISH: $result[$xrefName] = civicrm_api3($apiEntity, 'get',
-    // array('id'=>array('IN', $ids)))['values'].
+    // WISH: $result[$xrefName] = civicrm_api3(
+    // $apiEntity, 'get', array('id'=>array('IN', $ids)))['values'];.
     foreach ($ids as $id) {
       $params = [
         'id' => $id,

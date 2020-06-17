@@ -145,13 +145,14 @@
       beforeEach(() => {
         initController();
         tagMarkup = $scope.formatTags({
+          color: '#fff',
           text: 'Tag Name',
           indentationLevel: '1'
         });
       });
 
       it('returns all the case statuses', () => {
-        expect(tagMarkup).toEqual('<span style="margin-left:4px">Tag Name</span>');
+        expect(tagMarkup).toEqual('<span style="margin-left:4px"><span class="crm-select-item-color civicase__tags-selector__item-color" style="background-color: #fff"></span>Tag Name</span>');
       });
     });
 

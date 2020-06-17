@@ -46,7 +46,9 @@
      * @returns {string} markup for the tags
      */
     function formatTags (item) {
-      return '<span style="margin-left:' + (item.indentationLevel * 4) + 'px">' + item.text + '</span>';
+      var tagColorElement = '<span class="crm-select-item-color civicase__tags-selector__item-color" style="background-color: ' + item.color + '"></span>';
+
+      return '<span style="margin-left:' + (item.indentationLevel * 4) + 'px">' + tagColorElement + item.text + '</span>';
     }
 
     /**
