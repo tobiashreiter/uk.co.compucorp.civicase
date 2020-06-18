@@ -128,10 +128,24 @@
       </span>
     </div>
     <div class="civicase__contact-cases-tab__panel-row clearfix">
+      <!-- Last Activity -->
+      <div class="civicase__contact-cases-tab__panel-fields">
+        <div class="civicase__contact-cases-tab__panel-field-title">
+          {{ ts('Last Activity') }}
+        </div>
+        <div
+          case-activity-card="item.activity_summary.last[0]"
+          refresh-callback="refresh"
+          case="item"
+          crm-popup-form-success="pushCaseData($data.civicase_reload[0])"
+        >
+        </div>
+      </div>
+      <!-- End Last Activity -->
       <!-- Next Activity -->
       <div class="civicase__contact-cases-tab__panel-fields">
         <div class="civicase__contact-cases-tab__panel-field-title">
-          Next Activity
+          {{ ts('Next Activity') }}
         </div>
         <div
           case-activity-card="item.activity_summary.next[0]"
@@ -145,7 +159,7 @@
       <!-- Upcoming Tasks Counts -->
       <div class="civicase__contact-cases-tab__panel-fields">
         <div class="civicase__contact-cases-tab__panel-field-title">
-          Upcoming
+          {{ ts('Upcoming') }}
         </div>
         <div class="civicase__case-card__activity-info">
           <div class="civicase__case-card__activity-count-container">
@@ -238,7 +252,7 @@
       <!-- Contact Role -->
       <div class="civicase__contact-cases-tab__panel-fields" ng-if="item.contact_role">
         <div class="civicase__contact-cases-tab__panel-field-title">
-          Contact Role
+          {{ ts('Contact Role') }}
         </div>
         <div>
           {{ civicaseTs(item.contact_role) }}
@@ -248,7 +262,7 @@
       <!-- Last Modified -->
       <div class="civicase__contact-cases-tab__panel-fields">
         <div class="civicase__contact-cases-tab__panel-field-title">
-          Last Modified
+          {{ ts('Last Modified') }}
         </div>
         <span>{{ CRM.utils.formatDate(item.modified_date) }}</span>
       </div>
