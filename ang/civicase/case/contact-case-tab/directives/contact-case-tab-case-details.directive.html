@@ -128,20 +128,16 @@
       </span>
     </div>
     <div class="civicase__contact-cases-tab__panel-row clearfix">
-      <!-- Last Activity -->
+      <!-- Case Summary -->
       <div class="civicase__contact-cases-tab__panel-fields">
         <div class="civicase__contact-cases-tab__panel-field-title">
-          {{ ts('Last Activity') }}
+          {{ ts('Summary') }}
         </div>
-        <div
-          case-activity-card="item.activity_summary.last[0]"
-          refresh-callback="refresh"
-          case="item"
-          crm-popup-form-success="pushCaseData($data.civicase_reload[0])"
-        >
+        <div>
+          {{ item.subject }}
         </div>
       </div>
-      <!-- End Last Activity -->
+      <!--End Case Summary -->
       <!-- Next Activity -->
       <div class="civicase__contact-cases-tab__panel-fields">
         <div class="civicase__contact-cases-tab__panel-field-title">
@@ -156,99 +152,20 @@
         </div>
       </div>
       <!-- End Next Activity -->
-      <!-- Upcoming Tasks Counts -->
+      <!-- Last Activity -->
       <div class="civicase__contact-cases-tab__panel-fields">
         <div class="civicase__contact-cases-tab__panel-field-title">
-          {{ ts('Upcoming') }}
+          {{ ts('Last Activity') }}
         </div>
-        <div class="civicase__case-card__activity-info">
-          <div class="civicase__case-card__activity-count-container">
-            <span>Tasks: </span>
-            <a class="civicase__case-card__activity-count"
-               ng-if="item.category_count.task.incomplete"
-              >
-              {{ item.category_count.incomplete.task }}
-            </a>
-            <span
-              ng-if="item.category_count.task.incomplete && item.category_count.task.overdue"
-              class="civicase__pipe">
-               |
-            </span>
-            <a
-              class="civicase__case-card__activity-count civicase__overdue-activity-icon civicase__overdue-activity-icon--before"
-              ng-if="item.category_count.task.overdue"
-            > {{ item.category_count.task.overdue }} </a>
-            <span
-              ng-if="!item.category_count.task.incomplete && !item.category_count.task.overdue"
-              class="civicase__case-card__activity-count civicase__case-card__activity-count--zero">
-              0
-            </span>
-          </div>
-          <div class="civicase__case-card__activity-count-container">
-            <span>Comms: </span>
-            <a class="civicase__case-card__activity-count"
-               ng-if="item.category_count.communication.incomplete"
-            > {{ item.category_count.incomplete.communication }} </a>
-            <span
-              ng-if="item.category_count.communication.incomplete && item.category_count.communication.overdue"
-              class="civicase__pipe"> | </span>
-            <a
-              class="civicase__case-card__activity-count civicase__overdue-activity-icon civicase__overdue-activity-icon--before"
-              ng-if="item.category_count.communication.overdue">
-             {{ item.category_count.communication.overdue }}
-            </a>
-            <span
-              ng-if="!item.category_count.communication.incomplete && !item.category_count.communication.overdue"
-              class="civicase__case-card__activity-count civicase__case-card__activity-count--zero">
-              0
-            </span>
-          </div>
-          <div class="civicase__case-card__activity-count-container">
-            <span>Other: </span>
-            <a class="civicase__case-card__activity-count"
-               ng-if="item.category_count.other.incomplete"
-            > {{ item.category_count.other.incomplete }} </a>
-            <span
-              ng-if="item.category_count.other.incomplete && item.category_count.other.overdue"
-              class="civicase__pipe">
-               |
-             </span>
-            <a
-              class="civicase__case-card__activity-count civicase__overdue-activity-icon civicase__overdue-activity-icon--before"
-              ng-if="item.category_count.other.overdue">
-              {{ item.category_count.other.overdue }}
-            </a>
-            <span
-              ng-if="!item.category_count.other.incomplete && !item.category_count.other.overdue"
-              class="civicase__case-card__activity-count civicase__case-card__activity-count--zero">
-              0
-            </span>
-          </div>
+        <div
+          case-activity-card="item.activity_summary.last[0]"
+          refresh-callback="refresh"
+          case="item"
+          crm-popup-form-success="pushCaseData($data.civicase_reload[0])"
+        >
         </div>
       </div>
-      <!-- End Upcoming Tasks Counts -->
-      <!-- Case Status -->
-      <div class="civicase__contact-cases-tab__panel-fields">
-        <div class="civicase__contact-cases-tab__panel-field-title">
-          {{ ts('Case Status') }}
-        </div>
-        <span
-          class="crm_notification-badge ng-binding ng-scope"
-          style="background-color: {{ caseStatuses[item.status_id].color }};"
-          >{{ item.status }}
-        </span>
-      </div>
-      <!-- End Case Status -->
-      <!-- Case Summary -->
-      <div class="civicase__contact-cases-tab__panel-fields">
-        <div class="civicase__contact-cases-tab__panel-field-title">
-          Summary
-        </div>
-        <div>
-          {{item.subject}}
-        </div>
-      </div>
-      <!--End Case Summary -->
+      <!-- End Last Activity -->
       <!-- Contact Role -->
       <div class="civicase__contact-cases-tab__panel-fields" ng-if="item.contact_role">
         <div class="civicase__contact-cases-tab__panel-field-title">
