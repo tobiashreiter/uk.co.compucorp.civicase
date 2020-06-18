@@ -2,7 +2,10 @@
   <span ng-if="!isAvatar" class="civicase__contact-name-container">
     <!-- Contact Icons -->
     <span ng-if="!noIcon">
-      <civicase-contact-icon contact-id="contacts[0].contact_id"></civicase-contact-icon>
+      <civicase-contact-icon
+        case-id="caseId"
+        contact-id="contacts[0].contact_id"
+      ></civicase-contact-icon>
     </span>
     <!-- End - Contact Icons -->
     <!-- Contact Name -->
@@ -51,8 +54,9 @@
           href="{{ url('civicrm/contact/view', {cid: contact.contact_id}) }}">
           <civicase-contact-icon
             auto-close-other-popovers="false"
-            contact-id="contact.contact_id">
-          </civicase-contact-icon>
+            case-id="caseId"
+            contact-id="contact.contact_id"
+          ></civicase-contact-icon>
           <span class="civicase__contact-name-additional">{{ contact.display_name }}</span>
         </a>
       </li>

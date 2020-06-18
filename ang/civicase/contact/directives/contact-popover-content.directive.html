@@ -28,7 +28,11 @@
   <div class="civicase__contact-popover__column">
     <div class="civicase__contact-popover__detail-group">
       <div class="civicase__contact-popover__detail-header"><strong>Primary Email</strong></div>
-      <div class="civicase__contact-popover__detail-value">{{contact.email}}</div>
+      <div class="civicase__contact-popover__detail-value">
+        <a class="crm-popup" ng-href="{{ getEmailUrl() }}">
+          {{contact.email}}
+        </a>
+      </div>
     </div>
     <div class="civicase__contact-popover__detail-group">
       <div class="civicase__contact-popover__detail-header"><strong>Groups</strong></div>

@@ -103,9 +103,11 @@
           <!-- Avatar -->
           <span
             ng-if="activity.assignee_contact_name"
-            civicase-contact-card avatar="true"
-            contacts="activity.assignee_contact_name">
-          </span>
+            civicase-contact-card
+            avatar="true"
+            case-id="activity.case_id"
+            contacts="activity.assignee_contact_name"
+          ></span>
           <!-- End - Avatar -->
         </div>
       </h3>

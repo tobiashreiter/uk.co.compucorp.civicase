@@ -60,7 +60,12 @@
     </div>
     <div class="civicase__contact-cases-tab__panel-row civicase__contact-cases-tab__panel-row--dark clearfix">
       <div>
-        <div class="civicase__contact-card--client" civicase-contact-card contacts="item.client"></div>
+        <div
+          class="civicase__contact-card--client"
+          civicase-contact-card
+          case-id="item.id"
+          contacts="item.client"
+        ></div>
         <div class="civicase__summary-tab__subject crm-entity" data-entity="Case" data-id="{{ item.id }}">
           <p
             crm-editable="item"
@@ -122,8 +127,10 @@
         <span>
           <span
             class="civicase__contact-card civicase__contact-card--manager"
-            civicase-contact-card contacts="[item.manager]">
-          </span>
+            civicase-contact-card
+            case-id="item.id"
+            contacts="[item.manager]"
+          ></span>
         </span>
       </span>
     </div>

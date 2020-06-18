@@ -7,6 +7,7 @@
       templateUrl: '~/civicase/contact/directives/contact-icon.directive.html',
       scope: {
         autoCloseOtherPopovers: '<?',
+        caseId: '<?',
         contactId: '<'
       }
     };
