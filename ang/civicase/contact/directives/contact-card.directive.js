@@ -8,14 +8,19 @@
       controller: civicaseContactCardController,
       templateUrl: '~/civicase/contact/directives/contact-card.directive.html',
       scope: {
+        caseId: '<?',
         data: '=contacts',
         isAvatar: '=avatar',
-        noIcon: '=noIcon'
+        noIcon: '='
       }
     };
 
+    /**
+     * Contact Card directive's controller
+     *
+     * @param {object} $scope scope object reference.
+     */
     function civicaseContactCardController ($scope) {
-      $scope.ts = CRM.ts('civicase');
       $scope.url = CRM.url;
       $scope.mainContact = null;
 
@@ -35,14 +40,20 @@
             if ($scope.isAvatar) {
               prepareAvatarData(name, contactID);
             } else {
-              $scope.contacts.push({display_name: name, contact_id: contactID});
+              $scope.contacts.push({ display_name: name, contact_id: contactID });
             }
           });
         } else if (typeof $scope.data === 'string') {
           if ($scope.isAvatar) {
-            prepareAvatarData(ContactsCache.getCachedContact($scope.data).display_name, $scope.data);
+            prepareAvatarData(
+              ContactsCache.getCachedContact($scope.data).display_name,
+              $scope.data
+            );
           } else {
-            $scope.contacts.push({display_name: ContactsCache.getCachedContact($scope.data).display_name, contact_id: $scope.data});
+            $scope.contacts.push({
+              contact_id: $scope.data,
+              display_name: ContactsCache.getCachedContact($scope.data).display_name
+            });
           }
         } else {
           $scope.contacts = _.cloneDeep($scope.data);
@@ -53,11 +64,12 @@
        * Get initials from the sent parameter
        * Example: JD should be returned for John Doe
        *
-       * @param {String} string
-       * @return {String}
+       * @param {string} contactFullName the contact's full name.
+       *
+       * @returns {string} the contact's initials.
        */
-      function getInitials (string) {
-        var names = string.split(' ');
+      function getInitials (contactFullName) {
+        var names = contactFullName.split(' ');
         var initials = names[0].substring(0, 1).toUpperCase();
 
         if (names.length > 1) {
@@ -70,8 +82,8 @@
       /**
        * Prepares data when the directive is avatar
        *
-       * @param {String} name
-       * @param {String} contactID
+       * @param {string} name the contact's full name.
+       * @param {string} contactID the contact's id.
        */
       function prepareAvatarData (name, contactID) {
         var avatarText;
@@ -93,8 +105,9 @@
       /**
        * Checks whether the sent parameter is a valid email address
        *
-       * @param {String} email
-       * @return {Boolean}
+       * @param {string} email the contact's email.
+       *
+       * @returns {boolean} true when the email is valid.
        */
       function validateEmail (email) {
         var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()\\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
