@@ -27,9 +27,7 @@
     function showWebformsDropdownButtonLabel () {
       var isWebformsDropdownVisible = parseInt($showWebforms.filter(':checked').val());
 
-      isWebformsDropdownVisible
-        ? $webformButtonLabel.parents('tr').show()
-        : $webformButtonLabel.parents('tr').hide();
+      setVisibilityOf($webformButtonLabel.parents('tr'), isWebformsDropdownVisible);
     }
 
     /**
@@ -44,9 +42,17 @@
         .filter('[data-case-category-name="' + caseCategoryName + '"]')
         .parents('tr');
 
-      isAllowed
-        ? $relatedWebformUrlFieldContainer.show()
-        : $relatedWebformUrlFieldContainer.hide();
+      setVisibilityOf($relatedWebformUrlFieldContainer, isAllowed);
+    }
+
+    /**
+     * Set visibility of the sent element to the sent state
+     *
+     * @param {object} $element jquery element
+     * @param {boolean} visibility if the element should be visible
+     */
+    function setVisibilityOf ($element, visibility) {
+      visibility ? $element.show() : $element.hide();
     }
   });
 })(CRM.$);

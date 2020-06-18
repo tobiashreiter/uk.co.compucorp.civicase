@@ -13,30 +13,22 @@
   module.controller('civicaseCaseDetailsHeaderController', civicaseCaseDetailsHeaderController);
 
   /**
-   *
-   * @param {*} $scope scope object of the controller
-   * @param {*} CaseActions case action service
-   * @param {*} WebformsCaseAction webform case action service
-   * @param {*} GoToWebformCaseAction go to webform case action service
-   * @param {*} webformsList configuration for webforms list
+   * @param {object} $scope scope object of the controller
+   * @param {object} CaseActions case action service
+   * @param {object} WebformsCaseAction webform case action service
+   * @param {object} GoToWebformCaseAction go to webform case action service
+   * @param {object} webformsList configuration for webforms list
    */
   function civicaseCaseDetailsHeaderController ($scope, CaseActions,
     WebformsCaseAction, GoToWebformCaseAction, webformsList) {
     $scope.webformsAction = CaseActions.findByActionName('Webforms');
     $scope.isGoToWebformAllowed = isGoToWebformAllowed;
     $scope.openWebform = openWebform;
-    $scope.getWebformDropdownButtonLabel = getWebformDropdownButtonLabel;
+    $scope.webformsListButtonLabel = webformsList.buttonLabel;
 
     (function init () {
       $scope.$watch('item', itemWatcher);
     })();
-
-    /**
-     * @returns {string} label for webform dropdown button
-     */
-    function getWebformDropdownButtonLabel () {
-      return webformsList.buttonLabel;
-    }
 
     /**
      * @param {object} action action object
@@ -47,7 +39,7 @@
 
     /**
      * @param {object} action action object
-     * @returns {object} is go to webform action allowed for the sent action
+     * @returns {boolean} is go to webform action allowed for the sent action
      */
     function isGoToWebformAllowed (action) {
       return GoToWebformCaseAction.isActionAllowed(action, [$scope.item]);
