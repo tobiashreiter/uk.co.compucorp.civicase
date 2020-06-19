@@ -188,6 +188,7 @@
 
       if (!$event || !$($event.target).is('a, a *, input, button')) {
         $scope.unfocusCase();
+        removeExtraRouteParams();
         if ($scope.viewingCase === id) {
           $scope.viewingCase = null;
           $scope.viewingCaseDetails = null;
@@ -199,6 +200,17 @@
       }
       setPageTitle();
       $($window).scrollTop(0); // Scrolls the window to top once new data loads
+    }
+
+    /**
+     * Remove route params added by individual tabs
+     */
+    function removeExtraRouteParams () {
+      var allowedRouteParams = ['caseId', 'cf'];
+
+      $route.current.params = _.pick($route.current.params, function (value, key) {
+        return allowedRouteParams.indexOf(key) !== -1;
+      });
     }
 
     /**
