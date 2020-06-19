@@ -51,9 +51,9 @@
   });
 
   module.controller('CivicaseCaseListTableController', function ($rootScope,
-    $scope, $window, BulkActions, crmApi, crmStatus, crmUiHelp,
+    $route, $scope, $window, BulkActions, crmApi, crmStatus, crmUiHelp,
     crmThrottle, currentCaseCategory, $timeout, formatCase, ContactsCache, CasesUtils, ts,
-    ActivityCategory, ActivityType, CaseStatus, $routeParams, $route, $location) {
+    ActivityCategory, ActivityType, CaseStatus) {
     var firstLoad = true;
     var allCases;
 
