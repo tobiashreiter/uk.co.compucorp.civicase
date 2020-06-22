@@ -41,13 +41,13 @@
 <!-- Others -->
 <div class="civicase__case-card__activity-count-container">
   <span>Other: </span>
-  <a class="civicase__case-card__activity-count"
+  <span class="civicase__case-card__activity-count"
     ng-if="data.category_count.other.incomplete"
-  > {{ data.category_count.other.incomplete }} </a>
+  > {{ data.category_count.other.incomplete }} </span>
   <span ng-if="data.category_count.other.incomplete && data.category_count.other.overdue" class="civicase__pipe"> | </span>
-  <a class="civicase__case-card__activity-count civicase__overdue-activity-icon civicase__overdue-activity-icon--before"
+  <span class="civicase__case-card__activity-count civicase__overdue-activity-icon civicase__overdue-activity-icon--before"
     ng-if="data.category_count.other.overdue"
-  > {{ data.category_count.other.overdue }} </a>
+  > {{ data.category_count.other.overdue }} </span>
   <span
     ng-if="!data.category_count.other.incomplete && !data.category_count.other.overdue"
     class="civicase__case-card__activity-count civicase__case-card__activity-count--zero">
