@@ -58,6 +58,7 @@ $setting = [
     'quick_form_type' => 'YesNo',
     'default' => FALSE,
     'html_attributes' => [
+      'data-toggles-visibility-for' => 'civicase__settings__webform-button-label',
       'class' => 'civicase__settings__show-webform',
     ],
     'html_type' => 'radio',

@@ -1,58 +1,26 @@
 (function ($) {
   $(document).on('crmLoad', function () {
-    var $allowWebformCheckBoxes = $('.civicase__settings__allow-webform');
-    var $webformUrlFields = $('.civicase__settings__webform-url');
-    var $showWebforms = $('.civicase__settings__show-webform');
-    var $webformButtonLabel = $('.civicase__settings__webform-button-label');
+    var $elementsThatToggleVisibility = $('[data-toggles-visibility-for]');
 
     (function init () {
-      showHideWebformUrlFields();
-      showWebformsDropdownButtonLabel();
+      toggleVisibility();
 
-      $allowWebformCheckBoxes.change(showHideRelatedFormUrlField);
-      $showWebforms.change(showWebformsDropdownButtonLabel);
+      $elementsThatToggleVisibility.change(toggleVisibility);
     })();
 
     /**
-     * Toggles the visibility of all the webform URL fields.
+     * Toggles the visibility of civicase settings fields based on value.
      */
-    function showHideWebformUrlFields () {
-      $allowWebformCheckBoxes.filter(':checked')
-        .each(showHideRelatedFormUrlField);
-    }
+    function toggleVisibility () {
+      $elementsThatToggleVisibility.filter(':checked')
+        .each(function () {
+          var $element = $(this);
+          var isAllowed = $element.val() === '1';
+          var $elementToToggle =
+            $('.' + $element.data('toggles-visibility-for')).parents('tr');
 
-    /**
-     * Toggles the visibility of webforms button label text box
-     */
-    function showWebformsDropdownButtonLabel () {
-      var isWebformsDropdownVisible = parseInt($showWebforms.filter(':checked').val());
-
-      setVisibilityOf($webformButtonLabel.parents('tr'), isWebformsDropdownVisible);
-    }
-
-    /**
-     * Toggles the visibility of a webform URL field that is related to the
-     * referenced "Allow Webform" field. `$(this)` refers to the "Allow Webform"
-     * field.
-     */
-    function showHideRelatedFormUrlField () {
-      var isAllowed = $(this).val() === '1';
-      var caseCategoryName = $(this).attr('data-case-category-name');
-      var $relatedWebformUrlFieldContainer = $webformUrlFields
-        .filter('[data-case-category-name="' + caseCategoryName + '"]')
-        .parents('tr');
-
-      setVisibilityOf($relatedWebformUrlFieldContainer, isAllowed);
-    }
-
-    /**
-     * Set visibility of the sent element to the sent state
-     *
-     * @param {object} $element jquery element
-     * @param {boolean} visibility if the element should be visible
-     */
-    function setVisibilityOf ($element, visibility) {
-      visibility ? $element.show() : $element.hide();
+          isAllowed ? $elementToToggle.show() : $elementToToggle.hide();
+        });
     }
   });
 })(CRM.$);
