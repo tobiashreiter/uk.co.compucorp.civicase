@@ -117,7 +117,7 @@
    * @param {object} ActivityStatus activity status service
    * @param {object} ActivityType activity type service
    * @param {Function} checkIfDraftActivity check if activity function
-   * @param {object} crmApi crm api service
+   * @param {object} civicaseCrmApi crm api service
    * @param {object} crmBlocker crm blocker service
    * @param {object} crmStatus crm status service
    * @param {object} DateHelper date helper service
@@ -125,7 +125,7 @@
    * @param {object} Priority priority service
    */
   function civicaseActivityPanelController ($rootScope, $scope, ActivityStatus,
-    ActivityType, checkIfDraftActivity, crmApi, crmBlocker, crmStatus,
+    ActivityType, checkIfDraftActivity, civicaseCrmApi, crmBlocker, crmStatus,
     DateHelper, dialogService, Priority) {
     $scope.activityPriorties = Priority.getAll();
     $scope.allowedActivityStatuses = {};

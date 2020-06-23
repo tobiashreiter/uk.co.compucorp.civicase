@@ -2,7 +2,7 @@
 (($, _) => {
   describe('CaseOverview', () => {
     let $compile, $provide, $q, $rootScope, $scope, BrowserCache,
-      CasesOverviewStats, crmApi, element, targetElementScope,
+      CasesOverviewStats, civicaseCrmApi, element, targetElementScope,
       CaseStatus, CaseType, CaseTypeFilterer;
 
     beforeEach(module('civicase.data', 'civicase', 'civicase.templates', (_$provide_) => {
@@ -10,12 +10,13 @@
     }));
 
     beforeEach(inject(function (_$compile_, _$q_, _$rootScope_, BrowserCacheMock,
-      _crmApi_, _CasesOverviewStatsData_, _CaseStatus_, _CaseType_, _CaseTypeFilterer_) {
+      _civicaseCrmApi_, _CasesOverviewStatsData_, _CaseStatus_, _CaseType_,
+      _CaseTypeFilterer_) {
       $compile = _$compile_;
       $q = _$q_;
       $rootScope = _$rootScope_;
       $scope = $rootScope.$new();
-      crmApi = _crmApi_;
+      civicaseCrmApi = _civicaseCrmApi_;
       CasesOverviewStats = _CasesOverviewStatsData_.get();
       BrowserCache = BrowserCacheMock;
       CaseStatus = _CaseStatus_;
@@ -24,7 +25,7 @@
 
       BrowserCache.get.and.returnValue([1, 3]);
       $provide.value('BrowserCache', BrowserCache);
-      crmApi.and.returnValue($q.resolve([CasesOverviewStats]));
+      civicaseCrmApi.and.returnValue($q.resolve([CasesOverviewStats]));
       spyOn(CaseTypeFilterer, 'filter').and.callThrough();
     }));
 
@@ -53,7 +54,7 @@
           id: { IN: ['1', '2'] }
         };
 
-        crmApi.and.returnValue($q.resolve([CasesOverviewStats]));
+        civicaseCrmApi.and.returnValue($q.resolve([CasesOverviewStats]));
         expectedCaseTypes = CaseTypeFilterer.filter(expectedFilters);
         CaseTypeFilterer.filter.calls.reset();
         compileDirective({
@@ -73,7 +74,7 @@
 
     describe('Case Status Data', () => {
       beforeEach(() => {
-        crmApi.and.returnValue($q.resolve([CasesOverviewStats]));
+        civicaseCrmApi.and.returnValue($q.resolve([CasesOverviewStats]));
         compileDirective({
           caseTypeCategory: 'Cases',
           caseTypeID: { IN: ['1', '2'] },
@@ -82,7 +83,7 @@
       });
 
       it('fetches the case statistics, but shows all case statuses', () => {
-        expect(crmApi).toHaveBeenCalledWith([['Case', 'getstats', {
+        expect(civicaseCrmApi).toHaveBeenCalledWith([['Case', 'getstats', {
           'case_type_id.case_type_category': 'Cases',
           case_type_id: { IN: ['1', '2'] }
         }]]);
@@ -105,7 +106,7 @@
             .indexBy('value')
             .value();
 
-          crmApi.and.callFake((entity) => {
+          civicaseCrmApi.and.callFake((entity) => {
             const response = entity === 'CaseType'
               ? { values: sampleCaseTypes }
               : [CasesOverviewStats];
@@ -133,7 +134,7 @@
             .indexBy('value')
             .value();
 
-          crmApi.and.callFake((entity) => {
+          civicaseCrmApi.and.callFake((entity) => {
             const response = entity === 'CaseType'
               ? { values: [caseType] }
               : [CasesOverviewStats];

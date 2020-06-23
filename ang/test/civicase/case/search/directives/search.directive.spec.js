@@ -2,15 +2,15 @@
 (($, _, crmCheckPerm) => {
   describe('civicaseSearch', () => {
     let $controller, $rootScope, $scope, $timeout, CaseFilters, CaseStatuses, caseTypeCategoriesMockData,
-      CaseTypes, crmApi, currentCaseCategory, customSearchFields, affixOriginalFunction,
+      CaseTypes, civicaseCrmApi, currentCaseCategory, customSearchFields, affixOriginalFunction,
       offsetOriginalFunction, originalParentScope, affixReturnValue, originalBindToRoute;
 
     const SEARCH_EVENT_NAME = 'civicase::case-search::filters-updated';
 
     beforeEach(module('civicase.templates', 'civicase', 'civicase.data', ($provide) => {
-      crmApi = jasmine.createSpy('crmApi');
+      civicaseCrmApi = jasmine.createSpy('civicaseCrmApi');
 
-      $provide.value('crmApi', crmApi);
+      $provide.value('civicaseCrmApi', civicaseCrmApi);
     }));
 
     beforeEach(inject((_$controller_, $q, _$rootScope_, _$timeout_, _CaseFilters_,
@@ -27,7 +27,7 @@
       customSearchFields = _CustomSearchField_.getAll();
       currentCaseCategory = _currentCaseCategory_;
 
-      crmApi.and.returnValue($q.resolve({ values: [] }));
+      civicaseCrmApi.and.returnValue($q.resolve({ values: [] }));
     }));
 
     beforeEach(() => {

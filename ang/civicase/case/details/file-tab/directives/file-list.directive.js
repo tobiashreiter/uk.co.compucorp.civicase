@@ -16,12 +16,10 @@
   /**
    * Controlle for File List
    *
-   * @param {Object} $scope
-   * @param {Object} crmApi
-   * @param {Object} crmBlocker
-   * @param {Object} crmStatus
+   * @param {object} $scope scope object
+   * @param {object} civicaseCrmApi service to access civicrm api
    */
-  function civicaseFileListController ($scope, crmApi) {
+  function civicaseFileListController ($scope, civicaseCrmApi) {
     $scope.ts = CRM.ts('civicase');
 
     (function init () {
@@ -31,12 +29,12 @@
     /**
      * Refreshes the UI state after updating the db from the api calls
      *
-     * @params {Array} apiCalls
+     * @param {Array} apiCalls lisy of api calls
      */
     $scope.refresh = function (apiCalls) {
       if (!_.isArray(apiCalls)) apiCalls = [];
 
-      crmApi(apiCalls, true).then(function (result) {
+      civicaseCrmApi(apiCalls, true).then(function (result) {
         $scope.fileLists.refresh();
       });
     };
@@ -44,7 +42,7 @@
     /**
      * Watcher function for fileLists.result collection
      *
-     * @params {Object} response
+     * @param {object} response response object
      */
     function fileListsWatcher (response) {
       // prettier html

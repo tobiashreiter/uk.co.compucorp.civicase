@@ -47,15 +47,16 @@
    * @param {object} CaseType a reference to the Case Type service
    * @param {object} CaseTypeCategory a reference to the Case Type Category service
    * @param {object} dialogService service to open the dialog box
-   * @param {Function} crmApi service to interact with the civicrm api
+   * @param {Function} civicaseCrmApi service to interact with the civicrm api
    * @param {object} crmBlocker crm blocker service
    * @param {object} crmStatus crm status service
    * @param {object} DateHelper date helper service
    * @param {object} ts ts service
    * @param {Function} viewInPopup factory to view an activity in a popup
    */
-  function caseActivityCardController ($filter, $scope, CaseType, CaseTypeCategory, dialogService, crmApi,
-    crmBlocker, crmStatus, DateHelper, ts, viewInPopup) {
+  function caseActivityCardController ($filter, $scope, CaseType,
+    CaseTypeCategory, dialogService, civicaseCrmApi, crmBlocker, crmStatus,
+    DateHelper, ts, viewInPopup) {
     var caseTypes = CaseType.getAll();
     var caseTypeCategories = CaseTypeCategory.getAll();
 
@@ -80,7 +81,10 @@
      * @returns {Promise} api call promise
      */
     $scope.markCompleted = function (activity) {
-      return crmApi([['Activity', 'create', { id: activity.id, status_id: activity.is_completed ? 'Scheduled' : 'Completed' }]])
+      return civicaseCrmApi([['Activity', 'create', {
+        id: activity.id,
+        status_id: activity.is_completed ? 'Scheduled' : 'Completed'
+      }]])
         .then(function (data) {
           if (!data[0].is_error) {
             activity.is_completed = !activity.is_completed;
@@ -163,7 +167,7 @@
        * @returns {Promise} promise
        */
       $scope.deleteFile = function (activity, file) {
-        var promise = crmApi('Attachment', 'delete', { id: file.id })
+        var promise = civicaseCrmApi('Attachment', 'delete', { id: file.id })
           .then(function () {
             $scope.refresh();
           });

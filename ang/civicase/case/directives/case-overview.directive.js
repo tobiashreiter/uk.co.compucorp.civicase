@@ -41,14 +41,14 @@
    * Controller for civicaseCaseOverview.
    *
    * @param {object} $scope the controller's $scope object.
-   * @param {object} crmApi the crm api service reference.
+   * @param {object} civicaseCrmApi the crm api service reference.
    * @param {object} BrowserCache the browser cache service reference.
    * @param {object} CaseStatus the case status service reference.
    * @param {object} CaseType the case type service reference.
    * @param {object} CaseTypeFilterer the case type filterer service reference.
    */
-  function civicaseCaseOverviewController ($scope, crmApi, BrowserCache, CaseStatus,
-    CaseType, CaseTypeFilterer) {
+  function civicaseCaseOverviewController ($scope, civicaseCrmApi, BrowserCache,
+    CaseStatus, CaseType, CaseTypeFilterer) {
     var BROWSER_CACHE_IDENTIFIER = 'civicase.CaseOverview.hiddenCaseStatuses';
     var MAXIMUM_CASE_TYPES_TO_DISPLAY_BREAKDOWN = 1;
     var allCaseStatusNames = _.map(CaseStatus.getAll(true), 'name');
@@ -172,7 +172,7 @@
       delete params.status_id;
 
       apiCalls.push(['Case', 'getstats', params]);
-      crmApi(apiCalls).then(function (response) {
+      civicaseCrmApi(apiCalls).then(function (response) {
         $scope.summaryData = response[0].values;
       });
     }

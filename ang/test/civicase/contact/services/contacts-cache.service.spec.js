@@ -1,18 +1,18 @@
 /* eslint-env jasmine */
 (function (_) {
   describe('ContactsCache', function () {
-    var $q, $rootScope, ContactsCache, ContactsData, crmApi;
+    var $q, $rootScope, ContactsCache, ContactsData, civicaseCrmApi;
 
     beforeEach(function () {
       module('civicase', 'civicase.data');
     });
 
-    beforeEach(inject(function (_$q_, _$rootScope_, _ContactsCache_, _ContactsData_, _crmApi_) {
+    beforeEach(inject(function (_$q_, _$rootScope_, _ContactsCache_, _ContactsData_, _civicaseCrmApi_) {
       $q = _$q_;
       $rootScope = _$rootScope_;
       ContactsCache = _ContactsCache_;
       ContactsData = _.cloneDeep(_ContactsData_);
-      crmApi = _crmApi_;
+      civicaseCrmApi = _civicaseCrmApi_;
 
       spyOn($rootScope, '$broadcast');
     }));
@@ -32,7 +32,7 @@
       var expectedApiParams;
 
       beforeEach(function () {
-        crmApi.and.returnValue($q.resolve({
+        civicaseCrmApi.and.returnValue($q.resolve({
           values: []
         }));
         expectedApiParams = {
@@ -78,7 +78,7 @@
         });
 
         it('gets the details of sent contacts', function () {
-          expect(crmApi).toHaveBeenCalledWith('Contact', 'get', expectedApiParams);
+          expect(civicaseCrmApi).toHaveBeenCalledWith('Contact', 'get', expectedApiParams);
         });
 
         it('broadcasts an event when new contacts are added', function () {
@@ -99,7 +99,7 @@
         });
 
         it('gets the details of new contacts only', function () {
-          expect(crmApi.calls.mostRecent().args).toEqual(['Contact', 'get', expectedApiParams]);
+          expect(civicaseCrmApi.calls.mostRecent().args).toEqual(['Contact', 'get', expectedApiParams]);
         });
       });
 
@@ -126,7 +126,7 @@
         beforeEach(function () {
           ContactsData.values[0].tags = 'tag1,tag2,tag3';
 
-          crmApi.and.returnValue($q.resolve(ContactsData));
+          civicaseCrmApi.and.returnValue($q.resolve(ContactsData));
           ContactsCache.add(ContactsData.values);
           $rootScope.$digest();
 
@@ -154,7 +154,7 @@
 
       describe('when the contact does not exist', function () {
         beforeEach(function () {
-          crmApi.and.returnValue($q.resolve(ContactsData));
+          civicaseCrmApi.and.returnValue($q.resolve(ContactsData));
           ContactsCache.add(ContactsData.values);
           $rootScope.$digest();
 
@@ -171,7 +171,7 @@
       var returnValue;
 
       beforeEach(function () {
-        crmApi.and.returnValue($q.resolve(ContactsData));
+        civicaseCrmApi.and.returnValue($q.resolve(ContactsData));
         ContactsCache.add(ContactsData.values);
         $rootScope.$digest();
         returnValue = ContactsCache.getImageUrlOf(ContactsData.values[0].contact_id);
@@ -186,7 +186,7 @@
       var returnValue;
 
       beforeEach(function () {
-        crmApi.and.returnValue($q.resolve(ContactsData));
+        civicaseCrmApi.and.returnValue($q.resolve(ContactsData));
         ContactsCache.add(ContactsData.values);
         $rootScope.$digest();
         returnValue = ContactsCache.getContactIconOf(ContactsData.values[0].contact_id);

@@ -49,13 +49,13 @@
    * @param {object} $q $q
    * @param {object} $scope $scope
    * @param {object} allowMultipleCaseClients allow multiple clients configuration value
-   * @param {object} crmApi crmApi
+   * @param {object} civicaseCrmApi service to interact with civicrm api
    * @param {object} DateHelper DateHelper
    * @param {object} ts ts
    * @param {object} RelationshipType RelationshipType
    */
-  function civicaseViewPeopleController ($q, $scope, allowMultipleCaseClients, crmApi, DateHelper,
-    ts, RelationshipType) {
+  function civicaseViewPeopleController ($q, $scope, allowMultipleCaseClients,
+    civicaseCrmApi, DateHelper, ts, RelationshipType) {
     // The ts() and hs() functions help load strings for this module.
     var CONTACT_CANT_HAVE_ROLE_MESSAGE = ts('Case clients cannot be selected for a case role. Please select another contact.');
     var clients = _.indexBy($scope.item.client, 'contact_id');
@@ -311,9 +311,10 @@
     }
 
     /**
-     * Prompts the user to select a contact to assign them to the case. Relationships between
-     * the selected contact and the case clients are created using the provided role. This event is also
-     * recorded as an activity related to the case.
+     * Prompts the user to select a contact to assign them to the case.
+     * Relationships between the selected contact and the case clients are
+     * created using the provided role. This event is also recorded as an
+     * activity related to the case.
      *
      * @param {Role} role the role details.
      */
@@ -743,7 +744,7 @@ included in the confirmation dialog.
       if ($scope.relationsAlphaFilter) {
         params.display_name = $scope.relationsAlphaFilter;
       }
-      crmApi('Case', 'getrelations', params).then(function (contacts) {
+      civicaseCrmApi('Case', 'getrelations', params).then(function (contacts) {
         $scope.relations = _.each(contacts.values, function (rel) {
           var relType = relTypes[rel.relationship_type_id];
           rel.relation = relType['label_' + rel.relationship_direction];
