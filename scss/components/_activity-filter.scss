@@ -1,4 +1,4 @@
-$civicase-activity-filter-category-dropdown: 170px;
+$civicase-activity-filter-category-dropdown: 175px;
 
 .civicase__activity-filter {
   background: $gray-light;
@@ -90,6 +90,10 @@ $civicase-activity-filter-category-dropdown: 170px;
 
   .crm-i {
     color: $gray-dark;
+  }
+
+  .select2-chosen {
+    max-width: 130px;
   }
 }
 

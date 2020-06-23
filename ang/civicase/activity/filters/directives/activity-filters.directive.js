@@ -1,7 +1,7 @@
 (function (angular, $, _) {
   var module = angular.module('civicase');
 
-  module.directive('civicaseActivityFilters', function ($rootScope, $timeout,
+  module.directive('civicaseActivityFilters', function ($rootScope, $timeout, ts,
     crmUiHelp, ActivityCategory, ActivityStatus, ActivityType,
     CustomActivityField, CaseTypeCategory) {
     return {
@@ -32,8 +32,6 @@
      * @param {object} element element
      */
     function activityFiltersLink ($scope, element) {
-      var ts = $scope.ts = CRM.ts('civicase');
-
       $scope.combinedFilterParams = {};
       $scope.activityCategories = prepareActivityCategories();
       $scope.availableFilters = prepareAvailableFilters();
