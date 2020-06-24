@@ -248,13 +248,17 @@
 
     /**
      * Executes the search as long as the component is not expanded.
+     *
+     * When `ng-change` is mentioned in `crm-ui-select` directive, the change
+     * listener gets fired before the ng-model is changed.
+     * This function is created to avoid this problem
      */
     function doSearchIfNotExpanded () {
       if ($scope.expanded) {
         return;
       }
 
-      doSearch();
+      $timeout(doSearch);
     }
 
     /**
