@@ -51,8 +51,8 @@
     CaseType, CaseTypeFilterer) {
     var BROWSER_CACHE_IDENTIFIER = 'civicase.CaseOverview.hiddenCaseStatuses';
     var MAXIMUM_CASE_TYPES_TO_DISPLAY_BREAKDOWN = 1;
-    var allCaseStatusNames = _.map(CaseStatus.getAll(), 'name');
-    var caseStatusesIndexedByName = _.indexBy(CaseStatus.getAll(), 'name');
+    var allCaseStatusNames = _.map(CaseStatus.getAll(true), 'name');
+    var caseStatusesIndexedByName = _.indexBy(CaseStatus.getAll(true), 'name');
 
     $scope.caseStatuses = [];
     $scope.caseTypes = [];
