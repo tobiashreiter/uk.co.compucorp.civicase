@@ -241,6 +241,7 @@
           $scope.expanded = false;
 
           $scope.doSearchIfNotExpanded();
+          $timeout.flush();
         });
 
         it('executes the search', () => {
@@ -252,7 +253,6 @@
       describe('when the search is expanded', () => {
         beforeEach(() => {
           $scope.expanded = true;
-
           $scope.doSearchIfNotExpanded();
         });
 
