@@ -105,8 +105,8 @@
     }
   });
 
-  fdescribe('CivicaseCaseListTableController', function () {
-    var $controller, $q, $scope, $route, CasesData, crmApi;
+  describe('CivicaseCaseListTableController', function () {
+    var $controller, $q, $scope, $route, CasesData, civicaseCrmApi;
 
     beforeEach(module('civicase', 'civicase.data', 'crmUtil', function ($provide) {
       $provide.value('$route', {

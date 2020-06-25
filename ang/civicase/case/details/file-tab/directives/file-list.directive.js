@@ -29,7 +29,7 @@
     /**
      * Refreshes the UI state after updating the db from the api calls
      *
-     * @param {Array} apiCalls lisy of api calls
+     * @param {Array} apiCalls list of api calls
      */
     $scope.refresh = function (apiCalls) {
       if (!_.isArray(apiCalls)) apiCalls = [];

@@ -4,7 +4,7 @@
   module.service('ContactsCache', ContactsCache);
 
   /**
-   * Contacts Cashe Service
+   * Contacts Cache Service
    *
    * @param {Function} civicaseCrmApi service to access civicrm api
    * @param {object} $q angular queue service
