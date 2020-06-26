@@ -499,6 +499,11 @@ function civicase_civicrm_entityTypes(&$entityTypes) {
     'class' => 'CRM_Civicase_DAO_CaseContactLock',
     'table' => 'civicase_contactlock',
   ];
+  $entityTypes[] = [
+    'name'  => 'CaseCategoryInstance',
+    'class' => 'CRM_Civicase_DAO_CaseCategoryInstance',
+    'table' => 'civicrm_case_category_instance',
+  ];
 
   _civicase_add_case_category_case_type_entity($entityTypes);
 }

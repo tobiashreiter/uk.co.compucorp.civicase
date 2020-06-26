@@ -9,6 +9,7 @@ use CRM_Civicase_Setup_CreateSafeFileExtensionOptionValue as CreateSafeFileExten
 use CRM_Civicase_Setup_UpdateMenuLinks as MenuLinksSetup;
 use CRM_Civicase_Uninstall_RemoveCustomGroupSupportForCaseCategory as RemoveCustomGroupSupportForCaseCategory;
 use CRM_Civicase_Setup_ProcessCaseCategoryForCustomGroupSupport as ProcessCaseCategoryForCustomGroupSupport;
+use CRM_Civicase_Setup_CaseCategoryInstanceSupport as CaseCategoryInstanceSupport;
 
 /**
  * Collection of upgrade steps.
@@ -69,6 +70,7 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
 
     $steps = [
       new CaseTypeCategorySupport(),
+      new CaseCategoryInstanceSupport(),
       new AddCaseCategoryWordReplacementOptionGroup(),
       new CreateCasesOptionValue(),
       new MoveCaseTypesToCasesCategory(),
