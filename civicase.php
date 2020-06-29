@@ -187,6 +187,7 @@ function civicase_civicrm_buildForm($formName, &$form) {
     new CRM_Civicase_Hook_BuildForm_EnableCaseCategoryIconField(),
     new CRM_Civicase_Hook_BuildForm_CaseCategoryCustomGroupDisplay(),
     new CRM_Civicase_Hook_BuildForm_ModifyCaseTypesForAdvancedSearch(),
+    new CRM_Civicase_Hook_BuildForm_AddCaseCategoryInstanceField(),
   ];
 
   foreach ($hooks as $hook) {
@@ -383,6 +384,7 @@ function civicase_civicrm_post($op, $objectName, $objectId, &$objectRef) {
 function civicase_civicrm_postProcess($formName, &$form) {
   $hooks = [
     new CRM_Civicase_Hook_PostProcess_SetUserContextForSaveAndNewCase(),
+    new CRM_Civicase_Hook_PostProcess_SaveCaseCategoryInstance(),
     new CRM_Civicase_Hook_PostProcess_CaseCategoryPostProcessor(),
     new CRM_Civicase_Hook_PostProcess_ActivityFormStatusWordReplacement(),
     new CRM_Civicase_Hook_PostProcess_RedirectToCaseDetails(),
