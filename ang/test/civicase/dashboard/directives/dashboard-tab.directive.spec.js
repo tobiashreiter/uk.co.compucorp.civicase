@@ -1,7 +1,7 @@
 /* eslint-env jasmine */
 (function ($, _, moment) {
   describe('dashboardTabController', function () {
-    var $controller, $rootScope, $scope, crmApi, formatActivity, formatCase,
+    var $controller, $rootScope, $scope, civicaseCrmApi, formatActivity, formatCase,
       mockedCases, ActivityStatusType;
 
     /**
@@ -14,11 +14,11 @@
     }
 
     beforeEach(module('civicase.templates', 'civicase', 'crmUtil'));
-    beforeEach(inject(function (_$controller_, _$rootScope_, _crmApi_,
+    beforeEach(inject(function (_$controller_, _$rootScope_, _civicaseCrmApi_,
       _formatActivity_, _formatCase_, _ActivityStatusType_) {
       $controller = _$controller_;
       $rootScope = _$rootScope_;
-      crmApi = _crmApi_;
+      civicaseCrmApi = _civicaseCrmApi_;
       formatActivity = _formatActivity_;
       formatCase = _formatCase_;
       ActivityStatusType = _ActivityStatusType_;
@@ -32,7 +32,7 @@
 
     beforeEach(inject(function ($q) {
       generateMockedCases();
-      crmApi.and.returnValue($q.resolve({
+      civicaseCrmApi.and.returnValue($q.resolve({
         values: mockedCases
       }));
     }));
@@ -57,7 +57,7 @@
           $scope.filters.caseRelationshipType = 'is_involved';
           $scope.activityFilters.case_filter.foo = newFilterValue;
 
-          crmApi.calls.reset();
+          civicaseCrmApi.calls.reset();
           $scope.$digest();
         });
 

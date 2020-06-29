@@ -6,7 +6,7 @@
 
     beforeEach(module('civicase', 'civicase.data'));
 
-    beforeEach(inject((_$controller_, _$rootScope_, _CasesData_, _CaseTypeCategory_, _crmApi_) => {
+    beforeEach(inject((_$controller_, _$rootScope_, _CasesData_, _CaseTypeCategory_) => {
       $controller = _$controller_;
       $rootScope = _$rootScope_;
       CaseTypeCategory = _CaseTypeCategory_;

@@ -51,7 +51,7 @@
   });
 
   module.controller('CivicaseCaseListTableController', function ($rootScope,
-    $route, $scope, $window, BulkActions, crmApi, crmStatus, crmUiHelp,
+    $route, $scope, $window, BulkActions, civicaseCrmApi, crmStatus, crmUiHelp,
     crmThrottle, currentCaseCategory, $timeout, formatCase, ContactsCache, CasesUtils, ts,
     ActivityCategory, ActivityType, CaseStatus) {
     var firstLoad = true;
@@ -141,7 +141,7 @@
       apiCalls = apiCalls || [];
       apiCalls = apiCalls.concat(getCaseApiParams(angular.extend({}, $scope.filters, $scope.hiddenFilters), $scope.sort, $scope.page));
 
-      crmApi(apiCalls, true)
+      civicaseCrmApi(apiCalls, true)
         .then(function (result) {
           $scope.cases = _.each(result[apiCalls.length - 2].values, formatCase);
           $scope.totalCount = result[apiCalls.length - 1];
@@ -409,7 +409,7 @@
       params[0][2].return = ['case_type_id', 'status_id', 'is_deleted', 'contacts'];
       params[0][2].options.limit = 0;
 
-      crmApi(params).then(function (res) {
+      civicaseCrmApi(params).then(function (res) {
         allCases = res[0].values;
         $scope.isSelectAllAvailable = true;
       });
@@ -453,7 +453,7 @@
         params.push(['Case', 'getcaselistheaders']);
       }
 
-      return crmApi(params);
+      return civicaseCrmApi(params);
     }
 
     /**

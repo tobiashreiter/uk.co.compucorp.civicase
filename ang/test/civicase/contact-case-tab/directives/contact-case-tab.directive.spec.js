@@ -3,7 +3,7 @@
 ((_) => {
   describe('Contact Case Tab', () => {
     var $controller, $rootScope, $scope, CaseTypeCategoryTranslationService,
-      crmApi, mockContactId, mockContactService, AddCase;
+      civicaseCrmApi, mockContactId, mockContactService, AddCase;
 
     beforeEach(module('civicase.data', 'civicase', ($provide) => {
       mockContactService = jasmine.createSpyObj('Contact', ['getCurrentContactID']);
@@ -12,12 +12,12 @@
     }));
 
     beforeEach(inject((_$controller_, _$rootScope_, _CaseTypeCategoryTranslationService_,
-      _crmApi_, _AddCase_) => {
+      _civicaseCrmApi_, _AddCase_) => {
       $controller = _$controller_;
       $rootScope = _$rootScope_;
       CaseTypeCategoryTranslationService = _CaseTypeCategoryTranslationService_;
       AddCase = _AddCase_;
-      crmApi = _crmApi_;
+      civicaseCrmApi = _civicaseCrmApi_;
 
       spyOn(CaseTypeCategoryTranslationService, 'restoreTranslation');
       spyOn(CaseTypeCategoryTranslationService, 'storeTranslation');
@@ -48,7 +48,7 @@
 
     describe('when loading cases', () => {
       it('requests non deleted opened cases for the given contact', () => {
-        expect(crmApi.calls.allArgs()).toContain(jasmine.arrayContaining([
+        expect(civicaseCrmApi.calls.allArgs()).toContain(jasmine.arrayContaining([
           jasmine.objectContaining({
             cases: ['Case', 'getcaselist', jasmine.objectContaining({
               'status_id.grouping': 'Opened',
@@ -61,7 +61,7 @@
       });
 
       it('requests non deleted closed cases for the given contact', () => {
-        expect(crmApi.calls.allArgs()).toContain(jasmine.arrayContaining([
+        expect(civicaseCrmApi.calls.allArgs()).toContain(jasmine.arrayContaining([
           jasmine.objectContaining({
             cases: ['Case', 'getcaselist', jasmine.objectContaining({
               'status_id.grouping': 'Closed',
@@ -74,7 +74,7 @@
       });
 
       it('requests non deleted cases where the contact has a role other than client', () => {
-        expect(crmApi.calls.allArgs()).toContain(jasmine.arrayContaining([
+        expect(civicaseCrmApi.calls.allArgs()).toContain(jasmine.arrayContaining([
           jasmine.objectContaining({
             cases: ['Case', 'getcaselist', jasmine.objectContaining({
               exclude_for_client_id: $scope.contactId,

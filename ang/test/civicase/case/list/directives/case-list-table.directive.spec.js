@@ -105,8 +105,8 @@
     }
   });
 
-  fdescribe('CivicaseCaseListTableController', function () {
-    var $controller, $q, $scope, $route, CasesData, crmApi;
+  describe('CivicaseCaseListTableController', function () {
+    var $controller, $q, $scope, $route, CasesData, civicaseCrmApi;
 
     beforeEach(module('civicase', 'civicase.data', 'crmUtil', function ($provide) {
       $provide.value('$route', {
@@ -122,13 +122,13 @@
     }));
 
     beforeEach(inject(function (_$controller_, _$q_, _$route_, $rootScope,
-      _CasesData_, _crmApi_, _formatCase_) {
+      _CasesData_, _civicaseCrmApi_, _formatCase_) {
       $controller = _$controller_;
       $q = _$q_;
       $route = _$route_;
       $scope = $rootScope.$new();
       CasesData = _CasesData_.get();
-      crmApi = _crmApi_;
+      civicaseCrmApi = _civicaseCrmApi_;
       // custom function added by civicrm:
       $scope.$bindToRoute = jasmine.createSpy('$bindToRoute');
       $scope.filters = {
@@ -163,20 +163,20 @@
           ['Case', 'getcaselistheaders']
         ];
 
-        crmApi.and.returnValue($q.resolve([_.cloneDeep(CasesData)]));
+        civicaseCrmApi.and.returnValue($q.resolve([_.cloneDeep(CasesData)]));
         initController();
         $scope.applyAdvSearch($scope.filters);
       });
 
       it('requests the cases data', function () {
-        expect(crmApi).toHaveBeenCalledWith(expectedApiCallParams);
+        expect(civicaseCrmApi).toHaveBeenCalledWith(expectedApiCallParams);
       });
     });
 
     describe('on page number has changed', function () {
       beforeEach(function () {
         addAdditionalMarkup();
-        crmApi.and.returnValue($q.resolve([_.cloneDeep(CasesData)]));
+        civicaseCrmApi.and.returnValue($q.resolve([_.cloneDeep(CasesData)]));
         initController();
         $scope.$digest();
         $('.civicase__case-list-panel').scrollTop(20);

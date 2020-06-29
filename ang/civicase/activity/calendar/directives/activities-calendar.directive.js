@@ -154,19 +154,19 @@
   /**
    * Activities Calendar Controller
    *
-   * @param {*} $q $q service
-   * @param {*} $rootScope root scope object
-   * @param {*} $route route service
-   * @param {*} $sce sce service
-   * @param {*} $scope $scope scope object
-   * @param {*} ContactsCache contacts cache service
-   * @param {*} crmApi crm api service
-   * @param {*} formatActivity format activity service
-   * @param {*} getActivityFeedUrl get activity feed url service
-   * @param {*} ActivityStatusType activity status type service
+   * @param {object} $q $q service
+   * @param {object} $rootScope root scope object
+   * @param {object} $route route service
+   * @param {object} $sce sce service
+   * @param {object} $scope $scope scope object
+   * @param {object} ContactsCache contacts cache service
+   * @param {Function} civicaseCrmApi crm api service
+   * @param {Function} formatActivity format activity service
+   * @param {Function} getActivityFeedUrl get activity feed url service
+   * @param {object} ActivityStatusType activity status type service
    */
   function civicaseActivitiesCalendarController ($q, $rootScope, $route, $sce,
-    $scope, ContactsCache, crmApi, formatActivity, getActivityFeedUrl, ActivityStatusType) {
+    $scope, ContactsCache, civicaseCrmApi, formatActivity, getActivityFeedUrl, ActivityStatusType) {
     var ACTIVITIES_DISPLAY_LIMIT = 25;
     var DEBOUNCE_WAIT = 300;
 
@@ -440,7 +440,7 @@
         params.case_filter = $scope.caseParams;
       }
 
-      return crmApi('Activity', 'get', _.assign(params, {
+      return civicaseCrmApi('Activity', 'get', _.assign(params, {
         return: [
           'subject', 'details', 'activity_type_id', 'status_id',
           'source_contact_name', 'target_contact_name', 'assignee_contact_name',
@@ -536,7 +536,7 @@
         params.case_filter = $scope.caseParams;
       }
 
-      return crmApi('Activity', 'getdayswithactivities', params)
+      return civicaseCrmApi('Activity', 'getdayswithactivities', params)
         .then(function (result) {
           return result.values;
         })

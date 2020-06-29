@@ -19,14 +19,14 @@
    * @param {Function} ts translation service
    * @param {Function} CaseTypeCategory the case type category service
    * @param {Function} CaseTypeCategoryTranslationService the case type category translation service
-   * @param {Function} crmApi the crm api service
+   * @param {Function} civicaseCrmApi the crm api service
    * @param {Function} formatCase the format case service
    * @param {object} Contact the contact service
    * @param {object} ContactsCache the contacts cache service
    * @param {string} AddCase service to open add case popup
    */
   function CivicaseContactCaseTabController ($scope, ts, CaseTypeCategory,
-    CaseTypeCategoryTranslationService, crmApi, formatCase, Contact,
+    CaseTypeCategoryTranslationService, civicaseCrmApi, formatCase, Contact,
     ContactsCache, AddCase) {
     var commonConfigs = {
       isLoaded: false,
@@ -107,7 +107,10 @@
       var caseListIndex = _.findIndex($scope.casesListConfig, function (caseObj) {
         return caseObj.name === name;
       });
-      var params = getCaseApiParams($scope.casesListConfig[caseListIndex].filterParams, $scope.casesListConfig[caseListIndex].page);
+      var params = getCaseApiParams(
+        $scope.casesListConfig[caseListIndex].filterParams,
+        $scope.casesListConfig[caseListIndex].page
+      );
 
       $scope.casesListConfig[caseListIndex].showSpinner = true;
       updateCase(caseListIndex, params);
@@ -230,7 +233,7 @@
     function getTotalCasesCount (apiCall) {
       var count = 0;
 
-      crmApi(apiCall).then(function (response) {
+      civicaseCrmApi(apiCall).then(function (response) {
         _.each(response, function (ind) {
           count += ind;
         });
@@ -240,9 +243,10 @@
     }
 
     /**
-     * Triggers after the contact tab changes. When changing back to the tab belonging to this case
-     * type category, it restores the translations associated with it. This is done due to CiviCRM
-     * replacing the translation files when a new angular module is loaded. The solution is to manually
+     * Triggers after the contact tab changes. When changing back to the tab
+     * belonging to this case type category, it restores the translations
+     * associated with it. This is done due to CiviCRM replacing the translation
+     * files when a new angular module is loaded. The solution is to manually
      * restore the translations.
      *
      * @param {object} urlParams a map of the URL parameters belonging to the currently active tab.
@@ -264,7 +268,8 @@
     function initCasesConfig () {
       _.each($scope.casesListConfig, function (item, ind) {
         $scope.casesListConfig[ind].cases = [];
-        $scope.casesListConfig[ind] = $.extend(true, $scope.casesListConfig[ind], commonConfigs);
+        $scope.casesListConfig[ind] =
+          $.extend(true, $scope.casesListConfig[ind], commonConfigs);
       });
     }
 
@@ -321,7 +326,7 @@
      * @param {Array} params the parameters to use when updating the case list
      */
     function updateCase (caseListIndex, params) {
-      crmApi(params).then(function (response) {
+      civicaseCrmApi(params).then(function (response) {
         _.each(response.cases.values, function (item) {
           item.contact_role = getContactRole(item);
           $scope.casesListConfig[caseListIndex].cases.push(formatCase(item));
@@ -329,7 +334,8 @@
 
         $scope.casesListConfig[caseListIndex].isLoaded = true;
         $scope.casesListConfig[caseListIndex].showSpinner = false;
-        $scope.casesListConfig[caseListIndex].isLoadMoreAvailable = $scope.casesListConfig[caseListIndex].cases.length < response.count;
+        $scope.casesListConfig[caseListIndex].isLoadMoreAvailable =
+          $scope.casesListConfig[caseListIndex].cases.length < response.count;
 
         if ($scope.casesListConfig[caseListIndex].page.num === 1) {
           loadAdditionalDataWhenAllCasesLoaded();

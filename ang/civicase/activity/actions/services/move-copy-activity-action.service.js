@@ -7,12 +7,13 @@
    * Move Copy Activity Action Service
    *
    * @param {object} $rootScope rootscope object
-   * @param {object} crmApi service to call civicrm api
+   * @param {object} civicaseCrmApi service to call civicrm api
    * @param {object} dialogService service for opening dialog box
    * @param {Function} ts the translation service
    * @param {object} CaseTypeCategory the case type category service
    */
-  function MoveCopyActivityAction ($rootScope, crmApi, dialogService, ts, CaseTypeCategory) {
+  function MoveCopyActivityAction ($rootScope, civicaseCrmApi, dialogService,
+    ts, CaseTypeCategory) {
     /**
      * Perform the action
      *
@@ -46,23 +47,28 @@
         getCaseListApiParams: getCaseListApiParams
       };
 
-      dialogService.open('MoveCopyActCard', '~/civicase/activity/actions/services/move-copy-activity-action.html', model, {
-        autoOpen: false,
-        height: 'auto',
-        width: '40%',
-        title: title,
-        buttons: [{
-          text: ts('Save'),
-          icons: { primary: 'fa-check' },
-          click: function () {
-            moveCopyConfirmationHandler.call(this, operation, model, {
-              selectedActivities: activities,
-              isSelectAll: isSelectAll,
-              searchParams: params
-            });
-          }
-        }]
-      });
+      dialogService.open(
+        'MoveCopyActCard',
+        '~/civicase/activity/actions/services/move-copy-activity-action.html',
+        model,
+        {
+          autoOpen: false,
+          height: 'auto',
+          width: '40%',
+          title: title,
+          buttons: [{
+            text: ts('Save'),
+            icons: { primary: 'fa-check' },
+            click: function () {
+              moveCopyConfirmationHandler.call(this, operation, model, {
+                selectedActivities: activities,
+                isSelectAll: isSelectAll,
+                searchParams: params
+              });
+            }
+          }]
+        }
+      );
     }
 
     /**
@@ -87,7 +93,7 @@
       if (model.case_id && isCaseIdNew) {
         var apiCalls = prepareApiCalls(activitiesObject, operation, model);
 
-        crmApi(apiCalls)
+        civicaseCrmApi(apiCalls)
           .then(function () {
             $rootScope.$broadcast('civicase::activity::updated');
           });
