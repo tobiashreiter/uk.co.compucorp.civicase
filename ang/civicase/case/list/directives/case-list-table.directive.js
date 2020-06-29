@@ -51,7 +51,7 @@
   });
 
   module.controller('CivicaseCaseListTableController', function ($rootScope,
-    $scope, $window, BulkActions, crmApi, crmStatus, crmUiHelp,
+    $route, $scope, $window, BulkActions, crmApi, crmStatus, crmUiHelp,
     crmThrottle, currentCaseCategory, $timeout, formatCase, ContactsCache, CasesUtils, ts,
     ActivityCategory, ActivityType, CaseStatus) {
     var firstLoad = true;
@@ -79,18 +79,31 @@
       initSubscribers();
     }());
 
-    $scope.applyAdvSearch = function (newFilters) {
+    $scope.applyAdvSearch = applyAdvSearch;
+    $scope.changeSortDir = changeSortDir;
+    $scope.isSelection = isSelection;
+    $scope.selectAll = selectAll;
+    $scope.refresh = refresh;
+    $scope.unfocusCase = unfocusCase;
+    $scope.viewCase = viewCase;
+
+    /**
+     * Apply advanced search
+     *
+     * @param {object} newFilters new filters object
+     */
+    function applyAdvSearch (newFilters) {
       $scope.filters = newFilters;
       getAllCasesforSelectAll();
       getCases();
-    };
+    }
 
     /**
      * Change Sort Direction
      */
-    $scope.changeSortDir = function () {
+    function changeSortDir () {
       $scope.sort.dir = ($scope.sort.dir === 'ASC' ? 'DESC' : 'ASC');
-    };
+    }
 
     /**
      * Checks if selection is active on based of
@@ -99,7 +112,7 @@
      * @param {string} condition condition
      * @returns {boolean} if selection is active
      */
-    $scope.isSelection = function (condition) {
+    function isSelection (condition) {
       if (!$scope.cases) {
         return false;
       }
@@ -113,7 +126,7 @@
       }
 
       return count === condition;
-    };
+    }
 
     /**
      * Refresh the Case List View
@@ -122,7 +135,7 @@
      * @param {boolean} backgroundLoading - if loading animation should not be
      *   shown
      */
-    $scope.refresh = function (apiCalls, backgroundLoading) {
+    function refresh (apiCalls, backgroundLoading) {
       backgroundLoading = backgroundLoading || false;
       $scope.isLoading = true && !backgroundLoading;
       apiCalls = apiCalls || [];
@@ -135,10 +148,15 @@
           $scope.isLoading = false;
           deselectAllCases();
         });
-    };
+    }
 
-    $scope.selectAll = function (e) {
-      var checked = e.target.checked;
+    /**
+     * Select all cases for bulk action
+     *
+     * @param {object} event event object
+     */
+    function selectAll (event) {
+      var checked = event.target.checked;
 
       _.each($scope.cases, function (item) {
         // Case is marked as selected only if it's not locked for the current user.
@@ -146,13 +164,22 @@
           item.selected = checked;
         }
       });
-    };
+    }
 
-    $scope.unfocusCase = function () {
+    /**
+     * Unfocus a case. It hides the details section
+     */
+    function unfocusCase () {
       $scope.caseIsFocused = false;
-    };
+    }
 
-    $scope.viewCase = function (id, $event) {
+    /**
+     * View sent case
+     *
+     * @param {number/string} id id of the case
+     * @param {object} $event event object
+     */
+    function viewCase (id, $event) {
       var currentCase = _.findWhere($scope.cases, { id: id });
 
       if (!$scope.bulkAllowed || currentCase.lock) {
@@ -161,6 +188,7 @@
 
       if (!$event || !$($event.target).is('a, a *, input, button')) {
         $scope.unfocusCase();
+        removeExtraRouteParams();
         if ($scope.viewingCase === id) {
           $scope.viewingCase = null;
           $scope.viewingCaseDetails = null;
@@ -172,7 +200,18 @@
       }
       setPageTitle();
       $($window).scrollTop(0); // Scrolls the window to top once new data loads
-    };
+    }
+
+    /**
+     * Remove route params added by individual tabs
+     */
+    function removeExtraRouteParams () {
+      var allowedRouteParams = ['caseId', 'cf'];
+
+      $route.current.params = _.pick($route.current.params, function (value, key) {
+        return allowedRouteParams.indexOf(key) !== -1;
+      });
+    }
 
     /**
      * Binds all route parameters to scope
