@@ -34,7 +34,7 @@
     });
 
     describe('when tested with "true"', () => {
-      it('returns false', () => {
+      it('returns true', () => {
         expect(isTruthy(true)).toBe(true);
       });
     });
