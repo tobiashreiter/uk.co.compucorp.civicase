@@ -7,8 +7,9 @@
    * EmailManagersCaseAction service callback function.
    *
    * @param {object} ts translation service
+   * @param {Function} isTruthy service to check if value is truthy
    */
-  function EmailManagersCaseAction (ts) {
+  function EmailManagersCaseAction (ts, isTruthy) {
     /**
      * Returns the configuration options to open up a mail popup to
      * communicate with the case managers. Displays an error message
@@ -24,7 +25,7 @@
       var managers = [];
 
       _.each(cases, function (item) {
-        if (item.manager) {
+        if (isTruthy(item.manager)) {
           managers.push(item.manager.contact_id);
         }
       });

@@ -53,9 +53,10 @@
    * @param {object} DateHelper DateHelper
    * @param {object} ts ts
    * @param {object} RelationshipType RelationshipType
+   * @param {Function} isTruthy service to check if value is truthy
    */
   function civicaseViewPeopleController ($q, $scope, allowMultipleCaseClients,
-    civicaseCrmApi, DateHelper, ts, RelationshipType) {
+    civicaseCrmApi, DateHelper, ts, RelationshipType, isTruthy) {
     // The ts() and hs() functions help load strings for this module.
     var CONTACT_CANT_HAVE_ROLE_MESSAGE = ts('Case clients cannot be selected for a case role. Please select another contact.');
     var clients = _.indexBy($scope.item.client, 'contact_id');
@@ -656,7 +657,7 @@ included in the confirmation dialog.
       role.role = relType.label_b_a;
       role.contact_type = relType.contact_type_b;
       role.contact_sub_type = relType.contact_sub_type_b;
-      role.description = (role.manager === '1' ? (ts('Case Manager.') + ' ') : '') + (relType.description || '');
+      role.description = (isTruthy(role.manager) ? (ts('Case Manager.') + ' ') : '') + (relType.description || '');
       role.relationship_type_id = relType.id;
     }
 

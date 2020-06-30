@@ -5,12 +5,14 @@
 
   /**
    * Activity Status Service
+   *
+   * @param {Function} isTruthy service to check if value is truthy
    */
-  function ActivityStatus () {
+  function ActivityStatus (isTruthy) {
     var allActivityStatuses = CRM['civicase-base'].activityStatuses;
     var activeActivityStatuses = _.chain(allActivityStatuses)
       .filter(function (activityStatus) {
-        return activityStatus.is_active === '1';
+        return isTruthy(activityStatus.is_active);
       })
       .indexBy('value')
       .value();

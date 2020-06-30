@@ -15,8 +15,8 @@
     };
   });
 
-  module.controller('civicaseAddActivityMenuController', function ($scope, getCaseQueryParams, CaseType, ActivityType,
-    ActivityForms) {
+  module.controller('civicaseAddActivityMenuController', function ($scope,
+    getCaseQueryParams, CaseType, ActivityType, ActivityForms, isTruthy) {
     var definition = CaseType.getAll()[$scope.case.case_type_id].definition;
 
     (function init () {
@@ -44,7 +44,7 @@
       _.each(definition.activityTypes, function (actSpec) {
         if (exclude.indexOf(actSpec.name) < 0) {
           var actTypeId = _.findKey(ActivityType.getAll(true), { name: actSpec.name });
-          var ifActivityTypeIsActive = ActivityType.findById(actTypeId).is_active === '1';
+          var ifActivityTypeIsActive = isTruthy(ActivityType.findById(actTypeId).is_active);
 
           if (ifActivityTypeIsActive &&
             (!actSpec.max_instances || !activityCount[actTypeId] || (actSpec.max_instances > parseInt(activityCount[actTypeId])))) {
