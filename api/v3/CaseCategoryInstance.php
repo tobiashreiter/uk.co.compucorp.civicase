@@ -15,7 +15,7 @@
  *   API result descriptor
  */
 function civicrm_api3_case_category_instance_create(array $params) {
-  return _civicrm_api3_basic_create(_civicrm_api3_get_BAO(__FUNCTION__), $params, CaseCategoryInstance);
+  return _civicrm_api3_basic_create(_civicrm_api3_get_BAO(__FUNCTION__), $params);
 }
 
 /**
@@ -41,5 +41,5 @@ function civicrm_api3_case_category_instance_delete(array $params) {
  *   API result descriptor
  */
 function civicrm_api3_case_category_instance_get(array $params) {
-  return _civicrm_api3_basic_get(_civicrm_api3_get_BAO(__FUNCTION__), $params, FALSE, CaseCategoryInstance);
+  return _civicrm_api3_basic_get(_civicrm_api3_get_BAO(__FUNCTION__), $params);
 }

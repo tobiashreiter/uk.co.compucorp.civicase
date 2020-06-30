@@ -8,6 +8,17 @@
   <log>true</log>
 
   <field>
+    <name>id</name>
+    <type>int unsigned</type>
+    <required>true</required>
+    <comment>Unique CaseCategoryInstance Id</comment>
+  </field>
+  <primaryKey>
+    <name>id</name>
+    <autoincrement>true</autoincrement>
+  </primaryKey>
+
+  <field>
     <name>category_id</name>
     <type>int unsigned</type>
     <comment>One of the values of the case_type_categories option group</comment>

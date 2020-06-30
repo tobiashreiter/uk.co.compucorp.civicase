@@ -22,9 +22,9 @@ class CRM_Civicase_Setup_CaseCategoryInstanceSupport {
     CRM_Core_BAO_OptionValue::ensureOptionValueExists(
       [
         'option_group_id' => self::INSTANCE_OPTION_GROUP,
-        'name' => 'Default',
-        'value' => 'CRM_Civicase_Service_DefaultInstanceUtils',
-        'label' => 'Default',
+        'name' => 'case_management',
+        'label' => 'Case Management',
+        'grouping' => 'CRM_Civicase_Service_CaseManagementUtils',
         'is_active' => TRUE,
         'is_reserved' => TRUE,
       ]
