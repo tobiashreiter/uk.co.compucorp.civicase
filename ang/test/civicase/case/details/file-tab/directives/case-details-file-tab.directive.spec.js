@@ -2,12 +2,12 @@
 
 (function (_) {
   describe('civicaseCaseDetailsFileTab', function () {
-    var $q, $controller, $rootScope, $scope, crmApiMock, activitiesMockData;
+    var $q, $controller, $rootScope, $scope, civicaseCrmApiMock, activitiesMockData;
 
     beforeEach(module('civicase', 'civicase.data', ($provide) => {
-      crmApiMock = jasmine.createSpy('crmApi');
+      civicaseCrmApiMock = jasmine.createSpy('civicaseCrmApi');
 
-      $provide.value('crmApi', crmApiMock);
+      $provide.value('civicaseCrmApi', civicaseCrmApiMock);
     }));
 
     beforeEach(inject(function (_$controller_, _$rootScope_, _$q_, _activitiesMockData_) {
@@ -19,7 +19,7 @@
 
     describe('on init', function () {
       beforeEach(function () {
-        crmApiMock.and.returnValue($q.resolve({
+        civicaseCrmApiMock.and.returnValue($q.resolve({
           xref: { activity: [activitiesMockData.get()[0]] }
         }));
         initController();
@@ -55,7 +55,7 @@
 
     describe('bulk action', () => {
       beforeEach(() => {
-        crmApiMock.and.returnValue($q.resolve({
+        civicaseCrmApiMock.and.returnValue($q.resolve({
           xref: { activity: [activitiesMockData.get()[0]] }
         }));
 
