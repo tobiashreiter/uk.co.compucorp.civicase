@@ -15,6 +15,16 @@
   function MoveCopyActivityAction ($rootScope, civicaseCrmApi, dialogService,
     ts, CaseTypeCategory) {
     /**
+     * Check if the Action is enabled
+     *
+     * @param {object} $scope scope object
+     * @returns {boolean} if the action is enabled
+     */
+    this.isActionEnabled = function ($scope) {
+      return $scope.mode !== 'case-files-activity-bulk-action';
+    };
+
+    /**
      * Perform the action
      *
      * @param {object} $scope scope object
