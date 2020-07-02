@@ -34,7 +34,7 @@ class CRM_Civicase_Setup_CaseCategoryInstanceSupport {
   /**
    * Create Case Category Instance Type option group.
    */
-  private function createCaseCategoryInstanceOptionGroup() {
+  public function createCaseCategoryInstanceOptionGroup() {
     CRM_Core_BAO_OptionGroup::ensureOptionGroupExists(
       [
         'name' => self::INSTANCE_OPTION_GROUP,
