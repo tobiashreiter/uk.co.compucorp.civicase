@@ -1,7 +1,6 @@
 <?php
 
 use CRM_Civicase_Service_CaseTypeCategoryEventHandler as CaseTypeCategoryEventHandler;
-use CRM_Civicase_Service_CaseCategoryMenu as CaseCategoryMenu;
 use CRM_Civicase_Service_CaseCategoryCustomDataType as CaseCategoryCustomDataType;
 use CRM_Civicase_Service_CaseCategoryCustomFieldExtends as CaseCategoryCustomFieldExtends;
 
@@ -18,7 +17,6 @@ class CRM_Civicase_Factory_CaseTypeCategoryEventHandler {
    */
   public static function create() {
     return new CaseTypeCategoryEventHandler(
-      new CaseCategoryMenu(),
       new CaseCategoryCustomDataType(),
       new CaseCategoryCustomFieldExtends()
     );
