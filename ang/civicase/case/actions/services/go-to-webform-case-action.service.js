@@ -9,7 +9,7 @@
   function GoToWebformCaseAction ($window) {
     this.doAction = doAction;
     this.isActionAllowed = isActionAllowed;
-    this.checkIfWebformContainsCaseTypeId = checkIfWebformContainsCaseTypeId;
+    this.checkIfWebformVisible = checkIfWebformVisible;
 
     /**
      * Click event handler for the Action
@@ -40,7 +40,7 @@
      * @returns {boolean} - true if action is allowed, false otherwise.
      */
     function isActionAllowed (action, cases, attributes) {
-      return checkIfWebformContainsCaseTypeId(action, cases[0].case_type_id);
+      return checkIfWebformVisible(action, cases[0].case_type_id);
     }
 
     /**
@@ -48,8 +48,9 @@
      * @param {string} caseTypeID case type id
      * @returns {boolean} if webform contains sent case type id
      */
-    function checkIfWebformContainsCaseTypeId (webform, caseTypeID) {
-      return webform.case_type_ids.indexOf(caseTypeID) !== -1;
+    function checkIfWebformVisible (webform, caseTypeID) {
+      return webform.case_type_ids.length === 0 ||
+        webform.case_type_ids.indexOf(caseTypeID) !== -1;
     }
   }
 })(angular, CRM.$, CRM._);
