@@ -67,7 +67,7 @@ class CRM_Civicase_Event_Listener_CaseTypeCategoryIsActiveToggler {
    *   TRUE if request is sent from civicrm Option Groups page, FALSE otherwise.
    */
   protected static function isFromOptionGroupPage() {
-    return strpos($_SERVER['HTTP_REFERER'], '/civicrm/admin/options') !== FALSE;
+    return isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], '/civicrm/admin/options') !== FALSE;
   }
 
   /**
