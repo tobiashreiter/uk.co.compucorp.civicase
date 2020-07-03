@@ -2,6 +2,7 @@
 
 use CRM_Case_BAO_CaseType as CaseType;
 use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
+use CRM_Civicase_Service_CaseManagementUtils as CaseManagementUtils;
 
 /**
  * CRM_Civicase_Helper_CaseCategory class.
@@ -288,6 +289,36 @@ class CRM_Civicase_Helper_CaseCategory {
     ];
 
     CRM_Utils_System::appendBreadCrumb($breadcrumb);
+  }
+
+  /**
+   * Gets the Instance utility object for the case category.
+   *
+   * We are using the BAO here to fetch the instance value because the API
+   * will return an error if the option value has been deleted and will treat
+   * the category value as a non valid value. This issue will be observed for
+   * the case category delete event.
+   *
+   * @param string $caseCategoryValue
+   *   Case category value.
+   *
+   * @return \CRM_Civicase_Service_CaseCategoryInstanceUtils
+   *   Instance utitlity object.
+   */
+  public static function getInstanceObject($caseCategoryValue) {
+    $caseCategoryInstance = new CRM_Civicase_BAO_CaseCategoryInstance();
+    $caseCategoryInstance->category_id = $caseCategoryValue;
+    $caseCategoryInstance->find(TRUE);
+    $instanceValue = $caseCategoryInstance->instance_id;
+
+    if (!$instanceValue) {
+      return new CaseManagementUtils();
+    }
+
+    $instanceClasses = CRM_Core_OptionGroup::values('case_category_instance_type', FALSE, FALSE, TRUE, NULL, 'grouping');
+    $instanceClass = $instanceClasses[$instanceValue];
+
+    return new $instanceClass($caseCategoryInstance->id);
   }
 
 }

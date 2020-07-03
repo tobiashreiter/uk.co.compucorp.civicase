@@ -59,7 +59,7 @@ class CRM_Civicase_Service_CaseCategoryMenu {
    * @param int $caseCategoryMenuId
    *   Menu ID.
    */
-  private function createCaseCategorySubmenus($caseTypeCategoryName, array $permissions, $caseCategoryMenuId) {
+  protected function createCaseCategorySubmenus($caseTypeCategoryName, array $permissions, $caseCategoryMenuId) {
     $submenus = [
       [
         'label' => ts('Dashboard'),
