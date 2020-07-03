@@ -46,7 +46,7 @@
     /**
      * @param {object} webform webform action object
      * @param {string} caseTypeID case type id
-     * @returns {boolean} if webform contains sent case type id
+     * @returns {boolean} if sent webform is visible for sent case type id
      */
     function checkIfWebformVisible (webform, caseTypeID) {
       return webform.case_type_ids.length === 0 ||
