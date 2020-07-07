@@ -89,6 +89,21 @@ $setting = [
     'description' => 'Label for the Webforms dropdown button',
     'help_text' => '',
   ],
+  'showFullContactNameOnActivityFeed' => [
+    'group_name' => 'CiviCRM Preferences',
+    'group' => 'core',
+    'name' => 'showFullContactNameOnActivityFeed',
+    'type' => 'Boolean',
+    'quick_form_type' => 'YesNo',
+    'default' => TRUE,
+    'html_type' => 'radio',
+    'add' => '4.7',
+    'title' => 'Show full name on Case activity feed',
+    'is_domain' => 1,
+    'is_contact' => 0,
+    'description' => 'This configuration determines whether or not the full name of the activity creator are displayed in the case activity feed.',
+    'help_text' => '',
+  ],
 ];
 
 $caseSetting = new CRM_Civicase_Service_CaseCategorySetting();
