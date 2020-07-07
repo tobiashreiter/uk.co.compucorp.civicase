@@ -5,25 +5,38 @@
     describe('Activity Feed Controller', () => {
       let $provide, $controller, $rootScope, $scope, $q, civicaseCrmApi,
         CaseTypesMockData, activitiesMockData, ActivityType,
-        activitiesInCurrentPage, totalNumberOfActivities;
+        activitiesInCurrentPage, showFullContactNameOnActivityFeed,
+        totalNumberOfActivities;
 
       beforeEach(module('civicase', 'civicase.data', (_$provide_) => {
         $provide = _$provide_;
       }));
 
       beforeEach(inject((_$controller_, _$rootScope_, _$q_, _CaseTypesMockData_,
-        _civicaseCrmApi_, _activitiesMockData_, _ActivityType_) => {
+        _civicaseCrmApi_, _activitiesMockData_, _ActivityType_,
+        _showFullContactNameOnActivityFeed_) => {
         $controller = _$controller_;
         $rootScope = _$rootScope_;
         $q = _$q_;
         CaseTypesMockData = _CaseTypesMockData_;
         ActivityType = _ActivityType_;
         activitiesMockData = _activitiesMockData_;
+        showFullContactNameOnActivityFeed = _showFullContactNameOnActivityFeed_;
 
         $scope = $rootScope.$new();
         $scope.$bindToRoute = jasmine.createSpy('$bindToRoute');
         civicaseCrmApi = _civicaseCrmApi_;
       }));
+
+      describe('on init', () => {
+        beforeEach(() => {
+          initController();
+        });
+
+        it('provides the value for the "Show Full Contact Name On ActivityFeed" setting', () => {
+          expect($scope.showFullContactNameOnActivityFeed).toBe(showFullContactNameOnActivityFeed);
+        });
+      });
 
       describe('loadActivities', () => {
         beforeEach(() => {

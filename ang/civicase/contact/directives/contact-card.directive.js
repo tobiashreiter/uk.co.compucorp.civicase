@@ -11,7 +11,8 @@
         caseId: '<?',
         data: '=contacts',
         isAvatar: '=avatar',
-        noIcon: '='
+        noIcon: '=',
+        showFullNameOnHover: '<'
       }
     };
 
