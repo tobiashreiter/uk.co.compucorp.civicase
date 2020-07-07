@@ -55,6 +55,7 @@ function expose_settings(array &$options, array $defaults) {
   $options['allowLinkedCasesTab'] = (bool) Civi::settings()->get('civicaseAllowLinkedCasesTab');
   $options['showWebformsListSeparately'] = (bool) Civi::settings()->get('civicaseShowWebformsListSeparately');
   $options['webformsDropdownButtonLabel'] = Civi::settings()->get('civicaseWebformsDropdownButtonLabel');
+  $options['showFullContactNameOnActivityFeed'] = (bool) Civi::settings()->get('showFullContactNameOnActivityFeed');
   $options['caseTypeCategoriesWhereUserCanAccessActivities'] =
     CRM_Civicase_Helper_CaseCategory::getWhereUserCanAccessActivities();
   $options['currentCaseCategory'] = $defaults['caseCategoryName']
