@@ -53,10 +53,11 @@
    * @param {object} DateHelper date helper service
    * @param {object} ts ts service
    * @param {Function} viewInPopup factory to view an activity in a popup
+   * @param {Function} isTruthy service to check if value is truthy
    */
   function caseActivityCardController ($filter, $scope, CaseType,
     CaseTypeCategory, dialogService, civicaseCrmApi, crmBlocker, crmStatus,
-    DateHelper, ts, viewInPopup) {
+    DateHelper, ts, viewInPopup, isTruthy) {
     var caseTypes = CaseType.getAll();
     var caseTypeCategories = CaseTypeCategory.getAll();
 
@@ -101,7 +102,7 @@
      */
     $scope.toggleActivityStar = function ($event, activity) {
       $event.stopPropagation();
-      activity.is_star = activity.is_star === '1' ? '0' : '1';
+      activity.is_star = isTruthy(activity.is_star) ? '0' : '1';
       // Setvalue api avoids messy revisioning issues
       $scope.refresh([['Activity', 'setvalue', {
         id: activity.id,
