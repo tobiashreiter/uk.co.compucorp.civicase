@@ -22,12 +22,15 @@
     }));
 
     describe('webform dropdown visibility', () => {
+      beforeEach(() => {
+        spyOn(WebformsCaseAction, 'isActionAllowed');
+      });
+
       describe('when webforms setting is turned on', () => {
         beforeEach(() => {
           webformsList.isVisible = true;
           webformsList.buttonLabel = 'Webforms List';
           spyOn(CaseActions, 'findByActionName').and.returnValue(CaseActionsData.get()[0]);
-          spyOn(WebformsCaseAction, 'isActionAllowed');
 
           initController();
         });
@@ -47,13 +50,31 @@
         beforeEach(() => {
           webformsList.isVisible = false;
           spyOn(CaseActions, 'findByActionName').and.returnValue(CaseActionsData.get()[0]);
-          spyOn(WebformsCaseAction, 'isActionAllowed');
 
           initController();
         });
 
         it('does not display a list of webforms', () => {
           expect(WebformsCaseAction.isActionAllowed).not.toHaveBeenCalledWith();
+        });
+      });
+
+      describe('when clicking on a different case', () => {
+        beforeEach(() => {
+          webformsList.isVisible = true;
+          webformsList.buttonLabel = 'Webforms List';
+          spyOn(CaseActions, 'findByActionName').and.returnValue(CaseActionsData.get()[0]);
+
+          initController();
+
+          $scope.item = _.cloneDeep(CasesData.get().values[1]);
+          $scope.$digest();
+        });
+
+        it('updates the webforms list with respect to newly selected case', () => {
+          expect(WebformsCaseAction.isActionAllowed).toHaveBeenCalledWith(
+            CaseActionsData.get()[0], [_.cloneDeep(CasesData.get().values[1])], { mode: 'case-details' }
+          );
         });
       });
     });

@@ -77,8 +77,8 @@ $setting = [
     'quick_form_type' => 'Element',
     'html_attributes' => [
       'class' => 'civicase__settings__webform-button-label',
-      'size' => 64,
-      'maxlength' => 64,
+      'size' => 20,
+      'maxlength' => 20,
     ],
     'html_type' => 'text',
     'default' => 'Webforms',

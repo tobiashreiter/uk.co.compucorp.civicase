@@ -27,6 +27,7 @@
     $scope.webformsListButtonLabel = webformsList.buttonLabel;
 
     (function init () {
+      $scope.$watch('item', updateCaseWebformDropdownVisibility);
       updateCaseWebformDropdownVisibility();
     })();
 
@@ -49,7 +50,8 @@
      * Sets the visibilty of Case Webform Dropdown
      */
     function updateCaseWebformDropdownVisibility () {
-      $scope.isCaseWebformDropdownVisible = webformsList.isVisible &&
+      $scope.isCaseWebformDropdownVisible = $scope.webformsAction &&
+        webformsList.isVisible &&
         WebformsCaseAction.isActionAllowed(
           $scope.webformsAction, [$scope.item], { mode: 'case-details' }
         );
