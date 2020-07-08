@@ -447,7 +447,7 @@
      * placeholder and content template.
      */
     function activeTabWatcher () {
-      var activeCaseTab = _.find(CaseDetailsTabs, {
+      var activeCaseTab = _.find($scope.tabs, {
         name: $scope.activeTab
       });
 
