@@ -26,6 +26,12 @@
         urlObject['cid' + action.clientID] = cases[0].client[0].contact_id;
       }
 
+      CRM.alert(
+        ts('Please refresh this page to view updates from the webform submission.'),
+        ts('Refresh'),
+        'info'
+      );
+
       window = $window.open(CRM.url(action.path, urlObject), '_blank');
       window.focus();
     }
