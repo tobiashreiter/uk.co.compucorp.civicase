@@ -101,7 +101,7 @@ $setting = [
     'title' => 'Show full name on Case activity feed',
     'is_domain' => 1,
     'is_contact' => 0,
-    'description' => 'This configuration determines whether or not the full name of the activity creator are displayed in the case activity feed.',
+    'description' => 'This configuration determines whether or not the full name of the activity creator is displayed in the case activity feed.',
     'help_text' => '',
   ],
 ];
