@@ -1,7 +1,7 @@
 /* eslint-env jasmine */
 (function (_) {
   describe('civicaseCaseDetails', function () {
-    var element, controller, activitiesMockData, $controller, $compile,
+    var $httpBackend, element, controller, activitiesMockData, $controller, $compile,
       $document, $rootScope, $scope, $provide, civicaseCrmApi, civicaseCrmApiMock, $q,
       formatCase, CasesData, CasesUtils, $route;
 
@@ -27,13 +27,14 @@
       $provide.value('formatCase', formatCaseMock);
     }));
 
-    beforeEach(inject(function (_$compile_, _$controller_, _$rootScope_,
-      _$document_, _activitiesMockData_, _CasesData_, _civicaseCrmApi_, _$q_,
-      _formatCase_, _CasesUtils_) {
+    beforeEach(inject(function (_$compile_, _$controller_, _$httpBackend_,
+      _$rootScope_, _$document_, _activitiesMockData_, _CasesData_, _civicaseCrmApi_,
+      _$q_, _formatCase_, _CasesUtils_) {
       $compile = _$compile_;
       $document = _$document_;
       $controller = _$controller_;
       $rootScope = _$rootScope_;
+      $httpBackend = _$httpBackend_;
       activitiesMockData = _activitiesMockData_;
       CasesData = _CasesData_;
       CasesUtils = _CasesUtils_;
@@ -57,14 +58,37 @@
     });
 
     describe('activeTab watcher', function () {
-      beforeEach(function () {
-        compileDirective();
-        element.isolateScope().activeTab = 'People';
-        element.isolateScope().$digest();
+      describe('when switching to an existing tab', () => {
+        beforeEach(function () {
+          compileDirective();
+          element.isolateScope().activeTab = 'People';
+          element.isolateScope().$digest();
+        });
+
+        it('should return active tab content url', function () {
+          expect(element.isolateScope().activeTabContentUrl).toEqual('~/civicase/case/details/directives/tab-content/people.html');
+        });
       });
 
-      it('should return active tab content url', function () {
-        expect(element.isolateScope().activeTabContentUrl).toEqual('~/civicase/case/details/directives/tab-content/people.html');
+      describe('when switching to a custom active tab', () => {
+        beforeEach(function () {
+          $httpBackend.when('GET', '~/civicase/custom-tab.html')
+            .respond(200, '');
+          compileDirective();
+          element.isolateScope().tabs.push({
+            name: 'CustomTab',
+            label: ts('Custom Tab'),
+            service: {
+              activeTabContentUrl: () => '~/civicase/custom-tab.html'
+            }
+          });
+          element.isolateScope().activeTab = 'CustomTab';
+          element.isolateScope().$digest();
+        });
+
+        it('should return active tab content url', function () {
+          expect(element.isolateScope().activeTabContentUrl).toEqual('~/civicase/custom-tab.html');
+        });
       });
     });
 
