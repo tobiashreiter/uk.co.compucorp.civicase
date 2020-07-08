@@ -15,15 +15,15 @@
    * Civicase Dashboard Controller.
    *
    * @param {object} $scope controller's scope.
-   * @param {Function} crmApi CRM API service reference.
+   * @param {Function} civicaseCrmApi CRM API service reference.
    * @param {string} currentCaseCategory current case type category setting value.
    * @param {object[]} DashboardActionItems Dashboard action items list.
    * @param {Function} formatActivity Format Activity service reference.
    * @param {Function} $timeout timeout service reference.
    * @param {Function} ts translate service reference.
    */
-  function civicaseDashboardController ($scope, crmApi, currentCaseCategory, DashboardActionItems,
-    formatActivity, $timeout, ts) {
+  function civicaseDashboardController ($scope, civicaseCrmApi,
+    currentCaseCategory, DashboardActionItems, formatActivity, $timeout, ts) {
     $scope.checkPerm = CRM.checkPerm;
     $scope.actionBarItems = DashboardActionItems;
     $scope.url = CRM.url;
@@ -74,8 +74,18 @@
      */
     function bindRouteParamsToScope () {
       $scope.$bindToRoute({ param: 'dtab', expr: 'activeTab', format: 'int', default: 0 });
-      $scope.$bindToRoute({ param: 'drel', expr: 'filters.caseRelationshipType', format: 'raw', default: 'is_involved' });
-      $scope.$bindToRoute({ param: 'case_type_category', expr: 'activityFilters.case_filter["case_type_id.case_type_category"]', format: 'raw', default: null });
+      $scope.$bindToRoute({
+        param: 'drel',
+        expr: 'filters.caseRelationshipType',
+        format: 'raw',
+        default: 'is_involved'
+      });
+      $scope.$bindToRoute({
+        param: 'case_type_category',
+        expr: 'activityFilters.case_filter["case_type_id.case_type_category"]',
+        format: 'raw',
+        default: null
+      });
     }
 
     /**

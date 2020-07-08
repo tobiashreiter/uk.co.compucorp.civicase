@@ -1,7 +1,8 @@
 (function (angular, $, _, CRM) {
   var module = angular.module('civicase');
 
-  module.factory('formatCase', function (formatActivity, ContactsCache, CaseStatus, CaseType) {
+  module.factory('formatCase', function (formatActivity, ContactsCache,
+    CaseStatus, CaseType, isTruthy) {
     var caseTypes = CaseType.getAll();
     var caseStatuses = CaseStatus.getAll(true);
 
@@ -12,7 +13,7 @@
       item.color = caseStatuses[item.status_id].color;
       item.case_type = caseTypes[item.case_type_id].title;
       item.selected = false;
-      item.is_deleted = item.is_deleted === '1';
+      item.is_deleted = isTruthy(item.is_deleted);
 
       countIncompleteOtherTasks(item);
 
@@ -33,7 +34,7 @@
           item.client.push(contact);
         }
 
-        if (contact.manager) {
+        if (isTruthy(contact.manager)) {
           item.manager = contact;
         }
       });

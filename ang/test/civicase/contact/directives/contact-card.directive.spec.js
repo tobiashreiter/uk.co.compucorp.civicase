@@ -1,15 +1,16 @@
 /* eslint-env jasmine */
 (function ($) {
   describe('contactCard', function () {
-    var element, crmApi, $q, $compile, $rootScope, $scope, ContactsData, ContactsCache;
+    var element, civicaseCrmApi, $q, $compile, $rootScope, $scope, ContactsData, ContactsCache;
 
     beforeEach(module('civicase.templates', 'civicase', 'civicase.data'));
 
-    beforeEach(inject(function (_$compile_, _$rootScope_, _$q_, _crmApi_, _ContactsData_, _ContactsCache_) {
+    beforeEach(inject(function (_$compile_, _$rootScope_, _$q_, _civicaseCrmApi_,
+      _ContactsData_, _ContactsCache_) {
       $q = _$q_;
       $compile = _$compile_;
       $rootScope = _$rootScope_;
-      crmApi = _crmApi_;
+      civicaseCrmApi = _civicaseCrmApi_;
       ContactsData = _ContactsData_;
       ContactsCache = _ContactsCache_;
       $scope = $rootScope.$new();
@@ -61,7 +62,7 @@
 
       describe('image url', function () {
         beforeEach(function () {
-          crmApi.and.returnValue($q.resolve(ContactsData));
+          civicaseCrmApi.and.returnValue($q.resolve(ContactsData));
           ContactsCache.add(ContactsData.values);
           compileDirective(true, ContactsData.values[0].contact_id, ContactsData.values[0].display_name);
         });
@@ -75,9 +76,9 @@
     /**
      * Compiles the contact card directive.
      *
-     * @param {Boolean} isAvatar
-     * @param {Number} contactID
-     * @param {String} contactDisplayName
+     * @param {boolean} isAvatar is avatar
+     * @param {number} contactID contact id
+     * @param {string} contactDisplayName contacts display name
      */
     function compileDirective (isAvatar, contactID, contactDisplayName) {
       element = $compile('<div civicase-contact-card contacts="contacts" avatar="isAvatar">')($scope);

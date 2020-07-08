@@ -18,8 +18,9 @@
   /**
    * Controller Function for civicase-search directive
    */
-  module.controller('civicaseSearchController', function ($scope, $rootScope, $timeout,
-    crmApi, getSelect2Value, ts, CaseStatus, CaseTypeCategory, CaseType, currentCaseCategory, CustomSearchField) {
+  module.controller('civicaseSearchController', function ($scope, $rootScope,
+    $timeout, civicaseCrmApi, getSelect2Value, ts, CaseStatus, CaseTypeCategory,
+    CaseType, currentCaseCategory, CustomSearchField) {
     var caseTypes = CaseType.getAll();
     var caseStatuses = CaseStatus.getAll();
     var caseTypeCategories = CaseTypeCategory.getAll();
@@ -277,7 +278,9 @@
     function formatSearchFilters (inp) {
       var search = {};
       _.each(inp, function (val, key) {
-        if (!_.isEmpty(val) || ((typeof val === 'number') && val) || ((typeof val === 'boolean') && val)) {
+        if (!_.isEmpty(val) ||
+          ((typeof val === 'number') && val) ||
+          ((typeof val === 'boolean') && val)) {
           search[key] = val;
         }
       });
@@ -380,8 +383,12 @@
      */
     function relationshipTypeWatcher () {
       if ($scope.relationshipType) {
-        $scope.relationshipType[0] === 'is_case_manager' ? $scope.filters.case_manager = [CRM.config.user_contact_id] : delete ($scope.filters.case_manager);
-        $scope.relationshipType[0] === 'is_involved' ? $scope.filters.contact_involved = [CRM.config.user_contact_id] : delete ($scope.filters.contact_involved);
+        $scope.relationshipType[0] === 'is_case_manager'
+          ? $scope.filters.case_manager = [CRM.config.user_contact_id]
+          : delete ($scope.filters.case_manager);
+        $scope.relationshipType[0] === 'is_involved'
+          ? $scope.filters.contact_involved = [CRM.config.user_contact_id]
+          : delete ($scope.filters.contact_involved);
       }
     }
 
@@ -392,7 +399,7 @@
      * @returns {Promise} resolves to a list of relationship types.
      */
     function requestCaseRoles () {
-      return crmApi('RelationshipType', 'getcaseroles', {
+      return civicaseCrmApi('RelationshipType', 'getcaseroles', {
         options: { limit: 0 }
       })
         .then(function (caseRolesResponse) {
@@ -477,7 +484,8 @@
      * @param {object} $event - event object of Event API
      */
     function toggleIsDeleted ($event) {
-      var pressedSpaceOrEnter = $event.type === 'keydown' && ($event.keyCode === 32 || $event.keyCode === 13);
+      var pressedSpaceOrEnter =
+        $event.type === 'keydown' && ($event.keyCode === 32 || $event.keyCode === 13);
 
       if ($event.type === 'click' || pressedSpaceOrEnter) {
         $scope.filters.is_deleted = !$scope.filters.is_deleted;

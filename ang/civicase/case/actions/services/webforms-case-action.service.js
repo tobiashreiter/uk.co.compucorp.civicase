@@ -36,7 +36,7 @@
      */
     function checkIfWebformsExist (webforms, caseTypeID) {
       return !!_.find(webforms, function (webform) {
-        return GoToWebformCaseAction.checkIfWebformContainsCaseTypeId(webform, caseTypeID);
+        return GoToWebformCaseAction.checkIfWebformVisible(webform, caseTypeID);
       });
     }
   }

@@ -20,14 +20,14 @@
    * @param {object} $sce sce service
    * @param {object} $scope scope object
    * @param {object} ContactsCache contacts cache service
-   * @param {object} crmApi crm api service
+   * @param {object} civicaseCrmApi crm api service
    * @param {object} formatCase format case service
    * @param {object} formatActivity format activity service
    * @param {object} ts ts
    * @param {object} ActivityStatusType activity status type service
    */
   function dashboardTabController ($location, $rootScope, $route, $sce, $scope,
-    ContactsCache, crmApi, formatCase, formatActivity, ts, ActivityStatusType) {
+    ContactsCache, civicaseCrmApi, formatCase, formatActivity, ts, ActivityStatusType) {
     var ACTIVITIES_QUERY_PARAMS_DEFAULTS = {
       contact_id: 'user_contact_id',
       is_current_revision: 1,
@@ -38,10 +38,11 @@
       status_id: { IN: ActivityStatusType.getAll().incomplete },
       options: { sort: 'is_overdue DESC, activity_date_time ASC' },
       return: [
-        'subject', 'details', 'activity_type_id', 'status_id', 'source_contact_name',
-        'target_contact_name', 'assignee_contact_name', 'activity_date_time', 'is_star',
-        'original_id', 'tag_id.name', 'tag_id.description', 'tag_id.color', 'file_id',
-        'is_overdue', 'case_id', 'priority_id', 'case_id.case_type_id', 'case_id.status_id',
+        'subject', 'details', 'activity_type_id', 'status_id',
+        'source_contact_name', 'target_contact_name', 'assignee_contact_name',
+        'activity_date_time', 'is_star', 'original_id', 'tag_id.name',
+        'tag_id.description', 'tag_id.color', 'file_id', 'is_overdue', 'case_id',
+        'priority_id', 'case_id.case_type_id', 'case_id.status_id',
         'case_id.contacts'
       ]
     };
@@ -59,10 +60,11 @@
       status_id: { IN: ActivityStatusType.getAll().incomplete },
       options: { sort: 'is_overdue DESC, activity_date_time ASC' },
       return: [
-        'subject', 'details', 'activity_type_id', 'status_id', 'source_contact_name',
-        'target_contact_name', 'assignee_contact_name', 'activity_date_time', 'is_star',
-        'original_id', 'tag_id.name', 'tag_id.description', 'tag_id.color', 'file_id',
-        'is_overdue', 'case_id', 'priority_id', 'case_id.case_type_id', 'case_id.status_id',
+        'subject', 'details', 'activity_type_id', 'status_id',
+        'source_contact_name', 'target_contact_name', 'assignee_contact_name',
+        'activity_date_time', 'is_star', 'original_id', 'tag_id.name',
+        'tag_id.description', 'tag_id.color', 'file_id', 'is_overdue',
+        'case_id', 'priority_id', 'case_id.case_type_id', 'case_id.status_id',
         'case_id.contacts'
       ]
     };
@@ -120,7 +122,12 @@
         caseClick: casesCustomClick,
         viewCasesLink: viewCasesLink()
       },
-      query: { entity: 'Case', action: 'getcaselist', countAction: 'getdetailscount', params: getQueryParams('cases') },
+      query: {
+        entity: 'Case',
+        action: 'getcaselist',
+        countAction: 'getdetailscount',
+        params: getQueryParams('cases')
+      },
       handlers: {
         range: _.curry(rangeHandler)('start_date')('YYYY-MM-DD')(false),
         results: _.curry(resultsHandler)(formatCase)('contacts')
@@ -170,7 +177,7 @@
      * name(s)
      *
      * Unfortunately the activity card expects the callback to handle api calls
-     * for it, hence the `apiCalls` param and the usage of `crmApi`
+     * for it, hence the `apiCalls` param and the usage of `civicaseCrmApi`
      *
      * @see {@link https://github.com/compucorp/uk.co.compucorp.civicase/blob/develop/ang/civicase/ActivityCard.js#L97}
      *
@@ -182,7 +189,7 @@
         apiCalls = [];
       }
 
-      crmApi(apiCalls).then(function (result) {
+      civicaseCrmApi(apiCalls).then(function (result) {
         $rootScope.$emit('civicase::ActivitiesCalendar::reload');
         $rootScope.$emit('civicase::PanelQuery::reload', panelName);
       });

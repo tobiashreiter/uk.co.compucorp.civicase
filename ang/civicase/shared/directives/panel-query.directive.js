@@ -48,10 +48,10 @@
    * @param {object} $q angular promise service
    * @param {object} $rootScope rootscope object
    * @param {object} $scope scope object
-   * @param {Function} crmApi crm api service
+   * @param {Function} civicaseCrmApi crm api service
    * @param {Function} ts translation service
    */
-  function civicasePanelQueryController ($q, $rootScope, $scope, crmApi, ts) {
+  function civicasePanelQueryController ($q, $rootScope, $scope, civicaseCrmApi, ts) {
     var PAGE_SIZE = 5;
     var cacheByPage = [];
 
@@ -142,7 +142,7 @@
 
       skipCount && (delete apiCalls.count);
 
-      return crmApi(apiCalls)
+      return civicaseCrmApi(apiCalls)
         .then(function (result) {
           !skipCount && ($scope.total = result.count);
 

@@ -106,17 +106,29 @@
   });
 
   describe('CivicaseCaseListTableController', function () {
-    var $controller, $q, $scope, CasesData, crmApi;
+    var $controller, $q, $scope, $route, CasesData, civicaseCrmApi;
 
-    beforeEach(module('civicase', 'civicase.data', 'crmUtil'));
+    beforeEach(module('civicase', 'civicase.data', 'crmUtil', function ($provide) {
+      $provide.value('$route', {
+        current: {
+          params: {
+            cf: 1,
+            caseId: 2,
+            otherParam: 3,
+            otherParam2: 4
+          }
+        }
+      });
+    }));
 
-    beforeEach(inject(function (_$controller_, _$q_, $rootScope, _CasesData_, _crmApi_,
-      _formatCase_) {
+    beforeEach(inject(function (_$controller_, _$q_, _$route_, $rootScope,
+      _CasesData_, _civicaseCrmApi_, _formatCase_) {
       $controller = _$controller_;
       $q = _$q_;
+      $route = _$route_;
       $scope = $rootScope.$new();
       CasesData = _CasesData_.get();
-      crmApi = _crmApi_;
+      civicaseCrmApi = _civicaseCrmApi_;
       // custom function added by civicrm:
       $scope.$bindToRoute = jasmine.createSpy('$bindToRoute');
       $scope.filters = {
@@ -151,20 +163,20 @@
           ['Case', 'getcaselistheaders']
         ];
 
-        crmApi.and.returnValue($q.resolve([_.cloneDeep(CasesData)]));
+        civicaseCrmApi.and.returnValue($q.resolve([_.cloneDeep(CasesData)]));
         initController();
         $scope.applyAdvSearch($scope.filters);
       });
 
       it('requests the cases data', function () {
-        expect(crmApi).toHaveBeenCalledWith(expectedApiCallParams);
+        expect(civicaseCrmApi).toHaveBeenCalledWith(expectedApiCallParams);
       });
     });
 
     describe('on page number has changed', function () {
       beforeEach(function () {
         addAdditionalMarkup();
-        crmApi.and.returnValue($q.resolve([_.cloneDeep(CasesData)]));
+        civicaseCrmApi.and.returnValue($q.resolve([_.cloneDeep(CasesData)]));
         initController();
         $scope.$digest();
         $('.civicase__case-list-panel').scrollTop(20);
@@ -199,6 +211,23 @@
       function removeAdditionalMarkup () {
         $('.civicase__case-list-panel').remove();
       }
+    });
+
+    describe('when switching to displaying a new case details', () => {
+      var expectedParams;
+
+      beforeEach(function () {
+        initController();
+        $scope.cases = _.cloneDeep(CasesData.values);
+
+        $scope.viewCase(CasesData.values[0].id);
+
+        expectedParams = { cf: 1, caseId: 2 };
+      });
+
+      it('removes all url parameters added by individual tabs', function () {
+        expect($route.current.params).toEqual(expectedParams);
+      });
     });
 
     /**

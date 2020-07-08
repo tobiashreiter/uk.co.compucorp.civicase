@@ -3,14 +3,16 @@
 ((_) => {
   describe('civicaseActivityFeed', () => {
     describe('Activity Feed Controller', () => {
-      let $provide, $controller, $rootScope, $scope, $q, crmApi, CaseTypesMockData, activitiesMockData, ActivityType;
-      let activitiesInCurrentPage, totalNumberOfActivities;
+      let $provide, $controller, $rootScope, $scope, $q, civicaseCrmApi,
+        CaseTypesMockData, activitiesMockData, ActivityType,
+        activitiesInCurrentPage, totalNumberOfActivities;
 
       beforeEach(module('civicase', 'civicase.data', (_$provide_) => {
         $provide = _$provide_;
       }));
 
-      beforeEach(inject((_$controller_, _$rootScope_, _$q_, _CaseTypesMockData_, _crmApi_, _activitiesMockData_, _ActivityType_) => {
+      beforeEach(inject((_$controller_, _$rootScope_, _$q_, _CaseTypesMockData_,
+        _civicaseCrmApi_, _activitiesMockData_, _ActivityType_) => {
         $controller = _$controller_;
         $rootScope = _$rootScope_;
         $q = _$q_;
@@ -20,7 +22,7 @@
 
         $scope = $rootScope.$new();
         $scope.$bindToRoute = jasmine.createSpy('$bindToRoute');
-        crmApi = _crmApi_;
+        civicaseCrmApi = _civicaseCrmApi_;
       }));
 
       describe('loadActivities', () => {
@@ -51,14 +53,14 @@
           });
 
           it('requests the activities using the "get" api action', () => {
-            expect(crmApi).toHaveBeenCalledWith({
+            expect(civicaseCrmApi).toHaveBeenCalledWith({
               acts: ['Activity', 'get', jasmine.any(Object)],
               all: ['Activity', 'getcount', jasmine.any(Object)]
             });
           });
 
           it('filters by the activities of the selected activity set and the activity id', () => {
-            const args = crmApi.calls.mostRecent().args[0].acts[2].activity_type_id;
+            const args = civicaseCrmApi.calls.mostRecent().args[0].acts[2].activity_type_id;
 
             expect(args).toEqual({ IN: expectedActivityTypeIDs });
           });
@@ -72,7 +74,7 @@
           });
 
           it('requests the activities using the "get contact activities" api action', () => {
-            expect(crmApi).toHaveBeenCalledWith({
+            expect(civicaseCrmApi).toHaveBeenCalledWith({
               acts: ['Activity', 'getcontactactivities', jasmine.any(Object)],
               all: ['Activity', 'getcontactactivitiescount', jasmine.any(Object)]
             });
@@ -95,7 +97,7 @@
           });
 
           it('updates the activity feed', () => {
-            expect(crmApi).toHaveBeenCalledWith({
+            expect(civicaseCrmApi).toHaveBeenCalledWith({
               acts: ['Activity', 'get', jasmine.any(Object)],
               all: ['Activity', 'getcount', jasmine.any(Object)]
             });
@@ -274,7 +276,7 @@
         });
 
         it('shows records starting from the clicked month', () => {
-          expect(crmApi).toHaveBeenCalledWith(jasmine.objectContaining({
+          expect(civicaseCrmApi).toHaveBeenCalledWith(jasmine.objectContaining({
             acts: ['Activity', 'get', jasmine.objectContaining({
               options: jasmine.objectContaining({
                 offset: 10
@@ -349,7 +351,7 @@
        * Mocks Activities API calls
        */
       function mockActivitiesAPICall () {
-        crmApi.and.returnValue($q.resolve({
+        civicaseCrmApi.and.returnValue($q.resolve({
           acts: { values: activitiesInCurrentPage },
           all: totalNumberOfActivities
         }));

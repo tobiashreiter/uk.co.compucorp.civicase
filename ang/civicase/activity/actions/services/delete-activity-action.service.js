@@ -7,10 +7,10 @@
    * Tags Activity Action Service
    *
    * @param {object} $rootScope rootscope object
-   * @param {object} crmApi service to use civicrm api
+   * @param {object} civicaseCrmApi service to use civicrm api
    * @param {object} dialogService service to open dialog box
    */
-  function DeleteActivityAction ($rootScope, crmApi, dialogService) {
+  function DeleteActivityAction ($rootScope, civicaseCrmApi, dialogService) {
     var ts = CRM.ts('civicase');
 
     /**
@@ -19,7 +19,12 @@
      * @param {object} $scope scope object
      */
     this.doAction = function ($scope) {
-      deleteActivity($scope.selectedActivities, $scope.isSelectAll, $scope.params, $scope.totalCount);
+      deleteActivity(
+        $scope.selectedActivities,
+        $scope.isSelectAll,
+        $scope.params,
+        $scope.totalCount
+      );
     };
 
     /**
@@ -39,7 +44,7 @@
       }).on('crmConfirm:yes', function () {
         var apiCalls = prepareApiCalls(activities, isSelectAll, params);
 
-        crmApi(apiCalls)
+        civicaseCrmApi(apiCalls)
           .then(function () {
             $rootScope.$broadcast('civicase::activity::updated');
           });

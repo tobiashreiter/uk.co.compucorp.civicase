@@ -2,29 +2,29 @@
 
 (function (_) {
   describe('civicaseFileUploader', function () {
-    var $q, $controller, $rootScope, $scope, crmApi, crmApiMock, TagsMockData;
+    var $q, $controller, $rootScope, $scope, civicaseCrmApi, civicaseCrmApiMock, TagsMockData;
 
     beforeEach(module('civicase', 'civicase.data', ($provide) => {
-      crmApiMock = jasmine.createSpy('crmApi');
+      civicaseCrmApiMock = jasmine.createSpy('civicaseCrmApi');
 
-      $provide.value('crmApi', crmApiMock);
+      $provide.value('civicaseCrmApi', civicaseCrmApiMock);
       $provide.value('FileUploader', function () {
         this.getNotUploadedItems = jasmine.createSpy('getNotUploadedItems');
         this.uploadAllWithPromise = jasmine.createSpy('uploadAllWithPromise');
       });
     }));
 
-    beforeEach(inject(function (_$q_, _$controller_, _$rootScope_, _crmApi_, _TagsMockData_) {
+    beforeEach(inject(function (_$q_, _$controller_, _$rootScope_, _civicaseCrmApi_, _TagsMockData_) {
       $q = _$q_;
       $controller = _$controller_;
       $rootScope = _$rootScope_;
-      crmApi = _crmApi_;
+      civicaseCrmApi = _civicaseCrmApi_;
       TagsMockData = _TagsMockData_;
     }));
 
     describe('displaying tags', function () {
       beforeEach(function () {
-        crmApiMock.and.returnValue($q.resolve({ values: TagsMockData.get() }));
+        civicaseCrmApiMock.and.returnValue($q.resolve({ values: TagsMockData.get() }));
         initController();
       });
 
@@ -33,7 +33,7 @@
       });
 
       it('fetches all tags for associated with activity', () => {
-        expect(crmApi).toHaveBeenCalledWith('Tag', 'get', {
+        expect(civicaseCrmApi).toHaveBeenCalledWith('Tag', 'get', {
           sequential: 1,
           used_for: { LIKE: '%civicrm_activity%' },
           options: { limit: 0 }
@@ -53,7 +53,7 @@
 
     describe('saving activity', function () {
       beforeEach(function () {
-        crmApiMock.and.callFake(function (entity, endpoint, params) {
+        civicaseCrmApiMock.and.callFake(function (entity, endpoint, params) {
           if (entity === 'Activity') {
             return $q.resolve({ id: '101' });
           } else if (entity === 'Tag') {
@@ -71,11 +71,11 @@
       });
 
       it('creates a new file type activity', () => {
-        expect(crmApi).toHaveBeenCalledWith('Activity', 'create', $scope.activity);
+        expect(civicaseCrmApi).toHaveBeenCalledWith('Activity', 'create', $scope.activity);
       });
 
       it('saves the selected tags with respect to the activity', () => {
-        expect(crmApi).toHaveBeenCalledWith('EntityTag', 'create', {
+        expect(civicaseCrmApi).toHaveBeenCalledWith('EntityTag', 'create', {
           entity_table: 'civicrm_activity',
           tag_id: ['102'],
           entity_id: '101'

@@ -32,6 +32,13 @@
       case_type_ids: ['4'],
       clientID: '1',
       icon: 'fa-link'
+    }, {
+      title: 'Not Assigned Webform',
+      action: 'GoToWebform',
+      path: 'content/not-assigned-webform',
+      case_type_ids: [],
+      clientID: '1',
+      icon: 'fa-link'
     }]
   }];
 

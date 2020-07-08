@@ -18,8 +18,9 @@
   /**
    * @param {object} $scope the controller's scope
    * @param {Function} getSelect2Value function to get select 2 values
+   * @param {Function} isTruthy service to check if value is truthy
    */
-  function civicaseTagsSelectorController ($scope, getSelect2Value) {
+  function civicaseTagsSelectorController ($scope, getSelect2Value, isTruthy) {
     $scope.formatTags = formatTags;
     $scope.tags = {
       genericTags: '',
@@ -66,7 +67,7 @@
       parentID = typeof parent !== 'undefined' ? parentID : undefined;
 
       var filteredTags = _.filter(tags, function (child) {
-        return child.parent_id === parentID && child.is_tagset === '0';
+        return child.parent_id === parentID && !isTruthy(child.is_tagset);
       });
 
       if (_.isEmpty(filteredTags)) {
@@ -93,7 +94,7 @@
       var returnArray = [];
 
       var filteredTags = _.filter(tags, function (child) {
-        return !child.parent_id && child.is_tagset === '1';
+        return !child.parent_id && isTruthy(child.is_tagset);
       });
 
       if (_.isEmpty(filteredTags)) {
@@ -102,7 +103,7 @@
 
       _.each(filteredTags, function (tag) {
         var children = _.filter(tags, function (child) {
-          if (child.parent_id === tag.id && child.is_tagset === '0') {
+          if (child.parent_id === tag.id && !isTruthy(child.is_tagset)) {
             child.text = child.name;
             return true;
           }
