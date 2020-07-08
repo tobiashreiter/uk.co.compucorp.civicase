@@ -53,6 +53,8 @@ function expose_settings(array &$options, array $defaults) {
   $options['showComingSoonCaseSummaryBlock'] = (bool) Civi::settings()->get('civicaseShowComingSoonCaseSummaryBlock');
   $options['allowCaseLocks'] = (bool) Civi::settings()->get('civicaseAllowCaseLocks');
   $options['allowLinkedCasesTab'] = (bool) Civi::settings()->get('civicaseAllowLinkedCasesTab');
+  $options['showWebformsListSeparately'] = (bool) Civi::settings()->get('civicaseShowWebformsListSeparately');
+  $options['webformsDropdownButtonLabel'] = Civi::settings()->get('civicaseWebformsDropdownButtonLabel');
   $options['caseTypeCategoriesWhereUserCanAccessActivities'] =
     CRM_Civicase_Helper_CaseCategory::getWhereUserCanAccessActivities();
   $options['currentCaseCategory'] = $defaults['caseCategoryName']
