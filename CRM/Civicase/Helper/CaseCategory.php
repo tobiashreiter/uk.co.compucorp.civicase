@@ -3,6 +3,7 @@
 use CRM_Case_BAO_CaseType as CaseType;
 use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
 use CRM_Civicase_Service_CaseManagementUtils as CaseManagementUtils;
+use CRM_Civicase_BAO_CaseCategoryInstance as CaseCategoryInstance;
 
 /**
  * CRM_Civicase_Helper_CaseCategory class.
@@ -112,7 +113,8 @@ class CRM_Civicase_Helper_CaseCategory {
    *   The word to be replaced and replacement array.
    */
   public static function getWordReplacements($caseTypeCategoryName) {
-    $optionName = $caseTypeCategoryName . "_word_replacement";
+    $instanceName = self::getInstanceName($caseTypeCategoryName);
+    $optionName = $instanceName . '_word_replacement';
     try {
       $result = civicrm_api3('OptionValue', 'getsingle', [
         'option_group_id' => 'case_type_category_word_replacement_class',
@@ -319,6 +321,27 @@ class CRM_Civicase_Helper_CaseCategory {
     $instanceClass = $instanceClasses[$instanceValue];
 
     return new $instanceClass($caseCategoryInstance->id);
+  }
+
+  /**
+   * Returns the Category Instance for the Case category.
+   *
+   * @param string $caseCategoryName
+   *   Case category Name.
+   */
+  public static function getInstanceName($caseCategoryName) {
+    try {
+      $result = civicrm_api3('CaseCategoryInstance', 'getsingle', [
+        'category_id' => $caseCategoryName,
+      ]);
+    }
+    catch (Exception $e) {
+      return NULL;
+    }
+
+    $instances = CaseCategoryInstance::buildOptions('instance_id', 'validate');
+
+    return $instances[$result['instance_id']];
   }
 
 }
