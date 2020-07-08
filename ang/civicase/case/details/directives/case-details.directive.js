@@ -43,12 +43,16 @@
    * @param {object} CaseStatus case status service
    * @param {object} CaseType case type service
    * @param {object} CaseDetailsSummaryBlocks case details summary blocks
+   * @param {object} DetailsCaseTab case details case tab service reference
    */
   function civicaseCaseDetailsController ($location, $sce, $rootScope, $scope,
     $document, allowLinkedCasesTab, BulkActions, CaseDetailsTabs, civicaseCrmApi,
     formatActivity, formatCase, getActivityFeedUrl, getCaseQueryParams, $route,
     $timeout, crmStatus, CasesUtils, PrintMergeCaseAction, ts, ActivityType,
-    CaseStatus, CaseType, CaseDetailsSummaryBlocks) {
+    CaseStatus, CaseType, CaseDetailsSummaryBlocks, DetailsCaseTab) {
+    // Makes the scope available to child directives when they require this parent directive:
+    this.$scope = $scope;
+
     // The ts() and hs() functions help load strings for this module.
     // TODO: Move the common logic into a common controller (based on the usage of ContactCaseTabCaseDetails)
     $scope.ts = ts;
@@ -65,7 +69,7 @@
     $scope.caseDetailsSummaryBlocks = CaseDetailsSummaryBlocks;
     $scope.caseTypesLength = _.size(caseTypes);
     $scope.CRM = CRM;
-    $scope.tabs = CaseDetailsTabs;
+    $scope.tabs = _.cloneDeep(CaseDetailsTabs);
     $scope.trustAsHtml = $sce.trustAsHtml;
     $scope.isMainContentVisible = isMainContentVisible;
     $scope.isPlaceHolderVisible = isPlaceHolderVisible;
@@ -196,18 +200,24 @@
     };
 
     $scope.pushCaseData = function (data) {
-      // If the user has already clicked through to another case by the time we get this data back, stop.
-      if ($scope.item && data && data.id === $scope.item.id) {
-        // Maintain the reference to the variable in the parent scope.
-        delete ($scope.item.tag_id);
-        _.assign($scope.item, formatCaseDetails(data));
-        $scope.allowedCaseStatuses = getAllowedCaseStatuses($scope.item.definition);
-        $scope.areRelatedCasesVisibleOnSummaryTab = !allowLinkedCasesTab &&
-          $scope.item.relatedCases.length > 0;
+      var isDataResponseForCurrentCase = $scope.item && data &&
+        data.id === $scope.item.id;
 
-        $scope.$broadcast('updateCaseData');
-        $scope.$emit('civicase::ActivitiesCalendar::reload');
+      // If the user has already clicked through to another case by the time we get this data back, stop.
+      if (!isDataResponseForCurrentCase) {
+        return;
       }
+
+      // Maintain the reference to the variable in the parent scope.
+      delete ($scope.item.tag_id);
+      _.assign($scope.item, formatCaseDetails(data));
+      $scope.allowedCaseStatuses = getAllowedCaseStatuses($scope.item.definition);
+      $scope.areRelatedCasesVisibleOnSummaryTab = !allowLinkedCasesTab &&
+        $scope.item.relatedCases.length > 0;
+
+      includeDetailsTab();
+      $scope.$broadcast('updateCaseData');
+      $scope.$emit('civicase::ActivitiesCalendar::reload');
     };
 
     /**
@@ -354,10 +364,32 @@
       delete (item['api.Activity.get.nextActivitiesWhichIsNotMileStone']);
 
       // Custom fields
-      item.customData = item['api.CustomValue.gettreevalues'].values || [];
-      delete (item['api.CustomValue.gettreevalues']);
+      var customData = item['api.CustomValue.getalltreevalues'].values || [];
+      item.customData = _.groupBy(customData, 'style');
+      delete (item['api.CustomValue.getalltreevalues']);
 
       return item;
+    }
+
+    /**
+     * It includes the details tab when there are custom data that are assigned
+     * to be displayed in a tab.
+     */
+    function includeDetailsTab () {
+      var shouldAddDetailsTab = !_.isEmpty($scope.item.customData.Tab);
+      var isDetailsTabIncluded = !!_.find($scope.tabs, { name: 'Details' });
+
+      if (!shouldAddDetailsTab || isDetailsTabIncluded) {
+        return;
+      }
+
+      $scope.tabs.splice(1, 0, {
+        name: 'Details',
+        label: ts('Details'),
+        service: DetailsCaseTab
+      });
+
+      activeTabWatcher();
     }
 
     /**
@@ -415,7 +447,7 @@
      * placeholder and content template.
      */
     function activeTabWatcher () {
-      var activeCaseTab = _.find(CaseDetailsTabs, {
+      var activeCaseTab = _.find($scope.tabs, {
         name: $scope.activeTab
       });
 
