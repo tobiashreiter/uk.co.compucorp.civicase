@@ -144,6 +144,9 @@ $contact-avatar-size: 30px;
 }
 
 .civicase__contact-avatar--has-full-name:hover {
+  // This remove the transparency given by the `.crm_notification-badge` class
+  // which the contact card avatar depends on. The transparency is not needed
+  // when displaying the contact's full name:
   opacity: 1;
 
   .civicase__contact-avatar__full-name {
