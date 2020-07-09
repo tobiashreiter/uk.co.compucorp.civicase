@@ -2,12 +2,13 @@
   var module = angular.module('civicase');
 
   // Angular binding for CiviCRM's jQuery-based crm-editable
-  module.directive('crmEditable', function ($timeout, civicaseTruncateText) {
+  module.directive('crmEditable', function ($timeout) {
     return {
       restrict: 'A',
       link: crmEditableLink,
       scope: {
-        model: '=crmEditable'
+        model: '=crmEditable',
+        lineLimit: '@'
       }
     };
 
@@ -34,6 +35,7 @@
                 scope.$apply(function () {
                   scope.model[field] = value;
                 });
+                applyLineLimitIfApplicableWithTimeout(scope, elem);
               });
             })
             .crmEditable();
@@ -42,7 +44,11 @@
               textarea
                 ? nl2br(getHTMLToShow(scope, elem, attrs))
                 : _.escape(getHTMLToShow(scope, elem, attrs)));
+
+            applyLineLimitIfApplicableWithTimeout(scope, elem);
           });
+
+          applyLineLimitIfApplicableWithTimeout(scope, elem);
         });
     }
 
@@ -72,6 +78,78 @@
       return (scope.model[field] && scope.model[field] !== '')
         ? scope.model[field]
         : placeholder;
+    }
+
+    /**
+     * Applies line limit if applicable with a timeout,
+     * so that UI is rendered first
+     *
+     * @param {object} scope scope object
+     * @param {object} elem element
+     */
+    function applyLineLimitIfApplicableWithTimeout (scope, elem) {
+      $timeout(function () {
+        applyLineLimitIfApplicable(scope, elem);
+      });
+    }
+
+    /**
+     * Applies line limit if applicable
+     *
+     * @param {object} scope scope object
+     * @param {object} elem element
+     */
+    function applyLineLimitIfApplicable (scope, elem) {
+      elem.siblings('.civicase__show-more-button').remove();
+      elem.removeClass('civicase__show-more-block');
+      unTruncateBlock(scope, elem);
+
+      if (scope.lineLimit) {
+        elem.addClass('civicase__show-more-block');
+
+        var LINE_HEIGHT = parseInt(elem.css('line-height'));
+        var elementHeight = elem.height();
+        var linesOfTextVisible = elementHeight / LINE_HEIGHT;
+
+        if (linesOfTextVisible > scope.lineLimit) {
+          var seeMoreElement = '<a class="civicase__show-more-button">See More</span>';
+          $(elem).after(seeMoreElement);
+
+          truncateBlock(scope, elem);
+
+          elem.siblings('.civicase__show-more-button').click(function () {
+            if ($(this).text() === 'See More') {
+              unTruncateBlock(scope, elem);
+              $(this).text('Hide');
+            } else {
+              truncateBlock(scope, elem);
+              $(this).text('See More');
+            }
+          });
+        }
+      }
+    }
+
+    /**
+     * Truncates the Block
+     *
+     * @param {object} scope scope object
+     * @param {object} elem element
+     */
+    function truncateBlock (scope, elem) {
+      elem.css('max-height', scope.lineLimit + 'em');
+      elem.css('overflow', 'hidden');
+    }
+
+    /**
+     * Untruncates the Block
+     *
+     * @param {object} scope scope object
+     * @param {object} elem element
+     */
+    function unTruncateBlock (scope, elem) {
+      elem.css('max-height', 'initial');
+      elem.css('overflow', 'auto');
     }
   });
 })(angular, CRM.$, CRM._, CRM);
