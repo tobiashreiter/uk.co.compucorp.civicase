@@ -102,9 +102,9 @@
     function applyLineLimitIfApplicable (scope, elem) {
       elem.siblings('.civicase__show-more-button').remove();
       elem.removeClass('civicase__show-more-block');
-      unTruncateBlock(scope, elem);
 
       if (scope.lineLimit) {
+        unTruncateBlock(scope, elem);
         elem.addClass('civicase__show-more-block');
 
         var LINE_HEIGHT = parseInt(elem.css('line-height'));
