@@ -15,15 +15,15 @@ class CRM_Civicase_Service_CaseCategoryCustomFieldExtends {
   /**
    * Creates the Custom field extend option group for case category.
    *
-   * @param string $caseCategoryName
-   *   Case Category Name.
+   * @param string $entityValue
+   *   Entity Value for the custom entity.
    * @param string $label
    *   Label.
    * @param string $entityTypeFunction
    *   Function to fetch entity types for the entity.
    */
-  public function create($caseCategoryName, $label, $entityTypeFunction = NULL) {
-    $result = $this->getCgExtendOptionValue($caseCategoryName);
+  public function create($entityValue, $label, $entityTypeFunction = NULL) {
+    $result = $this->getCgExtendOptionValue($entityValue);
 
     if ($result['count'] > 0) {
       return;
@@ -33,7 +33,7 @@ class CRM_Civicase_Service_CaseCategoryCustomFieldExtends {
       'option_group_id' => 'cg_extend_objects',
       'name' => $this->entityTable,
       'label' => $label,
-      'value' => $this->getCustomEntityValue($caseCategoryName),
+      'value' => $this->getCustomEntityValue($entityValue),
       'description' => $entityTypeFunction,
       'is_active' => TRUE,
       'is_reserved' => TRUE,
@@ -43,11 +43,11 @@ class CRM_Civicase_Service_CaseCategoryCustomFieldExtends {
   /**
    * Deletes the Custom field extend option group for case category.
    *
-   * @param string $caseCategoryName
-   *   Case Category Name.
+   * @param string $entityValue
+   *   Entity Value for the custom entity.
    */
-  public function delete($caseCategoryName) {
-    $result = $this->getCgExtendOptionValue($caseCategoryName);
+  public function delete($entityValue) {
+    $result = $this->getCgExtendOptionValue($entityValue);
 
     if ($result['count'] == 0) {
       return;
@@ -59,16 +59,16 @@ class CRM_Civicase_Service_CaseCategoryCustomFieldExtends {
   /**
    * Return CG Extend option value.
    *
-   * @param string $caseCategoryName
-   *   Case category name.
+   * @param string $entityValue
+   *   Entity Value for the custom entity.
    *
    * @return array
    *   Cg Extend option value.
    */
-  protected function getCgExtendOptionValue($caseCategoryName) {
+  protected function getCgExtendOptionValue($entityValue) {
     $result = civicrm_api3('OptionValue', 'get', [
       'sequential' => 1,
-      'value' => $this->getCustomEntityValue($caseCategoryName),
+      'value' => $this->getCustomEntityValue($entityValue),
       'option_group_id' => 'cg_extend_objects',
       'name' => $this->entityTable,
     ]);
@@ -79,14 +79,14 @@ class CRM_Civicase_Service_CaseCategoryCustomFieldExtends {
   /**
    * Returns the custom entity value.
    *
-   * @param string $caseCategoryName
-   *   Case category name.
+   * @param string $entityValue
+   *   Entity Value for the custom entity.
    *
    * @return string
    *   Custom entity value.
    */
-  protected function getCustomEntityValue($caseCategoryName) {
-    return $caseCategoryName;
+  protected function getCustomEntityValue($entityValue) {
+    return $entityValue;
   }
 
 }

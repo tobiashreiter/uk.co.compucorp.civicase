@@ -13,8 +13,8 @@ class CRM_Civicase_Service_CaseCategoryCaseTypeCustomFieldExtends extends CRM_Ci
   /**
    * {@inheritdoc}
    */
-  protected function getCustomEntityValue($caseCategoryName) {
-    return "{$caseCategoryName}Type";
+  protected function getCustomEntityValue($entityValue) {
+    return "{$entityValue}Type";
   }
 
 }
