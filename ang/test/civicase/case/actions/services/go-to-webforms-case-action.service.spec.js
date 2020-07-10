@@ -70,7 +70,8 @@
         expect(CRM.alert).toHaveBeenCalledWith(
           ts('Please refresh this page to view updates from the webform submission.'),
           ts('Refresh'),
-          'info'
+          'info',
+          { expires: 1800000 }
         );
       });
     });
