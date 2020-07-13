@@ -13,12 +13,15 @@
         <strong> {{ data.id }} </strong>
         <span class="civicase__pipe" ng-if="data.status !== 'Resolved'"> | </span>
         <span ng-if="data.status !== 'Resolved'">
-          <span>Next Milestone: </span>
+          <span>Last Activity: </span>
           <span
             class="civicase__case-card__date"
             ng-class="{'civicase__overdue-activity-icon': data.activity_summary.milestone[0].is_overdue}"
             >
-          {{ formatDate(data.activity_summary.milestone[0].activity_date_time, 'DD/MM/YYYY') }}
+            {{ data.activity_summary.last[0].activity_date_time ?
+              formatDate(data.activity_summary.last[0].activity_date_time, 'DD/MM/YYYY')
+              : ''
+            }}
           </span>
         </span>
       </div>
