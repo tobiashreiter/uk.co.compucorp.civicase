@@ -29,7 +29,8 @@
       CRM.alert(
         ts('Please refresh this page to view updates from the webform submission.'),
         ts('Refresh'),
-        'info'
+        'info',
+        { expires: 1800000 }
       );
 
       window = $window.open(CRM.url(action.path, urlObject), '_blank');
