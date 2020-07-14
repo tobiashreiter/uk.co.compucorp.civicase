@@ -14,7 +14,10 @@
       </div>
       <div class="civicase__file-upload-details civicase__file-upload-item pull-right">
         <div class="form-group">
-          <label for="uploadSubject">{{ts('Activity Subject')}}</label>
+          <label for="uploadSubject">
+            {{ts('Activity Subject')}}
+            <span class="crm-marker" title="This field is required.">*</span>
+          </label>
           <input type="text" class="form-control" id="uploadSubject" required placeholder="" ng-model="activity.subject">
         </div>
         <div class="row">
