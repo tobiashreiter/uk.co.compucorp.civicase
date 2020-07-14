@@ -107,9 +107,12 @@
         ? $scope.activityFilters.case_filter.case_manager = CRM.config.user_contact_id
         : delete ($scope.activityFilters.case_filter.case_manager);
 
-      newValue === 'is_involved'
-        ? $scope.activityFilters.case_filter.contact_involved = { IN: [CRM.config.user_contact_id] }
-        : delete ($scope.activityFilters.case_filter.contact_involved);
+      if (newValue === 'is_involved') {
+        $scope.activityFilters.case_filter.contact_involved = { IN: [CRM.config.user_contact_id] };
+        $scope.activityFilters.case_filter.has_activities_for = CRM.config.user_contact_id;
+      } else {
+        delete ($scope.activityFilters.case_filter.contact_involved);
+      }
     }
 
     /**

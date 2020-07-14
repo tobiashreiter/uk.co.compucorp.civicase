@@ -24,6 +24,12 @@ function _civicrm_api3_case_getdetails_spec(array &$spec) {
     'type' => CRM_Utils_Type::T_INT,
   ];
 
+  $spec['has_activities_for'] = [
+    'title' => 'Has Activities For',
+    'description' => "Has activities created by or assigned to",
+    'type' => CRM_Utils_Type::T_INT,
+  ];
+
   $spec['exclude_for_client_id'] = [
     'title' => 'Exclude For Client ID',
     'description' => "Contact id of the Client to be excluded",
@@ -118,6 +124,20 @@ function civicrm_api3_case_getdetails(array $params) {
         break;
       }
     }
+  }
+
+  if (!empty($params['has_activities_for'])) {
+    $query = "SELECT DISTINCT(case_id) from civicrm_case_activity WHERE activity_id IN (
+      SELECT DISTINCT(civicrm_activity.id) from civicrm_activity
+        INNER JOIN civicrm_activity_contact
+        ON civicrm_activity.id = civicrm_activity_contact.activity_id
+        WHERE civicrm_activity.is_deleted = 0
+          AND civicrm_activity.is_current_revision = 1
+          AND civicrm_activity.is_test = 0
+          AND civicrm_activity_contact.contact_id=" . $params['has_activities_for'] . "
+          AND civicrm_activity_contact.record_type_id IN (2,3))";
+
+    $sql->where("a.id IN (" . $query . ")");
   }
 
   // Call the case api.
