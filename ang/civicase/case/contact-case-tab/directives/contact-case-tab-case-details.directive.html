@@ -156,20 +156,6 @@
         </div>
       </div>
       <!--End Case Summary -->
-      <!-- Next Activity -->
-      <div class="civicase__contact-cases-tab__panel-fields">
-        <div class="civicase__contact-cases-tab__panel-field-title">
-          {{ ts('Next Activity') }}
-        </div>
-        <div
-          case-activity-card="item.activity_summary.next[0]"
-          refresh-callback="refresh"
-          case="item"
-          crm-popup-form-success="pushCaseData($data.civicase_reload[0])"
-        >
-        </div>
-      </div>
-      <!-- End Next Activity -->
       <!-- Last Activity -->
       <div class="civicase__contact-cases-tab__panel-fields">
         <div class="civicase__contact-cases-tab__panel-field-title">
@@ -184,6 +170,20 @@
         </div>
       </div>
       <!-- End Last Activity -->
+      <!-- Next Activity -->
+      <div class="civicase__contact-cases-tab__panel-fields">
+        <div class="civicase__contact-cases-tab__panel-field-title">
+          {{ ts('Next Activity') }}
+        </div>
+        <div
+          case-activity-card="item.activity_summary.next[0]"
+          refresh-callback="refresh"
+          case="item"
+          crm-popup-form-success="pushCaseData($data.civicase_reload[0])"
+        >
+        </div>
+      </div>
+      <!-- End Next Activity -->
       <!-- Contact Role -->
       <div class="civicase__contact-cases-tab__panel-fields" ng-if="item.contact_role">
         <div class="civicase__contact-cases-tab__panel-field-title">
