@@ -38,6 +38,10 @@
       $scope.$watch('tags', function (tags) {
         $scope.model = prepareTagsForSave(tags);
       }, true);
+
+      $scope.$watch('model', function (model) {
+        $scope.tags = prepareTagsForEditing(model);
+      }, true);
     }());
 
     /**
