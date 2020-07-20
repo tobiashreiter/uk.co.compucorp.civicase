@@ -5,7 +5,7 @@
  *
  * A Collection of helpers for API Filters.
  */
-class CRM_Civicase_ApiHelpers_Filters {
+class CRM_Civicase_APIHelpers_Filters {
 
   /**
    * If a filter is not in array format it defaults to a equal filter.

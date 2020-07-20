@@ -98,7 +98,7 @@ function civicrm_api3_case_getdetails(array $params) {
 
   // Add clause to search by non manager role and non client.
   if (!empty($params['contact_involved'])) {
-    $contactInvolvedFilter = CRM_Civicase_ApiHelpers_Filters::normalize($params['contact_involved']);
+    $contactInvolvedFilter = CRM_Civicase_APIHelpers_Filters::normalize($params['contact_involved']);
     $caseContactSqlFilter = CasesByContactInvolved::getCaseContactSqlFilter($contactInvolvedFilter);
 
     CiviCaseUtils::joinOnRelationship($sql, 'involved');

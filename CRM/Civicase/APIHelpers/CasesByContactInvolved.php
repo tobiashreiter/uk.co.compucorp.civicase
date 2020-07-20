@@ -16,7 +16,7 @@ class CRM_Civicase_APIHelpers_CasesByContactInvolved {
    *   The ID of the contact related to the case.
    */
   public static function filter(CRM_Utils_SQL_Select $query, $contactInvolved) {
-    $contactInvolvedFilter = CRM_Civicase_ApiHelpers_Filters::normalize($contactInvolved);
+    $contactInvolvedFilter = CRM_Civicase_APIHelpers_Filters::normalize($contactInvolved);
     $caseContactSqlFilter = self::getCaseContactSqlFilter($contactInvolvedFilter);
 
     CiviCaseUtils::joinOnRelationship($query, 'involved');
