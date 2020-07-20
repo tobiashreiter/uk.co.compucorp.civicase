@@ -104,6 +104,21 @@ $setting = [
     'description' => 'This configuration determines whether or not the full name of the activity creator is displayed in the case activity feed.',
     'help_text' => '',
   ],
+  'includeActivitiesForInvolvedContact' => [
+    'group_name' => 'CiviCRM Preferences',
+    'group' => 'core',
+    'name' => 'includeActivitiesForInvolvedContact',
+    'type' => 'Boolean',
+    'quick_form_type' => 'YesNo',
+    'default' => FALSE,
+    'html_type' => 'radio',
+    'add' => '4.7',
+    'title' => 'Cases I’m involved in to include ‘activities created by me or assigned to me.',
+    'is_domain' => 1,
+    'is_contact' => 0,
+    'description' => '',
+    'help_text' => '',
+  ],
 ];
 
 $caseSetting = new CRM_Civicase_Service_CaseCategorySetting();
