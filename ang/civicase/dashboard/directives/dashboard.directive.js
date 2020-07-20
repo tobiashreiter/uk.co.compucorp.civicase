@@ -19,11 +19,13 @@
    * @param {string} currentCaseCategory current case type category setting value.
    * @param {object[]} DashboardActionItems Dashboard action items list.
    * @param {Function} formatActivity Format Activity service reference.
+   * @param {Function} includeActivitiesForInvolvedContact Include Activities For Involved Cases civicase setting.
    * @param {Function} $timeout timeout service reference.
    * @param {Function} ts translate service reference.
    */
   function civicaseDashboardController ($scope, civicaseCrmApi,
-    currentCaseCategory, DashboardActionItems, formatActivity, $timeout, ts) {
+    currentCaseCategory, DashboardActionItems, formatActivity,
+    includeActivitiesForInvolvedContact, $timeout, ts) {
     $scope.checkPerm = CRM.checkPerm;
     $scope.actionBarItems = DashboardActionItems;
     $scope.url = CRM.url;
@@ -109,7 +111,8 @@
 
       if (newValue === 'is_involved') {
         $scope.activityFilters.case_filter.contact_involved = { IN: [CRM.config.user_contact_id] };
-        $scope.activityFilters.case_filter.has_activities_for = CRM.config.user_contact_id;
+        $scope.activityFilters.case_filter.has_activities_for_involved_contact =
+          includeActivitiesForInvolvedContact ? 1 : 0;
       } else {
         delete ($scope.activityFilters.case_filter.contact_involved);
       }
