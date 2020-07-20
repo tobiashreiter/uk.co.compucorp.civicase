@@ -157,22 +157,31 @@ function civicrm_api3_case_getdetails(array $params) {
       }
 
       // Get last activity.
-      $lastActivity = _civicrm_api3_case_get_activities($ids, [
+      $lastActivities = _civicrm_api3_case_get_activities($ids, [
         'check_permissions' => !empty($params['check_permissions']),
         'status_id.filter' => CRM_Activity_BAO_Activity::COMPLETED,
-        'sequential' => 1,
         'options' => [
-          'limit' => 1,
           'sort' => 'activity_date_time DESC',
         ],
       ]);
-      $case['activity_summary']['last'] = $lastActivity['values'];
+
+      foreach ($lastActivities['values'] as $act) {
+        foreach ((array) $act['case_id'] as $actCaseId) {
+          if (isset($result['values'][$actCaseId])) {
+            $case =& $result['values'][$actCaseId];
+            if (!isset($case['activity_summary']['last'])) {
+              $case['activity_summary']['last'][] = $act;
+            }
+          }
+        }
+      }
 
       // Get next activities.
       $activities = _civicrm_api3_case_get_activities($ids, [
         'check_permissions' => !empty($params['check_permissions']),
         'status_id.filter' => CRM_Activity_BAO_Activity::INCOMPLETE,
       ]);
+
       foreach ($activities['values'] as $act) {
         foreach ((array) $act['case_id'] as $actCaseId) {
           if (isset($result['values'][$actCaseId])) {
