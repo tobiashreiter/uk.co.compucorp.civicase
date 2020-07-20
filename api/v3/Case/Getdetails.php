@@ -7,6 +7,7 @@
 
 require_once 'api/v3/Case.php';
 use Civi\CCase\Utils as CiviCaseUtils;
+use CRM_Civicase_APIHelpers_CasesByContactInvolved as CasesByContactInvolved;
 
 /**
  * Case.getdetails API specification.
@@ -24,9 +25,9 @@ function _civicrm_api3_case_getdetails_spec(array &$spec) {
     'type' => CRM_Utils_Type::T_INT,
   ];
 
-  $spec['has_activities_for'] = [
-    'title' => 'Has Activities For',
-    'description' => "Has activities created by or assigned to",
+  $spec['has_activities_for_involved_contact'] = [
+    'title' => 'Has Activities For Involved Contact',
+    'description' => "Has activities created by, assigned to, or targeting the involved contact",
     'type' => CRM_Utils_Type::T_INT,
   ];
 
@@ -97,7 +98,18 @@ function civicrm_api3_case_getdetails(array $params) {
 
   // Add clause to search by non manager role and non client.
   if (!empty($params['contact_involved'])) {
-    CRM_Civicase_APIHelpers_CasesByContactInvolved::filter($sql, $params['contact_involved']);
+    $contactInvolvedFilter = CRM_Civicase_ApiHelpers_Filters::normalize($params['contact_involved']);
+    $caseContactSqlFilter = CasesByContactInvolved::getCaseContactSqlFilter($contactInvolvedFilter);
+
+    CiviCaseUtils::joinOnRelationship($sql, 'involved');
+
+    if (!empty($params['has_activities_for_involved_contact']) && $params['has_activities_for_involved_contact'] == 1) {
+      $activityContactSqlFilter = CasesByContactInvolved::getActivityContactSqlFilter($contactInvolvedFilter);
+      $sql->where("$activityContactSqlFilter OR $caseContactSqlFilter");
+    }
+    else {
+      $sql->where($caseContactSqlFilter);
+    }
   }
 
   if (!empty($params['exclude_for_client_id'])) {
@@ -124,20 +136,6 @@ function civicrm_api3_case_getdetails(array $params) {
         break;
       }
     }
-  }
-
-  if (!empty($params['has_activities_for'])) {
-    $query = "SELECT DISTINCT(case_id) from civicrm_case_activity WHERE activity_id IN (
-      SELECT DISTINCT(civicrm_activity.id) from civicrm_activity
-        INNER JOIN civicrm_activity_contact
-        ON civicrm_activity.id = civicrm_activity_contact.activity_id
-        WHERE civicrm_activity.is_deleted = 0
-          AND civicrm_activity.is_current_revision = 1
-          AND civicrm_activity.is_test = 0
-          AND civicrm_activity_contact.contact_id=" . $params['has_activities_for'] . "
-          AND civicrm_activity_contact.record_type_id IN (2,3))";
-
-    $sql->where("a.id IN (" . $query . ")");
   }
 
   // Call the case api.
