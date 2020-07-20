@@ -107,13 +107,19 @@
 
         describe('when fetching list of cases', () => {
           let getCaseListApiParams;
+          let expectedApiParams;
 
           beforeEach(() => {
             getCaseListApiParams = modalOpenCall[2].getCaseListApiParams;
+            expectedApiParams = {
+              params: {
+                search_by_case_id: true
+              }
+            };
           });
 
           it('displays cases from those case type categories for which user has "basic case information" permission', () => {
-            expect(getCaseListApiParams()).toEqual({});
+            expect(getCaseListApiParams()).toEqual(expectedApiParams);
           });
         });
 
@@ -375,13 +381,19 @@
 
         describe('when fetching list of cases', () => {
           let getCaseListApiParams;
+          let expectedApiParams;
 
           beforeEach(() => {
             getCaseListApiParams = modalOpenCall[2].getCaseListApiParams;
+            expectedApiParams = {
+              params: {
+                search_by_case_id: true
+              }
+            };
           });
 
           it('displays cases from those case type categories for which user has "basic case information" permission', () => {
-            expect(getCaseListApiParams()).toEqual({});
+            expect(getCaseListApiParams()).toEqual(expectedApiParams);
           });
         });
 
