@@ -11,8 +11,9 @@
       <div class="pull-right">
         <span> {{ ts('Case ID :') }} </span>
         <strong> {{ data.id }} </strong>
-        <span class="civicase__pipe" ng-if="data.status !== 'Resolved'"> | </span>
-        <span ng-if="data.status !== 'Resolved'">
+        <strong> {{ data.status }} </strong>
+        <span class="civicase__pipe"> | </span>
+        <span>
           <span>Last Activity: </span>
           <span
             class="civicase__case-card__date"
