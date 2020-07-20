@@ -113,10 +113,10 @@ $setting = [
     'default' => FALSE,
     'html_type' => 'radio',
     'add' => '4.7',
-    'title' => 'Cases I’m involved in to include ‘activities created by me or assigned to me.',
+    'title' => "Include activities I'm involved in",
     'is_domain' => 1,
     'is_contact' => 0,
-    'description' => '',
+    'description' => "Cases I'm involved in filter will include 'activities created by me' and 'activities assigned to me'.",
     'help_text' => '',
   ],
 ];
