@@ -58,18 +58,14 @@ jobs:
           git clone https://github.com/compucorp/uk.co.compucorp.civicase.git
           git clone --depth 1 https://github.com/civicrm/org.civicrm.shoreditch.git
           cv en shoreditch civicase
-          drush cvapi Extension.upgrade
           drush en civicrmtheme -y
-          drush dl bootstrap -y
           drush en bootstrap -y
           drush vset theme_default bootstrap
 
       - name: Installing Shoreditch Companion Theme
         working-directory: ${{ env.DRUPAL_THEME_DIR }}
         run: |
-          mkdir shoreditch_companion_d7_theme
-          cd shoreditch_companion_d7_theme/
-          git clone https://github.com/compucorp/shoreditch-companion-d7-theme.git
+          git clone https://github.com/compucorp/shoreditch-companion-d7-theme.git depth=1
           drush en -y shoreditch_companion_d7_theme
           drush vset civicrmtheme_theme_admin shoreditch_companion_d7_theme
 
