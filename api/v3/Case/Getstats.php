@@ -6,6 +6,7 @@
  */
 
 use Civi\CCase\Utils;
+use CRM_Civicase_APIHelpers_CasesByContactInvolved as CasesByContactInvolved;
 
 /**
  * Case.getstats API specification.
@@ -22,6 +23,11 @@ function _civicrm_api3_case_getstats_spec(array &$spec) {
   $spec['contact_involved'] = [
     'title' => 'Contact Involved',
     'description' => 'Id of the contact involved as case roles',
+    'type' => CRM_Utils_Type::T_INT,
+  ];
+  $spec['has_activities_for_involved_contact'] = [
+    'title' => 'Has Activities For Involved Contact',
+    'description' => "Has activities created by, assigned to, or targeting the involved contact",
     'type' => CRM_Utils_Type::T_INT,
   ];
   $spec['my_cases'] = [
@@ -74,7 +80,11 @@ function civicrm_api3_case_getstats(array $params) {
   }
 
   if (!empty($params['contact_involved'])) {
-    CRM_Civicase_APIHelpers_CasesByContactInvolved::filter($query, $params['contact_involved']);
+    CasesByContactInvolved::filter(
+      $query,
+      $params['contact_involved'],
+      $params['has_activities_for_involved_contact']
+    );
   }
 
   if (!empty($params['case_type_id.case_type_category'])) {

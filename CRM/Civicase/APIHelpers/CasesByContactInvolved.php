@@ -14,13 +14,22 @@ class CRM_Civicase_APIHelpers_CasesByContactInvolved {
    *   The SQL object reference.
    * @param int|array $contactInvolved
    *   The ID of the contact related to the case.
+   * @param int $includeActivities
+   *   If `1` will also filter by case activity contsacts.
    */
-  public static function filter(CRM_Utils_SQL_Select $query, $contactInvolved) {
+  public static function filter(CRM_Utils_SQL_Select $query, $contactInvolved, $includeActivities = NULL) {
     $contactInvolvedFilter = CRM_Civicase_APIHelpers_Filters::normalize($contactInvolved);
     $caseContactSqlFilter = self::getCaseContactSqlFilter($contactInvolvedFilter);
 
     CiviCaseUtils::joinOnRelationship($query, 'involved');
-    $query->where($caseContactSqlFilter);
+
+    if (!empty($includeActivities) && $includeActivities == 1) {
+      $activityContactSqlFilter = self::getActivityContactSqlFilter($contactInvolvedFilter);
+      $query->where("$activityContactSqlFilter OR $caseContactSqlFilter");
+    }
+    else {
+      $query->where($caseContactSqlFilter);
+    }
   }
 
   /**
@@ -32,7 +41,7 @@ class CRM_Civicase_APIHelpers_CasesByContactInvolved {
    * @return string
    *   Returns a SQL statement for filtering cases by involved contact.
    */
-  public static function getCaseContactSqlFilter(array $contactInvolved) {
+  private static function getCaseContactSqlFilter(array $contactInvolved) {
     $caseClient = CRM_Core_DAO::createSQLFilter('contact_id', $contactInvolved);
     $nonCaseClient = CRM_Core_DAO::createSQLFilter('involved.id', $contactInvolved);
 
@@ -48,7 +57,7 @@ class CRM_Civicase_APIHelpers_CasesByContactInvolved {
    * @return string
    *   Returns a SQL statement for filtering cases by activity contact.
    */
-  public static function getActivityContactSqlFilter(array $contactInvolved) {
+  private static function getActivityContactSqlFilter(array $contactInvolved) {
     $activityContactCondition = CRM_Core_DAO::createSQLFilter('civicrm_activity_contact.contact_id', $contactInvolved);
 
     return "a.id IN (SELECT DISTINCT(case_id) FROM civicrm_case_activity WHERE activity_id IN (
