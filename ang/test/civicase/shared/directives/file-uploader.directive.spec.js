@@ -2,7 +2,8 @@
 
 (function (_) {
   describe('civicaseFileUploader', function () {
-    var $q, $controller, $rootScope, $scope, civicaseCrmApi, civicaseCrmApiMock, TagsMockData;
+    var $q, $controller, $rootScope, $scope, $timeout, civicaseCrmApi,
+      civicaseCrmApiMock, TagsMockData;
 
     beforeEach(module('civicase', 'civicase.data', ($provide) => {
       civicaseCrmApiMock = jasmine.createSpy('civicaseCrmApi');
@@ -14,10 +15,12 @@
       });
     }));
 
-    beforeEach(inject(function (_$q_, _$controller_, _$rootScope_, _civicaseCrmApi_, _TagsMockData_) {
+    beforeEach(inject(function (_$q_, _$controller_, _$rootScope_, _$timeout_,
+      _civicaseCrmApi_, _TagsMockData_) {
       $q = _$q_;
       $controller = _$controller_;
       $rootScope = _$rootScope_;
+      $timeout = _$timeout_;
       civicaseCrmApi = _civicaseCrmApi_;
       TagsMockData = _TagsMockData_;
     }));
@@ -65,9 +68,13 @@
 
         $scope.block = jasmine.createSpy('block');
         $scope.tags.selected = ['102'];
+        $scope.fileUploadForm = jasmine.createSpyObj(['$setPristine']);
+        $scope.uploader = jasmine.createSpyObj([
+          'clearQueue', 'getNotUploadedItems', 'uploadAllWithPromise']);
 
         $scope.saveActivity();
         $scope.$digest();
+        $timeout.flush();
       });
 
       it('creates a new file type activity', () => {
@@ -80,6 +87,14 @@
           tag_id: ['102'],
           entity_id: '101'
         });
+      });
+
+      it('clears the upload queue', () => {
+        expect($scope.uploader.clearQueue).toHaveBeenCalledWith();
+      });
+
+      it('sets the upload form as pristine', () => {
+        expect($scope.fileUploadForm.$setPristine).toHaveBeenCalledWith();
       });
     });
 

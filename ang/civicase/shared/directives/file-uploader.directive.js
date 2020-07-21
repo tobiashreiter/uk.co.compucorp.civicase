@@ -121,6 +121,7 @@
           return delayPromiseBy(1000); // Let the user absorb what happened.
         }).then(function () {
           $scope.uploader.clearQueue();
+          $scope.fileUploadForm.$setPristine();
           initActivity();
           if ($scope.onUpload) {
             $scope.$parent.$eval($scope.onUpload);
