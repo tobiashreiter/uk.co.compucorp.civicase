@@ -75,16 +75,16 @@ jobs:
 
           drush cc all && drush cc civicrm
 
-      - name: Create site-config.json for Backstop tests
+      - name: Setup data and site-config.json for Backstop tests
         working-directory: ${{ env.CIVICRM_EXTENSIONS_DIR }}/uk.co.compucorp.civicase
         run: |
+          git checkout "${{ github.head_ref }}"
           cd tests/backstop_data
-          touch site-config.json
-          echo "{" >> site-config.json
-          echo '"url": "http://localhost:7979",' >> site-config.json
-          echo '"drush_alias": "",' >> site-config.json
-          echo '"root": "/__w/uk.co.compucorp.civicase/uk.co.compucorp.civicase/site/web"' >> site-config.json
-          echo "}" >> site-config.json
+          cp site-config.json.sample site-config.json
+          sed -i 's+<url>+http://localhost:7979+' site-config.json
+          sed -i 's+<path-to-site-root>+/__w/uk.co.compucorp.civicase/uk.co.compucorp.civicase/site/web+' site-config.json
+          npm install
+          npx gulp backstopjs:setup-data
 
       - name: Reference Screenshots in "master" Branch
         continue-on-error: true
@@ -92,8 +92,6 @@ jobs:
         run: |
           git reset --hard
           git checkout "${{ github.head_ref }}"
-          npm install
-          npx gulp backstopjs:setup-data
           npx gulp backstopjs:reference
 
       - name: Test Screenshots in "${{ github.head_ref }}" Branch

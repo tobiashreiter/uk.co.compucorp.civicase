@@ -26,14 +26,10 @@ var CACHE = {
   emptyCaseId: null,
   contactIdsMap: {}
 };
-var CONFIG_TPL = {
-  url: 'http://%{site-host}',
-  drush_alias: '',
-  root: '%{path-to-site-root}'
-};
 var FILES = {
   sampleUploadFile: 'sample.txt',
   siteConfig: 'site-config.json',
+  siteConfigSample: 'site-config.json.sample',
   temp: 'backstop.temp.json',
   tpl: 'backstop.tpl.json'
 };
@@ -611,7 +607,9 @@ function touchSiteConfigFile () {
   try {
     fs.readFileSync(FILES.siteConfig);
   } catch (err) {
-    fs.writeFileSync(FILES.siteConfig, JSON.stringify(CONFIG_TPL, null, 2));
+    // fs.createReadStream(FILES.siteConfigSample).pipe(fs.createWriteStream(FILES.siteConfig));
+    fs.copyFileSync(FILES.siteConfigSample, FILES.siteConfig);
+    // fs.writeFileSync(FILES.siteConfig, JSON.stringify(CONFIG_TPL, null, 2));
 
     created = true;
   }
