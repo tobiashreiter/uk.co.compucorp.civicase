@@ -23,12 +23,10 @@
      * @returns {boolean} - true if action is allowed, false otherwise.
      */
     function isActionAllowed (action, cases, attributes) {
-      var ifWebformsExist = checkIfWebformsExist(action.items, cases[0].case_type_id);
-
       if (attributes && attributes.mode === 'case-details') {
-        return ifWebformsExist && !webformsList.isVisible;
+        return checkIfWebformsExist(action.items, cases[0].case_type_id) && !webformsList.isVisible;
       } else if (attributes && attributes.mode === 'case-details-header') {
-        return ifWebformsExist && webformsList.isVisible;
+        return checkIfWebformsExist(action.items, cases[0].case_type_id) && webformsList.isVisible;
       }
     }
 

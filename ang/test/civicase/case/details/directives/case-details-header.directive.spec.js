@@ -24,56 +24,31 @@
     describe('webform dropdown visibility', () => {
       beforeEach(() => {
         spyOn(WebformsCaseAction, 'isActionAllowed');
+        spyOn(CaseActions, 'findByActionName').and.returnValue(CaseActionsData.get()[0]);
+
+        webformsList.buttonLabel = 'Webforms List';
+        initController();
       });
 
-      describe('when webforms setting is turned on', () => {
-        beforeEach(() => {
-          webformsList.isVisible = true;
-          webformsList.buttonLabel = 'Webforms List';
-          spyOn(CaseActions, 'findByActionName').and.returnValue(CaseActionsData.get()[0]);
-
-          initController();
-        });
-
-        it('displays a list of webforms', () => {
-          expect(WebformsCaseAction.isActionAllowed).toHaveBeenCalledWith(
-            CaseActionsData.get()[0], [$scope.item], { mode: 'case-details' }
-          );
-        });
-
-        it('sets the label of the dropdown, same as the settings', () => {
-          expect($scope.webformsListButtonLabel).toBe('Webforms List');
-        });
+      it('displays a list of webforms when settings is on', () => {
+        expect(WebformsCaseAction.isActionAllowed).toHaveBeenCalledWith(
+          CaseActionsData.get()[0], [$scope.item], { mode: 'case-details-header' }
+        );
       });
 
-      describe('when webforms setting is turned off', () => {
-        beforeEach(() => {
-          webformsList.isVisible = false;
-          spyOn(CaseActions, 'findByActionName').and.returnValue(CaseActionsData.get()[0]);
-
-          initController();
-        });
-
-        it('does not display a list of webforms', () => {
-          expect(WebformsCaseAction.isActionAllowed).not.toHaveBeenCalledWith();
-        });
+      it('sets the label of the dropdown, same as the settings', () => {
+        expect($scope.webformsListButtonLabel).toBe('Webforms List');
       });
 
       describe('when clicking on a different case', () => {
         beforeEach(() => {
-          webformsList.isVisible = true;
-          webformsList.buttonLabel = 'Webforms List';
-          spyOn(CaseActions, 'findByActionName').and.returnValue(CaseActionsData.get()[0]);
-
-          initController();
-
           $scope.item = _.cloneDeep(CasesData.get().values[1]);
           $scope.$digest();
         });
 
         it('updates the webforms list with respect to newly selected case', () => {
           expect(WebformsCaseAction.isActionAllowed).toHaveBeenCalledWith(
-            CaseActionsData.get()[0], [_.cloneDeep(CasesData.get().values[1])], { mode: 'case-details' }
+            CaseActionsData.get()[0], [_.cloneDeep(CasesData.get().values[1])], { mode: 'case-details-header' }
           );
         });
       });
