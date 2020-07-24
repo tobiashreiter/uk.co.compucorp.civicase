@@ -29,7 +29,7 @@ jobs:
       - name: Install dependencies to run the server
         run: |
           apt-get update
-          apt-get install apache2 libapache2-mod-php7.2 php7.2-mysql php7.2-curl php7.2-simplexml -y
+          apt-get install apache2 libapache2-mod-php7.2 -y
           a2enmod rewrite
           apache2ctl restart
 
@@ -90,7 +90,6 @@ jobs:
         continue-on-error: true
         working-directory: ${{ env.CIVICRM_EXTENSIONS_DIR }}/uk.co.compucorp.civicase/tests/backstop_data
         run: |
-          git reset --hard
           git checkout "${{ github.head_ref }}"
           npx gulp backstopjs:reference
 
@@ -98,7 +97,6 @@ jobs:
         working-directory: ${{ env.CIVICRM_EXTENSIONS_DIR }}/uk.co.compucorp.civicase/tests/backstop_data
         continue-on-error: true
         run: |
-          git reset --hard
           git checkout "${{ github.head_ref }}"
           npx gulp backstopjs:test
 

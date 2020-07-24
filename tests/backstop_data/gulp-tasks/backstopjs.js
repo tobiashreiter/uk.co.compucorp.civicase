@@ -27,7 +27,6 @@ var CACHE = {
   contactIdsMap: {}
 };
 var FILES = {
-  sampleUploadFile: 'sample.txt',
   siteConfig: 'site-config.json',
   siteConfigSample: 'site-config.json.sample',
   temp: 'backstop.temp.json',
@@ -39,7 +38,7 @@ var RECORD_IDENTIFIERS = {
   caseSubject: 'Backstop Case',
   caseTag: 'Backstop Case Tag',
   emptyCaseSubject: 'Backstop Empty Case',
-  emptyCaseTypeName: 'backstop_case_type',
+  caseTypeName: 'backstop_case_type',
   emptyContactDisplayName: 'Emil Backstop',
   emptyContactEmail: 'emil@backstop.com',
   fileUploadActivitySubject: 'Backstop File Upload',
@@ -400,7 +399,7 @@ function runBackstopJS (command) {
  */
 function setupData () {
   var caseType = createUniqueCaseType({
-    name: RECORD_IDENTIFIERS.emptyCaseTypeName,
+    name: RECORD_IDENTIFIERS.caseTypeName,
     case_type_category: 'Cases',
     title: 'Backstop Case Type',
     definition: {
@@ -531,7 +530,7 @@ function setupData () {
  * Create Sample Upload File
  */
 function createSampleUploadFile () {
-  fs.writeFileSync(FILES.sampleUploadFile, 'Sample Text');
+  fs.writeFileSync('sample.txt', 'Sample Text');
 }
 
 /**
