@@ -51,9 +51,8 @@
      */
     function updateCaseWebformDropdownVisibility () {
       $scope.isCaseWebformDropdownVisible = $scope.webformsAction &&
-        webformsList.isVisible &&
         WebformsCaseAction.isActionAllowed(
-          $scope.webformsAction, [$scope.item], { mode: 'case-details' }
+          $scope.webformsAction, [$scope.item], { mode: 'case-details-header' }
         );
     }
   }
