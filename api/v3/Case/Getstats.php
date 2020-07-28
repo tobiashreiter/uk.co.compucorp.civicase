@@ -80,10 +80,13 @@ function civicrm_api3_case_getstats(array $params) {
   }
 
   if (!empty($params['contact_involved'])) {
+    $hasActivitiesForInvolvedContact = CRM_Utils_Array::value(
+      'has_activities_for_involved_contact', $params, NULL);
+
     CasesByContactInvolved::filter(
       $query,
       $params['contact_involved'],
-      $params['has_activities_for_involved_contact']
+      $hasActivitiesForInvolvedContact
     );
   }
 

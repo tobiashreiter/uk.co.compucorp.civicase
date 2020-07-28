@@ -50,10 +50,8 @@ function civicrm_api3_case_getdetailscount(array $params) {
  */
 function _civicrm_api3_case_getdetailscount_get_count_query(array $params) {
   $entityName = 'Case';
-  $options = _civicrm_api3_get_options_from_params($params);
-
-  $query = new ExtendedApi3SelectQuery($entityName, CRM_Utils_Array::value(
-    'check_permissions', $params, FALSE));
+  $checkPermissions = CRM_Utils_Array::value('check_permissions', $params, FALSE);
+  $query = new ExtendedApi3SelectQuery($entityName, $checkPermissions);
   $query->where = $params;
 
   return $query;

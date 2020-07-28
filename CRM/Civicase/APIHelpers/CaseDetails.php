@@ -47,10 +47,13 @@ class CRM_Civicase_APIHelpers_CaseDetails {
 
     // Add clause to search by non manager role and non client.
     if (!empty($params['contact_involved'])) {
+      $hasActivitiesForInvolvedContact = CRM_Utils_Array::value(
+        'has_activities_for_involved_contact', $params, NULL);
+
       CasesByContactInvolved::filter(
         $sql,
         $params['contact_involved'],
-        $params['has_activities_for_involved_contact']
+        $hasActivitiesForInvolvedContact
       );
 
       if (!$params['options']['is_count']) {
