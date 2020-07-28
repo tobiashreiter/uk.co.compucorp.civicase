@@ -6,6 +6,7 @@
  */
 
 require_once 'api/v3/Case.php';
+use CRM_Civicase_APIHelpers_CaseDetails as CaseDetailsQuery;
 
 /**
  * Case.getdetails API specification.
@@ -74,7 +75,7 @@ function civicrm_api3_case_getdetails(array $params) {
     'params' => $params,
     'toReturn' => $toReturn,
     'sql' => $sql
-  ) = CRM_Civicase_APIHelpers_CaseDetails::get($params);
+  ) = CaseDetailsQuery::get($params);
 
   // Call the case api.
   $result = civicrm_api3_case_get(['sequential' => 0] + $params, $sql);
