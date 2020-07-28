@@ -224,6 +224,26 @@ class CRM_Civicase_APIHelpers_CaseDetails {
   }
 
   /**
+   * Joins the given SQL object with the case clients table.
+   *
+   * @param CRM_Utils_SQL_Select $sql
+   *   the SQL object reference.
+   * @param array $params
+   *   List of filters to pass to the client join.
+   */
+  private static function joinClient(CRM_Utils_SQL_Select $sql, array $params) {
+    self::prepareParamsForFiltering($params, 'contact');
+
+    $contactFilter = CRM_Core_DAO::createSQLFilter('case_client.contact_id', $params['contact']);
+
+    $sql->join('case_client', "
+      LEFT JOIN civicrm_case_contact AS case_client
+      ON case_client.case_id = civicrm_case.id
+      AND $contactFilter
+    ");
+  }
+
+  /**
    * Joins the given SQL object with the relationships table.
    *
    * @param CRM_Utils_SQL_Select $sql
