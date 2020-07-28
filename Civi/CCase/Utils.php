@@ -60,7 +60,7 @@ class Utils {
    */
   public static function joinOnRelationship(\CRM_Utils_SQL_Select $sql, $relationship) {
     $caseTypeToRelationshipList = self::getRelationshipTypesListByCaseRole($relationship);
-    $relationshipTypeClause = array();
+    $relationshipTypeClause = [];
 
     foreach ($caseTypeToRelationshipList as $caseTypeId => $relationshipTypeIds) {
       foreach ($relationshipTypeIds as $index => $relationshipTypeId) {
@@ -89,26 +89,26 @@ class Utils {
    */
   public static function formatCustomSearchField(array $field) {
     if ($field['html_type'] != 'Autocomplete-Select') {
-      $opts = civicrm_api('Case', 'getoptions', array(
+      $opts = civicrm_api('Case', 'getoptions', [
         'version' => 3,
         'field' => "custom_{$field['id']}",
-      ));
+      ]);
       if (!empty($opts['values'])) {
-        $field['options'] = array();
+        $field['options'] = [];
         // Javascript doesn't like php's fast & loose type switching;
         // Ensure everything is a string.
         foreach ($opts['values'] as $key => $val) {
-          $field['options'][] = array(
+          $field['options'][] = [
             'id' => (string) $key,
             'text' => (string) $val,
-          );
+          ];
         }
       }
     }
     // For contact ref fields.
     elseif ($field['data_type'] == 'ContactReference') {
       $field['entity'] = 'Contact';
-      $field['api_params'] = array();
+      $field['api_params'] = [];
       if (!empty($field['filter'])) {
         parse_str($field['filter'], $field['api_params']);
         unset($field['api_params']['action']);
@@ -119,10 +119,10 @@ class Utils {
     }
     else {
       $field['entity'] = 'OptionValue';
-      $field['api_params'] = array(
+      $field['api_params'] = [
         'option_group_id' => $field['option_group_id'],
         'option_sort' => 'weight',
-      );
+      ];
     }
     unset($field['filter'], $field['option_group_id']);
     $field['name'] = "custom_{$field['id']}";
