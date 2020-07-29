@@ -163,7 +163,7 @@ $contact-avatar-size: 30px;
 .civicase__contact-card__with-more-fields {
   flex-wrap: wrap;
 
-  .civicase__contact__more-fields {
+  .civicase__contact__more-field {
     color: $gray-darker;
   }
 
@@ -193,7 +193,7 @@ $contact-avatar-size: 30px;
     max-width: initial;
   }
 
-  .civicase__contact__more-fields {
-    margin-top: 5px;
+  .civicase__contact__more-field {
+    margin-top: $basic-gutter;
   }
 }

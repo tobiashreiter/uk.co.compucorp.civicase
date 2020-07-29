@@ -57,7 +57,7 @@
 
   <!-- More Fields -->
   <div ng-repeat-start="moreField in displayMoreFields" ng-show="contacts[0][moreField]" class="civicase__contact__break"></div>
-  <div ng-repeat-end class="civicase__contact__more-fields">
+  <div ng-repeat-end class="civicase__contact__more-field">
     {{contacts[0][moreField]}}
   </div>
   <!-- End - More Fields -->
@@ -76,7 +76,7 @@
           ></civicase-contact-icon>
           <span class="civicase__contact-name-additional">{{ contact.display_name }}</span>
         </a>
-        <div ng-repeat="moreField in displayMoreFields" class="civicase__contact__more-fields">
+        <div ng-repeat="moreField in displayMoreFields" class="civicase__contact__more-field">
           {{contact[moreField]}}
         </div>
       </li>
