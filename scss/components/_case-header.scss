@@ -1,3 +1,5 @@
+$civicase-webform-dropdown-max-width: 500px;
+
 .civicase__case-header {
   background: $crm-white;
   position: relative;
@@ -66,14 +68,9 @@
 }
 
 .civicase__case-header__webform-dropdown {
-  background: $crm-white;
-  border: 1px solid $crm-grayblue-dark;
-  color: $gray-darker;
-  margin-left: $case-gutter-width !important;
-
   /* stylelint-disable selector-max-compound-selectors */
   +.dropdown-menu > li a {
-    max-width: 160px;
+    max-width: $civicase-webform-dropdown-max-width !important;
   }
   /* stylelint-enable selector-max-compound-selectors */
 }
@@ -135,10 +132,14 @@
       }
 
       > .dropdown-menu.sub-menu {
-        left: -100%;
+        left: auto;
         margin-top: -40px;
         position: absolute;
-        width: 100%;
+        right: 100%;
+
+        a {
+          max-width: $civicase-webform-dropdown-max-width;
+        }
       }
 
       &:hover {
