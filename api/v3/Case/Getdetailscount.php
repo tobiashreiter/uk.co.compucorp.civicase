@@ -5,9 +5,6 @@
  * Case.getdetailscount file.
  */
 
-use CRM_Civicase_APIHelpers_CaseDetails as CaseDetailsQuery;
-use CRM_Civicase_APIHelpers_ExtendedApi3SelectQuery as ExtendedApi3SelectQuery;
-
 /**
  * Case getdetailscount API function.
  *
@@ -28,31 +25,7 @@ function civicrm_api3_case_getdetailscount(array $params) {
   // Remove unnecesary parameters:
   unset($params['return'], $params['sequential']);
 
-  list('params' => $params, 'sql' => $sql) = CaseDetailsQuery::get($params);
-  $query = _civicrm_api3_case_getdetailscount_get_count_query($params);
-  $query->merge($sql);
-  $query->setSelectFields(['COUNT(DISTINCT(a.id))' => 'CASE_DETAILS_COUNT']);
-  $results = $query->run();
+  $casesList = civicrm_api3('Case', 'getdetails', $params);
 
-  return array_shift($results)['CASE_DETAILS_COUNT'];
-}
-
-/**
- * Returns the API query to get the case details count.
- *
- * The query is based on the given API parameters.
- *
- * @param array $params
- *   List of parameters to use for filtering.
- *
- * @return CRM_Civicase_APIHelpers_ExtendedApi3SelectQuery
- *   Query Object reference.
- */
-function _civicrm_api3_case_getdetailscount_get_count_query(array $params) {
-  $entityName = 'Case';
-  $checkPermissions = CRM_Utils_Array::value('check_permissions', $params, FALSE);
-  $query = new ExtendedApi3SelectQuery($entityName, $checkPermissions);
-  $query->where = $params;
-
-  return $query;
+  return $casesList['values'];
 }
