@@ -7,6 +7,7 @@
     .constant('allowMultipleCaseClients', configuration.allowMultipleCaseClients)
     .constant('currentCaseCategory', configuration.currentCaseCategory)
     .constant('showFullContactNameOnActivityFeed', configuration.showFullContactNameOnActivityFeed)
+    .constant('includeActivitiesForInvolvedContact', configuration.includeActivitiesForInvolvedContact)
     .constant('webformsList', {
       isVisible: configuration.showWebformsListSeparately,
       buttonLabel: configuration.webformsDropdownButtonLabel

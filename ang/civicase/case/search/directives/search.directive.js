@@ -20,7 +20,7 @@
    */
   module.controller('civicaseSearchController', function ($scope, $rootScope,
     $timeout, civicaseCrmApi, getSelect2Value, ts, CaseStatus, CaseTypeCategory,
-    CaseType, currentCaseCategory, CustomSearchField) {
+    CaseType, currentCaseCategory, CustomSearchField, includeActivitiesForInvolvedContact) {
     var caseTypes = CaseType.getAll();
     var caseStatuses = CaseStatus.getAll();
     var caseTypeCategories = CaseTypeCategory.getAll();
@@ -386,9 +386,14 @@
         $scope.relationshipType[0] === 'is_case_manager'
           ? $scope.filters.case_manager = [CRM.config.user_contact_id]
           : delete ($scope.filters.case_manager);
-        $scope.relationshipType[0] === 'is_involved'
-          ? $scope.filters.contact_involved = [CRM.config.user_contact_id]
-          : delete ($scope.filters.contact_involved);
+
+        if ($scope.relationshipType[0] === 'is_involved') {
+          $scope.filters.contact_involved = [CRM.config.user_contact_id];
+          $scope.filters.has_activities_for_involved_contact =
+            includeActivitiesForInvolvedContact ? 1 : 0;
+        } else {
+          delete ($scope.filters.contact_involved);
+        }
       }
     }
 

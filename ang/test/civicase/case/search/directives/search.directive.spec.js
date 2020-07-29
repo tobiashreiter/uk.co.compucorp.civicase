@@ -173,6 +173,10 @@
           it('sets the contact id filter equal to my id', function () {
             expect($scope.filters.contact_involved).toEqual([CRM.config.user_contact_id]);
           });
+
+          it('filters by case activities related to the involved contact', () => {
+            expect($scope.filters.has_activities_for_involved_contact).toBe(1);
+          });
         });
       });
 
