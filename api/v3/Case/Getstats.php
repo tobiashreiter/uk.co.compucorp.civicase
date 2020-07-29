@@ -6,7 +6,6 @@
  */
 
 use Civi\CCase\Utils;
-use CRM_Civicase_APIHelpers_CasesByContactInvolved as CasesByContactInvolved;
 
 /**
  * Case.getstats API specification.
@@ -80,14 +79,7 @@ function civicrm_api3_case_getstats(array $params) {
   }
 
   if (!empty($params['contact_involved'])) {
-    $hasActivitiesForInvolvedContact = CRM_Utils_Array::value(
-      'has_activities_for_involved_contact', $params, NULL);
-
-    CasesByContactInvolved::filter(
-      $query,
-      $params['contact_involved'],
-      $hasActivitiesForInvolvedContact
-    );
+    CRM_Civicase_APIHelpers_CaseDetails::handleContactInvolvedFilters($query, $params);
   }
 
   if (!empty($params['case_type_id.case_type_category'])) {
