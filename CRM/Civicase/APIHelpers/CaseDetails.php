@@ -1,7 +1,6 @@
 <?php
 
 use Civi\CCase\Utils as CiviCaseUtils;
-use CRM_Civicase_APIHelpers_CasesByContactInvolved as CasesByContactInvolved;
 
 /**
  * Case Details API Helper Class.
@@ -42,23 +41,12 @@ class CRM_Civicase_APIHelpers_CaseDetails {
     }
 
     if (!empty($params['has_role'])) {
-      self::handleRoleFilters($sql, $params);
+      self::handleRoleFilters($sql, $params['has_role']);
     }
 
     // Add clause to search by non manager role and non client.
     if (!empty($params['contact_involved'])) {
-      $hasActivitiesForInvolvedContact = CRM_Utils_Array::value(
-        'has_activities_for_involved_contact', $params, NULL);
-
-      CasesByContactInvolved::filter(
-        $sql,
-        $params['contact_involved'],
-        $hasActivitiesForInvolvedContact
-      );
-
-      if (!$params['options']['is_count']) {
-        $sql->groupBy('a.id');
-      }
+      self::handleContactInvolvedFilters($sql, $params);
     }
 
     if (!empty($params['exclude_for_client_id'])) {
@@ -96,6 +84,43 @@ class CRM_Civicase_APIHelpers_CaseDetails {
   }
 
   /**
+   * Adds all the conditions needed for filtering by involved contact.
+   *
+   * @param CRM_Utils_SQL_Select $sql
+   *   The SQL Query object to append the filters to.
+   * @param array $params
+   *   Contains the data used for filtering.
+   */
+  public static function handleContactInvolvedFilters(CRM_Utils_SQL_Select $sql, array $params) {
+    $hasActivitiesForInvolvedContact = CRM_Utils_Array::value(
+      'has_activities_for_involved_contact', $params, NULL);
+
+    list(
+      'query' => $roleQuery,
+      'where' => $roleWhere
+    ) = self::getRoleQuery([
+      'can_be_client' => TRUE,
+      'all_case_roles_selected' => TRUE,
+      'contact' => $params['contact_involved'],
+    ]);
+
+    if ($hasActivitiesForInvolvedContact) {
+      $activitiesFilter = self::getRoleActivityFilter($params['contact_involved']);
+
+      $roleWhere .= " OR $activitiesFilter";
+    }
+
+    $roleQuery->where($roleWhere);
+
+    $roleSubQueryString = $roleQuery->toSql();
+
+    $sql->join('case_involvement', "
+      JOIN ($roleSubQueryString) AS case_involvement
+      ON case_involvement.id = a.id
+    ");
+  }
+
+  /**
    * Support extra sorting in case.getdetails.
    *
    * @param array $params
@@ -106,7 +131,7 @@ class CRM_Civicase_APIHelpers_CaseDetails {
    *
    * @throws \API_Exception
    */
-  private function getExtraSort(array &$params) {
+  private static function getExtraSort(array &$params) {
     $sql = CRM_Utils_SQL_Select::fragment();
     $options = _civicrm_api3_get_options_from_params($params);
 
@@ -180,6 +205,76 @@ class CRM_Civicase_APIHelpers_CaseDetails {
   }
 
   /**
+   * Returns the condition needed for filtering by contact activities.
+   *
+   * @param string $contactId
+   *   The ID of the activity's contact.
+   *
+   * @return string
+   *   The condition that can be used for filtering.
+   */
+  private static function getRoleActivityFilter($contactId) {
+    $contactFilter = CRM_Core_DAO::createSQLFilter(
+      'civicrm_activity_contact.contact_id', $contactId);
+
+    return "civicrm_case.id IN (
+      SELECT DISTINCT(case_id)
+      FROM civicrm_case_activity
+      WHERE activity_id IN (
+        SELECT DISTINCT(civicrm_activity.id)
+        FROM civicrm_activity
+        INNER JOIN civicrm_activity_contact
+        ON civicrm_activity.id = civicrm_activity_contact.activity_id
+        WHERE civicrm_activity.is_deleted = 0
+          AND civicrm_activity.is_current_revision = 1
+          AND civicrm_activity.is_test = 0
+          AND $contactFilter))";
+  }
+
+  /**
+   * Returns the Query Object and conditions for filtering by role.
+   *
+   * @param array $params
+   *   The parameters used for filtering by role.
+   *
+   * @return array
+   *   The Query Object and Where string used for filtering by role.
+   */
+  private function getRoleQuery(array $params) {
+    $where = '';
+    $canBeAClient = !isset($params['can_be_client']) || $params['can_be_client'];
+    $hasOtherRolesThanClient = isset($params['role_type']);
+    $isAllCaseRolesTrue = $params['all_case_roles_selected'];
+    $query = new CRM_Utils_SQL_Select('civicrm_case');
+
+    $query->select('civicrm_case.id');
+    $query->groupBy('civicrm_case.id');
+
+    if ($canBeAClient) {
+      self::joinClient($query, $params);
+      $where .= 'case_client.case_id IS NOT NULL';
+
+      if ($hasOtherRolesThanClient || $isAllCaseRolesTrue) {
+        self::joinRelationships($query, $params, [
+          'joinType' => 'LEFT JOIN',
+        ]);
+
+        $where .= ' OR case_relationship.case_id IS NOT NULL';
+      }
+    }
+    else {
+      self::joinRelationships($query, $params, [
+        'joinType' => 'JOIN',
+      ]);
+    }
+
+    return [
+      'query' => $query,
+      'where' => $where,
+    ];
+  }
+
+  /**
    * Filters cases by contacts related to the case and their relationship types.
    *
    * @param CRM_Utils_SQL_Select $sql
@@ -188,35 +283,12 @@ class CRM_Civicase_APIHelpers_CaseDetails {
    *   As provided by the original api action.
    */
   private static function handleRoleFilters(CRM_Utils_SQL_Select $sql, array $params) {
-    $hasRole = $params['has_role'];
-    $canBeAClient = !isset($hasRole['can_be_client']) || $hasRole['can_be_client'];
-    $hasOtherRolesThanClient = isset($hasRole['role_type']);
-    $isAllCaseRolesTrue = $hasRole['all_case_roles_selected'];
-    $roleSubQuery = new CRM_Utils_SQL_Select('civicrm_case');
+    list(
+      'query' => $roleSubQuery,
+      'where' => $where
+    ) = self::getRoleQuery($params);
 
-    $roleSubQuery->select('civicrm_case.id');
-    $roleSubQuery->groupBy('civicrm_case.id');
-
-    if ($canBeAClient) {
-      self::joinClient($roleSubQuery, $hasRole);
-
-      if ($hasOtherRolesThanClient || $isAllCaseRolesTrue) {
-        self::joinRelationships($roleSubQuery, $hasRole, [
-          'joinType' => 'LEFT JOIN',
-        ]);
-
-        $roleSubQuery->where('case_relationship.case_id IS NOT NULL
-        OR case_client.case_id IS NOT NULL');
-      }
-      else {
-        $roleSubQuery->where('case_client.case_id IS NOT NULL');
-      }
-    }
-    else {
-      self::joinRelationships($roleSubQuery, $hasRole, [
-        'joinType' => 'JOIN',
-      ]);
-    }
+    $roleSubQuery->where($where);
 
     $roleSubQueryString = $roleSubQuery->toSql();
 
