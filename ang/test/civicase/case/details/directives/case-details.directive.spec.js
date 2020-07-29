@@ -11,6 +11,7 @@
       killDirective('civicaseActivitiesCalendar');
       killDirective('civicaseCaseActions');
       killDirective('civicaseCaseDetailsPeopleTab');
+      killDirective('civicaseContactCard');
     }));
 
     beforeEach(inject(function ($q) {
