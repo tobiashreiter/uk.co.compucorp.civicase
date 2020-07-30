@@ -18,6 +18,7 @@
 
     describe('basic tests', function () {
       beforeEach(function () {
+        spyOn(ContactsCache, 'add').and.returnValue($q.resolve(ContactsData.values[0]));
         compileDirective(false);
       });
 
@@ -28,21 +29,21 @@
 
     describe('when contacts data are set', function () {
       beforeEach(function () {
-        compileDirective(false, ContactsData.values[0].contact_id, ContactsData.values[0].display_name);
+        spyOn(ContactsCache, 'add').and.returnValue($q.resolve(ContactsData.values[0]));
+        compileDirective(false, [ContactsData.values[0].contact_id]);
       });
 
-      it('sets the display name and contact id of the sent contant', function () {
-        expect(element.isolateScope().contacts).toEqual([{
-          display_name: ContactsData.values[0].display_name,
-          contact_id: ContactsData.values[0].contact_id
-        }]);
+      it('displays the contact', function () {
+        expect(element.isolateScope().contacts).toEqual([ContactsData.values[0].contact_id]);
       });
     });
 
     describe('when the contact card is of avatar type', function () {
       describe('when the display name is a name', function () {
         beforeEach(function () {
-          compileDirective(true, 1, 'John Doe');
+          spyOn(ContactsCache, 'add').and.returnValue($q.resolve(ContactsData.values[0]));
+          spyOn(ContactsCache, 'getCachedContact').and.returnValue({ display_name: 'John Doe' });
+          compileDirective(true, ContactsData.values[0].id);
         });
 
         it('sets the initial of the name as the avatar', function () {
@@ -52,7 +53,9 @@
 
       describe('when the display name is an email', function () {
         beforeEach(function () {
-          compileDirective(true, 1, 'example@example.com');
+          spyOn(ContactsCache, 'add').and.returnValue($q.resolve(ContactsData.values[0]));
+          spyOn(ContactsCache, 'getCachedContact').and.returnValue({ display_name: 'example@example.com' });
+          compileDirective(true, ContactsData.values[0].id);
         });
 
         it('sets the first letter of the email address as the avatar', function () {
@@ -78,13 +81,11 @@
      *
      * @param {boolean} isAvatar is avatar
      * @param {number} contactID contact id
-     * @param {string} contactDisplayName contacts display name
      */
-    function compileDirective (isAvatar, contactID, contactDisplayName) {
+    function compileDirective (isAvatar, contactID) {
       element = $compile('<div civicase-contact-card contacts="contacts" avatar="isAvatar">')($scope);
       $scope.isAvatar = isAvatar;
-      $scope.contacts = {};
-      $scope.contacts[contactID] = contactDisplayName;
+      $scope.contacts = contactID || [ContactsData.values[0]];
       $scope.$digest();
     }
   });

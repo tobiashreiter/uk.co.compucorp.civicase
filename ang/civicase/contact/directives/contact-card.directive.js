@@ -12,6 +12,7 @@
         data: '=contacts',
         isAvatar: '=avatar',
         noIcon: '=',
+        displayMoreFields: '=',
         showFullNameOnHover: '<'
       }
     };
@@ -36,28 +37,50 @@
       function refresh () {
         $scope.contacts = [];
 
-        if (_.isPlainObject($scope.data)) {
-          _.each($scope.data, function (name, contactID) {
-            if ($scope.isAvatar) {
-              prepareAvatarData(name, contactID);
+        fetchContactsInfo()
+          .then(function () {
+            if (_.isPlainObject($scope.data)) {
+              _.each($scope.data, function (name, contactID) {
+                if ($scope.isAvatar) {
+                  prepareAvatarData(name, contactID);
+                } else {
+                  $scope.contacts.push({ display_name: name, contact_id: contactID });
+                }
+              });
+            } else if (typeof $scope.data === 'string') {
+              if ($scope.isAvatar) {
+                prepareAvatarData(
+                  ContactsCache.getCachedContact($scope.data).display_name,
+                  $scope.data
+                );
+              } else {
+                $scope.contacts = [{
+                  contact_id: $scope.data,
+                  display_name: ContactsCache.getCachedContact($scope.data).display_name
+                }];
+              }
             } else {
-              $scope.contacts.push({ display_name: name, contact_id: contactID });
+              $scope.contacts = _.cloneDeep($scope.data);
             }
           });
-        } else if (typeof $scope.data === 'string') {
-          if ($scope.isAvatar) {
-            prepareAvatarData(
-              ContactsCache.getCachedContact($scope.data).display_name,
-              $scope.data
-            );
-          } else {
-            $scope.contacts.push({
-              contact_id: $scope.data,
-              display_name: ContactsCache.getCachedContact($scope.data).display_name
-            });
-          }
+      }
+
+      /**
+       * Fetch the contacts information
+       *
+       * @returns {Promise} promise
+       */
+      function fetchContactsInfo () {
+        if (typeof $scope.data === 'string') {
+          return ContactsCache.add([$scope.data]);
         } else {
-          $scope.contacts = _.cloneDeep($scope.data);
+          var contactIDs = $scope.data.map(function (contact) {
+            if (contact) {
+              return contact.contact_id;
+            }
+          });
+
+          return ContactsCache.add(contactIDs);
         }
       }
 
