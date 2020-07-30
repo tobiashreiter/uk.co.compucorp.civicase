@@ -25,7 +25,7 @@
         'civicase__contact-avatar--image': contacts[0].image_URL,
         'civicase__contact-avatar--has-full-name': showFullNameOnHover
       }"
-      title="{{contacts[0].display_name}}">
+      ng-attr-title="{{showFullNameOnHover ? '' : contacts[0].display_name}}">
       <img ng-if="contacts[0].image_URL" ng-src={{contacts[0].image_URL}}>
       <span ng-if="!contacts[0].image_URL">{{contacts[0].avatar}}</span>
       <span
