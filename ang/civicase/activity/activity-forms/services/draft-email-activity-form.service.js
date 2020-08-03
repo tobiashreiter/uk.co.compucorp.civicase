@@ -29,11 +29,11 @@
      */
     function getActivityFormUrl (activity, optionsWithoutDefaults) {
       var options = _.defaults({}, optionsWithoutDefaults, { action: 'add' });
-      var assigneeContactId = _.first(activity.assignee_contact_id);
+      var sourceContactId = _.first(activity.source_contact_id);
       var draftFormParameters = {
         action: options.action,
         atype: activity.activity_type_id,
-        cid: assigneeContactId,
+        cid: sourceContactId,
         draft_id: activity.id,
         id: activity.id,
         reset: '1'
