@@ -190,3 +190,9 @@
     }
   }
 }
+
+@media (max-width: $contact-case-tab-breakpoint) {
+  .civicase__contact-card--client {
+    clear: both;
+  }
+}
