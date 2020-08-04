@@ -6,10 +6,9 @@
   /**
    *
    * @param {object} dialogService dialog service
-   * @param {object} Tag tag
-   * @param {object} Tagset tag set
+   * @param {object} civicaseCrmApi service to use civicrm api
    */
-  function EditTagsCaseAction (dialogService, Tag, Tagset) {
+  function EditTagsCaseAction (dialogService, civicaseCrmApi) {
     /**
      * Click event handler for the Action
      *
@@ -18,91 +17,81 @@
      * @param {Function} callbackFn callback function
      */
     this.doAction = function (cases, action, callbackFn) {
-      var ts = CRM.ts('civicase');
-      var item = cases[0];
-      var keys = ['tags'];
-      var model = {
-        tags: []
-      };
+      getTags()
+        .then(function (tags) {
+          var model = setModelObjectForModal(tags);
 
-      _.each(Tagset.getAll(), function (tagset) {
-        model[tagset.id] = [];
-        keys.push(tagset.id);
-      });
+          openTagsModal(model, cases, action.title);
+        });
+    };
 
-      // Sort case tags into sets
-      _.each(item.tag_id, function (tag, id) {
-        if (!tag['tag_id.parent_id'] || !model[tag['tag_id.parent_id']]) {
-          model.tags.push(id);
-        } else {
-          model[tag['tag_id.parent_id']].push(id);
-        }
-      });
-
-      model.tagsets = Tagset.getAll();
-      model.colorTags = Tag.getAll();
-      model.ts = ts;
-
+    /**
+     * Opens the modal for addition of tags
+     *
+     * @param {object} model model object for dialog box
+     * @param {Array} cases list of cases
+     * @param {string} title title of the dialog box
+     */
+    function openTagsModal (model, cases, title) {
       dialogService.open('EditTags', '~/civicase/case/actions/directives/edit-tags.html', model, {
         autoOpen: false,
         height: 'auto',
-        width: '40%',
-        title: action.title,
+        width: '450px',
+        title: title,
         buttons: [{
-          text: ts('Save'),
+          text: 'Save',
           icons: { primary: 'fa-check' },
-          click: editTagModalClickEvent
+          click: function () {
+            editTagModalClickEvent.call(this, model, cases);
+          }
         }]
       });
+    }
 
-      /**
-       * Handles the click event for the Edit Tag Modal's Click Event
-       */
-      function editTagModalClickEvent () {
-        var calls = [];
-        var values = [];
+    /**
+     * Set the model object to be used in the modal
+     *
+     * @param {Array} tags tags
+     * @returns {object} model object for the dialog box
+     */
+    function setModelObjectForModal (tags) {
+      var model = {};
 
-        /**
-         * @param tagIds
-         */
-        function tagParams (tagIds) {
-          var params = { entity_id: item.id, entity_table: 'civicrm_case' };
+      model.allTags = tags;
+      model.selectedTags = [];
 
-          _.each(tagIds, function (id, i) {
-            params['tag_id_' + i] = id;
-          });
+      return model;
+    }
 
-          return params;
-        }
+    /**
+     * Get the tags for Cases from API end point
+     *
+     * @returns {Promise} api call promise
+     */
+    function getTags () {
+      return civicaseCrmApi('Tag', 'get', {
+        sequential: 1,
+        used_for: { LIKE: '%civicrm_case%' },
+        options: { limit: 0 }
+      }).then(function (data) {
+        return data.values;
+      });
+    }
 
-        _.each(keys, function (key) {
-          _.each(model[key], function (id) {
-            values.push(id);
-          });
-        });
+    /**
+     * Handles the click event for the Edit Tag Modal's Click Event
+     *
+     * @param {object} model model object of the modal
+     * @param {Array} cases list of cases
+     */
+    function editTagModalClickEvent (model, cases) {
+      civicaseCrmApi('EntityTag', 'createByQuery', {
+        entity_table: 'civicrm_case',
+        tag_id: model.selectedTags,
+        entity_id: cases[0].id
+      });
 
-        var toRemove = _.difference(_.keys(item.tag_id), values);
-        var toAdd = _.difference(values, _.keys(item.tag_id));
-
-        if (toRemove.length) {
-          calls.push(['EntityTag', 'delete', tagParams(toRemove)]);
-        }
-
-        if (toAdd.length) {
-          calls.push(['EntityTag', 'create', tagParams(toAdd)]);
-        }
-
-        if (calls.length) {
-          calls.push(['Activity', 'create', {
-            case_id: item.id,
-            status_id: 'Completed',
-            activity_type_id: 'Change Case Tags'
-          }]);
-          callbackFn(calls);
-        }
-
-        $(this).dialog('close');
-      }
-    };
+      $(this).dialog('close');
+    }
   }
 })(angular, CRM.$, CRM._);
