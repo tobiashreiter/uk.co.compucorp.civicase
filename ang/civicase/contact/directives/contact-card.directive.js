@@ -74,11 +74,17 @@
         if (typeof $scope.data === 'string') {
           return ContactsCache.add([$scope.data]);
         } else {
-          var contactIDs = $scope.data.map(function (contact) {
-            if (contact) {
-              return contact.contact_id;
-            }
-          });
+          var contactIDs;
+
+          if (_.isPlainObject($scope.data)) {
+            contactIDs = _.keys($scope.data);
+          } else {
+            contactIDs = $scope.data.map(function (contact) {
+              if (contact) {
+                return contact.contact_id;
+              }
+            });
+          }
 
           return ContactsCache.add(contactIDs);
         }
