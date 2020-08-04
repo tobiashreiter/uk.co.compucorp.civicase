@@ -139,7 +139,7 @@
      * @returns {Promise} promise
      */
     function saveTags (activityID) {
-      return civicaseCrmApi('EntityTag', 'create', {
+      return civicaseCrmApi('EntityTag', 'createByQuery', {
         entity_table: 'civicrm_activity',
         tag_id: $scope.tags.selected,
         entity_id: activityID

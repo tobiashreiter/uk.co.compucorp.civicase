@@ -82,7 +82,7 @@
       });
 
       it('saves the selected tags with respect to the activity', () => {
-        expect(civicaseCrmApi).toHaveBeenCalledWith('EntityTag', 'create', {
+        expect(civicaseCrmApi).toHaveBeenCalledWith('EntityTag', 'createByQuery', {
           entity_table: 'civicrm_activity',
           tag_id: ['102'],
           entity_id: '101'
