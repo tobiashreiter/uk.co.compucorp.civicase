@@ -97,14 +97,21 @@
       });
 
       describe('when case parameters are passed', function () {
+        var startOfMonth;
+
         beforeEach(function () {
+          startOfMonth = moment(dates.today).startOf('month').format('YYYY-MM-DD');
+
           commonControllerSetup({ caseParams: { a: 'b' } });
         });
 
         it('loads the days with activities from all the given cases', function () {
           var apiParams1 = civicaseCrmApi.calls.argsFor(0)[2];
 
-          expect(apiParams1.case_filter).toEqual({ a: 'b' });
+          expect(apiParams1.case_filter).toEqual({
+            a: 'b',
+            modified_date: { '>=': moment(startOfMonth).format('YYYY-MM-DD HH:mm:ss') }
+          });
         });
 
         describe('when selecting a date with activities', function () {
@@ -115,7 +122,10 @@
           it('loads activities from all the given cases when selecting a day', function () {
             var apiParams = civicaseCrmApi.calls.argsFor(0)[2];
 
-            expect(apiParams.case_filter).toEqual({ a: 'b' });
+            expect(apiParams.case_filter).toEqual({
+              a: 'b',
+              modified_date: { '>=': moment(startOfMonth).format('YYYY-MM-DD HH:mm:ss') }
+            });
           });
 
           describe('case info footer on activity card', function () {

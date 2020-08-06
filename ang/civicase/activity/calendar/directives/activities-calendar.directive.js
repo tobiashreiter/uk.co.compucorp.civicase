@@ -517,6 +517,7 @@
       var dateMoment = moment(date);
 
       params.activity_type_id = { '!=': 'Bulk Email' };
+      params.is_deleted = '0';
       params.status_id = { IN: _.union(incompleteActivityStatusTypes, completeActivityStatusTypes) };
       params.activity_date_time = {
         BETWEEN: [
@@ -531,6 +532,10 @@
 
       if ($scope.caseParams) {
         params.case_filter = $scope.caseParams;
+
+        params.case_filter.modified_date = {
+          '>=': params.activity_date_time.BETWEEN[0]
+        };
       }
 
       params.options = { group_by_field: 'status_id' };

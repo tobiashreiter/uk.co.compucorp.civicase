@@ -56,6 +56,10 @@ function civicrm_api3_activity_getdayswithactivities(array $params) {
     _civicrm_api3_activity_getdayswithactivities_handle_id_param($params['activity_status_id'], 'a.status_id', $query);
   }
 
+  if (isset($params['is_deleted'])) {
+    _civicrm_api3_activity_getdayswithactivities_handle_id_param($params['is_deleted'], 'a.is_deleted', $query);
+  }
+
   if (!empty($params['case_id'])) {
     _join_to_case($query, $params['case_id']);
   }
