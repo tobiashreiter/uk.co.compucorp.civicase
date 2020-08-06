@@ -115,14 +115,14 @@
           var seeMoreElement = '<a class="civicase__show-more-button">See More</span>';
           $(elem).after(seeMoreElement);
 
-          truncateBlock(scope, elem);
+          truncateBlock(scope, elem, LINE_HEIGHT);
 
           elem.siblings('.civicase__show-more-button').click(function () {
             if ($(this).text() === 'See More') {
               unTruncateBlock(scope, elem);
               $(this).text('Hide');
             } else {
-              truncateBlock(scope, elem);
+              truncateBlock(scope, elem, LINE_HEIGHT);
               $(this).text('See More');
             }
           });
@@ -135,9 +135,10 @@
      *
      * @param {object} scope scope object
      * @param {object} elem element
+     * @param {object} lineHeight height of each line
      */
-    function truncateBlock (scope, elem) {
-      elem.css('max-height', scope.lineLimit + 'em');
+    function truncateBlock (scope, elem, lineHeight) {
+      elem.css('max-height', (scope.lineLimit * lineHeight) + 'px');
       elem.css('overflow', 'hidden');
     }
 
