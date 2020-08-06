@@ -33,8 +33,13 @@ function _civicrm_api3_activity_getdayswithactivities_spec(array &$spec) {
  */
 function civicrm_api3_activity_getdayswithactivities(array $params) {
   $query = CRM_Utils_SQL_Select::from('civicrm_activity a');
-  $query->select(['a.activity_date_time']);
-
+  $select = ['a.activity_date_time'];
+  $groupByFields = ['status_id'];
+  $shouldGroupByField = !empty($params['options']['group_by_field']) && in_array($params['options']['group_by_field'], $groupByFields);
+  if ($shouldGroupByField) {
+    $select[] = $params['options']['group_by_field'];
+  }
+  $query->select($select);
   if (!empty($params['case_id']) && !empty($params['case_filter'])) {
     throw new API_Exception("case_id and case_filter cannot be present at the same time.");
   }
@@ -67,14 +72,23 @@ function civicrm_api3_activity_getdayswithactivities(array $params) {
 
   $query->groupBy('a.activity_date_time');
   $result = $query->execute()->fetchAll();
-
-  $uniqueDates = array_unique(array_map(function ($row) {
-    return explode(' ', $row['activity_date_time'])[0];
-  }, $result));
-
-  $params['sequential'] = 1;
-
-  return civicrm_api3_create_success($uniqueDates, $params, 'Activity', 'getdayswithactivities');
+  $data = [];
+  if ($shouldGroupByField) {
+    foreach ($result as $row) {
+      $activityDate = explode(' ', $row['activity_date_time'])[0];
+      if (isset($data[$row[$params['options']['group_by_field']]]) && array_search($activityDate, $data[$row[$params['options']['group_by_field']]]) !== FALSE) {
+        continue;
+      }
+      $data[$row[$params['options']['group_by_field']]][] = explode(' ', $row['activity_date_time'])[0];
+    }
+  }
+  else {
+    $data = array_unique(array_map(function ($row) {
+      return explode(' ', $row['activity_date_time'])[0];
+    }, $result));
+    $params['sequential'] = 1;
+  }
+  return civicrm_api3_create_success($data, $params, 'Activity', 'getdayswithactivities');
 }
 
 /**

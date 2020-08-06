@@ -37,9 +37,13 @@
     }));
 
     describe('when uib-datepicker signals that it is ready', function () {
-      var endOfMonth, startOfMonth;
+      var endOfMonth, startOfMonth, completeAndIncompleteStatusTypes;
 
       beforeEach(function () {
+        completeAndIncompleteStatusTypes = _.union(
+          ActivityStatusType.getAll().incomplete,
+          ActivityStatusType.getAll().completed
+        );
         startOfMonth = moment(dates.today).startOf('month').format('YYYY-MM-DD');
         endOfMonth = moment(dates.today).endOf('month').format('YYYY-MM-DD');
 
@@ -49,39 +53,13 @@
         $rootScope.$emit('civicase::uibDaypicker::compiled', dates.today);
       });
 
-      it('loads the days with incomplete activities of the currently selected month', function () {
+      it('loads the days with incomplete and complete activities of the currently selected month', function () {
         expect(civicaseCrmApi).toHaveBeenCalledWith('Activity', 'getdayswithactivities', jasmine.objectContaining({
-          status_id: { IN: ActivityStatusType.getAll().incomplete },
+          status_id: { IN: completeAndIncompleteStatusTypes },
           activity_date_time: {
             BETWEEN: [startOfMonth + ' 00:00:00', endOfMonth + ' 23:59:59']
           }
         }));
-      });
-
-      it('does not load the days with complete activities right away', function () {
-        expect(civicaseCrmApi.calls.count()).toBe(1);
-      });
-
-      describe('when loading is complete', function () {
-        beforeEach(function () {
-          civicaseCrmApi.calls.reset();
-          $scope.$digest();
-        });
-
-        it('loads the days with complete activities of the currently selected month', function () {
-          expect(civicaseCrmApi).toHaveBeenCalledWith('Activity', 'getdayswithactivities', jasmine.objectContaining({
-            status_id: ActivityStatusType.getAll().completed[0],
-            activity_date_time: {
-              BETWEEN: [startOfMonth + ' 00:00:00', endOfMonth + ' 23:59:59']
-            }
-          }));
-        });
-
-        it('has triggered the datepicker refresh twice, one for each request', function () {
-          _.times(2, function (i) {
-            expect($scope.$emit.calls.argsFor(i)[0]).toBe('civicase::ActivitiesCalendar::refreshDatepicker');
-          });
-        });
       });
     });
 
@@ -93,10 +71,8 @@
 
         it('loads the days with activities from that single cases', function () {
           var apiParams1 = civicaseCrmApi.calls.argsFor(0)[2];
-          var apiParams2 = civicaseCrmApi.calls.argsFor(1)[2];
 
           expect(apiParams1.case_id).toEqual($scope.caseId);
-          expect(apiParams2.case_id).toEqual($scope.caseId);
         });
 
         describe('when selecting a date with activities', function () {
@@ -167,15 +143,11 @@
         });
 
         it('triggers a full reload', function () {
-          expect(civicaseCrmApi.calls.count()).toBe(2);
-
-          _.times(2, function (i) {
-            expect(civicaseCrmApi.calls.argsFor(i)).toEqual([
-              'Activity', 'getdayswithactivities', jasmine.objectContaining({
-                case_id: newCaseId
-              })
-            ]);
-          });
+          expect(civicaseCrmApi).toHaveBeenCalledWith(
+            'Activity', 'getdayswithactivities', jasmine.objectContaining({
+              case_id: newCaseId
+            })
+          );
         });
       });
 
@@ -545,7 +517,7 @@
       });
 
       it('triggers a full reload', function () {
-        expect(civicaseCrmApi.calls.count()).toBe(2);
+        expect(civicaseCrmApi.calls.count()).toBe(1);
       });
     });
 
@@ -582,7 +554,7 @@
       });
 
       it('loads the days with activities of the month of the selected date', function () {
-        expect(civicaseCrmApi.calls.count()).toBe(2);
+        expect(civicaseCrmApi.calls.count()).toBe(1);
         allArgs.forEach(function (args) {
           expect(args[2].activity_date_time).toEqual({
             BETWEEN: [startOfMonth + ' 00:00:00', endOfMonth + ' 23:59:59']
@@ -664,14 +636,18 @@
      */
     function returnDateForStatus (date, status) {
       civicaseCrmApi.and.callFake(function (entity, action, params) {
-        var dates = [];
-        var isCompleteActivitiesApiCall = params.status_id === ActivityStatusType.getAll().completed[0];
-        var isIncompleteActivitiesApiCall = _.isEqual(params.status_id.IN, ActivityStatusType.getAll().incomplete);
+        var completedActivityStatus = ActivityStatusType.getAll().completed[0];
+        var incompleteActivityStatus = ActivityStatusType.getAll().incomplete[0];
 
-        if (status === 'any' ||
-          (status === 'completed' && isCompleteActivitiesApiCall) ||
-          (status === 'incomplete' && isIncompleteActivitiesApiCall)) {
-          dates = [moment(date).format('YYYY-MM-DD')];
+        var dates = {};
+
+        if (status === 'completed') {
+          dates[completedActivityStatus] = [moment(date).format('YYYY-MM-DD')];
+        } else {
+          dates[incompleteActivityStatus] = [
+            moment(date).add(1).format('YYYY-MM-DD'),
+            moment(date).add(2).format('YYYY-MM-DD')
+          ];
         }
 
         return $q.resolve({ values: dates });
