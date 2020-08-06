@@ -5,10 +5,11 @@
 
   /**
    *
+   * @param {Function} ts translation service
    * @param {object} dialogService dialog service
    * @param {object} civicaseCrmApi service to use civicrm api
    */
-  function EditTagsCaseAction (dialogService, civicaseCrmApi) {
+  function EditTagsCaseAction (ts, dialogService, civicaseCrmApi) {
     /**
      * Click event handler for the Action
      *
@@ -29,7 +30,7 @@
 
       getTags()
         .then(function (tags) {
-          var model = setModelObjectForModal(tags);
+          var model = getModelObjectForModal(tags);
 
           model.selectedTags = existingTags;
 
@@ -51,7 +52,7 @@
         width: '450px',
         title: title,
         buttons: [{
-          text: 'Save',
+          text: ts('Save'),
           icons: { primary: 'fa-check' },
           click: function () {
             editTagModalClickEvent.call(this, model, casesObj);
@@ -61,18 +62,16 @@
     }
 
     /**
-     * Set the model object to be used in the modal
+     * Get the model object to be used in the modal
      *
      * @param {Array} tags tags
      * @returns {object} model object for the dialog box
      */
-    function setModelObjectForModal (tags) {
-      var model = {};
-
-      model.allTags = tags;
-      model.selectedTags = [];
-
-      return model;
+    function getModelObjectForModal (tags) {
+      return {
+        allTags: tags,
+        selectedTags: []
+      };
     }
 
     /**

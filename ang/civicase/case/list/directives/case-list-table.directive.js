@@ -391,6 +391,7 @@
       if (!params.is_deleted && !params.id) {
         params.is_deleted = 0;
       }
+
       return [
         ['Case', 'getcaselist', $.extend(true, returnCaseParams, params)],
         ['Case', 'getdetailscount', params]
