@@ -67,7 +67,7 @@ function civicrm_api3_activity_getdayswithactivities(array $params) {
       return civicrm_api3_create_success([], $params, 'Activity', 'getdayswithactivities');
     }
 
-    _join_to_case($query, ['IN' => _get_case_ids($params['case_filter'])]);
+    _join_to_case($query, ['IN' => $case_ids]);
   }
 
   $query->groupBy('a.activity_date_time');
