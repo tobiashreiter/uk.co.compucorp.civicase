@@ -71,17 +71,20 @@
        * @returns {Promise} promise
        */
       function fetchContactsInfo () {
-        if (typeof $scope.data === 'string') {
-          return ContactsCache.add([$scope.data]);
-        } else {
-          var contactIDs = $scope.data.map(function (contact) {
-            if (contact) {
-              return contact.contact_id;
-            }
-          });
+        var contactIds;
 
-          return ContactsCache.add(contactIDs);
+        if (typeof $scope.data === 'string') {
+          contactIds = [$scope.data];
+        } else if (_.isPlainObject($scope.data)) {
+          contactIds = _.keys($scope.data);
+        } else {
+          contactIds = _.chain($scope.data)
+            .compact()
+            .map('contact_id')
+            .value();
         }
+
+        return ContactsCache.add(contactIds);
       }
 
       /**
