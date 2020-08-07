@@ -39,8 +39,7 @@
       var caseTypeCategoryName = CaseTypeCategory.getAll()[caseTypeCategoryId].name;
 
       return '/civicrm/case/a/?case_type_category=' + caseTypeCategoryName +
-        '#/case/list?caseId=' + caseItem.id +
-        '&cf={"status_id":[' + caseItem.status_id + ']}';
+        '#/case/list?caseId=' + caseItem.id;
     }
   }
 })(angular, CRM.$, CRM._);

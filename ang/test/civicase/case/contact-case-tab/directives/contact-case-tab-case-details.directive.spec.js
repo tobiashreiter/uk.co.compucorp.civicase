@@ -26,7 +26,7 @@
         mockCase['case_type_id.case_type_category'] = caseTypeCategory.value;
         expectedUrl = '/civicrm/case/a/' +
           `?case_type_category=${caseTypeCategory.name}` +
-          `#/case/list?caseId=${mockCase.id}&cf={"status_id":[${mockCase.status_id}]}`;
+          `#/case/list?caseId=${mockCase.id}`;
         returnedUrl = $scope.getCaseDetailsUrl(mockCase);
       });
 
