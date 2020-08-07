@@ -45,11 +45,6 @@
 
         <span ng-if="item.tag_id" class="civicase__pipe"> | </span>
 
-        <civicase-tags-container
-          tags="item.tag_id"
-          show-ellipsis-after="5">
-        </civicase-tags-container>
-
         <span class="pull-right">
           <span>{{ ts("Case Manager:") }}</span>
           <span>
@@ -61,6 +56,11 @@
             ></span>
           </span>
         </span>
+
+        <civicase-tags-container
+          tags="item.tag_id"
+          show-ellipsis-after="5">
+        </civicase-tags-container>
       </div>
     </div>
 
