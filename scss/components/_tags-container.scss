@@ -1,10 +1,11 @@
 // holds about 40 characters of variable width text:
 $tag-max-width: 36ch;
+$tags-margin-right: 4px;
 
 .civicase__tags-container,
 .civicase__tags-container__additional__list {
   .badge {
-    margin-right: 4px;
+    margin-right: $tags-margin-right;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -52,6 +53,7 @@ $tag-max-width: 36ch;
   border-radius: 0;
   box-shadow: $box-shadow-tooltip;
   cursor: pointer;
+  max-width: calc(#{$tag-max-width} + #{$padding-small-horizontal * 2} + #{$tags-margin-right});
   padding: 0;
 
   a {
