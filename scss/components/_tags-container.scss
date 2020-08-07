@@ -1,3 +1,6 @@
+// holds about 40 characters of variable width text:
+$tag-max-width: 36ch;
+
 .civicase__tags-container,
 .civicase__tags-container__additional__list {
   .badge {
@@ -12,7 +15,7 @@
   display: inline-block;
 
   .badge {
-    max-width: 50px;
+    max-width: $tag-max-width;
   }
 }
 
@@ -34,7 +37,7 @@
   }
 
   .badge {
-    max-width: 80px;
+    max-width: $tag-max-width;
   }
 }
 
