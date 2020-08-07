@@ -50,12 +50,12 @@
     }
   });
 
-  module.controller('CivicaseCaseListTableController', function ($rootScope,
+  module.controller('CivicaseCaseListTableController', function ($q, $rootScope,
     $route, $scope, $window, BulkActions, civicaseCrmApi, crmStatus, crmUiHelp,
-    crmThrottle, currentCaseCategory, $timeout, formatCase, ContactsCache, CasesUtils, ts,
-    ActivityCategory, ActivityType, CaseStatus) {
+    crmThrottle, currentCaseCategory, $timeout, formatCase, ContactsCache,
+    CasesUtils, ts, ActivityCategory, ActivityType, CaseStatus) {
     var firstLoad = true;
-    var allCases;
+    var allCases = [];
 
     $scope.activityCategories = ActivityCategory.getAll();
     $scope.activityTypes = ActivityType.getAll();
@@ -82,7 +82,6 @@
     $scope.applyAdvSearch = applyAdvSearch;
     $scope.changeSortDir = changeSortDir;
     $scope.isSelection = isSelection;
-    $scope.selectAll = selectAll;
     $scope.refresh = refresh;
     $scope.unfocusCase = unfocusCase;
     $scope.viewCase = viewCase;
@@ -94,7 +93,6 @@
      */
     function applyAdvSearch (newFilters) {
       $scope.filters = newFilters;
-      getAllCasesforSelectAll();
       getCases();
     }
 
@@ -148,22 +146,6 @@
           $scope.isLoading = false;
           deselectAllCases();
         });
-    }
-
-    /**
-     * Select all cases for bulk action
-     *
-     * @param {object} event event object
-     */
-    function selectAll (event) {
-      var checked = event.target.checked;
-
-      _.each($scope.cases, function (item) {
-        // Case is marked as selected only if it's not locked for the current user.
-        if (!item.lock) {
-          item.selected = checked;
-        }
-      });
     }
 
     /**
@@ -237,7 +219,7 @@
         deselectAllCases();
       } else if (condition === 'visible') {
         selectDisplayedCases();
-      } else if (condition === 'all' && $scope.isSelectAllAvailable) {
+      } else if (condition === 'all') {
         selectEveryCase();
       }
     }
@@ -292,8 +274,10 @@
      * Get all cases
      */
     function getCases () {
+      allCases = [];
       $scope.isLoading = true;
       setPageTitle();
+
       crmThrottle(makeApiCallToLoadCases)
         .then(function (result) {
           var cases = _.each(result[0].values, formatCase);
@@ -401,19 +385,30 @@
     /**
      * Asynchronously get all cases for the bulk actions select all
      * functionality actions functionality
+     *
+     * @returns {Promise} promise
      */
     function getAllCasesforSelectAll () {
+      if (allCases.length > 0) {
+        return $q.resolve(allCases);
+      }
+
       $scope.selectedCases = []; // Resets all selection.
-      $scope.isSelectAllAvailable = false;
-      var params = getCaseApiParams(angular.extend({}, $scope.filters, $scope.hiddenFilters), $scope.sort, $scope.page);
+
+      var params = getCaseApiParams(
+        angular.extend({}, $scope.filters, $scope.hiddenFilters),
+        $scope.sort,
+        $scope.page
+      );
+
       params = params.splice(0, 1);
       params[0][2].return = ['case_type_id', 'status_id', 'is_deleted', 'contacts'];
       params[0][2].options.limit = 0;
 
-      civicaseCrmApi(params).then(function (res) {
-        allCases = res[0].values;
-        $scope.isSelectAllAvailable = true;
-      });
+      return civicaseCrmApi(params)
+        .then(function (res) {
+          allCases = res[0].values;
+        });
     }
 
     /**
@@ -478,9 +473,13 @@
      * Select all Cases
      */
     function selectEveryCase () {
-      $scope.selectedCases = [];
-      $scope.selectedCases = _.each(allCases, formatCase);
-      selectDisplayedCases(); // Update the UI model with displayed cases selected;
+      getAllCasesforSelectAll()
+        .then(function () {
+          $scope.selectedCases = [];
+          $scope.selectedCases = _.each(allCases, formatCase);
+
+          selectDisplayedCases();
+        });
     }
 
     /**

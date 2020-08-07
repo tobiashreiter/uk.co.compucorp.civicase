@@ -135,6 +135,15 @@
         $scope.handlers.range($scope.selectedRange, paramsCopy);
       }
 
+      if (paramsCopy.case_filter) {
+        // modified date is always updated when updating a case
+        // so adding this improves the performance of the api call
+        // as unnecessary cases are filtered out
+        paramsCopy.case_filter.modified_date = {
+          '>=': paramsCopy.activity_date_time.BETWEEN[0]
+        };
+      }
+
       var apiCalls = {
         get: [$scope.query.entity, ($scope.query.action || 'get'), prepareGetParams(paramsCopy)],
         count: [$scope.query.entity, ($scope.query.countAction || 'getcount'), paramsCopy]
