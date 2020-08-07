@@ -139,10 +139,10 @@
           <span ng-if="!item.end_date">{{ ts('Ongoing') }}</span>
         </div>
         <span ng-if="item.tag_id" class="civicase__pipe"> | </span>
-        <civicase-tags-container
-          tags="item.tag_id"
-          show-ellipsis-after="1">
-        </civicase-tags-container>
+      <civicase-tags-container
+      tags="item.tag_id"
+      show-ellipsis-after="10">
+    </civicase-tags-container>
       </div>
       <span class="pull-right civicase__contact-cases-tab__panel-fields--inline">
         <span class="civicase__contact-cases-tab__panel-field-emphasis">
