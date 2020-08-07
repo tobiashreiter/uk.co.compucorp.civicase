@@ -533,6 +533,9 @@
       if ($scope.caseParams) {
         params.case_filter = $scope.caseParams;
 
+        // modified date is always updated when updating a case
+        // so adding this improves the performance of the api call
+        // as unnecessary cases are filtered out
         params.case_filter.modified_date = {
           '>=': params.activity_date_time.BETWEEN[0]
         };
