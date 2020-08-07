@@ -409,8 +409,8 @@
         }
 
         return loadDaysWithActivities(date)
-          .then(function (data) {
-            updatesDatesByActivityStatusType(date, data);
+          .then(function (daysGroupedByStatusType) {
+            updatesDatesByActivityStatusType(date, daysGroupedByStatusType);
 
             $scope.$emit('civicase::ActivitiesCalendar::refreshDatepicker');
           });
@@ -552,17 +552,19 @@
     /**
      *
      * @param {Date} date date
-     * @param {object} data data returned from api
+     * @param {object} daysGroupedByStatusType data returned from api
      */
-    function updatesDatesByActivityStatusType (date, data) {
+    function updatesDatesByActivityStatusType (date, daysGroupedByStatusType) {
       var datesWithIncompleteStatuses = [];
       var datesWithCompleteStatuses = [];
 
-      _.each(data, function (val, key) {
-        if (incompleteActivityStatusTypes.indexOf(parseInt(key)) > -1) {
-          datesWithIncompleteStatuses = datesWithIncompleteStatuses.concat(val);
-        } else if (completeActivityStatusTypes.indexOf(parseInt(key)) > -1) {
-          datesWithCompleteStatuses = datesWithCompleteStatuses.concat(val);
+      _.each(daysGroupedByStatusType, function (datesList, statusTypeId) {
+        var statusTypeIdInt = parseInt(statusTypeId, 10);
+
+        if (_.includes(incompleteActivityStatusTypes, statusTypeIdInt)) {
+          datesWithIncompleteStatuses = datesWithIncompleteStatuses.concat(datesList);
+        } else if (_.includes(completeActivityStatusTypes, statusTypeIdInt)) {
+          datesWithCompleteStatuses = datesWithCompleteStatuses.concat(datesList);
         }
       });
 
