@@ -127,6 +127,7 @@
       $scope.$bindToRoute({ expr: 'expanded', param: 'sx', format: 'bool', default: false });
       $scope.$bindToRoute({ expr: 'filters', param: 'cf', default: {} });
       $scope.$bindToRoute({ expr: 'contactRoleFilter', param: 'crf', default: $scope.contactRoleFilter });
+      $scope.$bindToRoute({ expr: 'showCasesFromAllStatuses', param: 'sas', format: 'bool' });
     }
 
     /**
