@@ -188,7 +188,7 @@
      * Remove route params added by individual tabs
      */
     function removeExtraRouteParams () {
-      var allowedRouteParams = ['caseId', 'cf', 'sas'];
+      var allowedRouteParams = ['caseId', 'cf', 'all_statuses'];
 
       $route.current.params = _.pick($route.current.params, function (value, key) {
         return allowedRouteParams.indexOf(key) !== -1;
@@ -203,7 +203,7 @@
       $scope.$bindToRoute({ expr: 'sort.dir', param: 'sd', format: 'raw', default: 'ASC' });
       $scope.$bindToRoute({ expr: 'caseIsFocused', param: 'focus', format: 'bool', default: false });
       $scope.$bindToRoute({ expr: 'viewingCase', param: 'caseId', format: 'raw' });
-      $scope.$bindToRoute({ expr: 'showCasesFromAllStatuses', param: 'sas', format: 'bool' });
+      $scope.$bindToRoute({ expr: 'showCasesFromAllStatuses', param: 'all_statuses', format: 'bool' });
       $scope.$bindToRoute({ expr: 'viewingCaseTab', param: 'tab', format: 'raw', default: 'Summary' });
       $scope.$bindToRoute({ expr: 'page.size', param: 'cps', format: 'int', default: 15 });
       $scope.$bindToRoute({ expr: 'page.num', param: 'cpn', format: 'int', default: 1 });
