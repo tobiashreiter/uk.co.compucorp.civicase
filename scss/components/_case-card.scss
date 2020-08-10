@@ -1,5 +1,4 @@
-// Allows for the tag's ellipsis element to be displayed next to the last tag:
-$tags-max-width: 195px;
+$tags-max-width: 195px; // Displays the tag's ellipsis element next to the last tag
 
 .civicase__case-card {
   border-radius: 0 !important; // Todo remove important after general.css is refactored.
