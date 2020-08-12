@@ -54,7 +54,7 @@
           groupID: scope.customGroup.id,
           cid: caseDetails.item.client[0].contact_id,
           subType: caseDetails.item.case_type_id,
-          civicase_reload: caseDetails.caseGetParams()
+          civicase_reload: caseDetails.caseGetParamsAsString()
         });
         form = $('<div></div>').html(element.hide().html());
         form.insertAfter(element)

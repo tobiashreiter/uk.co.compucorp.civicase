@@ -29,7 +29,7 @@
             mode="contact-tab-cases"
             civicase-case-actions="[item]"
             refresh-callback="refresh"
-            popup-params="caseGetParams"
+            popup-params="caseGetParamsAsString"
             crm-popup-form-success="pushCaseData($data.civicase_reload[0])"></ul>
         </div>
         <!-- end - hamburger icon -->
@@ -65,7 +65,7 @@
                         caseid: item.id,
                         atype: getActivityType('Change Case Status'),
                         case_status_id: status.value,
-                        civicase_reload: caseGetParams()
+                        civicase_reload: caseGetParamsAsString()
                       }
                     }}">
                   {{ status.label }}
@@ -120,7 +120,7 @@
                   cid: item.client[0].contact_id,
                   caseid: item.id,
                   atype: getActivityType('Change Case Type'),
-                  civicase_reload: caseGetParams()
+                  civicase_reload: caseGetParamsAsString()
                 }
               }}">
             {{ item.case_type }}
