@@ -8,29 +8,6 @@
   }
 }
 
-.civicase__case-body__not-found {
-  background: $crm-white;
-  color: $crm-gray-matte;
-  font-size: 14px;
-  font-weight: $font-weight-heading;
-  height: 100%;
-  padding: 18px 0;
-  text-align: center;
-
-  .material-icons {
-    color: $crm-gray-matte;
-    font-size: 64px;
-  }
-
-  .btn-danger {
-    margin-top: 20px;
-
-    .fa {
-      margin-right: 5px;
-    }
-  }
-}
-
 .civicase__case-body_tab {
   position: relative;
   z-index: 1;
