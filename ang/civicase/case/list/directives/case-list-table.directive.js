@@ -203,7 +203,6 @@
       $scope.$bindToRoute({ expr: 'sort.dir', param: 'sd', format: 'raw', default: 'ASC' });
       $scope.$bindToRoute({ expr: 'caseIsFocused', param: 'focus', format: 'bool', default: false });
       $scope.$bindToRoute({ expr: 'viewingCase', param: 'caseId', format: 'raw' });
-      $scope.$bindToRoute({ expr: 'showCasesFromAllStatuses', param: 'all_statuses', format: 'bool' });
       $scope.$bindToRoute({ expr: 'viewingCaseTab', param: 'tab', format: 'raw', default: 'Summary' });
       $scope.$bindToRoute({ expr: 'page.size', param: 'cps', format: 'int', default: 15 });
       $scope.$bindToRoute({ expr: 'page.num', param: 'cpn', format: 'int', default: 1 });
@@ -294,6 +293,7 @@
               }
             } else {
               $scope.viewingCaseDetails = _.findWhere(cases, { id: $scope.viewingCase });
+              $scope.caseNotFound = !$scope.viewingCaseDetails;
             }
           }
 
@@ -369,7 +369,7 @@
         params.contact_is_deleted = 0;
       }
       // If no status specified, default to all open cases
-      if (!params.status_id && !params.id && !$scope.showCasesFromAllStatuses) {
+      if (!params.status_id && !params.id && !params.showCasesFromAllStatuses) {
         params['status_id.grouping'] = 'Opened';
       }
       // Default to not deleted

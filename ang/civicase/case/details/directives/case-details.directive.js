@@ -10,6 +10,7 @@
         activeTab: '=civicaseTab',
         isFocused: '=civicaseFocused',
         item: '=civicaseCaseDetails',
+        showClearfiltersUi: '=',
         caseTypeCategory: '='
       }
     };
@@ -81,6 +82,10 @@
       $scope.$on('civicase::activity-feed::show-activity-panel',
         showActivityPanelListener);
     }());
+
+    $scope.clearAllFilters = function () {
+      $rootScope.$broadcast('civicase::case-details::show-all-cases');
+    };
 
     $scope.addTimeline = function (name) {
       $scope.refresh([['Case', 'addtimeline', { case_id: $scope.item.id, timeline: name }]]);

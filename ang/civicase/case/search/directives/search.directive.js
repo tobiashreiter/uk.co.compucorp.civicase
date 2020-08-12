@@ -288,6 +288,7 @@
 
       // Force 'false' value for empty boolean fields.
       search.is_deleted = search.is_deleted === undefined ? false : search.is_deleted;
+      search.showCasesFromAllStatuses = $scope.showCasesFromAllStatuses;
 
       return search;
     }
@@ -331,9 +332,18 @@
      * All watchers are initiated here
      */
     function initiateWatchers () {
+      $scope.$on('civicase::case-details::show-all-cases', showAllCases);
       $scope.$watch('expanded', expandedWatcher);
       $scope.$watch('relationshipType', relationshipTypeWatcher);
       $scope.$watchCollection('contactRoleFilter', caseRoleWatcher);
+    }
+
+    /**
+     * Clear all filters and show all cases
+     */
+    function showAllCases () {
+      $scope.showCasesFromAllStatuses = true;
+      clearSearch();
     }
 
     /**
