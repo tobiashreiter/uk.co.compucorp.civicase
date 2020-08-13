@@ -60,8 +60,11 @@ $civicase-webform-dropdown-max-width: 500px;
     }
   }
 
+  .civicase__case-header__case-type + .civicase__pipe {
+    margin-right: 5px;
+  }
+
   .civicase__tags-container {
-    margin-left: 5px;
     position: relative;
     top: -1px;
   }
