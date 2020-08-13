@@ -1,11 +1,16 @@
 <div class="panel panel-default">
-  <div class="panel-body panel-body-extra" ng-controller="civicaseCaseDetailsController" ng-if="item">
+  <div
+    class="panel-body panel-body-extra"
+    ng-controller="civicaseCaseDetailsController"
+    ng-if="item">
     <div class="civicase__contact-cases-tab__panel-row civicase__contact-cases-tab__panel-row--dark clearfix">
       <div class="pull-left civicase__contact-cases-tab__panel-field-emphasis civicase__contact-cases-tab-details__title">
         <span> {{ ts('Case ID:') }} <strong> {{item.id}} </strong></span>
       </div>
       <div class="pull-right">
-        <a ng-href="{{getCaseDetailsUrl(item)}}" class="btn btn-primary civicase__contact-cases-tab__case-link">
+        <a
+          ng-href="{{getCaseDetailsUrl(item)}}"
+          class="btn btn-primary civicase__contact-cases-tab__case-link">
           <i class="fa fa-external-link-square" aria-hidden="true"></i>
           {{ ts('Go To Case') }}
         </a>
@@ -24,7 +29,7 @@
             mode="contact-tab-cases"
             civicase-case-actions="[item]"
             refresh-callback="refresh"
-            popup-params="caseGetParams"
+            popup-params="caseGetParamsAsString"
             crm-popup-form-success="pushCaseData($data.civicase_reload[0])"></ul>
         </div>
         <!-- end - hamburger icon -->
@@ -60,7 +65,7 @@
                         caseid: item.id,
                         atype: getActivityType('Change Case Status'),
                         case_status_id: status.value,
-                        civicase_reload: caseGetParams()
+                        civicase_reload: caseGetParamsAsString()
                       }
                     }}">
                   {{ status.label }}
@@ -78,7 +83,10 @@
           contacts="item.client"
         ></div>
 
-        <div class="civicase__summary-tab__subject crm-entity" data-entity="Case" data-id="{{ item.id }}">
+        <div
+          class="civicase__summary-tab__subject crm-entity"
+          data-entity="Case"
+          data-id="{{ item.id }}">
           <p
             crm-editable="item"
             data-field="subject"
@@ -87,7 +95,10 @@
             crm-form-success="onChangeSubject($data)">
           </p>
         </div>
-        <div class="civicase__summary-tab__description crm-entity" data-entity="Case" data-id="{{ item.id }}">
+        <div
+          class="civicase__summary-tab__description crm-entity"
+          data-entity="Case"
+          data-id="{{ item.id }}">
           <p
             crm-editable="item"
             data-field="details"
@@ -109,7 +120,7 @@
                   cid: item.client[0].contact_id,
                   caseid: item.id,
                   atype: getActivityType('Change Case Type'),
-                  civicase_reload: caseGetParams()
+                  civicase_reload: caseGetParamsAsString()
                 }
               }}">
             {{ item.case_type }}
@@ -134,7 +145,9 @@
         </civicase-tags-container>
       </div>
       <span class="pull-right civicase__contact-cases-tab__panel-fields--inline">
-        <span class="civicase__contact-cases-tab__panel-field-emphasis"> {{ ts('Case Manager:') }} </span>
+        <span class="civicase__contact-cases-tab__panel-field-emphasis">
+          {{ ts('Case Manager:') }}
+        </span>
         <span>
           <span
             class="civicase__contact-card civicase__contact-card--manager"

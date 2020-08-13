@@ -10,6 +10,7 @@
         activeTab: '=civicaseTab',
         isFocused: '=civicaseFocused',
         item: '=civicaseCaseDetails',
+        showClearfiltersUi: '=',
         caseTypeCategory: '='
       }
     };
@@ -73,6 +74,26 @@
     $scope.trustAsHtml = $sce.trustAsHtml;
     $scope.isMainContentVisible = isMainContentVisible;
     $scope.isPlaceHolderVisible = isPlaceHolderVisible;
+    $scope.markCompleted = markCompleted;
+    $scope.onChangeSubject = onChangeSubject;
+    $scope.clearAllFilters = clearAllFilters;
+    $scope.addTimeline = addTimeline;
+    $scope.caseGetParamsAsString = caseGetParamsAsString;
+    $scope.createEmail = createEmail;
+    $scope.createPDFLetter = createPDFLetter;
+    $scope.focusToggle = focusToggle;
+    $scope.formatDate = formatDate;
+    $scope.getActivityType = getActivityType;
+    $scope.gotoCase = gotoCase;
+    $scope.isCurrentRelatedCaseVisible = isCurrentRelatedCaseVisible;
+    $scope.isSameDate = isSameDate;
+    $scope.refresh = refresh;
+    $scope.selectTab = selectTab;
+    $scope.viewActivityUrl = viewActivityUrl;
+    $scope.pushCaseData = pushCaseData;
+
+    this.getEditActivityUrl = getEditActivityUrl;
+    this.getPrintActivityUrl = getPrintActivityUrl;
 
     (function init () {
       $scope.$watch('activeTab', activeTabWatcher);
@@ -82,18 +103,36 @@
         showActivityPanelListener);
     }());
 
-    $scope.addTimeline = function (name) {
-      $scope.refresh([['Case', 'addtimeline', { case_id: $scope.item.id, timeline: name }]]);
-    };
+    /**
+     * Broadcast an event to show all cases.
+     */
+    function clearAllFilters () {
+      $rootScope.$broadcast('civicase::case-details::show-all-cases');
+    }
 
-    $scope.caseGetParams = function () {
+    /**
+     * Adds the sent timeline to the current case
+     *
+     * @param {string} name name of the timeline
+     */
+    function addTimeline (name) {
+      $scope.refresh([['Case', 'addtimeline', {
+        case_id: $scope.item.id,
+        timeline: name
+      }]]);
+    }
+
+    /**
+     * @returns {string} case params as string
+     */
+    function caseGetParamsAsString () {
       return JSON.stringify(caseGetParams());
-    };
+    }
 
     /**
      * Opens the popup for Creating Email
      */
-    $scope.createEmail = function () {
+    function createEmail () {
       var createEmailURLParams = {
         action: 'add',
         caseid: $scope.item.id,
@@ -107,27 +146,27 @@
         .on('crmFormSuccess', function () {
           $rootScope.$broadcast('civicase::activity::updated');
         });
-    };
+    }
 
     /**
      * Opens the popup for Creating PDF letter
      */
-    $scope.createPDFLetter = function () {
+    function createPDFLetter () {
       var pdfLetter = PrintMergeCaseAction.doAction([$scope.item]);
 
       CRM.loadForm(CRM.url(pdfLetter.path, pdfLetter.query));
-    };
+    }
 
     /**
      * Toggle focus of the Summary View
      */
-    $scope.focusToggle = function () {
+    function focusToggle () {
       $scope.isFocused = !$scope.isFocused;
 
       if (!$scope.isFocused && checkIfWindowWidthBreakpointIsReached()) {
         $rootScope.$broadcast('civicase::case-details::unfocused');
       }
-    };
+    }
 
     /**
      * Formats Date in given format
@@ -136,15 +175,25 @@
      * @param {string} format Date format
      * @returns {string} the formatted date
      */
-    $scope.formatDate = function (date, format) {
+    function formatDate (date, format) {
       return moment(date).format(format);
-    };
+    }
 
-    $scope.getActivityType = function (name) {
+    /**
+     * @param {string} name name of the activity type
+     * @returns {object} Activity Type for the sent name
+     */
+    function getActivityType (name) {
       return _.findKey(activityTypes, { name: name });
-    };
+    }
 
-    $scope.gotoCase = function (item, $event) {
+    /**
+     * Go to the sent case
+     *
+     * @param {object} item case object
+     * @param {object} $event event object
+     */
+    function gotoCase (item, $event) {
       if ($event && $($event.target).is('a, a *, input, button, button *')) {
         return;
       }
@@ -154,7 +203,7 @@
       };
       var p = angular.extend({}, $route.current.params, { caseId: item.id, cf: JSON.stringify(cf) });
       $route.updateParams(p);
-    };
+    }
 
     /**
      * Decide if the sent related case is visible with respect to the pager
@@ -162,7 +211,7 @@
      * @param {number} index index
      * @returns {boolean} if current related case visible
      */
-    $scope.isCurrentRelatedCaseVisible = function (index) {
+    function isCurrentRelatedCaseVisible (index) {
       $scope.relatedCasesPager.range.from = (($scope.relatedCasesPager.num - 1) * $scope.relatedCasesPager.size) + 1;
       $scope.relatedCasesPager.range.to = ($scope.relatedCasesPager.num * $scope.relatedCasesPager.size);
 
@@ -171,35 +220,51 @@
       }
 
       return index >= ($scope.relatedCasesPager.range.from - 1) && index < $scope.relatedCasesPager.range.to;
-    };
+    }
 
-    // Copied from ActivityFeed.js - used by the Recent Communication panel
-    $scope.isSameDate = function (d1, d2) {
+    /**
+     * Checks if the sent dates are same.
+     *
+     * @param {Date} d1 date 1
+     * @param {Date} d2 date 2
+     * @returns {boolean} if the sent dates are same
+     */
+    function isSameDate (d1, d2) {
       return d1 && d2 && (d1.slice(0, 10) === d2.slice(0, 10));
-    };
+    }
 
-    $scope.markCompleted = function (act) {
+    /**
+     * Marks sent activity as completed.
+     *
+     * @param {object} act activity object
+     */
+    function markCompleted (act) {
       $scope.refresh([['Activity', 'create', {
         id: act.id,
         status_id: act.is_completed ? 'Scheduled' : 'Completed'
       }]]);
-    };
+    }
 
-    // Create activity when changing case subject
-    $scope.onChangeSubject = function (newSubject) {
+    /**
+     * Create activity when changing case subject
+     *
+     * @param {string} newSubject new subject for the case
+     */
+    function onChangeSubject (newSubject) {
       CRM.api3('Activity', 'create', {
         case_id: $scope.item.id,
         activity_type_id: 'Change Case Subject',
         subject: newSubject,
         status_id: 'Completed'
       });
-    };
+    }
 
-    $scope.panelPlaceholders = function (num) {
-      return _.range(num > panelLimit ? panelLimit : num);
-    };
-
-    $scope.pushCaseData = function (data) {
+    /**
+     * Updates case data
+     *
+     * @param {object} data data to be pushed
+     */
+    function pushCaseData (data) {
       var isDataResponseForCurrentCase = $scope.item && data &&
         data.id === $scope.item.id;
 
@@ -218,7 +283,7 @@
       includeDetailsTab();
       $scope.$broadcast('updateCaseData');
       $scope.$emit('civicase::ActivitiesCalendar::reload');
-    };
+    }
 
     /**
      * Refreshes the Case Details data
@@ -226,7 +291,7 @@
      * @param {Array} apiCalls extra api calls to load on refresh.
      * @returns {Promise} promise
      */
-    $scope.refresh = function (apiCalls) {
+    function refresh (apiCalls) {
       if (!_.isArray(apiCalls)) {
         apiCalls = [];
       }
@@ -242,35 +307,48 @@
         start: 'Saving',
         success: 'Saved'
       }, promise);
-    };
+    }
 
-    $scope.selectTab = function (tab) {
+    /**
+     * Selects the sent tab as active
+     *
+     * @param {object} tab tab name
+     */
+    function selectTab (tab) {
       $scope.activeTab = tab;
       if (typeof $scope.isFocused === 'boolean') {
         $scope.isFocused = true;
       }
-    };
+    }
 
-    $scope.viewActivityUrl = function (id) {
+    /**
+     * @param {string} id activity id
+     * @returns {object} url to view the activity
+     */
+    function viewActivityUrl (id) {
       return CRM.url('civicrm/case/activity', {
         action: 'update',
         reset: 1,
         cid: $scope.item.client[0].contact_id,
         caseid: $scope.item.id,
         id: id,
-        civicase_reload: $scope.caseGetParams()
+        civicase_reload: caseGetParamsAsString()
       });
-    };
+    }
 
-    this.getEditActivityUrl = function (id) {
+    /**
+     * @param {string} id activity id
+     * @returns {object} url to edit the activity
+     */
+    function getEditActivityUrl (id) {
       return CRM.url('civicrm/case/activity', {
         action: 'update',
         reset: 1,
         caseid: $scope.item.id,
         id: id,
-        civicase_reload: $scope.caseGetParams()
+        civicase_reload: caseGetParamsAsString()
       });
-    };
+    }
 
     /**
      * Get the url to print activities
@@ -278,7 +356,7 @@
      * @param {Array} selectedActivities selected activities
      * @returns {string} url
      */
-    this.getPrintActivityUrl = function (selectedActivities) {
+    function getPrintActivityUrl (selectedActivities) {
       selectedActivities = selectedActivities.map(function (item) {
         return item.id;
       }).join(',');
@@ -291,7 +369,7 @@
         caseID: $scope.item.id,
         sact: selectedActivities
       });
-    };
+    }
 
     /**
      * Listener for civicase::activity-feed::show-activity-panel

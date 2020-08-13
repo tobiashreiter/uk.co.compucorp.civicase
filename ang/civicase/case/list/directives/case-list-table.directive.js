@@ -188,7 +188,7 @@
      * Remove route params added by individual tabs
      */
     function removeExtraRouteParams () {
-      var allowedRouteParams = ['caseId', 'cf'];
+      var allowedRouteParams = ['caseId', 'cf', 'all_statuses'];
 
       $route.current.params = _.pick($route.current.params, function (value, key) {
         return allowedRouteParams.indexOf(key) !== -1;
@@ -293,6 +293,7 @@
               }
             } else {
               $scope.viewingCaseDetails = _.findWhere(cases, { id: $scope.viewingCase });
+              $scope.caseNotFound = !$scope.viewingCaseDetails;
             }
           }
 
@@ -368,7 +369,7 @@
         params.contact_is_deleted = 0;
       }
       // If no status specified, default to all open cases
-      if (!params.status_id && !params.id) {
+      if (!params.status_id && !params.id && !params.showCasesFromAllStatuses) {
         params['status_id.grouping'] = 'Opened';
       }
       // Default to not deleted

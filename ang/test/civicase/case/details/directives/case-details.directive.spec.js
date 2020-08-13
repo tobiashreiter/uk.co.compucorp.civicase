@@ -335,6 +335,19 @@
       });
     });
 
+    describe('when clear all filters button is pressed', function () {
+      beforeEach(function () {
+        spyOn($rootScope, '$broadcast');
+        compileDirective();
+
+        element.isolateScope().clearAllFilters();
+      });
+
+      it('displays all cases', function () {
+        expect($rootScope.$broadcast).toHaveBeenCalledWith('civicase::case-details::show-all-cases');
+      });
+    });
+
     /**
      * Compiles the civicase-case-details directive.
      */
