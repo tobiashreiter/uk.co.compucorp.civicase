@@ -91,18 +91,6 @@ describe('Case Details People Tab', () => {
         ]));
       });
 
-      it('creates a new completed activity to record the contact being assigned a role to the case', () => {
-        expect($scope.refresh).toHaveBeenCalledWith(jasmine.arrayContaining([
-          ['Activity', 'create', {
-            case_id: $scope.item.id,
-            target_contact_id: contact.contact_id,
-            status_id: 'Completed',
-            activity_type_id: 'Assign Case Role',
-            subject: `${contact.display_name} added as ${roleName}`
-          }]
-        ]));
-      });
-
       it('closes the contact selection dialog', () => {
         expect(crmConfirmYesEvent.preventDefault).not.toHaveBeenCalled();
       });
@@ -124,45 +112,23 @@ describe('Case Details People Tab', () => {
         $rootScope.$digest();
       });
 
-      it('marks the current role relationship as finished', () => {
-        expect($scope.refresh).toHaveBeenCalledWith(jasmine.arrayContaining([
-          ['Relationship', 'get', {
-            relationship_type_id: relationshipTypeId,
-            contact_id_b: previousContact.contact_id,
-            case_id: $scope.item.id,
-            is_active: 1,
-            'api.Relationship.create': {
-              is_active: 0, end_date: 'now'
-            }
-          }]
-        ]));
-      });
-
       it('creates a new relationship between the case client and the selected contact using the given role', () => {
         expect($scope.refresh).toHaveBeenCalledWith(jasmine.arrayContaining([
-          ['Relationship', 'create', {
+          ['Relationship', 'get', {
+            case_id: $scope.item.id,
+            contact_id_b: previousContact.contact_id,
+            is_active: 1,
             relationship_type_id: relationshipTypeId,
-            start_date: 'now',
-            end_date: null,
-            contact_id_b: contact.contact_id,
-            case_id: $scope.item.id,
-            description: roleDescription,
-            contact_id_a: $scope.item.client[0].contact_id
-          }]
-        ]));
-      });
-
-      it('creates a new completed activity to record the case role has been reassigned', () => {
-        expect($scope.refresh).toHaveBeenCalledWith(jasmine.arrayContaining([
-          ['Activity', 'create', {
-            case_id: $scope.item.id,
-            target_contact_id: jasmine.arrayContaining([
-              previousContact.contact_id,
-              contact.contact_id
-            ]),
-            status_id: 'Completed',
-            activity_type_id: 'Assign Case Role',
-            subject: `${contact.display_name} replaced ${previousContact.display_name} as ${roleName}`
+            'api.Relationship.create': {
+              relationship_type_id: relationshipTypeId,
+              start_date: 'now',
+              end_date: null,
+              contact_id_b: contact.contact_id,
+              case_id: $scope.item.id,
+              description: roleDescription,
+              contact_id_a: $scope.item.client[0].contact_id,
+              reassign_rel_id: '$value.id'
+            }
           }]
         ]));
       });
@@ -382,6 +348,39 @@ describe('Case Details People Tab', () => {
           activity_type_id: 'Remove Client From Case',
           subject: sampleContact.display_name + ' removed as Client'
         }]]));
+      });
+    });
+
+    describe('when unassigning a role', () => {
+      let sampleContact, relationshipTypeId;
+
+      beforeEach(() => {
+        sampleContact = CRM._.sample(ContactsData.values);
+        relationshipTypeId = CRM._.uniqueId();
+
+        $scope.unassignRole({
+          contact_id: sampleContact.contact_id,
+          display_name: sampleContact.display_name,
+          relationship_type_id: relationshipTypeId,
+          role: 'Role'
+        });
+
+        crmConfirmDialog.trigger(crmConfirmYesEvent);
+        $rootScope.$digest();
+      });
+
+      it('marks the current role relationship as finished', () => {
+        expect($scope.refresh).toHaveBeenCalledWith(jasmine.arrayContaining([
+          ['Relationship', 'get', {
+            relationship_type_id: relationshipTypeId,
+            contact_id_b: sampleContact.contact_id,
+            case_id: $scope.item.id,
+            is_active: 1,
+            'api.Relationship.create': {
+              is_active: 0, end_date: 'now'
+            }
+          }]
+        ]));
       });
     });
   });
