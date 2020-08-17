@@ -51,6 +51,11 @@ var RECORD_IDENTIFIERS = {
       fieldLabel: 'Backstop Case Tab Custom Field',
       groupTitle: 'Backstop Case Tab Custom Group'
     }
+  },
+  relationshipTypes: {
+    homelessCoordinator: 'Homeless Services Coordinator is',
+    healthServiceCoordinator: 'Health Services Coordinator',
+    benefitsSpecialist: 'Benefits Specialist is'
   }
 };
 var URL_VAR_REPLACERS = [
@@ -65,7 +70,8 @@ var createUniqueAttachment = createUniqueRecordFactory('Attachment', ['entity_id
 var createUniqueCase = createUniqueRecordFactory('Case', ['subject']);
 var createUniqueEmail = createUniqueRecordFactory('Email', ['email']);
 var createUniqueCaseType = createUniqueRecordFactory('CaseType', ['name']);
-var createUniqueRelationship = createUniqueRecordFactory('Relationship', ['description']);
+var createUniqueRelationship = createUniqueRecordFactory('Relationship', ['contact_id_a', 'contact_id_b', 'relationship_type_id']);
+var createUniqueRelationshipType = createUniqueRecordFactory('RelationshipType', ['name_a_b']);
 var createUniqueContact = createUniqueRecordFactory('Contact', ['display_name']);
 var createUniqueCustomField = createUniqueRecordFactory('CustomField', ['label']);
 var createUniqueCustomGroup = createUniqueRecordFactory('CustomGroup', ['title']);
@@ -398,6 +404,13 @@ function runBackstopJS (command) {
  * @returns {Promise} An empty promise that is resolved when the task is done.
  */
 function setupData () {
+  var homelessCoordinatorRelType = createUniqueRelationshipType({
+    name_a_b: RECORD_IDENTIFIERS.relationshipTypes.homelessCoordinator
+  });
+  var benefitsSpecialistRelType = createUniqueRelationshipType({
+    name_a_b: RECORD_IDENTIFIERS.relationshipTypes.benefitsSpecialist
+  });
+
   var caseType = createUniqueCaseType({
     name: RECORD_IDENTIFIERS.caseTypeName,
     case_type_category: 'Cases',
@@ -414,14 +427,14 @@ function setupData () {
       activitySets: [],
       caseRoles: [
         {
-          name: 'Homeless Services Coordinator',
+          name: RECORD_IDENTIFIERS.relationshipTypes.homelessCoordinator,
           creator: '1',
           manager: '0'
         }, {
-          name: 'Health Services Coordinator',
+          name: RECORD_IDENTIFIERS.relationshipTypes.healthServiceCoordinator,
           manager: '0'
         }, {
-          name: 'Benefits Specialist',
+          name: RECORD_IDENTIFIERS.relationshipTypes.benefitsSpecialist,
           manager: '1'
         }
       ],
@@ -452,7 +465,7 @@ function setupData () {
 
   createUniqueRelationship({
     contact_id_a: activeContact.id,
-    relationship_type_id: '14',
+    relationship_type_id: benefitsSpecialistRelType.id,
     start_date: 'now',
     end_date: null,
     contact_id_b: emptyContact.id,
@@ -462,7 +475,7 @@ function setupData () {
 
   createUniqueRelationship({
     contact_id_a: activeContact.id,
-    relationship_type_id: '11',
+    relationship_type_id: homelessCoordinatorRelType.id,
     start_date: 'now',
     end_date: null,
     contact_id_b: emptyContact.id,
