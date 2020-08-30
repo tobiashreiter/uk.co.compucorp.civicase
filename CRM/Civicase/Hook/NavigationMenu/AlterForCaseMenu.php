@@ -1,7 +1,6 @@
 <?php
 
 use CRM_Civicase_Service_CaseCategorySetting as CaseCategorySetting;
-use CRM_Civicase_Hook_Helper_CaseTypeCategory as CaseTypeCategoryHelper;
 
 /**
  * Class CRM_Civicase_Hook_Navigation_AlterForCaseMenu.
