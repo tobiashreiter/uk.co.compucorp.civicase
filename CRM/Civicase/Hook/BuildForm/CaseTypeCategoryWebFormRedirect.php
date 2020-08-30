@@ -4,7 +4,7 @@ use CRM_Civicase_Service_CaseCategorySetting as CaseCategorySetting;
 use CRM_Civicase_Hook_Helper_CaseTypeCategory as CaseTypeCategoryHelper;
 
 /**
- * Fetches web form url if available for current case type category and redirects user to that web form.
+ * Fetches and redirects user to web form url for current case type category.
  */
 class CRM_Civicase_Hook_BuildForm_CaseTypeCategoryWebFormRedirect {
 
@@ -24,11 +24,12 @@ class CRM_Civicase_Hook_BuildForm_CaseTypeCategoryWebFormRedirect {
   }
 
   /**
-   * Fetches web form url if available for current case type category and redirects user to that web form.
+   * Fetches and redirects user to web form url for current case type category.
    *
    * @param CRM_Core_Form $form
    *   Form object.
    * @param string $formName
+   *   Form name.
    */
   public function run(CRM_Core_Form &$form, $formName) {
     if (!$this->shouldRun($formName)) {
@@ -41,8 +42,10 @@ class CRM_Civicase_Hook_BuildForm_CaseTypeCategoryWebFormRedirect {
    * Checks the form name and snippet parameter.
    *
    * @param string $formName
+   *   Form name.
    *
-   * @return boolean
+   * @return bool
+   *   Whether this hook should run or not.
    */
   private function shouldRun($formName) {
     return (
@@ -58,7 +61,8 @@ class CRM_Civicase_Hook_BuildForm_CaseTypeCategoryWebFormRedirect {
     $caseTypeCategoryName = CRM_Utils_Array::value('case_type_category', $_GET, 'Cases');
     $webFormUrl = CaseTypeCategoryHelper::getNewCaseCategoryWebformUrl($caseTypeCategoryName, $this->caseCategorySetting);
     if ($webFormUrl) {
-      CRM_Utils_System::redirect(CRM_Utils_System::url(trim($webFormUrl, '/'), ['reset'=>1], false));
+      CRM_Utils_System::redirect(CRM_Utils_System::url(trim($webFormUrl, '/'), ['reset' => 1], FALSE));
     }
   }
+
 }
