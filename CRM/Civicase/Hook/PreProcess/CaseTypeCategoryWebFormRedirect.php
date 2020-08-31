@@ -6,7 +6,7 @@ use CRM_Civicase_Hook_Helper_CaseTypeCategory as CaseTypeCategoryHelper;
 /**
  * Fetches and redirects user to web form url for current case type category.
  */
-class CRM_Civicase_Hook_BuildForm_CaseTypeCategoryWebFormRedirect {
+class CRM_Civicase_Hook_PreProcess_CaseTypeCategoryWebFormRedirect {
 
   /**
    * Case category Setting.
@@ -26,12 +26,12 @@ class CRM_Civicase_Hook_BuildForm_CaseTypeCategoryWebFormRedirect {
   /**
    * Fetches and redirects user to web form url for current case type category.
    *
-   * @param CRM_Core_Form $form
-   *   Form object.
    * @param string $formName
    *   Form name.
+   * @param CRM_Core_Form $form
+   *   Form object.
    */
-  public function run(CRM_Core_Form &$form, $formName) {
+  public function run($formName, CRM_Core_Form &$form) {
     if (!$this->shouldRun($formName)) {
       return;
     }

@@ -211,7 +211,6 @@ function civicase_civicrm_buildForm($formName, &$form) {
     new CRM_Civicase_Hook_BuildForm_AddStyleFieldToCaseCustomGroups(),
     new CRM_Civicase_Hook_BuildForm_DisplayAllCustomGroupsInCaseForm(),
     new CRM_Civicase_Hook_BuildForm_LinkToCaseSearchByCaseId(),
-    new CRM_Civicase_Hook_BuildForm_CaseTypeCategoryWebFormRedirect(),
   ];
 
   foreach ($hooks as $hook) {
@@ -573,10 +572,24 @@ function civicase_civicrm_preProcess($formName, &$form) {
     new CRM_Civicase_Hook_PreProcess_CaseCategoryWordReplacementsForNewCase(),
     new CRM_Civicase_Hook_PreProcess_CaseCategoryWordReplacementsForChangeCase(),
     new CRM_Civicase_Hook_PreProcess_AddCaseAdminSettings(),
+    new CRM_Civicase_Hook_PreProcess_CaseTypeCategoryWebFormRedirect(),
   ];
 
   foreach ($hooks as $hook) {
     $hook->run($formName, $form);
+  }
+}
+
+/**
+ * Implements hook_civicrm_summaryActions().
+ */
+function civicase_civicrm_summaryActions(&$actions, $contactID) {
+  $hooks = [
+    new CRM_Civicase_Hook_SummaryActions_AlterAddCaseAction(),
+  ];
+
+  foreach ($hooks as $hook) {
+    $hook->run($actions, $contactID);
   }
 }
 
