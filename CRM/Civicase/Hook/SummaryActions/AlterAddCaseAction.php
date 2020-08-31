@@ -4,7 +4,7 @@ use CRM_Civicase_Service_CaseCategorySetting as CaseCategorySetting;
 use CRM_Civicase_Hook_Helper_CaseTypeCategory as CaseTypeCategoryHelper;
 
 /**
- * Changes add case link with web form if web form is available.
+ * Changes add case action with web form if web form is available.
  */
 class CRM_Civicase_Hook_SummaryActions_AlterAddCaseAction {
 
@@ -24,7 +24,7 @@ class CRM_Civicase_Hook_SummaryActions_AlterAddCaseAction {
   }
 
   /**
-   * Changes add case link with web form if web form is available.
+   * Changes add case action with web form if web form is available.
    *
    * @param array $actions
    *   List of actions.
