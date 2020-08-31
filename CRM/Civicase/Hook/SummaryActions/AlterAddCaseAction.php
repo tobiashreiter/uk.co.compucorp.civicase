@@ -65,7 +65,6 @@ class CRM_Civicase_Hook_SummaryActions_AlterAddCaseAction {
     $webFormUrl = CaseTypeCategoryHelper::getNewCaseCategoryWebformUrl('Cases', $this->caseCategorySetting);
     if ($webFormUrl) {
       $actions['case']['class'] = 'no-popup';
-      $actions['case']['href'] = CRM_Utils_System::url(trim($webFormUrl, '/'), ['reset' => 1], FALSE);
     }
   }
 
