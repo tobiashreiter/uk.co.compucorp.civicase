@@ -101,41 +101,73 @@ describe('Case Details People Tab', () => {
     });
 
     describe('when replacing a role', () => {
-      beforeEach(() => {
-        previousContact = CRM._.sample(ContactsData.values);
+      describe('when reassignment date is before start date', () => {
+        beforeEach(() => {
+          previousContact = CRM._.sample(ContactsData.values);
 
-        $scope.replaceRoleOrClient({
-          contact_id: previousContact.contact_id,
-          display_name: previousContact.display_name,
-          relationship_type_id: relationshipTypeId,
-          role: roleName,
-          id: '101'
-        });
-        selectDialogContact(contact);
-        updateDialogModel({
-          description: roleDescription
-        });
-        submitDialog();
-        $rootScope.$digest();
-      });
-
-      it('creates a new relationship between the case client and the selected contact using the given role', () => {
-        expect($scope.refresh).toHaveBeenCalledWith([
-          ['Relationship', 'create', {
-            contact_id_a: $scope.item.client[0].contact_id,
+          $scope.replaceRoleOrClient({
+            contact_id: previousContact.contact_id,
+            display_name: previousContact.display_name,
             relationship_type_id: relationshipTypeId,
-            start_date: getDialogModel().reassignmentDate.value,
-            end_date: null,
-            contact_id_b: contact.id,
-            case_id: $scope.item.id,
-            description: roleDescription,
-            reassign_rel_id: '101'
-          }]
-        ]);
+            role: roleName,
+            start_date: moment().add(5, 'day'),
+            id: '101'
+          });
+          selectDialogContact(contact);
+          updateDialogModel({
+            description: roleDescription
+          });
+          submitDialog();
+          $rootScope.$digest();
+        });
+
+        it('does not creates a new relationship', () => {
+          expect($scope.refresh).not.toHaveBeenCalled();
+        });
+
+        it('does not close the contact selection dialog', () => {
+          expect(dialogServiceMock.close).not.toHaveBeenCalled();
+        });
       });
 
-      it('closes the contact selection dialog', () => {
-        expect(dialogServiceMock.close).toHaveBeenCalled();
+      describe('when reassignment date is not before start date', () => {
+        beforeEach(() => {
+          previousContact = CRM._.sample(ContactsData.values);
+
+          $scope.replaceRoleOrClient({
+            contact_id: previousContact.contact_id,
+            display_name: previousContact.display_name,
+            relationship_type_id: relationshipTypeId,
+            role: roleName,
+            start_date: moment().add(-1, 'day'),
+            id: '101'
+          });
+          selectDialogContact(contact);
+          updateDialogModel({
+            description: roleDescription
+          });
+          submitDialog();
+          $rootScope.$digest();
+        });
+
+        it('creates a new relationship between the case client and the selected contact using the given role', () => {
+          expect($scope.refresh).toHaveBeenCalledWith([
+            ['Relationship', 'create', {
+              contact_id_a: $scope.item.client[0].contact_id,
+              relationship_type_id: relationshipTypeId,
+              start_date: getDialogModel().reassignmentDate.value,
+              end_date: null,
+              contact_id_b: contact.id,
+              case_id: $scope.item.id,
+              description: roleDescription,
+              reassign_rel_id: '101'
+            }]
+          ]);
+        });
+
+        it('closes the contact selection dialog', () => {
+          expect(dialogServiceMock.close).toHaveBeenCalled();
+        });
       });
     });
 
@@ -157,7 +189,7 @@ describe('Case Details People Tab', () => {
       });
 
       it('displays an error message', () => {
-        expect(getDialogModel().contactSelectionErrorMessage)
+        expect(getDialogModel().errorMessage.contactSelection)
           .toBe(CONTACT_CANT_HAVE_ROLE_MESSAGE);
       });
 
@@ -188,7 +220,7 @@ describe('Case Details People Tab', () => {
       });
 
       it('displays an error message', () => {
-        expect(getDialogModel().contactSelectionErrorMessage)
+        expect(getDialogModel().errorMessage.contactSelection)
           .toBe(CONTACT_CANT_HAVE_ROLE_MESSAGE);
       });
 
@@ -216,7 +248,7 @@ describe('Case Details People Tab', () => {
       });
 
       it('displays an error message', () => {
-        expect(getDialogModel().contactSelectionErrorMessage)
+        expect(getDialogModel().errorMessage.contactSelection)
           .toBe(CONTACT_NOT_SELECTED_MESSAGE);
       });
 
@@ -404,37 +436,66 @@ describe('Case Details People Tab', () => {
     describe('when unassigning a role', () => {
       let sampleContact, relationshipTypeId;
 
-      beforeEach(() => {
-        sampleContact = CRM._.sample(ContactsData.values);
-        relationshipTypeId = CRM._.uniqueId();
+      describe('when start date is after role end date', () => {
+        beforeEach(() => {
+          sampleContact = CRM._.sample(ContactsData.values);
+          relationshipTypeId = CRM._.uniqueId();
 
-        $scope.unassignRole({
-          contact_id: sampleContact.contact_id,
-          display_name: sampleContact.display_name,
-          relationship_type_id: relationshipTypeId,
-          role: 'Role'
+          $scope.unassignRole({
+            contact_id: sampleContact.contact_id,
+            display_name: sampleContact.display_name,
+            relationship_type_id: relationshipTypeId,
+            role: 'Role',
+            start_date: moment().add(5, 'day')
+          });
+
+          updateDialogModel({
+            description: roleDescription
+          });
+          submitDialog();
+
+          $rootScope.$digest();
         });
 
-        updateDialogModel({
-          description: roleDescription
+        it('does not make an api call to update relationship', () => {
+          expect($scope.refresh).not.toHaveBeenCalled();
         });
-        submitDialog();
-
-        $rootScope.$digest();
       });
 
-      it('marks the current role relationship as finished', () => {
-        expect($scope.refresh).toHaveBeenCalledWith(jasmine.arrayContaining([
-          ['Relationship', 'get', {
+      describe('when start date is before role end date', () => {
+        beforeEach(() => {
+          sampleContact = CRM._.sample(ContactsData.values);
+          relationshipTypeId = CRM._.uniqueId();
+
+          $scope.unassignRole({
+            contact_id: sampleContact.contact_id,
+            display_name: sampleContact.display_name,
             relationship_type_id: relationshipTypeId,
-            contact_id_b: sampleContact.contact_id,
-            case_id: $scope.item.id,
-            is_active: 1,
-            'api.Relationship.create': {
-              is_active: 0, end_date: getDialogModel().endDate.value
-            }
-          }]
-        ]));
+            role: 'Role',
+            start_date: moment().add(-5, 'day')
+          });
+
+          updateDialogModel({
+            description: roleDescription
+          });
+          submitDialog();
+
+          $rootScope.$digest();
+        });
+
+        it('marks the current role relationship as finished', () => {
+          expect($scope.refresh).toHaveBeenCalledWith(jasmine.arrayContaining([
+            ['Relationship', 'get', {
+              relationship_type_id: relationshipTypeId,
+              contact_id_b: sampleContact.contact_id,
+              case_id: $scope.item.id,
+              is_active: 1,
+              'api.Relationship.create': {
+                is_active: 0, end_date: getDialogModel().endDate.value
+              }
+            }]
+          ]));
+        });
       });
     });
   });
