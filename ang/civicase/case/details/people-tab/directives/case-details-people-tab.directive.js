@@ -64,6 +64,8 @@
     // The ts() and hs() functions help load strings for this module.
     var CONTACT_CANT_HAVE_ROLE_MESSAGE = ts('Case clients cannot be selected for a case role. Please select another contact.');
     var CONTACT_NOT_SELECTED_MESSAGE = ts('Please select a contact.');
+    var REASSINGMENT_DATE_MESSAGE = ts('Reassignment date cannot be before start date of the relationship.');
+    var END_DATE_MESSAGE = ts('End date cannot be before start date of the relationship.');
     var clients = _.indexBy($scope.item.client, 'contact_id');
     var item = $scope.item;
     var relTypes = RelationshipType.getAll();
@@ -227,16 +229,23 @@
     $scope.replaceRoleOrClient = function (role) {
       var isReplacingClient = !role.relationship_type_id;
 
+      var promptForContactParams = {
+        title: ts('Replace %1', { 1: role.role }),
+        showDescriptionField: !isReplacingClient,
+        role: role
+      };
+
+      if (!isReplacingClient) {
+        promptForContactParams.reassignmentDate = {
+          minDate: role.start_date,
+          value: moment().isBefore(moment(role.start_date))
+            ? moment(role.start_date).format('YYYY-MM-DD')
+            : moment().format('YYYY-MM-DD')
+        };
+      }
+
       promptForContactThatIsNotCaseClient(
-        {
-          title: ts('Replace %1', { 1: role.role }),
-          showDescriptionField: !isReplacingClient,
-          role: role,
-          reassignmentDate: isReplacingClient ? false : {
-            minDate: role.start_date,
-            value: moment().format('YYYY-MM-DD')
-          }
-        },
+        promptForContactParams,
         handleReplaceRoleOrClient
       );
     };
@@ -271,6 +280,12 @@
             }
           },
           function (contactPromptResult) {
+            if (!isSameOrAfter(contactPromptResult.endDate, contactPromptResult.role.start_date)) {
+              contactPromptResult.showErrorMessageFor('endDate', END_DATE_MESSAGE);
+
+              return;
+            }
+
             var apiCalls = [unassignRoleCall(role, contactPromptResult.endDate)];
 
             makeAPICalltoUnassignRole(apiCalls, 'Remove Case Role', role);
@@ -278,6 +293,15 @@
         );
       }
     };
+
+    /**
+     * @param {string} date1 first date
+     * @param {string} date2 second date
+     * @returns {boolean} if date 1 same of after date 2
+     */
+    function isSameOrAfter (date1, date2) {
+      return moment(date1).isSameOrAfter(moment(date2));
+    }
 
     /**
      * @param {object[]} apiCalls list of api calls
@@ -577,7 +601,11 @@
 
       var model = {
         contact: { id: null },
-        contactSelectionErrorMessage: null,
+        errorMessage: {
+          contactSelection: null,
+          endDate: null,
+          reassignmentDate: null
+        },
         description: null,
         removeDatePickerHrefs: removeDatePickerHrefs,
         role: options.role,
@@ -631,24 +659,25 @@
           contact: contact,
           description: model.description,
           role: options.role,
-          showContactSelectionError: showContactSelectionError,
+          showErrorMessageFor: showErrorMessageFor,
           startDate: model.startDate,
           endDate: model.endDate.value,
           reassignmentDate: model.reassignmentDate.value
         });
 
-        if (!model.contactSelectionErrorMessage) {
+        if (_.every(_.values(model.errorMessage), function (value) { return !value; })) {
           dialogService.close('PromptForContactDialog');
         }
       }
 
       /**
-       * Displays the given error message under the contact selection input.
+       * Displays the given error message under the given input.
        *
+       * @param {string} errorObjectName the error object name which needs to be updated
        * @param {string} message the error message to display under the contact selection.
        */
-      function showContactSelectionError (message) {
-        model.contactSelectionErrorMessage = message;
+      function showErrorMessageFor (errorObjectName, message) {
+        model.errorMessage[errorObjectName] = message;
       }
     }
 
@@ -661,14 +690,25 @@
      */
     function promptForContactThatIsNotCaseClient (promptOptions, contactSelectedHandler) {
       promptForContact(promptOptions, function (contactPromptResult) {
+        var isError = false;
+
         if (!contactPromptResult.contact) {
           contactPromptResult
-            .showContactSelectionError(CONTACT_NOT_SELECTED_MESSAGE);
-          return;
+            .showErrorMessageFor('contactSelection', CONTACT_NOT_SELECTED_MESSAGE);
+          isError = true;
         } else if (checkContactIsClient(contactPromptResult.contact.id)) {
           contactPromptResult
-            .showContactSelectionError(CONTACT_CANT_HAVE_ROLE_MESSAGE);
+            .showErrorMessageFor('contactSelection', CONTACT_CANT_HAVE_ROLE_MESSAGE);
 
+          isError = true;
+        }
+
+        if (!isSameOrAfter(contactPromptResult.reassignmentDate, contactPromptResult.role.start_date)) {
+          contactPromptResult.showErrorMessageFor('reassignmentDate', REASSINGMENT_DATE_MESSAGE);
+          isError = true;
+        }
+
+        if (isError) {
           return;
         }
 

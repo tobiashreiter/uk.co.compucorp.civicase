@@ -23,9 +23,14 @@
       <label class="col-sm-12">
         Relationship End Date
       </label>
-      <div class="col-md-12">
+      <div
+        class="col-md-12 civicrm__contact-prompt-dialog__date-error"
+        ng-class="{
+          'crm-error': !!model.errorMessage.endDate}"
+      >
         <input
           ng-model="model.endDate.value"
+          ng-change="model.errorMessage.endDate = null"
           placeholder="End Date"
           crm-ui-datepicker="{
             time: false,
@@ -33,6 +38,12 @@
             beforeShow: model.removeDatePickerHrefs,
             onChangeMonthYear: model.removeDatePickerHrefs
           }" />
+        <div
+          class="crm-error crm-error-label"
+          ng-if="!!model.errorMessage.endDate">
+          <i class="fa fa-times"></i>
+          {{model.errorMessage.endDate}}
+        </div>
       </div>
     </div>
     <!-- end - end date -->
@@ -42,16 +53,27 @@
       <label class="col-sm-12">
         Relationship Reassignment Date
       </label>
-      <div class="col-md-12">
+      <div
+        class="col-md-12 civicrm__contact-prompt-dialog__date-error"
+        ng-class="{
+          'crm-error': !!model.errorMessage.reassignmentDate}"
+      >
         <input
           ng-model="model.reassignmentDate.value"
           placeholder="Reassignment Date"
+          ng-change="model.errorMessage.reassignmentDate = null"
           crm-ui-datepicker="{
             time: false,
             minDate: model.reassignmentDate.minDate,
             beforeShow: model.removeDatePickerHrefs,
             onChangeMonthYear: model.removeDatePickerHrefs
           }" />
+          <div
+            class="crm-error crm-error-label"
+            ng-if="!!model.errorMessage.reassignmentDate">
+            <i class="fa fa-times"></i>
+            {{model.errorMessage.reassignmentDate}}
+          </div>
       </div>
     </div>
     <!-- end - reassign date -->
@@ -61,15 +83,15 @@
       ng-if="!model.hideContactField"
       class="row form-group"
       ng-class="{
-        'crm-error': !!model.contactSelectionErrorMessage,
-        'select2-container': !!model.contactSelectionErrorMessage
+        'crm-error': !!model.errorMessage.contactSelection,
+        'select2-container': !!model.errorMessage.contactSelection
       }"
     >
       <div class="col-md-12">
         <input
           class="form-control"
           ng-model="model.contact.id"
-          ng-change="model.contactSelectionErrorMessage = null"
+          ng-change="model.errorMessage.contactSelection = null"
           crm-entityref="{
             create: true,
             entity: 'Contact',
@@ -86,10 +108,10 @@
       </div>
       <div
         class="contact-selection-error crm-error crm-error-label"
-        ng-if="!!model.contactSelectionErrorMessage"
+        ng-if="!!model.errorMessage.contactSelection"
       >
         <i class="fa fa-times"></i>
-        {{model.contactSelectionErrorMessage}}
+        {{model.errorMessage.contactSelection}}
       </div>
     </div>
     <!-- end - contact selection dropdown -->
