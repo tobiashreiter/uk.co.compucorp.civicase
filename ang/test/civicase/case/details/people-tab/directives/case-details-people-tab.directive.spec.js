@@ -298,6 +298,21 @@ describe('Case Details People Tab', () => {
         $rootScope.$digest();
       });
 
+      it('does not show the reassignment datepicker', () => {
+        expect(dialogServiceMock.open).toHaveBeenCalledWith(
+          'PromptForContactDialog',
+          '~/civicase/case/details/people-tab/directives/contact-prompt-dialog.html',
+          jasmine.objectContaining({
+            reassignmentDate: {
+              value: undefined,
+              show: false,
+              minDate: undefined
+            }
+          }),
+          jasmine.any(Object)
+        );
+      });
+
       it('replaces the old client with the new selected contact', () => {
         expect($scope.refresh).toHaveBeenCalledWith(jasmine.arrayContaining([
           ['CaseContact', 'get', {

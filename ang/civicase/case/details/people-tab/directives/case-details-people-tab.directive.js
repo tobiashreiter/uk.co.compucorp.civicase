@@ -232,7 +232,7 @@
           title: ts('Replace %1', { 1: role.role }),
           showDescriptionField: !isReplacingClient,
           role: role,
-          reassignmentDate: {
+          reassignmentDate: isReplacingClient ? false : {
             minDate: role.start_date,
             value: moment().format('YYYY-MM-DD')
           }
