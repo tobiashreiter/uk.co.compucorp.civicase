@@ -14,6 +14,7 @@ jobs:
 
     env:
       CIVICRM_EXTENSIONS_DIR: site/web/sites/all/modules/civicrm/tools/extensions
+      CIVICASE_BACKSTOP_DIR: site/web/sites/all/modules/civicrm/tools/extensions/uk.co.compucorp.civicase/tests/backstop_data
       DRUPAL_THEME_DIR: site/web/sites/all/themes
 
     services:
@@ -32,18 +33,18 @@ jobs:
       - name: Config amp
         run : |
           amp config:set --db_type=mysql_dsn --mysql_dsn='mysql://root:root@mysql:3306' --httpd_type=apache24 --httpd_restart_command='sudo /usr/sbin/apache2ctl graceful' --perm_type=worldWritable --hosts_type=file
-          echo "IncludeOptional /github/home/.amp/apache.d/*.conf" >> /etc/apache2/apache2.conf
+          echo "IncludeOptional $HOME/.amp/apache.d/*.conf" >> /etc/apache2/apache2.conf
           /usr/sbin/apache2ctl restart
 
       - name: Build Drupal site
         run: |
-          civibuild create drupal-clean --civi-ver 5.24.6 --web-root $GITHUB_WORKSPACE/site
-          chmod -R 777 /__w/uk.co.compucorp.civicase/uk.co.compucorp.civicase
+          civibuild create drupal-clean --civi-ver 5.28.3 --web-root $GITHUB_WORKSPACE/site
+          chmod -R 777 $GITHUB_WORKSPACE/site
 
       - name: Installing CiviCase and Shoreditch
         working-directory: ${{ env.CIVICRM_EXTENSIONS_DIR }}
         run: |
-          git clone https://github.com/compucorp/uk.co.compucorp.civicase.git
+          git clone https://github.com/compucorp/uk.co.compucorp.civicase.git --branch "${{ github.head_ref }}"
           git clone --depth 1 https://github.com/civicrm/org.civicrm.shoreditch.git
           cv en shoreditch civicase
           drush en civicrmtheme -y
@@ -64,10 +65,8 @@ jobs:
           drush cc all && drush cc civicrm
 
       - name: Setup data and site-config.json for Backstop tests
-        working-directory: ${{ env.CIVICRM_EXTENSIONS_DIR }}/uk.co.compucorp.civicase
+        working-directory: ${{ env.CIVICASE_BACKSTOP_DIR }}
         run: |
-          git checkout "${{ github.head_ref }}"
-          cd tests/backstop_data
           cp site-config.json.sample site-config.json
           sed -i 's+<url>+http://localhost:7979+' site-config.json
           sed -i 's+<path-to-site-root>+/__w/uk.co.compucorp.civicase/uk.co.compucorp.civicase/site/web+' site-config.json
@@ -76,13 +75,13 @@ jobs:
 
       - name: Reference Screenshots in "master" Branch
         continue-on-error: true
-        working-directory: ${{ env.CIVICRM_EXTENSIONS_DIR }}/uk.co.compucorp.civicase/tests/backstop_data
+        working-directory: ${{ env.CIVICASE_BACKSTOP_DIR }}
         run: |
-          git checkout "${{ github.head_ref }}"
+          git checkout master
           npx gulp backstopjs:reference
 
       - name: Test Screenshots in "${{ github.head_ref }}" Branch
-        working-directory: ${{ env.CIVICRM_EXTENSIONS_DIR }}/uk.co.compucorp.civicase/tests/backstop_data
+        working-directory: ${{ env.CIVICASE_BACKSTOP_DIR }}
         continue-on-error: true
         run: |
           git checkout "${{ github.head_ref }}"
@@ -90,7 +89,7 @@ jobs:
 
       - name: Prepare test report for download
         if: ${{ always() }}
-        working-directory: ${{ env.CIVICRM_EXTENSIONS_DIR }}/uk.co.compucorp.civicase/tests/backstop_data
+        working-directory: ${{ env.CIVICASE_BACKSTOP_DIR }}
         run: |
           mkdir backstop_report
           cp -r html_report backstop_report
@@ -100,4 +99,4 @@ jobs:
         if: ${{ always() }}
         with:
           name: backstop-report
-          path: ${{ env.CIVICRM_EXTENSIONS_DIR }}/uk.co.compucorp.civicase/tests/backstop_data/backstop_report
+          path: ${{ env.CIVICASE_BACKSTOP_DIR }}/backstop_report
