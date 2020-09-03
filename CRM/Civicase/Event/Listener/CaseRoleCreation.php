@@ -20,7 +20,12 @@ class CRM_Civicase_Event_Listener_CaseRoleCreation {
    *   API Respond Event Object.
    */
   public static function onRespond(RespondEvent $event) {
-    $apiRequest = (array) $event->getApiRequest();
+    $apiRequest = $event->getApiRequest();
+
+    if ($apiRequest['version'] != 3) {
+      return;
+    }
+
     if (!self::shouldRun($apiRequest)) {
       return;
     }
@@ -48,7 +53,11 @@ class CRM_Civicase_Event_Listener_CaseRoleCreation {
    *   API Prepare Event Object.
    */
   public static function onPrepare(PrepareEvent $event) {
-    $apiRequest = (array) $event->getApiRequest();
+    $apiRequest = $event->getApiRequest();
+    if ($apiRequest['version'] != 3) {
+      return;
+    }
+
     if (!self::shouldRun($apiRequest)) {
       return;
     }

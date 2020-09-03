@@ -28,6 +28,10 @@ class CRM_Civicase_Event_Listener_ActivityFilter {
   public static function onPrepare(PrepareEvent $e) {
     $apiRequest = $e->getApiRequest();
 
+    if ($apiRequest['version'] != 3) {
+      return;
+    }
+
     // Only apply to `Activity.get case_filter=...`
     if ($apiRequest['entity'] !== 'Activity'
       || $apiRequest['action'] !== 'get'
