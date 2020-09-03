@@ -64,7 +64,7 @@
     // The ts() and hs() functions help load strings for this module.
     var CONTACT_CANT_HAVE_ROLE_MESSAGE = ts('Case clients cannot be selected for a case role. Please select another contact.');
     var CONTACT_NOT_SELECTED_MESSAGE = ts('Please select a contact.');
-    var REASSINGMENT_DATE_MESSAGE = ts('Reassignment date cannot be before start date of the relationship.');
+    var REASSIGNMENT_DATE_MESSAGE = ts('Reassignment date cannot be before start date of the relationship.');
     var END_DATE_MESSAGE = ts('End date cannot be before start date of the relationship.');
     var clients = _.indexBy($scope.item.client, 'contact_id');
     var item = $scope.item;
@@ -704,7 +704,7 @@
         }
 
         if (!isSameOrAfter(contactPromptResult.reassignmentDate, contactPromptResult.role.start_date)) {
-          contactPromptResult.showErrorMessageFor('reassignmentDate', REASSINGMENT_DATE_MESSAGE);
+          contactPromptResult.showErrorMessageFor('reassignmentDate', REASSIGNMENT_DATE_MESSAGE);
           isError = true;
         }
 
