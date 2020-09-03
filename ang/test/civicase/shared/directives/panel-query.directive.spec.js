@@ -75,7 +75,7 @@
 
         beforeEach(function () {
           originalSource = $scope.queryData;
-          panelQueryScope.query = { baz: 'baz' };
+          panelQueryScope.query = { params: 'params' };
 
           $scope.$digest();
         });

@@ -83,6 +83,11 @@
             contact_involved: { IN: [CRM.config.user_contact_id] }
           }));
         });
+
+        it('filters by case activities related to the involved contact', () => {
+          expect($scope.activityFilters.case_filter.has_activities_for_involved_contact)
+            .toBe(1);
+        });
       });
     });
 

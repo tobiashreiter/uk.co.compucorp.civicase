@@ -69,6 +69,10 @@
     }
   }
 
+  .civicase__tags-container {
+    max-width: 80%;
+  }
+
   .civicase__activity-card {
     width: 100%;
   }
@@ -188,5 +192,11 @@
       padding: 30px;
       width: calc(100% - 200px);
     }
+  }
+}
+
+@media (max-width: $contact-case-tab-breakpoint) {
+  .civicase__contact-card--client {
+    clear: both;
   }
 }

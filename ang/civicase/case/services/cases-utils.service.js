@@ -1,7 +1,7 @@
 (function (angular, _) {
   var module = angular.module('civicase');
 
-  module.service('CasesUtils', function (ContactsCache) {
+  module.service('CasesUtils', function (ContactsCache, ts) {
     /**
      * Fetch additional information about the contacts
      *
@@ -27,7 +27,7 @@
     this.getAllCaseClientContactIds = function (contacts) {
       return _.chain(contacts)
         .filter(function (contact) {
-          return contact.role === 'Client';
+          return contact.role === ts('Client');
         })
         .map(function (client) {
           return client.contact_id;

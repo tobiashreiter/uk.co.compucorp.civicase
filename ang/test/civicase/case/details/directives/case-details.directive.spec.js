@@ -1,7 +1,7 @@
 /* eslint-env jasmine */
 (function (_) {
   describe('civicaseCaseDetails', function () {
-    var element, controller, activitiesMockData, $controller, $compile,
+    var $httpBackend, element, controller, activitiesMockData, $controller, $compile,
       $document, $rootScope, $scope, $provide, civicaseCrmApi, civicaseCrmApiMock, $q,
       formatCase, CasesData, CasesUtils, $route;
 
@@ -11,6 +11,7 @@
       killDirective('civicaseActivitiesCalendar');
       killDirective('civicaseCaseActions');
       killDirective('civicaseCaseDetailsPeopleTab');
+      killDirective('civicaseContactCard');
     }));
 
     beforeEach(inject(function ($q) {
@@ -27,13 +28,14 @@
       $provide.value('formatCase', formatCaseMock);
     }));
 
-    beforeEach(inject(function (_$compile_, _$controller_, _$rootScope_,
-      _$document_, _activitiesMockData_, _CasesData_, _civicaseCrmApi_, _$q_,
-      _formatCase_, _CasesUtils_) {
+    beforeEach(inject(function (_$compile_, _$controller_, _$httpBackend_,
+      _$rootScope_, _$document_, _activitiesMockData_, _CasesData_, _civicaseCrmApi_,
+      _$q_, _formatCase_, _CasesUtils_) {
       $compile = _$compile_;
       $document = _$document_;
       $controller = _$controller_;
       $rootScope = _$rootScope_;
+      $httpBackend = _$httpBackend_;
       activitiesMockData = _activitiesMockData_;
       CasesData = _CasesData_;
       CasesUtils = _CasesUtils_;
@@ -57,14 +59,37 @@
     });
 
     describe('activeTab watcher', function () {
-      beforeEach(function () {
-        compileDirective();
-        element.isolateScope().activeTab = 'People';
-        element.isolateScope().$digest();
+      describe('when switching to an existing tab', () => {
+        beforeEach(function () {
+          compileDirective();
+          element.isolateScope().activeTab = 'People';
+          element.isolateScope().$digest();
+        });
+
+        it('should return active tab content url', function () {
+          expect(element.isolateScope().activeTabContentUrl).toEqual('~/civicase/case/details/directives/tab-content/people.html');
+        });
       });
 
-      it('should return active tab content url', function () {
-        expect(element.isolateScope().activeTabContentUrl).toEqual('~/civicase/case/details/directives/tab-content/people.html');
+      describe('when switching to a custom active tab', () => {
+        beforeEach(function () {
+          $httpBackend.when('GET', '~/civicase/custom-tab.html')
+            .respond(200, '');
+          compileDirective();
+          element.isolateScope().tabs.push({
+            name: 'CustomTab',
+            label: ts('Custom Tab'),
+            service: {
+              activeTabContentUrl: () => '~/civicase/custom-tab.html'
+            }
+          });
+          element.isolateScope().activeTab = 'CustomTab';
+          element.isolateScope().$digest();
+        });
+
+        it('should return active tab content url', function () {
+          expect(element.isolateScope().activeTabContentUrl).toEqual('~/civicase/custom-tab.html');
+        });
       });
     });
 
@@ -310,6 +335,19 @@
       });
     });
 
+    describe('when clear all filters button is pressed', function () {
+      beforeEach(function () {
+        spyOn($rootScope, '$broadcast');
+        compileDirective();
+
+        element.isolateScope().clearAllFilters();
+      });
+
+      it('displays all cases', function () {
+        expect($rootScope.$broadcast).toHaveBeenCalledWith('civicase::case-details::show-all-cases');
+      });
+    });
+
     /**
      * Compiles the civicase-case-details directive.
      */
@@ -355,23 +393,39 @@
   });
 
   describe('civicaseCaseDetailsController', function () {
-    var $controller, $provide, $rootScope, $route, $scope, CasesData, CasesUtils, civicaseCrmApiMock, loadFormBefore;
+    let $controller, $provide, $rootScope, $route, $scope, apiResponses,
+      CasesData, CasesUtils, civicaseCrmApiMock, controller, DetailsCaseTab,
+      loadFormBefore;
 
     beforeEach(module('civicase', 'civicase.data', function (_$provide_) {
       $provide = _$provide_;
       civicaseCrmApiMock = jasmine.createSpy('civicaseCrmApi');
 
       $provide.value('civicaseCrmApi', civicaseCrmApiMock);
+      $provide.value('crmApi', civicaseCrmApiMock);
     }));
 
-    beforeEach(inject(function (_$controller_, $q, _$rootScope_, _$route_, _CasesData_, _CasesUtils_) {
+    beforeEach(inject(function (_$controller_, $q, _$rootScope_, _$route_,
+      _CasesData_, _CasesUtils_, _DetailsCaseTab_) {
       $controller = _$controller_;
       $rootScope = _$rootScope_;
       $route = _$route_;
       CasesData = _CasesData_;
       CasesUtils = _CasesUtils_;
+      DetailsCaseTab = _DetailsCaseTab_;
+      apiResponses = {
+        'Contact.get': { values: [] }
+      };
       civicaseCrmApiMock.and
-        .returnValue($q.resolve({ values: CasesData.get() }));
+        .callFake((entity, action, params) => {
+          const entityActionName = `${entity}.${action}`;
+
+          if (apiResponses[entityActionName]) {
+            return $q.resolve(apiResponses[entityActionName]);
+          } else {
+            return $q.resolve({ values: CasesData.get() });
+          }
+        });
     }));
 
     describe('linked cases', () => {
@@ -411,6 +465,16 @@
     });
 
     describe('viewing the case', function () {
+      describe('on init', () => {
+        beforeEach(() => {
+          initController();
+        });
+
+        it('binds the scope to the controller function', () => {
+          expect(controller.$scope).toBe($scope);
+        });
+      });
+
       describe('when requesting to view a case that is missing its details', function () {
         beforeEach(function () {
           initController();
@@ -435,6 +499,133 @@
         it('redirects the user to the case list', function () {
           expect($route.updateParams).toHaveBeenCalledWith({ caseId: null });
         });
+      });
+
+      describe('Custom Data', () => {
+        let caseItem, customDataBlocks;
+
+        beforeEach(() => {
+          customDataBlocks = [];
+          caseItem = _.cloneDeep(CasesData.get().values[0]);
+          apiResponses['Case.getdetails'] = {
+            values: [caseItem]
+          };
+        });
+
+        describe('when there are inline custom data blocks', () => {
+          beforeEach(() => {
+            customDataBlocks = [
+              generateCustomDataBlock({ style: 'Inline' }),
+              generateCustomDataBlock({ style: 'Inline' }),
+              generateCustomDataBlock({ style: 'Inline' })
+            ];
+            caseItem['api.CustomValue.getalltreevalues'] = {
+              values: customDataBlocks
+            };
+            initController(caseItem);
+          });
+
+          it('stores the custom data blocks in a container for inline blocks', () => {
+            expect($scope.item.customData.Inline).toEqual(customDataBlocks);
+          });
+        });
+
+        describe('when there are tab custom data blocks', () => {
+          beforeEach(() => {
+            customDataBlocks = [
+              generateCustomDataBlock({ style: 'Inline' }),
+              generateCustomDataBlock({ style: 'Tab' }),
+              generateCustomDataBlock({ style: 'Inline' })
+            ];
+            caseItem['api.CustomValue.getalltreevalues'] = {
+              values: customDataBlocks
+            };
+            initController(caseItem);
+          });
+
+          it('stores the custom data blocks in a container for tab blocks', () => {
+            expect($scope.item.customData.Tab).toEqual([customDataBlocks[1]]);
+          });
+
+          it('adds the Details tab to display custom tab blocks', () => {
+            expect($scope.tabs).toContain({
+              name: 'Details',
+              label: ts('Details'),
+              service: DetailsCaseTab
+            });
+          });
+        });
+
+        describe('when there are no tab custom data blocks', () => {
+          beforeEach(() => {
+            customDataBlocks = [
+              generateCustomDataBlock({ style: 'Inline' }),
+              generateCustomDataBlock({ style: 'Inline' }),
+              generateCustomDataBlock({ style: 'Inline' })
+            ];
+            caseItem['api.CustomValue.getalltreevalues'] = {
+              values: customDataBlocks
+            };
+            initController(caseItem);
+          });
+
+          it('does not add the details tab', () => {
+            expect($scope.tabs).not.toContain({
+              name: 'Details',
+              label: ts('Details'),
+              service: DetailsCaseTab
+            });
+          });
+        });
+
+        describe('when there are data custom blocks and the case details are updated', () => {
+          let detailsTabsCount;
+
+          beforeEach(() => {
+            customDataBlocks = [
+              generateCustomDataBlock({ style: 'Inline' }),
+              generateCustomDataBlock({ style: 'Tab' }),
+              generateCustomDataBlock({ style: 'Inline' })
+            ];
+            caseItem['api.CustomValue.getalltreevalues'] = {
+              values: customDataBlocks
+            };
+            initController(caseItem);
+
+            // refresh case details:
+            caseItem['api.Case.getcaselist.relatedCasesByContact'] = { values: [] };
+            caseItem['api.Case.getcaselist.linkedCases'] = { values: [] };
+            caseItem['api.Activity.get.recentCommunication'] = { values: [] };
+            caseItem['api.Activity.get.tasks'] = { values: [] };
+            caseItem['api.Activity.get.nextActivitiesWhichIsNotMileStone'] = { values: [] };
+            caseItem['api.CustomValue.getalltreevalues'] = {
+              values: customDataBlocks
+            };
+            $scope.pushCaseData(caseItem);
+
+            detailsTabsCount = _.where($scope.tabs, { name: 'Details' }).length;
+          });
+
+          it('does not add the case details tab multiple times', () => {
+            expect(detailsTabsCount).toBe(1);
+          });
+        });
+
+        /**
+         * @param {object} defaultValues default values to use when generating the
+         *   custom data block.
+         * @returns {object} a mock custom data block.
+         */
+        function generateCustomDataBlock (defaultValues) {
+          const uniqueId = _.uniqueId();
+
+          return _.extend({}, {
+            id: uniqueId,
+            name: `Custom_Data_Block_${uniqueId}`,
+            title: `Custom Data Block ${uniqueId}`,
+            style: 'Inline'
+          }, defaultValues);
+        }
       });
     });
 
@@ -494,7 +685,7 @@
     function initController (caseItem, dependencies) {
       $scope = $rootScope.$new();
 
-      $controller('civicaseCaseDetailsController', _.extend({}, {
+      controller = $controller('civicaseCaseDetailsController', _.extend({}, {
         $scope: $scope
       }, dependencies));
       $scope.item = caseItem || _.cloneDeep(CasesData.get().values[0]);

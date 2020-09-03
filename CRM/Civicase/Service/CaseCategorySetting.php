@@ -42,6 +42,7 @@ class CRM_Civicase_Service_CaseCategorySetting {
         'quick_form_type' => 'YesNo',
         'html_attributes' => [
           'data-case-category-name' => $caseCategoryName,
+          'data-toggles-visibility-for' => 'civicase__settings__webform-url--' . $caseCategoryName,
           'class' => 'civicase__settings__allow-webform',
         ],
         'default' => FALSE,
@@ -63,7 +64,7 @@ class CRM_Civicase_Service_CaseCategorySetting {
         'quick_form_type' => 'Element',
         'html_attributes' => [
           'data-case-category-name' => $caseCategoryName,
-          'class' => 'civicase__settings__webform-url',
+          'class' => 'civicase__settings__webform-url civicase__settings__webform-url--' . $caseCategoryName,
           'size' => 64,
           'maxlength' => 64,
         ],

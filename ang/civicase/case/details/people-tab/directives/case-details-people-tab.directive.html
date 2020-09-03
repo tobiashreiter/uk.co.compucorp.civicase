@@ -17,8 +17,12 @@
           <li ng-if="allowMultipleCaseClients">
             <a href ng-click="assignRoleOrClient()">{{ ts('Client') }}</a>
           </li>
-          <li ng-repeat="role in allRoles">
-            <a href ng-click="assignRoleOrClient(role)">{{ role.role }}</a>
+          <li ng-repeat="role in allRoles" class="civicase__people-tab__add-role-dropdown">
+            <a href
+              ng-disabled="checkIfRoleIsDisabled(role)"
+              ng-click="!checkIfRoleIsDisabled(role) && assignRoleOrClient(role)">
+              {{ role.role }}
+            </a>
           </li>
         </ul>
       </div>
@@ -113,7 +117,14 @@
           </td>
           <td class="civicase__people-tab__table-column">{{ role.start_date ? formatDate(role.start_date) : '' }}</td>
           <td class="civicase__people-tab__table-column">{{ role.phone }}</td>
-          <td class="civicase__people-tab__table-column">{{ role.email }}</td>
+          <td class="civicase__people-tab__table-column">
+            <a
+              class="crm-popup"
+              ng-href="{{ 'civicrm/activity/email/add' | civicaseCrmUrl:{ action: 'add', caseid: item.id, reset: 1, cid: role.contact_id } }}"
+            >
+              {{ role.email }}
+            </a>
+          </td>
           <td class="civicase__people-tab__table-column civicase__people-tab__table-column--last">
             <div class="civicase__people-tab__table-assign-icon"
               ng-if="!role.contact_id"
@@ -129,7 +140,7 @@
                 <li>
                   <a href ng-click="replaceRoleOrClient(role)">{{ ts('Reassign %1', {1: role.role}) }}</a>
                 </li>
-                <li ng-if="role.relationship_type_id || allowMultipleCaseClients">
+                <li ng-if="(role.relationship_type_id && !civicaseSingleCaseRolePerType) || (!role.relationship_type_id && allowMultipleCaseClients)">
                   <a href ng-click="assignRoleOrClient(role)">{{ ts('Add Another %1', {1: role.role}) }}</a>
                 </li>
                 <li ng-if="role.relationship_type_id || item.client.length > 1">
@@ -259,7 +270,14 @@
           <td class="civicase__people-tab__table-column">{{ contact.relationship_description }}</td>
           <td class="civicase__people-tab__table-column">{{ contact.client }}</td>
           <td class="civicase__people-tab__table-column">{{ contact.phone }}</td>
-          <td class="civicase__people-tab__table-column">{{ contact.email }}</td>
+          <td class="civicase__people-tab__table-column">
+            <a
+              class="crm-popup"
+              ng-href="{{ 'civicrm/activity/email/add' | civicaseCrmUrl:{ action: 'add', caseid: item.id, reset: 1, cid: contact.contact_id } }}"
+            >
+              {{ contact.email }}
+            </a>
+          </td>
           <td class="civicase__people-tab__table-column civicase__people-tab__table-column--last">
             <div class="btn-group btn-group-sm">
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

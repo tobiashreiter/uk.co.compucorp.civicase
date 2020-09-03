@@ -2,13 +2,14 @@
 
 (function (_, $) {
   describe('GoToWebformCaseAction', function () {
-    var GoToWebformCaseAction, CaseActionsData;
+    var GoToWebformCaseAction, CaseActionsData, CasesData;
 
     beforeEach(module('civicase', 'civicase.data'));
 
-    beforeEach(inject(function (_GoToWebformCaseAction_, _CaseActionsData_) {
+    beforeEach(inject(function (_GoToWebformCaseAction_, _CaseActionsData_, _CasesData_) {
       GoToWebformCaseAction = _GoToWebformCaseAction_;
       CaseActionsData = _CaseActionsData_;
+      CasesData = _CasesData_.get().values;
     }));
 
     describe('checkIfWebformVisible()', function () {
@@ -50,6 +51,28 @@
         it('displays the action link', function () {
           expect(GoToWebformCaseAction.checkIfWebformVisible(goToWebformAction, '2')).toBeTrue();
         });
+      });
+    });
+
+    describe('when clicking on the webform', function () {
+      beforeEach(function () {
+        spyOn(CRM, 'alert');
+
+        var cases = [CasesData[0]];
+        var goToWebformAction = _.find(CaseActionsData.get(), function (action) {
+          return action.action === 'Webforms';
+        }).items[0];
+
+        GoToWebformCaseAction.doAction(cases, goToWebformAction);
+      });
+
+      it('shows an information popup to refresh the page', function () {
+        expect(CRM.alert).toHaveBeenCalledWith(
+          ts('Please refresh this page to view updates from the webform submission.'),
+          ts('Refresh'),
+          'info',
+          { expires: 1800000 }
+        );
       });
     });
   });

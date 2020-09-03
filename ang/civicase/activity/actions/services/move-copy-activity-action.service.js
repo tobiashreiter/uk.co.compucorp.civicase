@@ -85,7 +85,9 @@
      * @returns {object} api parameters for Case.getlist
      */
     function getCaseListApiParams () {
-      return {};
+      return {
+        params: { search_by_case_id: true }
+      };
     }
 
     /**

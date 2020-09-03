@@ -1,18 +1,11 @@
 <?php
 
-/**
- * @file
- * PHP unit test bootstrap file.
- */
-
-use Composer\Autoload\ClassLoader;
-
 ini_set('memory_limit', '2G');
 ini_set('safe_mode', 0);
 eval(cv('php:boot --level=classloader', 'phpcode'));
 
 // Allow autoloading of PHPUnit helper classes in this extension.
-$loader = new ClassLoader();
+$loader = new \Composer\Autoload\ClassLoader();
 $loader->add('CRM_', __DIR__);
 $loader->add('Civi\\', __DIR__);
 $loader->add('api_', __DIR__);
@@ -37,7 +30,7 @@ require_once 'BaseHeadlessTest.php';
  */
 function cv($cmd, $decode = 'json') {
   $cmd = 'cv ' . $cmd;
-  $descriptorSpec = [0 => ["pipe", "r"], 1 => ["pipe", "w"], 2 => STDERR];
+  $descriptorSpec = array(0 => array("pipe", "r"), 1 => array("pipe", "w"), 2 => STDERR);
   $oldOutput = getenv('CV_OUTPUT');
   putenv("CV_OUTPUT=json");
   $process = proc_open($cmd, $descriptorSpec, $pipes, __DIR__);
@@ -53,8 +46,7 @@ function cv($cmd, $decode = 'json') {
       return $result;
 
     case 'phpcode':
-      // If the last output is /*PHPCODE*/, then we managed to complete
-      // execution.
+      // If the last output is /*PHPCODE*/, then we managed to complete execution.
       if (substr(trim($result), 0, 12) !== "/*BEGINPHP*/" || substr(trim($result), -10) !== "/*ENDPHP*/") {
         throw new \RuntimeException("Command failed ($cmd):\n$result");
       }

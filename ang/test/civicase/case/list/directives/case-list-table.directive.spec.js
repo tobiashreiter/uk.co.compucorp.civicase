@@ -106,9 +106,12 @@
   });
 
   describe('CivicaseCaseListTableController', function () {
-    var $controller, $q, $scope, $route, CasesData, civicaseCrmApi;
+    var $controller, $q, $scope, $route, CasesData, civicaseCrmApi,
+      crmThrottleMock, CasesUtils;
 
     beforeEach(module('civicase', 'civicase.data', 'crmUtil', function ($provide) {
+      crmThrottleMock = jasmine.createSpy('crmThrottle');
+
       $provide.value('$route', {
         current: {
           params: {
@@ -119,21 +122,32 @@
           }
         }
       });
+
+      $provide.value('crmThrottle', crmThrottleMock);
     }));
 
     beforeEach(inject(function (_$controller_, _$q_, _$route_, $rootScope,
-      _CasesData_, _civicaseCrmApi_, _formatCase_) {
+      _CasesData_, _civicaseCrmApi_, _formatCase_, _CasesUtils_) {
       $controller = _$controller_;
       $q = _$q_;
       $route = _$route_;
       $scope = $rootScope.$new();
       CasesData = _CasesData_.get();
+      CasesUtils = _CasesUtils_;
       civicaseCrmApi = _civicaseCrmApi_;
       // custom function added by civicrm:
       $scope.$bindToRoute = jasmine.createSpy('$bindToRoute');
       $scope.filters = {
         id: _.uniqueId()
       };
+
+      crmThrottleMock.and.callFake(function (callbackFn) {
+        callbackFn();
+
+        return $q.resolve([CasesData]);
+      });
+
+      spyOn(CasesUtils, 'fetchMoreContactsInformation');
     }));
 
     describe('on calling applyAdvSearch()', function () {
@@ -166,6 +180,8 @@
         civicaseCrmApi.and.returnValue($q.resolve([_.cloneDeep(CasesData)]));
         initController();
         $scope.applyAdvSearch($scope.filters);
+
+        $scope.$digest();
       });
 
       it('requests the cases data', function () {
@@ -227,6 +243,21 @@
 
       it('removes all url parameters added by individual tabs', function () {
         expect($route.current.params).toEqual(expectedParams);
+      });
+    });
+
+    describe('when case being viewed is not present in the list of cases with current filters', () => {
+      beforeEach(function () {
+        initController();
+        $scope.cases = _.cloneDeep(CasesData.values);
+        $scope.viewingCase = 111111;
+
+        $scope.applyAdvSearch();
+        $scope.$digest();
+      });
+
+      it('displays a button to clear all filters', function () {
+        expect($scope.caseNotFound).toBe(true);
       });
     });
 

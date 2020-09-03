@@ -127,8 +127,8 @@
           expect($scope.newCasesPanel.query.params.is_deleted).toBe(0);
         });
 
-        it('sorts by start_date, descending order', function () {
-          expect($scope.newCasesPanel.query.params.options.sort).toBe('start_date DESC');
+        it('sorts by start_date and case id, descending order', function () {
+          expect($scope.newCasesPanel.query.params.options.sort).toBe('start_date DESC, id DESC');
         });
       });
 

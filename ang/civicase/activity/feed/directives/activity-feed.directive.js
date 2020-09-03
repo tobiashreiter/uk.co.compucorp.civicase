@@ -66,10 +66,11 @@
    * @param {object} ActivityStatus activity status service
    * @param {object} ActivityType activity type service
    * @param {object} CaseType case type service
+   * @param {boolean} showFullContactNameOnActivityFeed Show Full Contact Name On Activity Feed setting
    */
   function civicaseActivityFeedController ($scope, $q, BulkActions, civicaseCrmApi,
     crmUiHelp, crmThrottle, formatActivity, $rootScope, dialogService,
-    ContactsCache, ActivityStatus, ActivityType, CaseType) {
+    ContactsCache, ActivityStatus, ActivityType, CaseType, showFullContactNameOnActivityFeed) {
     // The ts() and hs() functions help load strings for this module.
     var ts = $scope.ts = CRM.ts('civicase');
     var ITEMS_PER_PAGE = 25;
@@ -89,6 +90,7 @@
     $scope.selectedActivities = [];
     $scope.viewingActivity = {};
     $scope.refreshAll = refreshAll;
+    $scope.showFullContactNameOnActivityFeed = showFullContactNameOnActivityFeed;
     $scope.showSpinner = { up: false, down: false };
     $scope.caseTimelines = $scope.caseTypeId
       ? _.sortBy(CaseType.getAll()[$scope.caseTypeId].definition.activitySets, 'label')

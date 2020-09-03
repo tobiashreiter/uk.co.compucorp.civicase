@@ -54,9 +54,10 @@
    * @param {object} ts ts
    * @param {object} RelationshipType RelationshipType
    * @param {Function} isTruthy service to check if value is truthy
+   * @param {boolean} civicaseSingleCaseRolePerType if a single case role can be assigned per type
    */
   function civicaseViewPeopleController ($q, $scope, allowMultipleCaseClients,
-    civicaseCrmApi, DateHelper, ts, RelationshipType, isTruthy) {
+    civicaseCrmApi, DateHelper, ts, RelationshipType, isTruthy, civicaseSingleCaseRolePerType) {
     // The ts() and hs() functions help load strings for this module.
     var CONTACT_CANT_HAVE_ROLE_MESSAGE = ts('Case clients cannot be selected for a case role. Please select another contact.');
     var clients = _.indexBy($scope.item.client, 'contact_id');
@@ -65,6 +66,7 @@
 
     $scope.ts = ts;
     $scope.allowMultipleCaseClients = allowMultipleCaseClients;
+    $scope.civicaseSingleCaseRolePerType = civicaseSingleCaseRolePerType;
     $scope.roles = [];
     $scope.rolesFilter = '';
     $scope.rolesPage = 1;
@@ -85,6 +87,7 @@
 
     $scope.formatDate = DateHelper.formatDate;
     $scope.getRelations = getRelations;
+    $scope.checkIfRoleIsDisabled = checkIfRoleIsDisabled;
 
     (function init () {
       $scope.$bindToRoute({ expr: 'tab', param: 'peopleTab', format: 'raw', default: 'roles' });
@@ -240,11 +243,14 @@
         title: ts('Remove %1', { 1: role.role }),
         message: ts('Remove %1 as %2?', { 1: role.display_name, 2: role.role })
       }).on('crmConfirm:yes', function () {
-        var apiCalls = [unassignRoleCall(role)];
+        var apiCalls = [];
 
         // when client
         if (!role.relationship_type_id) {
+          apiCalls = [unassignClientCall(role)];
           getApiParamsToSetRelationshipsAsInactiveWhenClientIsRemoved(role, apiCalls);
+        } else {
+          apiCalls = [unassignRoleCall(role)];
         }
 
         apiCalls.push(['Activity', 'create', {
@@ -258,6 +264,16 @@
         $scope.refresh(apiCalls);
       });
     };
+
+    /**
+     * Check if the sent role should be disabled
+     *
+     * @param {object} role role
+     * @returns {boolean} if the sent role should be disabled
+     */
+    function checkIfRoleIsDisabled (role) {
+      return $scope.civicaseSingleCaseRolePerType ? role.count === 1 : false;
+    }
 
     /**
      * Returns the parameters needed to create a completed activity related to the case.
@@ -276,10 +292,14 @@
      * Returns all the calls needed to create relationships between the selected contact and all the
      * clients related to the case.
      *
+     * If it needs to replace the previous relationship it first makes a call to retrieve the
+     * previous relationship ID, which is needed when passing the `reassign_rel_id` parameter.
+     *
      * @param {ContactPromptResult} contactPromptResult the contact returned by the confirm dialog
+     * @param {boolean} replacePreviousRelationship whether to replace previous relationship
      * @returns {Array[]} a list of api calls.
      */
-    function getCreateCaseRoleApiCalls (contactPromptResult) {
+    function getCreateCaseRoleApiCalls (contactPromptResult, replacePreviousRelationship) {
       var params = {
         relationship_type_id: contactPromptResult.role.relationship_type_id,
         start_date: 'now',
@@ -289,9 +309,24 @@
         description: contactPromptResult.description
       };
 
-      return _.map(item.client, function (client) {
-        return ['Relationship', 'create', _.extend({ contact_id_a: client.contact_id }, params)];
-      });
+      if (!replacePreviousRelationship) {
+        return _.map(item.client, function (client) {
+          return ['Relationship', 'create', _.extend({ contact_id_a: client.contact_id }, params)];
+        });
+      } else {
+        return _.map(item.client, function (client) {
+          return ['Relationship', 'get', {
+            case_id: item.id,
+            contact_id_b: contactPromptResult.role.contact_id,
+            is_active: 1,
+            relationship_type_id: contactPromptResult.role.relationship_type_id,
+            'api.Relationship.create': _.extend({}, params, {
+              contact_id_a: client.contact_id,
+              reassign_rel_id: '$value.id'
+            })
+          }];
+        });
+      }
     }
 
     /**
@@ -442,21 +477,14 @@
      * @returns {Array} the list of api calls to replace the case role.
      */
     function getReplaceRoleApiCalls (contactPromptResult) {
-      var activitySubject = getActivitySubjectForReplaceCaseContact(contactPromptResult);
-      var apiCalls = [
-        unassignRoleCall(contactPromptResult.role),
-        getCreateRoleActivityApiCall({
-          activity_type_id: 'Assign Case Role',
-          subject: activitySubject,
-          target_contact_id: [
-            contactPromptResult.contact.id,
-            contactPromptResult.role.contact_id
-          ]
-        })
-      ];
+      var apiCalls = [];
+
+      if (!contactPromptResult.role.relationship_type_id) {
+        apiCalls = [unassignClientCall(contactPromptResult.role)];
+      }
 
       return apiCalls.concat(
-        getCreateCaseRoleApiCalls(contactPromptResult)
+        getCreateCaseRoleApiCalls(contactPromptResult, true)
       );
     }
 
@@ -495,19 +523,7 @@
      * @param {ContactPromptResult} contactPromptResult the contact returned by the confirm dialog
      */
     function handleAssignRole (contactPromptResult) {
-      var activitySubject = ts('%1 added as %2', {
-        1: contactPromptResult.contact.extra.display_name,
-        2: contactPromptResult.role.role
-      });
-      var apiCalls = [
-        getCreateRoleActivityApiCall({
-          activity_type_id: 'Assign Case Role',
-          subject: activitySubject,
-          target_contact_id: contactPromptResult.contact.id
-        })
-      ].concat(
-        getCreateCaseRoleApiCalls(contactPromptResult)
-      );
+      var apiCalls = getCreateCaseRoleApiCalls(contactPromptResult);
 
       $scope.refresh(apiCalls);
     }
@@ -621,28 +637,33 @@ included in the confirmation dialog.
     }
 
     /**
+     * Unassign client
+     *
+     * @param {object} role role
+     * @returns {Array} API call
+     */
+    function unassignClientCall (role) {
+      return ['CaseContact', 'get', {
+        case_id: item.id,
+        contact_id: role.contact_id,
+        'api.CaseContact.delete': {}
+      }];
+    }
+
+    /**
      * Unassign role
      *
      * @param {object} role role
      * @returns {Array} API call
      */
     function unassignRoleCall (role) {
-      // Case Role
-      if (role.relationship_type_id) {
-        return ['Relationship', 'get', {
-          relationship_type_id: role.relationship_type_id,
-          contact_id_b: role.contact_id,
-          case_id: item.id,
-          is_active: 1,
-          'api.Relationship.create': { is_active: 0, end_date: 'now' }
-        }];
-      } else { // Case Client
-        return ['CaseContact', 'get', {
-          case_id: item.id,
-          contact_id: role.contact_id,
-          'api.CaseContact.delete': {}
-        }];
-      }
+      return ['Relationship', 'get', {
+        relationship_type_id: role.relationship_type_id,
+        contact_id_b: role.contact_id,
+        case_id: item.id,
+        is_active: 1,
+        'api.Relationship.create': { is_active: 0, end_date: 'now' }
+      }];
     }
 
     /**
@@ -730,6 +751,19 @@ included in the confirmation dialog.
         $scope.rolesPage = 1;
       }
       $scope.roles = _.slice(caseRoles, (25 * ($scope.rolesPage - 1)), 25 * $scope.rolesPage);
+
+      assignCountOfRolesPerType();
+    }
+
+    /**
+     * Assign number of roles present per type of relationship
+     */
+    function assignCountOfRolesPerType () {
+      _.each($scope.allRoles, function (role) {
+        role.count = _.filter($scope.roles, function (roleObj) {
+          return roleObj.display_name && roleObj.name === role.name;
+        }).length;
+      });
     }
 
     /**

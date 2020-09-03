@@ -42,7 +42,7 @@
       CRM.$.fn.affix.and.returnValue(affixReturnValue);
       originalBindToRoute = $scope.$bindToRoute;
       $scope.$bindToRoute = jasmine.createSpy('$bindToRoute');
-      spyOn($rootScope, '$broadcast');
+      spyOn($rootScope, '$broadcast').and.callThrough();
 
       initController();
     });
@@ -173,6 +173,10 @@
           it('sets the contact id filter equal to my id', function () {
             expect($scope.filters.contact_involved).toEqual([CRM.config.user_contact_id]);
           });
+
+          it('filters by case activities related to the involved contact', () => {
+            expect($scope.filters.has_activities_for_involved_contact).toBe(1);
+          });
         });
       });
 
@@ -197,6 +201,23 @@
             expect($rootScope.$broadcast)
               .toHaveBeenCalledWith(SEARCH_EVENT_NAME, jasmine.any(Object));
           });
+        });
+      });
+
+      describe('when show all cases button is presser', () => {
+        beforeEach(() => {
+          $rootScope.$broadcast('civicase::case-details::show-all-cases');
+        });
+
+        it('displays all cases', () => {
+          expect($scope.showCasesFromAllStatuses).toBe(true);
+          expect($rootScope.$broadcast).toHaveBeenCalledWith(
+            'civicase::case-search::filters-updated', {
+              selectedFilters: {
+                is_deleted: false,
+                showCasesFromAllStatuses: true
+              }
+            });
         });
       });
     });
