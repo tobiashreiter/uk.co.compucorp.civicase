@@ -32,13 +32,13 @@
      * Toggles the visibility of single case role.
      */
     function toggleVisibilityForSingleCaseRole () {
-      var $defaultMultiCaseClientValue = $('.CRM_Admin_Form_Setting_Case').attr('defaultMultipleCaseClient') ?
-        $('.CRM_Admin_Form_Setting_Case').attr('defaultMultipleCaseClient') :
-        0;
-      $multiCaseClient.val() == 0 ||
-      ($multiCaseClient.val().toLowerCase() == 'default' && $defaultMultiCaseClientValue == 0) ?
-        showSingleCaseRole() :
-        hideSingleCaseRole();
+      var $defaultMultiCaseClientValue = $('.CRM_Admin_Form_Setting_Case').attr('defaultMultipleCaseClient')
+        ? $('.CRM_Admin_Form_Setting_Case').attr('defaultMultipleCaseClient')
+        : 0;
+      $multiCaseClient.val() === 0 ||
+      ($multiCaseClient.val().toLowerCase() === 'default' && $defaultMultiCaseClientValue === 0)
+        ? showSingleCaseRole()
+        : hideSingleCaseRole();
     }
 
     /**
@@ -58,9 +58,8 @@
         $('.crm-mail-form-block-civicaseSingleCaseRolePerType').hide();
       }
       if ($('#civicaseSingleCaseRolePerType_civicaseSingleCaseRolePerType').length) {
-        $('#civicaseSingleCaseRolePerType_civicaseSingleCaseRolePerType').prop("checked", false);
+        $('#civicaseSingleCaseRolePerType_civicaseSingleCaseRolePerType').prop('checked', false);
       }
     }
-
   });
 })(CRM.$);
