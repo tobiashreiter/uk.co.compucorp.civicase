@@ -10,7 +10,7 @@ jobs:
     if: github.event.label.name == 'run backstop'
     runs-on: ubuntu-latest
     container:
-      image: compucorp/civicrm-buildkit:1.0.0-chrome
+      image: compucorp/civicrm-buildkit:1.1.0-php7.2-chrome
 
     env:
       CIVICRM_EXTENSIONS_DIR: site/web/sites/all/modules/civicrm/tools/extensions
@@ -69,7 +69,7 @@ jobs:
         run: |
           cp site-config.json.sample site-config.json
           sed -i 's+<url>+http://localhost:7979+' site-config.json
-          sed -i 's+<path-to-site-root>+/__w/uk.co.compucorp.civicase/uk.co.compucorp.civicase/site/web+' site-config.json
+          sed -i 's+<path-to-site-root>+'"$GITHUB_WORKSPACE"'/site/web+' site-config.json
           npm install
           npx gulp backstopjs:setup-data
 
