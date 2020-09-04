@@ -3,7 +3,7 @@
 /**
  * Wrapper class for xml settings.
  */
-class CRM_Civicase_Helper_XmlProcessor {
+class CRM_Civicase_Helper_CaseSetting {
 
   /**
    * Fetches settings from xml file.
@@ -31,7 +31,7 @@ class CRM_Civicase_Helper_XmlProcessor {
    * @return mixed
    *   Value from xml setting file.
    */
-  public function get(string $key) {
+  public function getDefaultValue(string $key) {
     $xml = $this->xmlProcessor->retrieve("Settings");
     $value = NULL;
     if (!empty($xml->{$key})) {
