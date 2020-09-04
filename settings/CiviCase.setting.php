@@ -6,7 +6,7 @@
  */
 
 $xmlProcessor = new CRM_Case_XMLProcessor_Process();
-$xmlWrapper = new CRM_Civicase_Helper_CaseSetting($xmlProcessor);
+$caseSetting = new CRM_Civicase_Helper_CaseSetting($xmlProcessor);
 
 $setting = [
   'civicaseAllowCaseLocks' => [
@@ -130,7 +130,7 @@ $setting = [
     'quick_form_type' => 'Element',
     'default' => 0,
     'html_attributes' => [
-      'defaultMultipleCaseClient' => (int) $xmlWrapper->getDefaultValue('AllowMultipleCaseClients'),
+      'defaultMultipleCaseClient' => (int) $caseSetting->getDefaultValue('AllowMultipleCaseClients'),
     ],
     'html_type' => 'checkbox',
     'add' => '4.7',
