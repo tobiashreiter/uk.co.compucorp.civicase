@@ -5,7 +5,7 @@
     var $singleCaseRoleParent = $('.crm-mail-form-block-civicaseSingleCaseRolePerType');
     var $singleCaseRole = $('#civicaseSingleCaseRolePerType_civicaseSingleCaseRolePerType');
 
-    (function init() {
+    (function init () {
       toggleVisibilityOnRadioButtonChange();
       toggleVisibilityForSingleCaseRole();
 
@@ -18,7 +18,7 @@
     /**
      * Toggles the visibility of civicase settings fields based on radio button values.
      */
-    function toggleVisibilityOnRadioButtonChange() {
+    function toggleVisibilityOnRadioButtonChange () {
       $radioButtonsThatToggleVisibility.filter(':checked')
         .each(function () {
           var $element = $(this);
@@ -33,7 +33,7 @@
     /**
      * Toggles the visibility of single case role.
      */
-    function toggleVisibilityForSingleCaseRole() {
+    function toggleVisibilityForSingleCaseRole () {
       var $defaultMultiCaseClientValue = $singleCaseRole.attr('defaultMultipleCaseClient')
         ? $singleCaseRole.attr('defaultMultipleCaseClient')
         : '0';
@@ -46,7 +46,7 @@
     /**
      * Shows single case role.
      */
-    function showSingleCaseRole() {
+    function showSingleCaseRole () {
       if ($singleCaseRoleParent.length) {
         $singleCaseRoleParent.show();
       }
@@ -55,7 +55,7 @@
     /**
      * Hides single case role.
      */
-    function hideSingleCaseRole() {
+    function hideSingleCaseRole () {
       if ($singleCaseRoleParent.length) {
         $singleCaseRoleParent.hide();
       }
