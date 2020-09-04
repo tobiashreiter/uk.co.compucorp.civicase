@@ -53,7 +53,7 @@
           action: 'add',
           atype: activity.activity_type_id,
           caseid: activity.case_id,
-          cid: activity.assignee_contact_id[0],
+          cid: activity.source_contact_id[0],
           draft_id: activity.id,
           id: activity.id,
           reset: '1'
