@@ -18,20 +18,6 @@ class CRM_Civicase_Hook_PreProcess_AddCaseAdminSettings {
   const CIVICASE_ALLOW_MULTIPLE_CLIENTS = 'civicaseAllowMultipleClients';
 
   /**
-   * Fetches settings from xml file.
-   *
-   * @var CRM_Case_XMLProcessor_Process
-   */
-  private $xmlProcessor;
-
-  /**
-   * Initialize dependencies.
-   */
-  public function __construct() {
-    $this->xmlProcessor = new CRM_Case_XMLProcessor_Process();
-  }
-
-  /**
    * Sets the case admin settings.
    *
    * @param string $formName
@@ -48,7 +34,6 @@ class CRM_Civicase_Hook_PreProcess_AddCaseAdminSettings {
 
     $this->addCivicaseSettingsToForm($settings);
     $form->setVar('_settings', $settings);
-    $this->addDefaultMultipleCaseClientToForm($form);
     $this->addScriptFile();
   }
 
@@ -97,23 +82,6 @@ class CRM_Civicase_Hook_PreProcess_AddCaseAdminSettings {
     }
 
     return $settings;
-  }
-
-  /**
-   * Adds the default multiple case client to the form attributes.
-   *
-   * @param CRM_Core_Form $form
-   *   Form object class.
-   */
-  private function addDefaultMultipleCaseClientToForm(CRM_Core_Form $form) {
-    $attributes = $form->getAttributes();
-    $xml = $this->xmlProcessor->retrieve("Settings");
-    $allowMultipleClients = 0;
-    if (!empty($xml->AllowMultipleCaseClients)) {
-      $allowMultipleClients = $xml->AllowMultipleCaseClients->__toString();
-    }
-    $attributes['defaultMultipleCaseClient'] = $allowMultipleClients;
-    $form->setAttributes($attributes);
   }
 
   /**

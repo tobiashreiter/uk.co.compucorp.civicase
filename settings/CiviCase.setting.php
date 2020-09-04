@@ -5,6 +5,9 @@
  * CiviCase Setting file.
  */
 
+$xmlProcessor = new CRM_Case_XMLProcessor_Process();
+$xmlWrapper = new CRM_Civicase_Helper_XmlProcessor($xmlProcessor);
+
 $setting = [
   'civicaseAllowCaseLocks' => [
     'group_name' => 'CiviCRM Preferences',
@@ -126,6 +129,9 @@ $setting = [
     'type' => 'Boolean',
     'quick_form_type' => 'Element',
     'default' => 0,
+    'html_attributes' => [
+      'defaultMultipleCaseClient' => (int) $xmlWrapper->get('AllowMultipleCaseClients'),
+    ],
     'html_type' => 'checkbox',
     'add' => '4.7',
     'title' => ts('One active case role'),
