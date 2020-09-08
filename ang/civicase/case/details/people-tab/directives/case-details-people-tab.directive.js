@@ -362,13 +362,25 @@
         description: contactPromptResult.description
       };
 
-      if (replacePreviousRelationship) {
-        params.reassign_rel_id = contactPromptResult.role.id;
+      if (!replacePreviousRelationship) {
+        return _.map(item.client, function (client) {
+          return ['Relationship', 'create', _.extend({ contact_id_a: client.contact_id }, params)];
+        });
+      } else {
+        return _.map(item.client, function (client) {
+          return ['Relationship', 'get', {
+            case_id: item.id,
+            contact_id_b: contactPromptResult.role.contact_id,
+            is_active: 1,
+            relationship_type_id: contactPromptResult.role.relationship_type_id,
+            'api.Relationship.create': _.extend({}, params, {
+              id: false,
+              contact_id_a: client.contact_id,
+              reassign_rel_id: '$value.id'
+            })
+          }];
+        });
       }
-
-      return _.map(item.client, function (client) {
-        return ['Relationship', 'create', _.extend({ contact_id_a: client.contact_id }, params)];
-      });
     }
 
     /**

@@ -151,18 +151,25 @@ describe('Case Details People Tab', () => {
         });
 
         it('creates a new relationship between the case client and the selected contact using the given role', () => {
-          expect($scope.refresh).toHaveBeenCalledWith([
-            ['Relationship', 'create', {
-              contact_id_a: $scope.item.client[0].contact_id,
-              relationship_type_id: relationshipTypeId,
-              start_date: getDialogModel().reassignmentDate.value,
-              end_date: null,
-              contact_id_b: contact.id,
+          expect($scope.refresh).toHaveBeenCalledWith(jasmine.arrayContaining([
+            ['Relationship', 'get', {
               case_id: $scope.item.id,
-              description: roleDescription,
-              reassign_rel_id: '101'
+              contact_id_b: previousContact.contact_id,
+              is_active: 1,
+              relationship_type_id: relationshipTypeId,
+              'api.Relationship.create': {
+                id: false,
+                relationship_type_id: relationshipTypeId,
+                start_date: getDialogModel().reassignmentDate.value,
+                end_date: null,
+                contact_id_a: $scope.item.client[0].contact_id,
+                contact_id_b: contact.contact_id,
+                case_id: $scope.item.id,
+                description: roleDescription,
+                reassign_rel_id: '$value.id'
+              }
             }]
-          ]);
+          ]));
         });
 
         it('closes the contact selection dialog', () => {
