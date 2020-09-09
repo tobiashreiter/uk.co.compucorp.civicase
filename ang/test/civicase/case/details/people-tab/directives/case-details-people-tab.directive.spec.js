@@ -71,7 +71,8 @@ describe('Case Details People Tab', () => {
       beforeEach(() => {
         $scope.assignRoleOrClient({
           relationship_type_id: relationshipTypeId,
-          role: roleName
+          role: roleName,
+          start_date: moment().add(5, 'day')
         });
         selectDialogContact(contact);
         updateDialogModel({

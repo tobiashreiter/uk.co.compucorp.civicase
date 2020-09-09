@@ -715,7 +715,8 @@
           isError = true;
         }
 
-        if (!isSameOrAfter(contactPromptResult.reassignmentDate, contactPromptResult.role.start_date)) {
+        if (contactPromptResult.reassignmentDate &&
+          !isSameOrAfter(contactPromptResult.reassignmentDate, contactPromptResult.role.start_date)) {
           contactPromptResult.showErrorMessageFor('reassignmentDate', REASSIGNMENT_DATE_MESSAGE);
           isError = true;
         }
