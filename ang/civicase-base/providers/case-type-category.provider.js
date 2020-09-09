@@ -45,7 +45,7 @@
      * Find all case type categories belonging to sent instance name
      *
      * @param {string} instanceName name of the instance
-     * @returns {Array} list of case type categories matching the sent instance
+     * @returns {object[]} list of case type categories matching the sent instance
      */
     function findAllByInstance (instanceName) {
       return _.filter(getAll(), function (caseTypeCategory) {
@@ -57,29 +57,29 @@
      * Check if the sent case type category is part of the sent instance
      *
      * @param {string} caseTypeCategoryName case type category name
-     * @param {*} instanceName instance name
+     * @param {string} instanceName instance name
      * @returns {boolean} if the sent case type category is part of the sent instance
      */
     function isInstance (caseTypeCategoryName, instanceName) {
-      var caseTypeCategory = findByName(caseTypeCategoryName);
+      var caseTypeCategoryObject = findByName(caseTypeCategoryName);
+
+      if (!caseTypeCategoryObject) {
+        return;
+      }
+
+      var caseTypeCategory = _.find(caseCategoryInstanceMapping, function (instanceMap) {
+        return instanceMap.category_id === caseTypeCategoryObject.value;
+      });
 
       if (!caseTypeCategory) {
         return;
       }
 
-      var sentCaseTypeCategory = _.find(caseCategoryInstanceMapping, function (instanceMap) {
-        return instanceMap.category_id === caseTypeCategory.value;
-      });
-
-      if (!sentCaseTypeCategory) {
-        return;
-      }
-
-      var sentInstanceID = _.find(caseCategoryInstanceType, function (instance) {
+      var instanceID = _.find(caseCategoryInstanceType, function (instance) {
         return instance.name === instanceName;
       }).value;
 
-      return sentCaseTypeCategory.instance_id === sentInstanceID;
+      return caseTypeCategory.instance_id === instanceID;
     }
 
     /**
