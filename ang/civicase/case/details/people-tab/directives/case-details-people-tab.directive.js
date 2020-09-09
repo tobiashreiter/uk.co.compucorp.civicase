@@ -55,11 +55,17 @@
    * @param {object} RelationshipType RelationshipType
    * @param {Function} isTruthy service to check if value is truthy
    * @param {boolean} civicaseSingleCaseRolePerType if a single case role can be assigned per type
+   * @param {object} dialogService A reference to the dialog service
+   * @param {Function} removeDatePickerHrefs Removes date picker href attributes
    */
   function civicaseViewPeopleController ($q, $scope, allowMultipleCaseClients,
-    civicaseCrmApi, DateHelper, ts, RelationshipType, isTruthy, civicaseSingleCaseRolePerType) {
+    civicaseCrmApi, DateHelper, ts, RelationshipType, isTruthy, civicaseSingleCaseRolePerType,
+    dialogService, removeDatePickerHrefs) {
     // The ts() and hs() functions help load strings for this module.
     var CONTACT_CANT_HAVE_ROLE_MESSAGE = ts('Case clients cannot be selected for a case role. Please select another contact.');
+    var CONTACT_NOT_SELECTED_MESSAGE = ts('Please select a contact.');
+    var REASSIGNMENT_DATE_MESSAGE = ts('Reassignment date cannot be before start date of the relationship.');
+    var END_DATE_MESSAGE = ts('End date cannot be before start date of the relationship.');
     var clients = _.indexBy($scope.item.client, 'contact_id');
     var item = $scope.item;
     var relTypes = RelationshipType.getAll();
@@ -223,12 +229,23 @@
     $scope.replaceRoleOrClient = function (role) {
       var isReplacingClient = !role.relationship_type_id;
 
+      var promptForContactParams = {
+        title: ts('Replace %1', { 1: role.role }),
+        showDescriptionField: !isReplacingClient,
+        role: role
+      };
+
+      if (!isReplacingClient) {
+        promptForContactParams.reassignmentDate = {
+          minDate: role.start_date,
+          value: moment().isBefore(moment(role.start_date))
+            ? moment(role.start_date).format('YYYY-MM-DD')
+            : moment().format('YYYY-MM-DD')
+        };
+      }
+
       promptForContactThatIsNotCaseClient(
-        {
-          title: ts('Replace %1', { 1: role.role }),
-          showDescriptionField: !isReplacingClient,
-          role: role
-        },
+        promptForContactParams,
         handleReplaceRoleOrClient
       );
     };
@@ -236,34 +253,70 @@
     /**
      * Unassign the role to a contact
      *
-     * @param {string} role role
+     * @param {object} role role
      */
     $scope.unassignRole = function (role) {
-      CRM.confirm({
-        title: ts('Remove %1', { 1: role.role }),
-        message: ts('Remove %1 as %2?', { 1: role.display_name, 2: role.role })
-      }).on('crmConfirm:yes', function () {
-        var apiCalls = [];
-
-        // when client
-        if (!role.relationship_type_id) {
-          apiCalls = [unassignClientCall(role)];
+      // when client
+      if (!role.relationship_type_id) {
+        CRM.confirm({
+          title: ts('Remove %1', { 1: role.role }),
+          message: ts('Remove %1 as %2?', { 1: role.display_name, 2: role.role })
+        }).on('crmConfirm:yes', function () {
+          var apiCalls = [unassignClientCall(role)];
           getApiParamsToSetRelationshipsAsInactiveWhenClientIsRemoved(role, apiCalls);
-        } else {
-          apiCalls = [unassignRoleCall(role)];
-        }
 
-        apiCalls.push(['Activity', 'create', {
-          case_id: item.id,
-          target_contact_id: role.contact_id,
-          status_id: 'Completed',
-          activity_type_id: role.relationship_type_id ? 'Remove Case Role' : 'Remove Client From Case',
-          subject: ts('%1 removed as %2', { 1: role.display_name, 2: role.role })
-        }]);
+          makeAPICalltoUnassignRole(apiCalls, 'Remove Client From Case', role);
+        });
+      } else {
+        promptForContact(
+          {
+            title: ts('Remove %1 as %2?', { 1: role.display_name, 2: role.role }),
+            showDescriptionField: false,
+            hideContactField: true,
+            role: role,
+            endDate: {
+              minDate: role.start_date,
+              value: moment().format('YYYY-MM-DD')
+            }
+          },
+          function (contactPromptResult) {
+            if (!isSameOrAfter(contactPromptResult.endDate, contactPromptResult.role.start_date)) {
+              contactPromptResult.showErrorMessageFor('endDate', END_DATE_MESSAGE);
 
-        $scope.refresh(apiCalls);
-      });
+              return;
+            }
+
+            var apiCalls = [unassignRoleCall(role, contactPromptResult.endDate)];
+
+            makeAPICalltoUnassignRole(apiCalls, 'Remove Case Role', role);
+          }
+        );
+      }
     };
+
+    /**
+     * @param {string} date1 first date
+     * @param {string} date2 second date
+     * @returns {boolean} if date 1 same of after date 2
+     */
+    function isSameOrAfter (date1, date2) {
+      return moment(date1).isSameOrAfter(moment(date2));
+    }
+
+    /**
+     * @param {object[]} apiCalls list of api calls
+     * @param {string} activityType activity type
+     * @param {object} role role object
+     */
+    function makeAPICalltoUnassignRole (apiCalls, activityType, role) {
+      apiCalls.push(getActivityApiCallRelatedToRole({
+        activity_type_id: activityType,
+        subject: ts('%1 removed as %2', { 1: role.display_name, 2: role.role }),
+        target_contact_id: role.contact_id
+      }));
+
+      $scope.refresh(apiCalls);
+    }
 
     /**
      * Check if the sent role should be disabled
@@ -281,7 +334,7 @@
      * @param {object} extraParams extra parameters to pass to the activity creation call.
      * @returns {[string, string, object]} the create activity api call params.
      */
-    function getCreateRoleActivityApiCall (extraParams) {
+    function getActivityApiCallRelatedToRole (extraParams) {
       return ['Activity', 'create', _.extend({}, {
         case_id: item.id,
         status_id: 'Completed'
@@ -302,7 +355,7 @@
     function getCreateCaseRoleApiCalls (contactPromptResult, replacePreviousRelationship) {
       var params = {
         relationship_type_id: contactPromptResult.role.relationship_type_id,
-        start_date: 'now',
+        start_date: contactPromptResult.startDate || contactPromptResult.reassignmentDate,
         end_date: null,
         contact_id_b: contactPromptResult.contact.id,
         case_id: item.id,
@@ -321,6 +374,7 @@
             is_active: 1,
             relationship_type_id: contactPromptResult.role.relationship_type_id,
             'api.Relationship.create': _.extend({}, params, {
+              id: false,
               contact_id_a: client.contact_id,
               reassign_rel_id: '$value.id'
             })
@@ -359,7 +413,8 @@
         {
           title: ts('Add %1', { 1: role.role }),
           showDescriptionField: true,
-          role: role
+          role: role,
+          startDate: moment().format('YYYY-MM-DD')
         },
         handleAssignRole
       );
@@ -447,7 +502,7 @@
     function getReplaceClientApiCalls (contactPromptResult) {
       var activitySubject = getActivitySubjectForReplaceCaseContact(contactPromptResult);
       var apiCalls = [
-        getCreateRoleActivityApiCall({
+        getActivityApiCallRelatedToRole({
           activity_type_id: 'Reassigned Case',
           subject: activitySubject,
           target_contact_id: [
@@ -500,7 +555,7 @@
         1: contactPromptResult.contact.extra.display_name
       });
       var apiCalls = [
-        getCreateRoleActivityApiCall({
+        getActivityApiCallRelatedToRole({
           activity_type_id: 'Add Client To Case',
           subject: activitySubject,
           target_contact_id: contactPromptResult.contact.id
@@ -544,8 +599,8 @@
     }
 
     /**
-     * Displays a confirmation dialog used to select a contact. An optional description input can also be
-included in the confirmation dialog.
+     * Displays a confirmation dialog used to select a contact.
+     * An optional description input can also be included in the confirmation dialog.
      *
      * @param {ContactPromptOptions} options the prompt options
      * @param {(contactPromptResult: ContactPromptResult) => void} onConfirmCallback a callback executed after confirming
@@ -553,65 +608,88 @@ included in the confirmation dialog.
      */
     function promptForContact (options, onConfirmCallback) {
       options = _.assign({ roles: {} }, options);
+      options.endDate = options.endDate || {};
+      options.reassignmentDate = options.reassignmentDate || {};
 
-      var modalBody = '<input name="caseRoleSelector" placeholder="' + ts('Select Contact') + '" />';
-
-      if (options.showDescriptionField) {
-        modalBody += '<br/><textarea rows="3" cols="35" name="description" class="crm-form-textarea" style="margin-top: 10px;padding-left: 10px;border-color: #C2CFDE;color: #9494A4;" placeholder="Description"></textarea>';
-      }
-
-      var dialogElement = CRM.confirm({
-        title: options.title,
-        message: modalBody,
-        open: function () {
-          $('[name=caseRoleSelector]', this).crmEntityRef({
-            create: true,
-            api: {
-              extra: ['display_name'],
-              params: {
-                contact_type: options.role.contact_type,
-                contact_sub_type: options.role.contact_sub_type
-              }
-            }
-          });
+      var model = {
+        contact: { id: null },
+        errorMessage: {
+          contactSelection: null,
+          endDate: null,
+          reassignmentDate: null
+        },
+        description: null,
+        removeDatePickerHrefs: removeDatePickerHrefs,
+        role: options.role,
+        showDescriptionField: options.showDescriptionField,
+        hideContactField: options.hideContactField,
+        showStartDate: !!options.startDate,
+        startDate: options.startDate,
+        endDate: {
+          value: options.endDate.value,
+          show: !!options.endDate.value,
+          minDate: options.endDate.minDate
+        },
+        reassignmentDate: {
+          value: options.reassignmentDate.value,
+          show: !!options.reassignmentDate.value,
+          minDate: options.reassignmentDate.minDate
         }
-      })
-        .on('crmConfirm:yes', function (event) {
-          if (!onConfirmCallback) {
-            return;
-          }
+      };
 
-          var contact = $('[name=caseRoleSelector]', this).select2('data');
-          var description = $('[name=description]', this).val();
-
-          onConfirmCallback({
-            contact: contact,
-            description: description,
-            event: event,
-            role: options.role,
-            showContactSelectionError: showContactSelectionError
-          });
-        });
+      dialogService.open(
+        'PromptForContactDialog',
+        '~/civicase/case/details/people-tab/directives/contact-prompt-dialog.html',
+        model,
+        {
+          title: options.title,
+          width: '450px',
+          buttons: [
+            {
+              text: ts('Continue'),
+              icon: 'fa-check',
+              click: handleContactSubmit
+            }
+          ]
+        }
+      );
 
       /**
-       * Displays the given error message under the contact selection input.
-       *
-       * @param {string} message the error message to display under the contact selection.
+       * Executes the confirmation callback function, if provided and closes
+       * the contact prompt modal if no error messages are displayed.
        */
-      function showContactSelectionError (message) {
-        var contactSelector = $('[name=caseRoleSelector]', dialogElement).select2('container');
-        var hasError = dialogElement.find('.contact-selection-error').length > 0;
+      function handleContactSubmit () {
+        // CRM's Entity Ref directive only returns the contact ID, this returns
+        // the full contact data.
+        var contact = $('[ng-model="model.contact.id"]').select2('data');
 
-        if (hasError) {
+        if (!onConfirmCallback) {
           return;
         }
 
-        contactSelector.addClass('crm-error');
-        $('<div class="contact-selection-error crm-error crm-error-label"></div>')
-          .text(message)
-          .prepend('<i class="fa fa-times"></i>')
-          .css('max-width', contactSelector.width())
-          .insertAfter(contactSelector);
+        onConfirmCallback({
+          contact: contact,
+          description: model.description,
+          role: options.role,
+          showErrorMessageFor: showErrorMessageFor,
+          startDate: model.startDate,
+          endDate: model.endDate.value,
+          reassignmentDate: model.reassignmentDate.value
+        });
+
+        if (_.every(_.values(model.errorMessage), function (value) { return !value; })) {
+          dialogService.close('PromptForContactDialog');
+        }
+      }
+
+      /**
+       * Displays the given error message under the given input.
+       *
+       * @param {string} errorObjectName the error object name which needs to be updated
+       * @param {string} message the error message to display under the contact selection.
+       */
+      function showErrorMessageFor (errorObjectName, message) {
+        model.errorMessage[errorObjectName] = message;
       }
     }
 
@@ -624,11 +702,26 @@ included in the confirmation dialog.
      */
     function promptForContactThatIsNotCaseClient (promptOptions, contactSelectedHandler) {
       promptForContact(promptOptions, function (contactPromptResult) {
-        if (checkContactIsClient(contactPromptResult.contact.id)) {
-          contactPromptResult.event.preventDefault();
-          contactPromptResult
-            .showContactSelectionError(CONTACT_CANT_HAVE_ROLE_MESSAGE);
+        var isError = false;
 
+        if (!contactPromptResult.contact) {
+          contactPromptResult
+            .showErrorMessageFor('contactSelection', CONTACT_NOT_SELECTED_MESSAGE);
+          isError = true;
+        } else if (checkContactIsClient(contactPromptResult.contact.id)) {
+          contactPromptResult
+            .showErrorMessageFor('contactSelection', CONTACT_CANT_HAVE_ROLE_MESSAGE);
+
+          isError = true;
+        }
+
+        if (contactPromptResult.reassignmentDate &&
+          !isSameOrAfter(contactPromptResult.reassignmentDate, contactPromptResult.role.start_date)) {
+          contactPromptResult.showErrorMessageFor('reassignmentDate', REASSIGNMENT_DATE_MESSAGE);
+          isError = true;
+        }
+
+        if (isError) {
           return;
         }
 
@@ -654,15 +747,16 @@ included in the confirmation dialog.
      * Unassign role
      *
      * @param {object} role role
+     * @param {object} endDate end date for the relationship
      * @returns {Array} API call
      */
-    function unassignRoleCall (role) {
+    function unassignRoleCall (role, endDate) {
       return ['Relationship', 'get', {
         relationship_type_id: role.relationship_type_id,
         contact_id_b: role.contact_id,
         case_id: item.id,
         is_active: 1,
-        'api.Relationship.create': { is_active: 0, end_date: 'now' }
+        'api.Relationship.create': { is_active: 0, end_date: endDate }
       }];
     }
 
@@ -708,6 +802,7 @@ included in the confirmation dialog.
         _.each(item['api.Relationship.get'].values, function (relationship) {
           relDesc[relationship.contact_id_b + '_' + relationship.relationship_type_id] = relationship.description ? relationship.description : '';
           relDesc[relationship.contact_id_b + '_' + relationship.relationship_type_id + '_date'] = relationship.start_date;
+          relDesc[relationship.contact_id_b + '_' + relationship.relationship_type_id + '_id'] = relationship.id;
         });
       }
       // get clients from the contacts
@@ -742,6 +837,7 @@ included in the confirmation dialog.
         if (role && role.role !== 'Client' && (role.contact_id + '_' + role.relationship_type_id in relDesc)) {
           caseRoles[index].desc = relDesc[role.contact_id + '_' + role.relationship_type_id];
           caseRoles[index].start_date = relDesc[role.contact_id + '_' + role.relationship_type_id + '_date'];
+          caseRoles[index].id = relDesc[role.contact_id + '_' + role.relationship_type_id + '_id'];
         }
       });
       $scope.rolesCount = caseRoles.length;
