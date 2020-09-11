@@ -20,6 +20,7 @@ var path = require('path');
 var PluginError = require('plugin-error');
 var puppeteer = require('puppeteer');
 
+var LOGGED_IN_USER_NAME = 'admin';
 var BACKSTOP_DIR = '.';
 var CACHE = {
   caseId: null,
@@ -212,7 +213,7 @@ function cvApi (entityName, action, queryData) {
  */
 function cvApiBatch (queriesData) {
   var config = siteConfig();
-  var cmd = `echo '${JSON.stringify(queriesData)}' | cv api:batch`;
+  var cmd = `echo '${JSON.stringify(queriesData)}' | cv api:batch -U ${LOGGED_IN_USER_NAME}`;
   var responses = JSON.parse(execSync(cmd, { cwd: config.root }));
 
   checkAndThrowApiResponseErrors(responses);
@@ -659,7 +660,7 @@ async function writeCookies () {
   var cookiesDir = path.join(BACKSTOP_DIR, 'cookies');
   var cookieFilePath = path.join(cookiesDir, 'admin.json');
   var config = siteConfig();
-  var command = `drush ${config.drush_alias} uli --name=admin --uri=${config.url} --browser=0`;
+  var command = `drush ${config.drush_alias} uli --name=${LOGGED_IN_USER_NAME} --uri=${config.url} --browser=0`;
   var loginUrl = execSync(command, { encoding: 'utf8', cwd: config.root });
   var browser = await puppeteer.launch({
     headless: true,
