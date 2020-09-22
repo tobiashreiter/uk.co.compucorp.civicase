@@ -340,11 +340,13 @@
         spyOn($rootScope, '$broadcast');
         compileDirective();
 
-        element.isolateScope().clearAllFilters();
+        element.isolateScope().clearAllFiltersToLoadSpecificCase();
       });
 
-      it('displays all cases', function () {
-        expect($rootScope.$broadcast).toHaveBeenCalledWith('civicase::case-details::show-all-cases');
+      it('clears all filters and focuses on current case', function () {
+        expect($rootScope.$broadcast).toHaveBeenCalledWith('civicase::case-details::clear-filter-and-focus-specific-case', {
+          caseId: '141'
+        });
       });
     });
 
@@ -352,9 +354,12 @@
      * Compiles the civicase-case-details directive.
      */
     function compileDirective () {
-      $scope.viewingCaseDetails = formatCase(CasesData.get().values[0]);
+      var caseObj = CasesData.get().values[0];
+
+      $scope.viewingCaseId = caseObj.id;
+      $scope.viewingCaseDetails = formatCase(caseObj);
       $scope.caseTypeCategory = 'cases';
-      element = $compile('<div civicase-case-details="viewingCaseDetails" case-type-category="caseTypeCategory"></div>')($scope);
+      element = $compile('<div civicase-case-details="viewingCaseDetails" viewing-case-id="viewingCaseId" case-type-category="caseTypeCategory"></div>')($scope);
       $scope.$digest();
     }
 

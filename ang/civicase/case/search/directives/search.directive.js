@@ -18,7 +18,7 @@
   /**
    * Controller Function for civicase-search directive
    */
-  module.controller('civicaseSearchController', function ($scope, $rootScope,
+  module.controller('civicaseSearchController', function ($scope, $rootScope, $window,
     $timeout, civicaseCrmApi, getSelect2Value, ts, CaseStatus, CaseTypeCategory,
     CaseType, currentCaseCategory, CustomSearchField, includeActivitiesForInvolvedContact) {
     var caseTypes = CaseType.getAll();
@@ -332,18 +332,20 @@
      * All watchers are initiated here
      */
     function initiateWatchers () {
-      $scope.$on('civicase::case-details::show-all-cases', showAllCases);
+      $scope.$on('civicase::case-details::clear-filter-and-focus-specific-case', focusSpecificCase);
       $scope.$watch('expanded', expandedWatcher);
       $scope.$watch('relationshipType', relationshipTypeWatcher);
       $scope.$watchCollection('contactRoleFilter', caseRoleWatcher);
     }
 
     /**
-     * Clear all filters and show all cases
+     * Clear all filters and focus on specific case
+     *
+     * @param {object} event event
+     * @param {string} data sent data
      */
-    function showAllCases () {
-      $scope.showCasesFromAllStatuses = true;
-      clearSearch();
+    function focusSpecificCase (event, data) {
+      $window.location.href = '#/case/list?caseId=' + data.caseId + '&all_statuses=1';
     }
 
     /**

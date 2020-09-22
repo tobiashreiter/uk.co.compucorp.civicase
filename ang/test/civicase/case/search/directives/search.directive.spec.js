@@ -1,9 +1,11 @@
 /* eslint-env jasmine */
 (($, _, crmCheckPerm) => {
   describe('civicaseSearch', () => {
-    let $controller, $rootScope, $scope, $timeout, CaseFilters, CaseStatuses, caseTypeCategoriesMockData,
-      CaseTypes, civicaseCrmApi, currentCaseCategory, customSearchFields, affixOriginalFunction,
-      offsetOriginalFunction, originalParentScope, affixReturnValue, originalBindToRoute;
+    let $controller, $rootScope, $scope, $window, $timeout, CaseFilters,
+      CaseStatuses, caseTypeCategoriesMockData, CaseTypes, civicaseCrmApi,
+      currentCaseCategory, customSearchFields, affixOriginalFunction,
+      offsetOriginalFunction, originalParentScope, affixReturnValue,
+      originalBindToRoute;
 
     const SEARCH_EVENT_NAME = 'civicase::case-search::filters-updated';
 
@@ -11,15 +13,17 @@
       civicaseCrmApi = jasmine.createSpy('civicaseCrmApi');
 
       $provide.value('civicaseCrmApi', civicaseCrmApi);
+      $provide.value('$window', { location: {} });
     }));
 
-    beforeEach(inject((_$controller_, $q, _$rootScope_, _$timeout_, _CaseFilters_,
-      _CaseStatuses_, _caseTypeCategoriesMockData_, _CaseTypesMockData_, _currentCaseCategory_,
-      _CustomSearchField_) => {
+    beforeEach(inject((_$controller_, $q, _$rootScope_, _$timeout_, _$window_,
+      _CaseFilters_, _CaseStatuses_, _caseTypeCategoriesMockData_,
+      _CaseTypesMockData_, _currentCaseCategory_, _CustomSearchField_) => {
       $controller = _$controller_;
       $rootScope = _$rootScope_;
       $scope = $rootScope.$new();
       $timeout = _$timeout_;
+      $window = _$window_;
       CaseFilters = _CaseFilters_;
       CaseStatuses = _CaseStatuses_.values;
       CaseTypes = _CaseTypesMockData_.get();
@@ -206,18 +210,15 @@
 
       describe('when show all cases button is presser', () => {
         beforeEach(() => {
-          $rootScope.$broadcast('civicase::case-details::show-all-cases');
+          $rootScope.$broadcast(
+            'civicase::case-details::clear-filter-and-focus-specific-case', {
+              caseId: 10
+            }
+          );
         });
 
-        it('displays all cases', () => {
-          expect($scope.showCasesFromAllStatuses).toBe(true);
-          expect($rootScope.$broadcast).toHaveBeenCalledWith(
-            'civicase::case-search::filters-updated', {
-              selectedFilters: {
-                is_deleted: false,
-                showCasesFromAllStatuses: true
-              }
-            });
+        it('shows the cases', () => {
+          expect($window.location.href).toBe('#/case/list?caseId=10&all_statuses=1');
         });
       });
     });
