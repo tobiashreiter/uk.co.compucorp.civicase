@@ -218,7 +218,7 @@
         });
 
         it('shows the cases', () => {
-          expect($window.location.href).toBe('#/case/list?caseId=10&all_statuses=1');
+          expect($window.location.href).toBe('case_type_category=cases#/case/list?caseId=10&all_statuses=1&cf=%7B"case_type_category":"cases"%7D');
         });
       });
     });

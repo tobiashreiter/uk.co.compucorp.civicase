@@ -345,7 +345,9 @@
      * @param {string} data sent data
      */
     function focusSpecificCase (event, data) {
-      $window.location.href = '#/case/list?caseId=' + data.caseId + '&all_statuses=1';
+      var caseTypeCategory = $scope.filters.case_type_category;
+
+      $window.location.href = 'case_type_category=' + caseTypeCategory + '#/case/list?caseId=' + data.caseId + '&all_statuses=1&cf=%7B"case_type_category":"' + caseTypeCategory + '"%7D';
     }
 
     /**
