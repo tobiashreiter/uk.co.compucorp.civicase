@@ -1,5 +1,6 @@
 .DS_Store
 node_modules/
+coverage/
 bin/*
 !bin/install-php-linter
 *.css.map
