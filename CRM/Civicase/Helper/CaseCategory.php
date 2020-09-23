@@ -6,7 +6,7 @@ use CRM_Civicase_Service_CaseManagementUtils as CaseManagementUtils;
 use CRM_Civicase_BAO_CaseCategoryInstance as CaseCategoryInstance;
 
 /**
- * CaseCategory Helper class.
+ * CaseCategory Helper class with useful functions for managing case categories.
  */
 class CRM_Civicase_Helper_CaseCategory {
 

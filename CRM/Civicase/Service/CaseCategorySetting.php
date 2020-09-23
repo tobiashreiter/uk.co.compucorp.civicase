@@ -4,6 +4,10 @@ use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 
 /**
  * Civicase settings class.
+ *
+ * This class is a generic setting class that contains functions to
+ * fetch civicase setting related to webforms and any other setting
+ * that may be added.
  */
 class CRM_Civicase_Service_CaseCategorySetting {
 

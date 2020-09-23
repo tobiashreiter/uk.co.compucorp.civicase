@@ -6,6 +6,9 @@ use CRM_Civicase_Service_CaseCategoryCustomFieldExtends as CaseCategoryCustomFie
 
 /**
  * CaseTypeCategoryEventHandler Factory.
+ *
+ * This class helps to create a case category event handler object
+ * that can be used to respond to events on a case type category.
  */
 class CRM_Civicase_Factory_CaseTypeCategoryEventHandler {
 
