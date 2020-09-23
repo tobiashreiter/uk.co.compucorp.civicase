@@ -3,7 +3,7 @@
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 
 /**
- * Case Category Setting class.
+ * Civicase settings class.
  */
 class CRM_Civicase_Service_CaseCategorySetting {
 

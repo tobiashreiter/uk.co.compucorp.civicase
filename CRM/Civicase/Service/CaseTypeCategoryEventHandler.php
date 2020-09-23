@@ -5,7 +5,7 @@ use CRM_Civicase_Service_CaseCategoryCustomFieldExtends as CaseCategoryCustomFie
 use CRM_Civicase_Service_CaseCategoryInstanceUtils as CaseCategoryInstance;
 
 /**
- * Class CRM_Civicase_Service_CaseTypeCategoryEventHandler.
+ * Handles events when case type category is created/updated/deleted.
  */
 class CRM_Civicase_Service_CaseTypeCategoryEventHandler {
 

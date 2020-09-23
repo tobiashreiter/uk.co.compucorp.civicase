@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class CRM_Civicase_Test_Fabricator_CaseCategory.
+ * CaseCategory Fabricator class.
  */
 class CRM_Civicase_Test_Fabricator_CaseCategory {
 

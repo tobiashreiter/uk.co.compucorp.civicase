@@ -5,7 +5,7 @@ use CRM_Civicase_Service_CaseCategoryCustomDataType as CaseCategoryCustomDataTyp
 use CRM_Civicase_Service_CaseCategoryCustomFieldExtends as CaseCategoryCustomFieldExtends;
 
 /**
- * Class CRM_Civicase_Factory_CaseTypeCategoryEventHandler.
+ * CaseTypeCategoryEventHandler Factory.
  */
 class CRM_Civicase_Factory_CaseTypeCategoryEventHandler {
 

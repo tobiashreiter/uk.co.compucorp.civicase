@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class CRM_Civicase_Hook_CaseCategoryInstanceBase.
+ * Base class for the CaseCategoryInstance hook classes.
  */
 class CRM_Civicase_Hook_CaseCategoryInstanceBase {
 

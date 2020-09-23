@@ -3,7 +3,7 @@
 use CRM_Civicase_Setup_CaseCategoryInstanceSupport as CaseCategoryInstanceSupport;
 
 /**
- * Class CRM_Civicase_Upgrader_Steps_Step0012.
+ * Upgrader to add case category instamce support.
  */
 class CRM_Civicase_Upgrader_Steps_Step0012 {
 

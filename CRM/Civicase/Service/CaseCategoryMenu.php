@@ -186,7 +186,10 @@ class CRM_Civicase_Service_CaseCategoryMenu {
    *   Category details.
    */
   private function getCaseCategoryOptionDetailsByParams(array $params) {
-    $apiParams = ['sequential' => 1, 'option_group_id' => 'case_type_categories'];
+    $apiParams = [
+      'sequential' => 1,
+      'option_group_id' => 'case_type_categories',
+    ];
     $apiParams = array_merge($apiParams, $params);
     $result = civicrm_api3('OptionValue', 'get', $apiParams);
 

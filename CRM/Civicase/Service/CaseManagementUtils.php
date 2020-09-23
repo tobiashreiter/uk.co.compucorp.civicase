@@ -3,7 +3,7 @@
 use CRM_Civicase_Service_CaseCategoryMenu as CaseCategoryMenu;
 
 /**
- * Class CRM_Civicase_Service_CaseManagementUtils.
+ * CaseManagementUtils class for case instance type.
  */
 class CRM_Civicase_Service_CaseManagementUtils extends CRM_Civicase_Service_CaseCategoryInstanceUtils {
 

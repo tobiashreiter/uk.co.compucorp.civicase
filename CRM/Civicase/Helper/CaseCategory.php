@@ -6,7 +6,7 @@ use CRM_Civicase_Service_CaseManagementUtils as CaseManagementUtils;
 use CRM_Civicase_BAO_CaseCategoryInstance as CaseCategoryInstance;
 
 /**
- * CRM_Civicase_Helper_CaseCategory class.
+ * CaseCategory Helper class.
  */
 class CRM_Civicase_Helper_CaseCategory {
 
@@ -244,7 +244,10 @@ class CRM_Civicase_Helper_CaseCategory {
   public static function getWhereUserCanAccessActivities($contactId = NULL) {
     $caseTypeCategories = CaseType::buildOptions('case_type_category', 'validate');
     $caseCategoryPermission = new CaseCategoryPermission();
-    $permissionsToCheck = ['access my cases and activities', 'access all cases and activities'];
+    $permissionsToCheck = [
+      'access my cases and activities',
+      'access all cases and activities',
+    ];
     $caseCategoryAccess = [];
     $contactId = $contactId ? $contactId : CRM_Core_Session::getLoggedInContactID();
     foreach ($caseTypeCategories as $id => $caseTypeCategoryName) {

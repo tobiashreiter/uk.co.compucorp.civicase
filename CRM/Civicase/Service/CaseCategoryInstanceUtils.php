@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Interface CRM_Civicase_Service_CaseCategoryInstanceUtilsInterface.
+ * Interface for the CaseCategoryInstances to implement.
  */
 abstract class CRM_Civicase_Service_CaseCategoryInstanceUtils {
 

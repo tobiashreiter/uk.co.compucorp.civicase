@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class CRM_Civicase_Service_CaseCategoryCustomDataType.
+ * Helps to create the custom data option value for a case category.
  */
 class CRM_Civicase_Service_CaseCategoryCustomDataType {
 

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class CRM_Civicase_Service_CaseCategoryCustomFieldExtends.
+ * Class for managing support for case type category custom fields.
  */
 class CRM_Civicase_Service_CaseCategoryCustomFieldExtends {
 

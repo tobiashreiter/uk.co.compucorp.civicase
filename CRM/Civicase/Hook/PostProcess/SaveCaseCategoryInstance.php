@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class CRM_Civicase_Hook_PostProcess_SaveCaseCategoryInstance.
+ * CaseCategoryInstance Post Process Hook class.
  */
 class CRM_Civicase_Hook_PostProcess_SaveCaseCategoryInstance extends CRM_Civicase_Hook_CaseCategoryInstanceBase {
 
