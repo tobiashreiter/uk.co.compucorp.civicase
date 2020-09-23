@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class CRM_Civicase_Service_CaseCategoryCaseTypeCustomFieldExtends.
+ * Overrides some properties in CaseCategoryCustomFieldExtends.
  */
 class CRM_Civicase_Service_CaseCategoryCaseTypeCustomFieldExtends extends CRM_Civicase_Service_CaseCategoryCustomFieldExtends {
 

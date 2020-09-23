@@ -5,7 +5,7 @@ use CRM_Civicase_Test_Fabricator_CaseCategory as CaseCategoryFabricator;
 use CRM_Civicase_Service_CaseManagementUtils as CaseManagementUtils;
 
 /**
- * Class CRM_Civicase_Service_CaseTypeCategoryEventHandlerTest.
+ * Test class for the CaseTypeCategoryEventHandler.
  *
  * @group headless
  */

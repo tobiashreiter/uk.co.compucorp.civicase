@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class CRM_Civicase_BAO_CaseCategoryInstance.
+ * CaseCategoryInstance BAO.
  */
 class CRM_Civicase_BAO_CaseCategoryInstance extends CRM_Civicase_DAO_CaseCategoryInstance {
 

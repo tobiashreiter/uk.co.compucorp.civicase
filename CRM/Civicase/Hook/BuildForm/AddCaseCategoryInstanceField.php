@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class CRM_Civicase_Hook_BuildForm_AddCaseCategoryInstanceField.
+ * AddCaseCategoryInstanceField BuildForm Hook Class.
  */
 class CRM_Civicase_Hook_BuildForm_AddCaseCategoryInstanceField extends CRM_Civicase_Hook_CaseCategoryInstanceBase {
 

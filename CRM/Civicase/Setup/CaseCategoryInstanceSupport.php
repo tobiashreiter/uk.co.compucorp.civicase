@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class CRM_Civicase_Setup_CaseCategoryInstanceSupport.
+ * Sets up Case Category Instance Support.
  */
 class CRM_Civicase_Setup_CaseCategoryInstanceSupport {
 

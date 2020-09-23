@@ -4,7 +4,7 @@ use CRM_Civicase_Factory_CaseTypeCategoryEventHandler as CaseTypeCategoryEventHa
 use CRM_Civicase_Helper_CaseCategory as CaseTypeCategoryHelper;
 
 /**
- * Class CRM_Civicase_Hook_PostProcess_CaseCategoryPostProcessor.
+ * Handles post processing for the case category form.
  */
 class CRM_Civicase_Hook_PostProcess_CaseCategoryPostProcessor {
 
