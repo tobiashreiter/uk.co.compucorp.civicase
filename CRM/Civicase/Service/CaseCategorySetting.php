@@ -3,7 +3,7 @@
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 
 /**
- * Class CRM_Civicase_Service_CaseCategorySetting.
+ * Case Category Setting class.
  */
 class CRM_Civicase_Service_CaseCategorySetting {
 
@@ -14,7 +14,7 @@ class CRM_Civicase_Service_CaseCategorySetting {
    *   Array of webform settings.
    */
   public function getForWebform() {
-    $caseTypeCategories = CRM_Core_OptionGroup::values('case_type_categories', TRUE, FALSE, TRUE, NULL, 'name');
+    $caseTypeCategories = array_flip(CRM_Core_OptionGroup::values('case_type_categories', TRUE, FALSE, TRUE, NULL, 'name'));
     $caseCategorySettings = [];
     foreach ($caseTypeCategories as $caseCategoryName) {
       $caseCategorySettings = array_merge($caseCategorySettings, $this->getCaseWebformSetting($caseCategoryName));
