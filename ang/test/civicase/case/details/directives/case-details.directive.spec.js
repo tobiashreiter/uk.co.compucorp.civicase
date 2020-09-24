@@ -359,7 +359,13 @@
       $scope.viewingCaseId = caseObj.id;
       $scope.viewingCaseDetails = formatCase(caseObj);
       $scope.caseTypeCategory = 'cases';
-      element = $compile('<div civicase-case-details="viewingCaseDetails" viewing-case-id="viewingCaseId" case-type-category="caseTypeCategory"></div>')($scope);
+      element = $compile(`
+        <div
+          civicase-case-details="viewingCaseDetails"
+          viewing-case-id="viewingCaseId"
+          case-type-category="caseTypeCategory">
+        </div>`
+      )($scope);
       $scope.$digest();
     }
 

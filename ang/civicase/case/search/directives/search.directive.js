@@ -347,7 +347,11 @@
     function focusSpecificCase (event, data) {
       var caseTypeCategory = $scope.filters.case_type_category;
 
-      $window.location.href = 'case_type_category=' + caseTypeCategory + '#/case/list?caseId=' + data.caseId + '&all_statuses=1&cf=%7B"case_type_category":"' + caseTypeCategory + '"%7D';
+      $window.location.href =
+        'case_type_category=' + caseTypeCategory +
+        '#/case/list?caseId=' + data.caseId +
+        '&all_statuses=1' +
+        '&cf=%7B"case_type_category":"' + caseTypeCategory + '"%7D';
     }
 
     /**
