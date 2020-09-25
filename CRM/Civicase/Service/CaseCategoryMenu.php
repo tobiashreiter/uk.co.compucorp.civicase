@@ -59,7 +59,7 @@ class CRM_Civicase_Service_CaseCategoryMenu {
    * @param int $caseCategoryMenuId
    *   Menu ID.
    */
-  private function createCaseCategorySubmenus($caseTypeCategoryName, array $permissions, $caseCategoryMenuId) {
+  protected function createCaseCategorySubmenus($caseTypeCategoryName, array $permissions, $caseCategoryMenuId) {
     $submenus = [
       [
         'label' => ts('Dashboard'),
@@ -186,7 +186,10 @@ class CRM_Civicase_Service_CaseCategoryMenu {
    *   Category details.
    */
   private function getCaseCategoryOptionDetailsByParams(array $params) {
-    $apiParams = ['sequential' => 1, 'option_group_id' => 'case_type_categories'];
+    $apiParams = [
+      'sequential' => 1,
+      'option_group_id' => 'case_type_categories',
+    ];
     $apiParams = array_merge($apiParams, $params);
     $result = civicrm_api3('OptionValue', 'get', $apiParams);
 

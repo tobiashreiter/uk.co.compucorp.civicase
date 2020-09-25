@@ -208,6 +208,7 @@ function civicase_civicrm_buildForm($formName, &$form) {
     new CRM_Civicase_Hook_BuildForm_EnableCaseCategoryIconField(),
     new CRM_Civicase_Hook_BuildForm_CaseCategoryCustomGroupDisplay(),
     new CRM_Civicase_Hook_BuildForm_ModifyCaseTypesForAdvancedSearch(),
+    new CRM_Civicase_Hook_BuildForm_AddCaseCategoryInstanceField(),
     new CRM_Civicase_Hook_BuildForm_AddStyleFieldToCaseCustomGroups(),
     new CRM_Civicase_Hook_BuildForm_DisplayAllCustomGroupsInCaseForm(),
     new CRM_Civicase_Hook_BuildForm_LinkToCaseSearchByCaseId(),
@@ -420,6 +421,7 @@ function civicase_civicrm_post($op, $objectName, $objectId, &$objectRef) {
 function civicase_civicrm_postProcess($formName, &$form) {
   $hooks = [
     new CRM_Civicase_Hook_PostProcess_SetUserContextForSaveAndNewCase(),
+    new CRM_Civicase_Hook_PostProcess_SaveCaseCategoryInstance(),
     new CRM_Civicase_Hook_PostProcess_CaseCategoryPostProcessor(),
     new CRM_Civicase_Hook_PostProcess_ActivityFormStatusWordReplacement(),
     new CRM_Civicase_Hook_PostProcess_RedirectToCaseDetails(),
@@ -535,6 +537,11 @@ function civicase_civicrm_entityTypes(&$entityTypes) {
     'name'  => 'CaseContactLock',
     'class' => 'CRM_Civicase_DAO_CaseContactLock',
     'table' => 'civicase_contactlock',
+  ];
+  $entityTypes[] = [
+    'name'  => 'CaseCategoryInstance',
+    'class' => 'CRM_Civicase_DAO_CaseCategoryInstance',
+    'table' => 'civicrm_case_category_instance',
   ];
 
   _civicase_add_case_category_case_type_entity($entityTypes);

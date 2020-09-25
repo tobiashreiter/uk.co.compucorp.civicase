@@ -1,10 +1,13 @@
 <?php
 
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
-use CRM_Case_BAO_CaseType as CaseType;
 
 /**
- * Class CRM_Civicase_Service_CaseCategorySetting.
+ * Civicase settings class.
+ *
+ * This class is a generic setting class that contains functions to
+ * fetch civicase setting related to webforms and any other setting
+ * that may be added.
  */
 class CRM_Civicase_Service_CaseCategorySetting {
 
@@ -15,7 +18,7 @@ class CRM_Civicase_Service_CaseCategorySetting {
    *   Array of webform settings.
    */
   public function getForWebform() {
-    $caseTypeCategories = CaseType::buildOptions('case_type_category', 'validate');
+    $caseTypeCategories = array_flip(CRM_Core_OptionGroup::values('case_type_categories', TRUE, FALSE, TRUE, NULL, 'name'));
     $caseCategorySettings = [];
     foreach ($caseTypeCategories as $caseCategoryName) {
       $caseCategorySettings = array_merge($caseCategorySettings, $this->getCaseWebformSetting($caseCategoryName));

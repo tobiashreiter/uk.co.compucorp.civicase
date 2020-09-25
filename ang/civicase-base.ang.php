@@ -23,11 +23,13 @@ $options = [
   'priority' => 'priority',
   'activityCategories' => 'activity_category',
   'caseTypeCategories' => 'case_type_categories',
+  'caseCategoryInstanceType' => 'case_category_instance_type',
 ];
 
 OptionValuesHelper::setToJsVariables($options);
 NewCaseWebform::addWebformDataToOptions($options, $caseCategorySetting);
 set_case_types_to_js_vars($options);
+set_case_category_instance_to_js_vars($options);
 set_relationship_types_to_js_vars($options);
 set_file_categories_to_js_vars($options);
 set_activity_status_types_to_js_vars($options);
@@ -36,6 +38,14 @@ set_tags_to_js_vars($options);
 expose_settings($options, [
   'caseCategoryName' => $caseCategoryName,
 ]);
+
+/**
+ * Sets the tags and tagsets to javascript global variable.
+ */
+function set_case_category_instance_to_js_vars(&$options) {
+  $result = civicrm_api3('CaseCategoryInstance', 'get')['values'];
+  $options['caseCategoryInstanceMapping'] = $result;
+}
 
 /**
  * Expose settings.

@@ -21,8 +21,10 @@ require_once 'BaseHeadlessTest.php';
  *   The rest of the command to send.
  * @param string $decode
  *   Ex: 'json' or 'phpcode'.
+ *
  * @return string
  *   Response output (if the command executed normally).
+ *
  * @throws \RuntimeException
  *   If the command terminates abnormally.
  */
