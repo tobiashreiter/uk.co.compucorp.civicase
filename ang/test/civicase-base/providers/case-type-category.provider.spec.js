@@ -66,6 +66,58 @@
         expect(CaseTypeCategory.getCategoriesWithAccessToActivity()).toEqual(expectedResults);
       });
     });
+
+    describe('when checking if a case type category is part of sent instance type', () => {
+      beforeEach(() => {
+        module('civicase-base');
+        injectDependencies();
+      });
+
+      it('returns true if the case type category belongs to the sent instance', () => {
+        expect(CaseTypeCategory.isInstance('Cases', 'case_management')).toBe(true);
+      });
+    });
+
+    describe('when searching for a case type category by its id', () => {
+      var expectedResult;
+
+      beforeEach(() => {
+        module('civicase-base');
+        injectDependencies();
+
+        expectedResult = {
+          value: '1',
+          label: 'Cases',
+          name: 'Cases',
+          is_active: '1'
+        };
+      });
+
+      it('returns the case type category which matches the sent id', () => {
+        expect(CaseTypeCategory.findById('1')).toEqual(expectedResult);
+      });
+    });
+
+    describe('when searching for all case type categories by instance', () => {
+      var expectedResult;
+
+      beforeEach(() => {
+        module('civicase-base');
+        injectDependencies();
+
+        expectedResult = [{
+          value: '3',
+          label: 'Awards',
+          name: 'awards',
+          is_active: '1'
+        }];
+      });
+
+      it('returns all the case type categories belonging to sent instance', () => {
+        expect(CaseTypeCategory.findAllByInstance('applicant_management')).toEqual(expectedResult);
+      });
+    });
+
     /**
      * Injects and hoists the dependencies needed by this spec.
      */
