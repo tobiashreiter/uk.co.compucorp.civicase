@@ -12,6 +12,7 @@ use CRM_Civicase_Helper_GlobRecursive as GlobRecursive;
 use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
 use CRM_Civicase_Helper_NewCaseWebform as NewCaseWebform;
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
+use CRM_Civicase_Hook_Permissions_ExportCasesAndReports as ExportCasesAndReports;
 
 load_resources();
 $caseCategoryName = CRM_Utils_Request::retrieve('case_type_category', 'String');
@@ -125,11 +126,6 @@ function set_case_actions(&$options, $caseCategoryPermissions) {
       'icon' => 'fa-file-pdf-o',
     ],
     [
-      'title' => ts('Export Cases'),
-      'action' => 'ExportCases',
-      'icon' => 'fa-file-excel-o',
-    ],
-    [
       'title' => ts('Link Cases'),
       'action' => 'LinkCases',
       'number' => 1,
@@ -161,6 +157,13 @@ function set_case_actions(&$options, $caseCategoryPermissions) {
       'title' => ts('Delete Case'),
       'action' => 'DeleteCases',
       'icon' => 'fa-trash',
+    ];
+  }
+  if (CRM_Core_Permission::check(ExportCasesAndReports::PERMISSION_NAME)) {
+    $options['caseActions'][] = [
+      'title' => ts('Export Cases'),
+      'action' => 'ExportCases',
+      'icon' => 'fa-file-excel-o',
     ];
   }
 

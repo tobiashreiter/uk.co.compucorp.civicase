@@ -212,6 +212,7 @@ function civicase_civicrm_buildForm($formName, &$form) {
     new CRM_Civicase_Hook_BuildForm_AddStyleFieldToCaseCustomGroups(),
     new CRM_Civicase_Hook_BuildForm_DisplayAllCustomGroupsInCaseForm(),
     new CRM_Civicase_Hook_BuildForm_LinkToCaseSearchByCaseId(),
+    new CRM_Civicase_Hook_BuildForm_RemoveExportActionFromReports(),
   ];
 
   foreach ($hooks as $hook) {
@@ -450,8 +451,14 @@ function civicase_civicrm_postProcess($formName, &$form) {
  * Implements hook_civicrm_permission().
  */
 function civicase_civicrm_permission(&$permissions) {
-  $permissionHook = new CRM_Civicase_Hook_Permissions_CaseCategory($permissions);
-  $permissionHook->run();
+  $hooks = [
+    new CRM_Civicase_Hook_Permissions_CaseCategory($permissions),
+    new CRM_Civicase_Hook_Permissions_ExportCasesAndReports($permissions),
+  ];
+
+  foreach ($hooks as $hook) {
+    $hook->run();
+  }
 }
 
 /**
