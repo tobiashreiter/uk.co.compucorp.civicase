@@ -15,9 +15,9 @@ class CRM_Civicase_Service_ContactFieldsProvider {
     $fields = [];
     try {
       $contactId = CRM_Core_Session::singleton()->getLoggedInContactID();
-      $contact = civicrm_api3('contact', 'getsingle', array(
+      $contact = civicrm_api3('contact', 'getsingle', [
         'id' => $contactId,
-      ));
+      ]);
       if ($contact) {
         $fields = array_keys($contact);
       }

@@ -56,10 +56,10 @@ class CRM_Civicase_Hook_Tokens_AddContactTokensValues {
     $customFields = $this->contactCustomFieldsService->get();
     try {
       $contactId = CRM_Core_Session::singleton()->getLoggedInContactID();
-      $contactValues = civicrm_api3('contact', 'getsingle', array(
+      $contactValues = civicrm_api3('contact', 'getsingle', [
         'id' => $contactId,
         'return' => array_merge($contactFields, array_keys($customFields)),
-      ));
+      ]);
       $currentUsersContact = [];
       foreach ($contactValues as $k => $value) {
         if (strpos($k, 'civicrm_value_') !== FALSE) {

@@ -497,7 +497,7 @@ function civicase_civicrm_tokens(&$tokens) {
 /**
  * Implements hook_civicrm_tokenValues().
  */
-function civicase_civicrm_tokenValues(&$values, $cids, $job = NULL, $tokens = array(), $context = NULL) {
+function civicase_civicrm_tokenValues(&$values, $cids, $job = NULL, $tokens = [], $context = NULL) {
   $contactFieldsService = new CRM_Civicase_Service_ContactFieldsProvider();
   $contactCustomFieldsService = new CRM_Civicase_Service_ContactCustomFieldsProvider();
   $hooks = [
