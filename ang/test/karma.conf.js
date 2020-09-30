@@ -68,7 +68,11 @@ module.exports = function (config) {
     logLevel: config.LOG_INFO,
     autoWatch: true,
     coverageReporter: {
-      type: 'text-summary'
+      dir: extPath + '/coverage',
+      reporters: [
+        { type: 'text-summary' },
+        { type: 'lcov', subdir: 'js-lcov' }
+      ]
     },
     browsers: ['ChromeHeadlessBrowser'],
     customLaunchers: {

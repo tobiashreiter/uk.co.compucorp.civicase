@@ -1,8 +1,8 @@
 (function (angular, $, _) {
   var module = angular.module('civicase');
 
-  module.directive('civicaseCaseActions', function ($window, $rootScope, $injector, allowCaseLocks,
-    CaseActions, dialogService, PrintMergeCaseAction) {
+  module.directive('civicaseCaseActions', function ($rootScope,
+    $injector, allowCaseLocks, CaseActions) {
     return {
       restrict: 'A',
       templateUrl: '~/civicase/case/actions/directives/case-actions.directive.html',
@@ -26,15 +26,42 @@
       var ts = CRM.ts('civicase');
       var isBulkMode = attributes.isBulkMode;
 
-      $scope.hasSubMenu = function (action) {
-        return (action.items && action.items.length);
-      };
+      $scope.doAction = doAction;
+      $scope.hasSubMenu = hasSubMenu;
+      $scope.isActionEnabled = isActionEnabled;
+      $scope.isActionAllowed = isActionAllowed;
 
-      $scope.isActionEnabled = function (action) {
+      (function init () {
+        $scope.$watchCollection('cases', casesWatcher);
+      }());
+
+      /**
+       * Check if the sent action has any sub menu.
+       *
+       * @param {object} action action object
+       * @returns {boolean} if the sent action has any sub menu.
+       */
+      function hasSubMenu (action) {
+        return !!(action.items && action.items.length);
+      }
+
+      /**
+       * Check if the sent action is enabled.
+       *
+       * @param {object} action action object
+       * @returns {boolean} if the sent action is enabled.
+       */
+      function isActionEnabled (action) {
         return (!action.number || $scope.cases.length === +action.number);
-      };
+      }
 
-      $scope.isActionAllowed = function (action) {
+      /**
+       * Check if the sent action is allowed.
+       *
+       * @param {object} action action object
+       * @returns {boolean} if the sent action is allowed.
+       */
+      function isActionAllowed (action) {
         var isActionAllowed = true;
         var isLockCaseAction = _.startsWith(action.action, 'lockCases');
         var isCaseLockAllowed = allowCaseLocks;
@@ -46,10 +73,14 @@
 
         return isActionAllowed && ((isLockCaseAction && isCaseLockAllowed) ||
           (!isLockCaseAction && (!action.number || ((isBulkMode && action.number > 1) || (!isBulkMode && action.number === 1)))));
-      };
+      }
 
-      // Perform bulk actions
-      $scope.doAction = function (action) {
+      /**
+       * Perform the action for the sent action object
+       *
+       * @param {object} action action object
+       */
+      function doAction (action) {
         var caseActionService = getCaseActionService(action.action);
 
         if (!$scope.isActionEnabled(action) || !caseActionService) {
@@ -90,9 +121,14 @@
               element.trigger('crmPopupClose', [dialog, data]);
             });
         }
-      };
+      }
 
-      $scope.$watchCollection('cases', function (cases) {
+      /**
+       * Watcher function for cases object of scope
+       *
+       * @param {object[]} cases list of cases
+       */
+      function casesWatcher (cases) {
         // Special actions when viewing deleted cases
         if (cases.length && cases[0].is_deleted) {
           $scope.caseActions = [
@@ -107,7 +143,7 @@
           }
         }
         refreshDataForActions();
-      });
+      }
 
       /**
        * Get Case Action Service using the action's name.

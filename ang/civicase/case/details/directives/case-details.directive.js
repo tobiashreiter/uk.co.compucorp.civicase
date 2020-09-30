@@ -9,6 +9,7 @@
       scope: {
         activeTab: '=civicaseTab',
         isFocused: '=civicaseFocused',
+        viewingCaseId: '=',
         item: '=civicaseCaseDetails',
         showClearfiltersUi: '=',
         caseTypeCategory: '='
@@ -76,7 +77,7 @@
     $scope.isPlaceHolderVisible = isPlaceHolderVisible;
     $scope.markCompleted = markCompleted;
     $scope.onChangeSubject = onChangeSubject;
-    $scope.clearAllFilters = clearAllFilters;
+    $scope.clearAllFiltersToLoadSpecificCase = clearAllFiltersToLoadSpecificCase;
     $scope.addTimeline = addTimeline;
     $scope.caseGetParamsAsString = caseGetParamsAsString;
     $scope.createEmail = createEmail;
@@ -104,10 +105,12 @@
     }());
 
     /**
-     * Broadcast an event to show all cases.
+     * Broadcast an event to clear all filters and focus on a specific case.
      */
-    function clearAllFilters () {
-      $rootScope.$broadcast('civicase::case-details::show-all-cases');
+    function clearAllFiltersToLoadSpecificCase () {
+      $rootScope.$broadcast('civicase::case-details::clear-filter-and-focus-specific-case', {
+        caseId: $scope.viewingCaseId
+      });
     }
 
     /**
