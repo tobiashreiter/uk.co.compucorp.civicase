@@ -54,20 +54,17 @@ class CRM_Civicase_Hook_Tokens_AddContactTokensValues {
     }
     $contactFields = $this->contactFieldsService->get();
     $customFields = $this->contactCustomFieldsService->get();
+    $allFields = array_merge($contactFields, $customFields);
     try {
-      $contactId = CRM_Core_Session::singleton()->getLoggedInContactID();
-      $contactValues = civicrm_api3('contact', 'getsingle', [
-        'id' => $contactId,
-        'return' => array_merge($contactFields, array_keys($customFields)),
-      ]);
+      $contactValues = $this->getContactValues(array_merge($contactFields, array_keys($customFields)));
       $currentUsersContact = [];
-      foreach ($contactValues as $k => $value) {
-        if (strpos($k, 'civicrm_value_') !== FALSE) {
+      foreach ($contactValues as $fieldName => $value) {
+        if (strpos($fieldName, 'civicrm_value_') !== FALSE) {
           continue;
         }
-        $k = (strpos($k, 'custom_') !== FALSE) ? $customFields[$k] : $k;
-        if (in_array($k, array_merge($contactFields, $customFields))) {
-          $key = 'current_user.contact_' . $k;
+        $fieldName = (strpos($fieldName, 'custom_') !== FALSE) ? $customFields[$fieldName] : $fieldName;
+        if (in_array($fieldName, $allFields)) {
+          $key = 'current_user.contact_' . $fieldName;
           $currentUsersContact[$key] = $value;
         }
       }
@@ -78,6 +75,30 @@ class CRM_Civicase_Hook_Tokens_AddContactTokensValues {
     }
     catch (Throwable $ex) {
     }
+  }
+
+  /**
+   * Returns contact entity and custom field values.
+   *
+   * @param array $fields
+   *   List of fields to fetch.
+   *
+   * @return array
+   *   Contact field values.
+   */
+  public function getContactValues(array $fields) {
+    $contactId = CRM_Core_Session::singleton()->getLoggedInContactID();
+    $values = [];
+    try {
+      $values = civicrm_api3('contact', 'getsingle', [
+        'id' => $contactId,
+        'return' => $fields,
+      ]);
+    }
+    catch (Throwable $ex) {
+    }
+
+    return $values;
   }
 
   /**
