@@ -63,7 +63,7 @@ abstract class CRM_Civicase_Form_CaseCategoryTypeCustomField extends CRM_Core_Fo
       $this
     );
 
-    $this->hasCustomFieldsAssigned = count($groupTree) !== 0;
+    $hasCustomFieldsAssigned = count($groupTree) !== 0;
 
     foreach ($groupTree as $groupValues) {
       $pageTitle = count($groupTree) > 1 ? 'Custom Group Fields' : $groupValues['title'];
@@ -82,7 +82,7 @@ abstract class CRM_Civicase_Form_CaseCategoryTypeCustomField extends CRM_Core_Fo
     $this->assign('entityID', $this->entityId);
     $this->assign('groupID', $this->groupId);
     $this->assign('subType', $this->subTypeId);
-    $this->assign('hasCustomFieldsAssigned', $this->hasCustomFieldsAssigned);
+    $this->assign('hasCustomFieldsAssigned', $hasCustomFieldsAssigned);
   }
 
   /**
