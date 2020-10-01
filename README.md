@@ -1,11 +1,4 @@
-# Build Status
 [![Build Status](https://github.com/compucorp/uk.co.compucorp.civicase/workflows/Tests/badge.svg)](https://github.com/compucorp/uk.co.compucorp.civicase/workflows/Tests/badge.svg)
-
-*Dependent Civicrm Extentions Build Status*
-| CiviAwards  | CiviProspect |
-| ------------- | ------------- |
-| [![CiviAwards](https://github.com/compucorp/uk.co.compucorp.civiawards/workflows/Tests/badge.svg)](https://github.com/compucorp/uk.co.compucorp.civiawards/)  | [![CiviProspect](https://github.com/compucorp/uk.co.compucorp.civicrm.prospect/workflows/Tests/badge.svg)](https://github.com/compucorp/uk.co.compucorp.civicrm.prospect/)  |
-
 
 # CiviCase ReadMe
 
