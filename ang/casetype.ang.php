@@ -23,6 +23,9 @@ function get_casetype_js_files() {
 }
 
 return [
+  'css' => [
+    'css/*.css',
+  ],
   'js' => get_casetype_js_files(),
   'settings' => $options,
   'requires' => [

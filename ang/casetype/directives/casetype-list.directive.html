@@ -1,1 +1,26 @@
-<div>{{caseTypeCategory}} Screen</div>
+<div id="bootstrap-theme">
+  <h1 crm-page-title>{{:: ts('Manage Workflows') }}</h1>
+
+  <div class="panel panel-default civicase-casetype-list">
+    <div class="panel-body">
+      <table class="table">
+        <thead>
+        <tr>
+          <th>{{:: ts('Title') }}</th>
+          <th>{{:: ts('Description') }}</th>
+          <th>{{:: ts('Enabled?') }}</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="caseType in caseTypes">
+            <td>{{caseType.title}}</td>
+            <td>{{caseType.description}}</td>
+            <td>{{caseType.is_active ? ts('Yes') : ts('No') }}</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
