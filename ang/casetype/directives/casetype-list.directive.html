@@ -9,7 +9,7 @@
           <th>{{:: ts('Title') }}</th>
           <th>{{:: ts('Description') }}</th>
           <th>{{:: ts('Enabled?') }}</th>
-          <th></th>
+          <th width="20">{{:: ts('') }}</th>
         </tr>
         </thead>
         <tbody>
@@ -17,7 +17,31 @@
             <td>{{caseType.title}}</td>
             <td>{{caseType.description}}</td>
             <td>{{caseType.is_active ? ts('Yes') : ts('No') }}</td>
-            <td></td>
+            <td>
+              <div
+              class="btn-group btn-group-md"
+              uib-dropdown
+              dropdown-append-to="'#bootstrap-theme'"
+              >
+                <button
+                  class="btn btn-default btn-sm dropdown-toggle civiawards__reviews-tab__record-action-button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  uib-dropdown-toggle
+                  aria-label="{{ ts('Actions') }}"
+                >
+                  <i class="material-icons">more_vert</i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu>
+                  <li ng-repeat="actionItem in actionItems">
+                    <ng-include
+                      civicase-include-replace src="actionItem.templateUrl">
+                    </ng-include>
+                  </li>
+                </ul>
+              </div>
+            </td>
           </tr>
         </tbody>
       </table>

@@ -18,10 +18,13 @@
    * @param {object} $scope scope object
    * @param {object} ts ts
    * @param {object} civicaseCrmApi service to use civicrm api
+   * @param {object[]} WorkflowListActionItems list of workflow list action items
    */
-  function casetypeListController ($scope, ts, civicaseCrmApi) {
+  function casetypeListController ($scope, ts, civicaseCrmApi,
+    WorkflowListActionItems) {
     $scope.ts = ts;
     $scope.caseTypes = [];
+    $scope.actionItems = WorkflowListActionItems;
 
     (function init () {
       getCaseTypes($scope.caseTypeCategory)
