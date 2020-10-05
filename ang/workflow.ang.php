@@ -16,17 +16,17 @@ use CRM_Civicase_Helper_GlobRecursive as GlobRecursive;
  * @return array
  *   list of js files
  */
-function get_casetype_js_files() {
+function get_workflow_js_files() {
   return array_merge([
-    'ang/casetype.js',
-  ], GlobRecursive::get(dirname(__FILE__) . '/casetype/*.js'));
+    'ang/workflow.js',
+  ], GlobRecursive::get(dirname(__FILE__) . '/workflow/*.js'));
 }
 
 return [
   'css' => [
     'css/*.css',
   ],
-  'js' => get_casetype_js_files(),
+  'js' => get_workflow_js_files(),
   'settings' => $options,
   'requires' => [
     'crmUi',
@@ -35,6 +35,6 @@ return [
     'civicase-base',
   ],
   'partials' => [
-    'ang/casetype',
+    'ang/workflow',
   ],
 ];

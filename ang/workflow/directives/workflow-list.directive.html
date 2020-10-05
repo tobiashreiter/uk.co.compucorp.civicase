@@ -1,7 +1,7 @@
 <div id="bootstrap-theme">
   <h1 crm-page-title>{{:: ts('Manage Workflows') }}</h1>
 
-  <div class="panel panel-default civicase-casetype-list">
+  <div class="panel panel-default civicase-workflow-list">
     <div class="panel-body">
       <table class="table">
         <thead>
@@ -13,10 +13,10 @@
         </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="caseType in caseTypes">
-            <td>{{caseType.title}}</td>
-            <td>{{caseType.description}}</td>
-            <td>{{caseType.is_active ? ts('Yes') : ts('No') }}</td>
+          <tr ng-repeat="workflow in workflows">
+            <td>{{workflow.title}}</td>
+            <td>{{workflow.description}}</td>
+            <td>{{workflow.is_active ? ts('Yes') : ts('No') }}</td>
             <td>
               <div
               class="btn-group btn-group-md"
@@ -24,7 +24,7 @@
               dropdown-append-to="'#bootstrap-theme'"
               >
                 <button
-                  class="btn btn-default btn-sm dropdown-toggle civiawards__reviews-tab__record-action-button"
+                  class="btn btn-default btn-sm dropdown-toggle"
                   data-toggle="dropdown"
                   aria-haspopup="true"
                   aria-expanded="false"

@@ -18,8 +18,8 @@
     <access_arguments>access CiviCRM</access_arguments>
   </item>
   <item>
-    <path>civicrm/casetype/a</path>
-    <page_callback>CRM_Civicase_Page_CaseTypeAngular</page_callback>
+    <path>civicrm/workflow/a</path>
+    <page_callback>CRM_Civicase_Page_WorkflowAngular</page_callback>
     <access_arguments>access all cases and activities,access my cases and activities</access_arguments>
   </item>
   <item>

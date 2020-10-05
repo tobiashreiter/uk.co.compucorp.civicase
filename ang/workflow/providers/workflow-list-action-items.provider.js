@@ -1,5 +1,5 @@
 (function (angular, $, _) {
-  var module = angular.module('casetype');
+  var module = angular.module('workflow');
 
   module.provider('WorkflowListActionItems', function () {
     var workflowListActionItems = [];

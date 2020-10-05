@@ -3,11 +3,11 @@
 use Civi\Angular\AngularLoader as AngularLoader;
 
 /**
- * Class CRM_CiviAwards_Page_AwardAngular.
+ * Class CRM_Civicase_Page_WorkflowAngular.
  *
- * Define an Angular base-page for CiviAwards.
+ * Define an Angular base-page for Workflows.
  */
-class CRM_Civicase_Page_CaseTypeAngular extends \CRM_Core_Page {
+class CRM_Civicase_Page_WorkflowAngular extends \CRM_Core_Page {
 
   /**
    * Run Function.
@@ -21,8 +21,8 @@ class CRM_Civicase_Page_CaseTypeAngular extends \CRM_Core_Page {
    */
   public function run() {
     $loader = new AngularLoader();
-    $loader->setPageName('civicrm/casetype/a');
-    $loader->setModules(['crmApp', 'casetype']);
+    $loader->setPageName('civicrm/workflow/a');
+    $loader->setModules(['crmApp', 'workflow']);
     $loader->load();
     \Civi::resources()->addSetting([
       'crmApp' => [
