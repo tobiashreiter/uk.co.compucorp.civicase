@@ -1,0 +1,6 @@
+{
+  "scenarios": [{
+    "label": "Workflows List",
+    "url": "{url}/civicrm/workflow/a?case_type_category=cases#/list"
+  }]
+}
