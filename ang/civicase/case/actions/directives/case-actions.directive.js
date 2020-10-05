@@ -63,7 +63,7 @@
        */
       function isActionAllowed (action) {
         var isActionAllowed = true;
-        var isLockCaseAction = _.startsWith(action.action, 'lockCases');
+        var isLockCaseAction = _.startsWith(action.action, 'LockCases');
         var isCaseLockAllowed = allowCaseLocks;
         var caseActionService = getCaseActionService(action.action);
 
@@ -72,7 +72,10 @@
         }
 
         return isActionAllowed && ((isLockCaseAction && isCaseLockAllowed) ||
-          (!isLockCaseAction && (!action.number || ((isBulkMode && action.number > 1) || (!isBulkMode && action.number === 1)))));
+          (!isLockCaseAction && (
+            !action.number ||
+            ((isBulkMode && action.number > 1) || (!isBulkMode && action.number === 1))
+          )));
       }
 
       /**
