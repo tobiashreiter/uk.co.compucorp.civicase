@@ -346,15 +346,20 @@
         /**
          * Returns a list of case types
          *
-         * @param {object} isSequential whether data should be returned in array format
          * @returns {object} a list of case types indexed by id.
          */
-        get: function (isSequential) {
+        get: function () {
+          return _.clone(caseTypesMock);
+        },
+        /**
+         * Returns a list of case types in array format
+         *
+         * @returns {object[]} a list of case types.
+         */
+        getSequential: function () {
           var clonesCaseTypesData = _.clone(caseTypesMock);
 
-          return isSequential
-            ? Object.values(clonesCaseTypesData)
-            : clonesCaseTypesData;
+          return Object.values(clonesCaseTypesData);
         }
       };
     };

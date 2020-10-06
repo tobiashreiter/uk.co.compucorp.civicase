@@ -23,7 +23,7 @@
     describe('basic tests', () => {
       beforeEach(() => {
         civicaseCrmApiMock.and.returnValue($q.resolve({
-          values: CaseTypesMockData.get(true)
+          values: CaseTypesMockData.getSequential()
         }));
         initController();
         $scope.$digest();
@@ -38,7 +38,7 @@
       });
 
       it('displays the list of fetched workflows', () => {
-        expect($scope.workflows).toEqual(CaseTypesMockData.get(true));
+        expect($scope.workflows).toEqual(CaseTypesMockData.getSequential());
       });
 
       it('displays the action items dropdown', () => {
