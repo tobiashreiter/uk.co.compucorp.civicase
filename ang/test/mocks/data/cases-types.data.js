@@ -350,6 +350,16 @@
          */
         get: function () {
           return _.clone(caseTypesMock);
+        },
+        /**
+         * Returns a list of case types in array format
+         *
+         * @returns {object[]} a list of case types.
+         */
+        getSequential: function () {
+          var clonesCaseTypesData = _.clone(caseTypesMock);
+
+          return Object.values(clonesCaseTypesData);
         }
       };
     };
