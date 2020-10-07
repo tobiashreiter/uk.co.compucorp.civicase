@@ -134,6 +134,58 @@
       });
     });
 
+    describe('role types and counts', () => {
+      describe('when building the list of roles', () => {
+        let listOfCaseRoles;
+
+        beforeEach(() => {
+          listOfCaseRoles = caseType.definition.caseRoles
+            .map((caseRole) => jasmine.objectContaining({
+              role: caseRole.name
+            }));
+
+          peopleTabRoles.updateRolesList();
+        });
+
+        it('contains the full list of case role types', () => {
+          expect(peopleTabRoles.caseTypeRoles).toEqual(listOfCaseRoles);
+        });
+
+        it('adds a count for assigned roles', () => {
+          expect(peopleTabRoles.caseTypeRoles).toContain(jasmine.objectContaining({
+            role: caseType.definition.caseRoles[0].name,
+            count: 1
+          }));
+        });
+
+        it('does not add a count for unnasigned roles', () => {
+          expect(peopleTabRoles.caseTypeRoles).toContain(jasmine.objectContaining({
+            role: caseType.definition.caseRoles[1].name,
+            count: 0
+          }));
+        });
+      });
+
+      describe('when some case roles have been unnasigned', () => {
+        beforeEach(() => {
+          relationships = [
+            _.extend({}, relationships[0], { is_active: '0' }),
+            _.extend({}, relationships[0], { is_active: '1' })
+          ];
+
+          peopleTabRoles.setCaseRelationships(relationships);
+          peopleTabRoles.updateRolesList();
+        });
+
+        it('does not add a count for unnasigned roles', () => {
+          expect(peopleTabRoles.caseTypeRoles).toContain(jasmine.objectContaining({
+            role: caseType.definition.caseRoles[0].name,
+            count: 1
+          }));
+        });
+      });
+    });
+
     describe('filtering', () => {
       describe('when filtering roles by type', () => {
         beforeEach(() => {

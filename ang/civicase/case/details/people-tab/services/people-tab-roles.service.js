@@ -24,12 +24,19 @@
     roles.updateRolesList = updateRolesList;
 
     /**
-     * Assign number of roles present per type of relationship
+     * Assign number of roles present per type of relationship.
+     *
+     * For case roles, it will only count them if they are active.
      */
     function assignCountOfRolesPerType () {
       _.each(roles.caseTypeRoles, function (caseTypeRole) {
         caseTypeRole.count = _.filter(roles.list, function (role) {
-          return role.display_name && role.name === caseTypeRole.name;
+          var roleIsAssigned = !!role.display_name;
+          var roleBelongsToType = role.role === caseTypeRole.role;
+          var isClientRole = role.role === ts('Client');
+
+          return roleIsAssigned && roleBelongsToType &&
+            (isClientRole || !role.isPastRole);
         }).length;
       });
     }
