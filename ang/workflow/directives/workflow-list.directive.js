@@ -27,11 +27,20 @@
     $scope.actionItems = WorkflowListActionItems;
 
     (function init () {
+      refreshWorkflowsList();
+
+      $scope.$on('workflow::list::refresh', refreshWorkflowsList);
+    }());
+
+    /**
+     * Refresh workflows list
+     */
+    function refreshWorkflowsList () {
       getWorkflows($scope.caseTypeCategory)
         .then(function (workflows) {
           $scope.workflows = workflows;
         });
-    }());
+    }
 
     /**
      * Get list of workflows for the sent case type category
