@@ -98,7 +98,7 @@
         });
 
       return crmStatus({
-        start: $scope.ts('Saving Award...'),
+        start: $scope.ts('Saving Workflow...'),
         success: $scope.ts('Saved')
       }, promise);
     }
