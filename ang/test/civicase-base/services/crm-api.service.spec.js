@@ -18,7 +18,7 @@
 
     describe('when calling the api with an array of requests', () => {
       describe('and when one of the requests returns an error', () => {
-        var isErrorThrown = false;
+        var errorHandler;
 
         beforeEach(() => {
           crmApiMock.and.returnValue($q.resolve([
@@ -26,12 +26,13 @@
             { is_error: true }
           ]));
 
+          errorHandler = jasmine.createSpy('errorHandler');
+
           civicaseCrmApi([
             ['SomeEntity', 'someendpoint', {}],
             ['SomeEntity2', 'someendpoint2', {}]
-          ]).catch(function () {
-            isErrorThrown = true;
-          });
+          ]).catch(errorHandler);
+
           $rootScope.$digest();
         });
 
@@ -43,12 +44,12 @@
         });
 
         it('throws an exception', () => {
-          expect(isErrorThrown).toBe(true);
+          expect(errorHandler).toHaveBeenCalled();
         });
       });
 
       describe('and none one of the requests returns an error', () => {
-        var isErrorThrown = false;
+        var errorHandler;
 
         beforeEach(() => {
           crmApiMock.and.returnValue($q.resolve([
@@ -56,12 +57,13 @@
             { is_error: false }
           ]));
 
+          errorHandler = jasmine.createSpy('errorHandler');
+
           civicaseCrmApi([
             ['SomeEntity', 'someendpoint', {}],
             ['SomeEntity2', 'someendpoint2', {}]
-          ]).catch(function () {
-            isErrorThrown = true;
-          });
+          ]).catch(errorHandler);
+
           $rootScope.$digest();
         });
 
@@ -73,7 +75,7 @@
         });
 
         it('does not throw an exception', () => {
-          expect(isErrorThrown).toBe(false);
+          expect(errorHandler).not.toHaveBeenCalled();
         });
       });
     });
