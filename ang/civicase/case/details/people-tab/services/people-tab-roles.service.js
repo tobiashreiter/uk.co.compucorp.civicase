@@ -36,7 +36,7 @@
           var isClientRole = role.role === ts('Client');
 
           return roleIsAssigned && roleBelongsToType &&
-            (isClientRole || !role.isPastRole);
+            (isClientRole || role.is_active === '1');
         }).length;
       });
     }
@@ -137,7 +137,7 @@
               desc: caseRelation.description,
               display_name: contact.display_name,
               email: contact.email,
-              isPastRole: caseRelation.is_active === '0',
+              is_active: caseRelation.is_active,
               phone: contact.phone,
               relationship_type_id: caseTypeRole.relationship_type_id,
               role: caseTypeRole.role,

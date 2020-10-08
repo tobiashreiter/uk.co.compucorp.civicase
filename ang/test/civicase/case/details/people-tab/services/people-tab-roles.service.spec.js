@@ -99,7 +99,7 @@
             desc: caseRelation.description,
             display_name: caseManager.display_name,
             email: caseManager.email,
-            isPastRole: caseRelation.is_active === '0',
+            is_active: caseRelation.is_active,
             phone: caseManager.phone,
             relationship_type_id: caseRelation.relationship_type_id,
             role: caseTypeRole.name,
