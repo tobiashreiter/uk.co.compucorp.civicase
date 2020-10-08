@@ -15,14 +15,17 @@
     }));
 
     beforeEach(() => {
-      var relationshipType = _.find(relationshipTypes, {
-        name_b_a: caseItem.contacts[1].role
+      const clientContact = caseItem.contacts[0];
+      const roleContact = caseItem.contacts[1];
+      const relationshipType = _.find(relationshipTypes, {
+        name_b_a: roleContact.role
       });
+      roleContact.manager = '1';
       relationships = [
         {
-          'api.Contact.get': { count: 1, values: [caseItem.contacts[1]] },
-          contact_id_a: caseItem.contacts[0].contact_id,
-          contact_id_b: caseItem.contacts[1].contact_id,
+          'api.Contact.get': { count: 1, values: [roleContact] },
+          contact_id_a: clientContact.contact_id,
+          contact_id_b: roleContact.contact_id,
           is_active: '1',
           relationship_type_id: relationshipType.id
         }
@@ -105,7 +108,12 @@
             phone: caseManager.phone,
             relationship_type_id: caseRelation.relationship_type_id,
             role: caseTypeRole.name,
-            start_date: caseRelation.start_date
+            start_date: caseRelation.start_date,
+            relationship: jasmine.objectContaining(caseRelation),
+            previousValues: {
+              end_date: caseRelation.end_date,
+              start_date: caseRelation.start_date
+            }
           }));
         });
       });
@@ -131,6 +139,47 @@
             description: `Case Manager. ${caseTypeRole.name}`,
             relationship_type_id: relationshipType.id,
             role: caseTypeRole.name
+          }));
+        });
+      });
+
+      describe('when the same contact holds multiple active and inactive roles', () => {
+        beforeEach(() => {
+          const mixedRelationships = [
+            _.extend({}, relationships[0], { is_active: '0' }),
+            _.extend({}, relationships[0], { contact_id_b: _.unique(), is_active: '0' }),
+            _.extend({}, relationships[0], { is_active: '1' })
+          ];
+
+          peopleTabRoles.setCaseRelationships(mixedRelationships);
+          peopleTabRoles.updateRolesList();
+        });
+
+        it('includes the role relationship and marks it as active', () => {
+          expect(peopleTabRoles.list).toContain(jasmine.objectContaining({
+            contact_id: relationships[0].contact_id_b,
+            relationship: jasmine.objectContaining({
+              is_active: '1'
+            })
+          }));
+        });
+      });
+
+      describe('when the same contact holds multiple inactive roles', () => {
+        beforeEach(() => {
+          const inactiveRelationships = [
+            _.extend({}, relationships[0], { is_active: '0' }),
+            _.extend({}, relationships[0], { contact_id_b: _.unique(), is_active: '0' }),
+            _.extend({}, relationships[0], { is_active: '0' })
+          ];
+
+          peopleTabRoles.setCaseRelationships(inactiveRelationships);
+          peopleTabRoles.updateRolesList();
+        });
+
+        it('does not include the contact relation since all of its relationships to the case are not active', () => {
+          expect(peopleTabRoles.list).not.toContain(jasmine.objectContaining({
+            contact_id: relationships[0].contact_id_b
           }));
         });
       });
