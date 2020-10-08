@@ -2,9 +2,9 @@
 
 describe('Case Details People Tab', () => {
   let $controller, $rootScope, $scope, CasesData, caseRoleSelectorContact,
-    ContactsData, crmConfirmDialog, crmConfirmYesEvent, originalCrmConfirm, originalSelect2, dialogServiceMock;
-  const CONTACT_CANT_HAVE_ROLE_MESSAGE = 'Case clients cannot be selected for a case role. Please select another contact.';
-  const CONTACT_NOT_SELECTED_MESSAGE = 'Please select a contact.';
+    ContactsData, crmConfirmDialog, crmConfirmYesEvent, originalCrmConfirm,
+    originalSelect2, dialogServiceMock, CaseTypesMockData,
+    PeoplesTabMessageConstants;
 
   beforeEach(module('civicase', 'civicase.data', ($provide) => {
     dialogServiceMock = jasmine.createSpyObj('dialogService', ['open', 'close']);
@@ -12,11 +12,15 @@ describe('Case Details People Tab', () => {
     $provide.value('dialogService', dialogServiceMock);
   }));
 
-  beforeEach(inject(function (_$controller_, _$q_, _$rootScope_, _CasesData_, _ContactsData_) {
+  beforeEach(inject(function (_$controller_, _$q_, _$rootScope_,
+    _CasesData_, _ContactsData_, _CaseTypesMockData_,
+    _PeoplesTabMessageConstants_) {
     $controller = _$controller_;
     $rootScope = _$rootScope_;
     CasesData = _CasesData_;
     ContactsData = _ContactsData_;
+    CaseTypesMockData = _CaseTypesMockData_;
+    PeoplesTabMessageConstants = _PeoplesTabMessageConstants_;
 
     $scope = $rootScope.$new();
     $scope.$bindToRoute = jasmine.createSpy('$bindToRoute');
@@ -50,7 +54,9 @@ describe('Case Details People Tab', () => {
   });
 
   beforeEach(() => {
+    const caseType = CaseTypesMockData.get()[1];
     $scope.item = CasesData.get().values[0];
+    $scope.item.definition = caseType.definition;
 
     initController({
       $scope: $scope
@@ -198,7 +204,7 @@ describe('Case Details People Tab', () => {
 
       it('displays an error message', () => {
         expect(getDialogModel().errorMessage.contactSelection)
-          .toBe(CONTACT_CANT_HAVE_ROLE_MESSAGE);
+          .toBe(PeoplesTabMessageConstants.CONTACT_CANT_HAVE_ROLE_MESSAGE);
       });
 
       it('does not make api requests', () => {
@@ -229,7 +235,7 @@ describe('Case Details People Tab', () => {
 
       it('displays an error message', () => {
         expect(getDialogModel().errorMessage.contactSelection)
-          .toBe(CONTACT_CANT_HAVE_ROLE_MESSAGE);
+          .toBe(PeoplesTabMessageConstants.CONTACT_CANT_HAVE_ROLE_MESSAGE);
       });
 
       it('does not make api requests', () => {
@@ -257,7 +263,7 @@ describe('Case Details People Tab', () => {
 
       it('displays an error message', () => {
         expect(getDialogModel().errorMessage.contactSelection)
-          .toBe(CONTACT_NOT_SELECTED_MESSAGE);
+          .toBe(PeoplesTabMessageConstants.CONTACT_NOT_SELECTED_MESSAGE);
       });
 
       it('does not make api requests', () => {
