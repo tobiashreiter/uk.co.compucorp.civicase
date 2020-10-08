@@ -130,7 +130,7 @@
           <label for="select-role-{{ $index }}">
             <div>
               <strong>{{ role.role }}</strong>
-              <span class="badge" ng-if="role.isPastRole">
+              <span class="badge" ng-if="role.is_active === '0'">
                 Past
               </span>
             </div>
