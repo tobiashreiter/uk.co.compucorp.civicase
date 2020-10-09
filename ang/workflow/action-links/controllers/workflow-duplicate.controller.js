@@ -98,8 +98,8 @@
         });
 
       return crmStatus({
-        start: $scope.ts('Saving Workflow...'),
-        success: $scope.ts('Saved')
+        start: $scope.ts('Duplicating Workflow...'),
+        success: $scope.ts('Duplicate created successfully')
       }, promise);
     }
 

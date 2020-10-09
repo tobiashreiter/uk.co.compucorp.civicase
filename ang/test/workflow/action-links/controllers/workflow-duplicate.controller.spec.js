@@ -108,8 +108,8 @@
 
             it('shows saving notification while save is in progress', () => {
               expect(crmStatus).toHaveBeenCalledWith({
-                start: 'Saving Workflow...',
-                success: 'Saved'
+                start: 'Duplicating Workflow...',
+                success: 'Duplicate created successfully'
               }, jasmine.any(Object));
             });
 
