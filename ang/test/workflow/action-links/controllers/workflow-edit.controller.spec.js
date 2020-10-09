@@ -1,6 +1,6 @@
 /* eslint-env jasmine */
 
-((_) => {
+((_, getCrmUrl) => {
   describe('workflow edit controller', () => {
     let $controller, $rootScope, $scope, $window;
 
@@ -16,19 +16,20 @@
 
     describe('when clicking on edit button', () => {
       beforeEach(() => {
-        CRM.url.and.returnValue('some url');
+        getCrmUrl.and.returnValue('crm url mock');
+        getCrmUrl.calls.reset();
         initController();
         $scope.clickHandler(5);
       });
 
       it('redirects to the case type page for the clicked workflow', () => {
-        expect(CRM.url).toHaveBeenCalledWith('civicrm/a/#/caseType/5');
-        expect($window.location.href).toBe('some url');
+        expect(getCrmUrl).toHaveBeenCalledWith('civicrm/a/#/caseType/5');
+        expect($window.location.href).toBe('crm url mock');
       });
     });
 
     /**
-     * Initializes the contact case tab case details controller.
+     * Initializes the workflow epic controller.
      */
     function initController () {
       $scope = $rootScope.$new();
@@ -36,4 +37,4 @@
       $controller('WorkflowEditController', { $scope: $scope });
     }
   });
-})(CRM._);
+})(CRM._, CRM.url);

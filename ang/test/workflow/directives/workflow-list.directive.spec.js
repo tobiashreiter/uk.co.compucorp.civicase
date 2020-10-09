@@ -46,6 +46,32 @@
       });
     });
 
+    describe('when list refresh event is fired', () => {
+      beforeEach(() => {
+        civicaseCrmApiMock.and.returnValue($q.resolve({
+          values: CaseTypesMockData.getSequential()
+        }));
+        initController();
+        $scope.$digest();
+        $scope.workflows = [];
+        $rootScope.$broadcast('workflow::list::refresh');
+        $scope.$digest();
+      });
+
+      it('fetches the case types for the current case type category', () => {
+        expect(civicaseCrmApiMock.calls.count()).toBe(2);
+        expect(civicaseCrmApiMock.calls.mostRecent().args).toEqual(['CaseType', 'get', {
+          sequential: 1,
+          case_type_category: 'some_case_type_category',
+          options: { limit: 0 }
+        }]);
+      });
+
+      it('refreshes the workflows list', () => {
+        expect($scope.workflows).toEqual(CaseTypesMockData.getSequential());
+      });
+    });
+
     /**
      * Initializes the contact case tab case details controller.
      */
