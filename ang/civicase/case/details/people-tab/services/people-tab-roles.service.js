@@ -180,7 +180,7 @@
             end_date: null,
             email: contact.email,
             phone: contact.phone,
-            role: contact.role,
+            role: ts('Client'),
             start_date: null
           };
         });
