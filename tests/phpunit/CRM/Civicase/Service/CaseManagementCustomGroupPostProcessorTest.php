@@ -18,12 +18,12 @@ class CRM_Civicase_Service_CaseManagementCustomGroupPostProcessorTest extends Ba
    *   Expected Extends Id.
    * @param string $expectedExtendsValue
    *   Expected extends value.
-   * @param array $caseTypes
+   * @param mixed $caseTypes
    *   Case types for the cases category.
    *
    * @dataProvider getDataForCaseManagementCustomGroup
    */
-  public function testSaveCustomGroupForCaseCategory($expectedExtendsId, $expectedExtendsValue, array $caseTypes) {
+  public function testSaveCustomGroupForCaseCategory($expectedExtendsId, $expectedExtendsValue, $caseTypes) {
     $customGroup = $this->getCustomGroupObject();
     $caseManagementHelper = $this->getCaseManagementHelperMock($caseTypes);
     $caseManagementProcessor = new CaseManagementCustomGroupPostProcessor();
