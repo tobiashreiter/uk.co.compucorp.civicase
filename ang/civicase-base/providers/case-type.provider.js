@@ -19,15 +19,17 @@
      * Returns an instance of the case type service.
      *
      * @param {object} DashboardCaseTypeItems the dashboard case type items.
+     * @param {object} RelationshipType relationship type service.
      * @returns {object} the case type service.
      */
-    function $get (DashboardCaseTypeItems) {
+    function $get (DashboardCaseTypeItems, RelationshipType) {
       return {
         getAll: getAll,
         getByCategory: getByCategory,
         getById: getById,
         getItemsForCaseType: getItemsForCaseType,
-        getTitlesForNames: getTitlesForNames
+        getTitlesForNames: getTitlesForNames,
+        getAllRolesByCategoryID: getAllRolesByCategory
       };
 
       /**
@@ -38,6 +40,33 @@
        */
       function getItemsForCaseType (caseTypeName) {
         return DashboardCaseTypeItems[caseTypeName] || [];
+      }
+
+      /**
+       * @param {*} caseTypeCategoryID case type category id
+       * @returns {object[]} case roles for the given category id
+       */
+      function getAllRolesByCategory (caseTypeCategoryID) {
+        var allCaseTypesForGivenCategory = getByCategory(caseTypeCategoryID);
+        var caseRoles = [];
+
+        _.each(allCaseTypesForGivenCategory, function (caseType) {
+          _.each(caseType.definition.caseRoles, function (role) {
+            caseRoles.push({ name: role.name });
+          });
+        });
+
+        return _.chain(caseRoles)
+          .uniq(function (caseRole) {
+            return caseRole.name;
+          })
+          .each(function (caseRole) {
+            caseRole.id = RelationshipType.getByName(caseRole.name).id;
+          })
+          .uniq(function (caseRole) {
+            return caseRole.id;
+          })
+          .value();
       }
     }
 

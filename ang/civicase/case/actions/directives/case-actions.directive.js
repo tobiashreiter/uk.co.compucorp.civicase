@@ -87,40 +87,43 @@
           return;
         }
 
-        var result = caseActionService.doAction($scope.cases, action, $scope.refresh);
-        // Open popup if callback returns a path & query
-        // TODO Move the following code into a service, and the Serivces which
-        // returns an URL, should call this newly created service directly.
-        if (result) {
-          var url = '';
-          if (angular.isObject(result)) {
-            // Add refresh data
-            if ($scope.popupParams) {
-              result.query.civicase_reload = $scope.popupParams();
-            }
+        caseActionService
+          .doAction($scope.cases, action, $scope.refresh)
+          .then(function (result) {
+            // Open popup if callback returns a path & query
+            // TODO Move the following code into a service, and the Serivces which
+            // returns an URL, should call this newly created service directly.
+            if (result) {
+              var url = '';
+              if (angular.isObject(result)) {
+                // Add refresh data
+                if ($scope.popupParams) {
+                  result.query.civicase_reload = $scope.popupParams();
+                }
 
-            url = CRM.url(result.path, result.query);
-          } else {
-            url = result;
-          }
-
-          // Mimic the behavior of CRM.popup()
-          var formData = false;
-          var dialog = CRM.loadForm(url)
-            // Listen for success events and buffer them so we only trigger once
-            .on('crmFormSuccess crmPopupFormSuccess', function (e, data) {
-              formData = data;
-              $rootScope.$broadcast('updateCaseData');
-              refreshDataForActions();
-            })
-            .on('dialogclose.crmPopup', function (e, data) {
-              if (formData) {
-                element.trigger('crmPopupFormSuccess', [dialog, formData]);
+                url = CRM.url(result.path, result.query);
+              } else {
+                url = result;
               }
 
-              element.trigger('crmPopupClose', [dialog, data]);
-            });
-        }
+              // Mimic the behavior of CRM.popup()
+              var formData = false;
+              var dialog = CRM.loadForm(url)
+                // Listen for success events and buffer them so we only trigger once
+                .on('crmFormSuccess crmPopupFormSuccess', function (e, data) {
+                  formData = data;
+                  $rootScope.$broadcast('updateCaseData');
+                  refreshDataForActions();
+                })
+                .on('dialogclose.crmPopup', function (e, data) {
+                  if (formData) {
+                    element.trigger('crmPopupFormSuccess', [dialog, formData]);
+                  }
+
+                  element.trigger('crmPopupClose', [dialog, data]);
+                });
+            }
+          });
       }
 
       /**
