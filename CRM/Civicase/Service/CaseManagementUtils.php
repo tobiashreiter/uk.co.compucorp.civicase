@@ -24,7 +24,7 @@ class CRM_Civicase_Service_CaseManagementUtils extends CRM_Civicase_Service_Case
    * {@inheritDoc}
    */
   public function getCaseTypePostProcessor() {
-    return new CaseManagementCaseTypePostProcessor();
+    return new CaseManagementCaseTypePostProcessor(new CaseManagementCustomGroupPostProcessHelper());
   }
 
   /**
@@ -38,14 +38,7 @@ class CRM_Civicase_Service_CaseManagementUtils extends CRM_Civicase_Service_Case
    * {@inheritDoc}
    */
   public function getCustomGroupPostProcessor() {
-    return new CaseManagementCustomGroupPostProcessor();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  public function getPostProcessHelper() {
-    return new CaseManagementCustomGroupPostProcessHelper();
+    return new CaseManagementCustomGroupPostProcessor(new CaseManagementCustomGroupPostProcessHelper());
   }
 
 }

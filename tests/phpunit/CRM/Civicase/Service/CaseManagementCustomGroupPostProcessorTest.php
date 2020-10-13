@@ -1,6 +1,6 @@
 <?php
 
-use CRM_Civicase_Helper_InstanceCustomGroupPostProcess as CaseManagementPostProcessHelper;
+use CRM_Civicase_Helper_CaseManagementCustomGroupPostProcess as CaseManagementPostProcessHelper;
 use CRM_Core_BAO_CustomGroup as CustomGroup;
 use CRM_Civicase_Service_CaseManagementCustomGroupPostProcessor as CaseManagementCustomGroupPostProcessor;
 
@@ -26,8 +26,8 @@ class CRM_Civicase_Service_CaseManagementCustomGroupPostProcessorTest extends Ba
   public function testSaveCustomGroupForCaseCategory($expectedExtendsId, $expectedExtendsValue, $caseTypes) {
     $customGroup = $this->getCustomGroupObject();
     $caseManagementHelper = $this->getCaseManagementHelperMock($caseTypes);
-    $caseManagementProcessor = new CaseManagementCustomGroupPostProcessor();
-    $caseManagementProcessor->saveCustomGroupForCaseCategory($customGroup, $caseManagementHelper);
+    $caseManagementProcessor = new CaseManagementCustomGroupPostProcessor($caseManagementHelper);
+    $caseManagementProcessor->saveCustomGroupForCaseCategory($customGroup);
     $this->assertEquals($expectedExtendsId, $customGroup->extends_entity_column_id);
     $this->assertEquals($expectedExtendsValue, $customGroup->extends_entity_column_value, $expectedExtendsValue);
   }

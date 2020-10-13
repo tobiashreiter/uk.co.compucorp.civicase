@@ -1,6 +1,6 @@
 <?php
 
-use CRM_Civicase_Helper_InstanceCustomGroupPostProcess as CaseManagementPostProcessHelper;
+use CRM_Civicase_Helper_CaseManagementCustomGroupPostProcess as CaseManagementPostProcessHelper;
 use CRM_Civicase_Service_CaseManagementCaseTypePostProcessor as CaseManagementCaseTypePostProcessor;
 
 /**
@@ -26,8 +26,8 @@ class CRM_Civicase_Service_CaseManagementCaseTypePostProcessorTest extends BaseH
     $customGroup = $this->createCustomGroup($entityColumnValues);
     $customGroupId = $customGroup[0]['id'];
     $caseManagementHelper = $this->getCaseManagementHelperMock($customGroup, []);
-    $caseManagementProcessor = new CaseManagementCaseTypePostProcessor();
-    $caseManagementProcessor->processCaseTypeCustomGroupsOnCreate($caseTypeId, $caseManagementHelper);
+    $caseManagementProcessor = new CaseManagementCaseTypePostProcessor($caseManagementHelper);
+    $caseManagementProcessor->processCaseTypeCustomGroupsOnCreate($caseTypeId);
     $expectedCustomGroup = civicrm_api3('CustomGroup', 'getsingle', ['id' => $customGroupId]);
 
     $this->assertEquals($expectedCustomGroup['extends_entity_column_value'], $expectedEntityColumnValues);
@@ -60,8 +60,8 @@ class CRM_Civicase_Service_CaseManagementCaseTypePostProcessorTest extends BaseH
     $customGroupId = $customGroup[0]['id'];
     $mismatchCustomGroupId = $mismatchCustomGroup[0]['id'];
     $caseManagementHelper = $this->getCaseManagementHelperMock($customGroup, $mismatchCustomGroup);
-    $caseManagementProcessor = new CaseManagementCaseTypePostProcessor();
-    $caseManagementProcessor->processCaseTypeCustomGroupsOnUpdate($caseTypeId, $caseManagementHelper);
+    $caseManagementProcessor = new CaseManagementCaseTypePostProcessor($caseManagementHelper);
+    $caseManagementProcessor->processCaseTypeCustomGroupsOnUpdate($caseTypeId);
     $expectedCustomGroup = civicrm_api3('CustomGroup', 'getsingle', ['id' => $customGroupId]);
     $expectedMismatchCustomGroup = civicrm_api3('CustomGroup', 'getsingle', ['id' => $mismatchCustomGroupId]);
 
@@ -138,7 +138,7 @@ class CRM_Civicase_Service_CaseManagementCaseTypePostProcessorTest extends BaseH
           'getCaseTypeCustomGroups',
           'getCaseTypeCustomGroupsWithCategoryMismatch',
           'getCaseCategoryForCaseType',
-        ],
+        ]
       )
       ->getMock();
     $caseManagementHelper->method('getCaseTypeCustomGroups')->willReturn($customGroupReturn);

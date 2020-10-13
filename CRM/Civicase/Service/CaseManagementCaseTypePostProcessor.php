@@ -1,7 +1,7 @@
 <?php
 
 use CRM_Civicase_Service_BaseCaseTypePostProcessor as BaseCaseTypePostProcessor;
-use CRM_Civicase_Helper_InstanceCustomGroupPostProcess as InstanceCustomGroupPostProcess;
+use CRM_Civicase_Helper_CaseManagementCustomGroupPostProcess as CaseManagementCustomGroupPostProcess;
 
 /**
  * Handles the custom field related post processing for a case type.
@@ -13,15 +13,30 @@ use CRM_Civicase_Helper_InstanceCustomGroupPostProcess as InstanceCustomGroupPos
 class CRM_Civicase_Service_CaseManagementCaseTypePostProcessor extends BaseCaseTypePostProcessor {
 
   /**
+   * Stores the CaseManagement Post process helper.
+   *
+   * @var \CRM_Civicase_Helper_CaseManagementCustomGroupPostProcess
+   */
+  private $postProcessHelper;
+
+  /**
+   * Constructor function.
+   *
+   * @param \CRM_Civicase_Helper_CaseManagementCustomGroupPostProcess $postProcessHelper
+   *   Post process helper class.
+   */
+  public function __construct(CaseManagementCustomGroupPostProcess $postProcessHelper) {
+    $this->postProcessHelper = $postProcessHelper;
+  }
+
+  /**
    * Handles case type post processing on create.
    *
    * @param int $caseTypeId
    *   Case Type ID.
-   * @param \CRM_Civicase_Helper_InstanceCustomGroupPostProcess $postProcessHelper
-   *   Post process helper class.
    */
-  public function processCaseTypeCustomGroupsOnCreate($caseTypeId, InstanceCustomGroupPostProcess $postProcessHelper) {
-    $customGroups = $postProcessHelper->getCaseTypeCustomGroups($caseTypeId);
+  public function processCaseTypeCustomGroupsOnCreate($caseTypeId) {
+    $customGroups = $this->postProcessHelper->getCaseTypeCustomGroups($caseTypeId);
     if (empty($customGroups)) {
       return;
     }
@@ -37,11 +52,9 @@ class CRM_Civicase_Service_CaseManagementCaseTypePostProcessor extends BaseCaseT
    *
    * @param int $caseTypeId
    *   Case type Id.
-   * @param \CRM_Civicase_Helper_InstanceCustomGroupPostProcess $postProcessHelper
-   *   Post process helper class.
    */
-  public function processCaseTypeCustomGroupsOnUpdate($caseTypeId, InstanceCustomGroupPostProcess $postProcessHelper) {
-    $mismatchCustomGroups = $postProcessHelper->getCaseTypeCustomGroupsWithCategoryMismatch($caseTypeId);
+  public function processCaseTypeCustomGroupsOnUpdate($caseTypeId) {
+    $mismatchCustomGroups = $this->postProcessHelper->getCaseTypeCustomGroupsWithCategoryMismatch($caseTypeId);
     if (empty($mismatchCustomGroups)) {
       return;
     }
@@ -51,7 +64,7 @@ class CRM_Civicase_Service_CaseManagementCaseTypePostProcessor extends BaseCaseT
       $this->updateCustomGroup($cusGroup['id'], $entityColumnValues);
     }
 
-    $this->processCaseTypeCustomGroupsOnCreate($caseTypeId, $postProcessHelper);
+    $this->processCaseTypeCustomGroupsOnCreate($caseTypeId);
   }
 
   /**

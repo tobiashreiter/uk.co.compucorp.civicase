@@ -32,7 +32,7 @@ class CRM_Civicase_Hook_Post_CaseCategoryCustomGroupSaver {
     $caseCategoryValue = $caseTypeCategories[$objectRef->extends];
     $caseCategoryInstance = CaseCategoryHelper::getInstanceObject($caseCategoryValue);
     $customGroupPostProcessor = $caseCategoryInstance->getCustomGroupPostProcessor();
-    $customGroupPostProcessor->saveCustomGroupForCaseCategory($objectRef, $caseCategoryInstance->getPostProcessHelper());
+    $customGroupPostProcessor->saveCustomGroupForCaseCategory($objectRef);
   }
 
   /**

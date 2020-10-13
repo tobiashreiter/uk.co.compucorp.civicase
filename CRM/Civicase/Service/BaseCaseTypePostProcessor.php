@@ -1,7 +1,5 @@
 <?php
 
-use CRM_Civicase_Helper_InstanceCustomGroupPostProcess as InstanceCustomGroupPostProcess;
-
 /**
  * The base class for case category case type processor classes.
  */
@@ -14,11 +12,9 @@ abstract class CRM_Civicase_Service_BaseCaseTypePostProcessor {
    * extending the Case entity for the case category of the case type.
    *
    * @param int $caseTypeId
-   *   Custom group object.
-   * @param \CRM_Civicase_Helper_InstanceCustomGroupPostProcess $postProcessHelper
-   *   Custom group instance helper.
+   *   Custom group object..
    */
-  abstract public function processCaseTypeCustomGroupsOnCreate($caseTypeId, InstanceCustomGroupPostProcess $postProcessHelper);
+  abstract public function processCaseTypeCustomGroupsOnCreate($caseTypeId);
 
   /**
    * This function updates the custom groups for the case type on update.
@@ -31,9 +27,7 @@ abstract class CRM_Civicase_Service_BaseCaseTypePostProcessor {
    *
    * @param int $caseTypeId
    *   Custom group object.
-   * @param \CRM_Civicase_Helper_InstanceCustomGroupPostProcess $postProcessHelper
-   *   Custom group instance helper.
    */
-  abstract public function processCaseTypeCustomGroupsOnUpdate($caseTypeId, InstanceCustomGroupPostProcess $postProcessHelper);
+  abstract public function processCaseTypeCustomGroupsOnUpdate($caseTypeId);
 
 }
