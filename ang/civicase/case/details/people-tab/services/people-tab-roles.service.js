@@ -169,7 +169,7 @@
      */
     function getClientRoles () {
       return _.filter(caseContacts, {
-        role: ts('Client')
+        role: 'Client'
       })
         .map(function (contact) {
           return {

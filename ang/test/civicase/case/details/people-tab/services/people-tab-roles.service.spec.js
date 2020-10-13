@@ -285,6 +285,17 @@
           })]);
         });
       });
+
+      describe('when filtering by a non-existent role', () => {
+        beforeEach(() => {
+          peopleTabRoles.updateRolesList();
+          peopleTabRoles.filterRoles('', 'Applicant');
+        });
+
+        it('does not return any roles', () => {
+          expect(peopleTabRoles.list).toEqual([]);
+        });
+      });
     });
 
     describe('pagination', () => {
