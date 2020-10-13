@@ -3,6 +3,7 @@
 use CRM_Civicase_Service_CaseCategoryMenu as CaseCategoryMenu;
 use CRM_Civicase_Service_CaseManagementCustomGroupPostProcessor as CaseManagementCustomGroupPostProcessor;
 use CRM_Civicase_Helper_CaseManagementCustomGroupPostProcess as CaseManagementCustomGroupPostProcessHelper;
+use CRM_Civicase_Service_CaseManagementCaseTypePostProcessor as CaseManagementCaseTypePostProcessor;
 
 /**
  * CaseManagementUtils class for case instance type.
@@ -23,7 +24,7 @@ class CRM_Civicase_Service_CaseManagementUtils extends CRM_Civicase_Service_Case
    * {@inheritDoc}
    */
   public function getCaseTypePostProcessor() {
-    // TODO: Implement getCaseTypePostProcessor() method.
+    return new CaseManagementCaseTypePostProcessor();
   }
 
   /**
