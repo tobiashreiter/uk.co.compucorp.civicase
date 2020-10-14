@@ -107,4 +107,29 @@ abstract class CRM_Civicase_Helper_InstanceCustomGroupPostProcess {
     return $result['values'];
   }
 
+  /**
+   * Returns values from cg_extend_object option group.
+   *
+   * @return array
+   *   CG extends values.
+   */
+  public function getCgExtendValues() {
+    $result = civicrm_api3('OptionValue', 'get', [
+      'sequential' => 1,
+      'option_group_id' => "cg_extend_objects",
+    ]);
+
+    return array_column($result['values'], 'label', 'value');
+  }
+
+  /**
+   * Returns the available case type categories.
+   *
+   * @return array
+   *   Case type categories.
+   */
+  public function getCaseTypeCategories() {
+    return CRM_Case_BAO_CaseType::buildOptions('case_type_category', 'validate');
+  }
+
 }
