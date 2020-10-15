@@ -75,7 +75,7 @@
             width: '40%',
             title: 'Email Case Role(s)',
             buttons: [{
-              text: ts('Save'),
+              text: ts('Draft Email'),
               icons: { primary: 'fa-check' },
               click: jasmine.any(Function)
             }]
