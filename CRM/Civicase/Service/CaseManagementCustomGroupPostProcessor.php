@@ -1,6 +1,6 @@
 <?php
 
-use CRM_Core_BAO_CustomGroup as CustomGroup;
+use CRM_Core_DAO_CustomGroup as CustomGroup;
 use CRM_Civicase_Helper_CaseManagementCustomGroupPostProcess as CaseManagementCustomGroupPostProcess;
 
 /**
@@ -39,7 +39,7 @@ class CRM_Civicase_Service_CaseManagementCustomGroupPostProcessor extends CRM_Ci
    * all case types for the Case category in the `extends_entity_column_value`
    * column.
    *
-   * @param \CRM_Core_BAO_CustomGroup $customGroup
+   * @param \CRM_Core_DAO_CustomGroup $customGroup
    *   Custom Group Object.
    */
   public function saveCustomGroupForCaseCategory(CustomGroup $customGroup) {
@@ -50,7 +50,7 @@ class CRM_Civicase_Service_CaseManagementCustomGroupPostProcessor extends CRM_Ci
       return;
     }
 
-    $caseTypeIds = $this->postProcessHelper->getCaseTypeIdsForCaseCategory($customGroup, $caseTypeCategories[$customGroup->extends]);
+    $caseTypeIds = $this->postProcessHelper->getCaseTypeIdsForCaseCategory($caseTypeCategories[$customGroup->extends]);
     $ids = 'null';
     if (!empty($caseTypeIds)) {
       $ids = CRM_Core_DAO::VALUE_SEPARATOR . implode(CRM_Core_DAO::VALUE_SEPARATOR, $caseTypeIds) . CRM_Core_DAO::VALUE_SEPARATOR;

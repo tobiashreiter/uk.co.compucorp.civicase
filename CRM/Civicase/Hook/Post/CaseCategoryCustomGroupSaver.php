@@ -24,7 +24,9 @@ class CRM_Civicase_Hook_Post_CaseCategoryCustomGroupSaver {
       return;
     }
 
-    $caseTypeCategories = array_flip(CRM_Case_BAO_CaseType::buildOptions('case_type_category', 'validate'));
+    $caseTypeCategories = CRM_Civicase_Helper_CaseCategory::getCaseCategories();
+    $caseTypeCategories = array_column($caseTypeCategories, 'value', 'name');
+
     if (empty($caseTypeCategories[$objectRef->extends])) {
       return;
     }
