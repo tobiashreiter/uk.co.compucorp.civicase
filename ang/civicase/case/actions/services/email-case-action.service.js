@@ -35,7 +35,7 @@
     this.doAction = function (cases, action, callbackFn) {
       model = {
         caseRoles: [],
-        selectedCaseRoles: [],
+        selectedCaseRoles: '',
         caseIds: [],
         deferObject: $q.defer()
       };
@@ -107,6 +107,16 @@
      * Click handler for role selector popup sace button
      */
     function roleSelectorClickHandler () {
+      if (model.selectedCaseRoles.length === 0) {
+        CRM.alert(
+          ts('Select case role(s).'),
+          ts('No case roles are selected'),
+          'error'
+        );
+
+        return;
+      }
+
       getContactsForCaseIds(
         getSelect2Value(model.selectedCaseRoles),
         model.caseIds
