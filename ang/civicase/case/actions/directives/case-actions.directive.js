@@ -1,7 +1,7 @@
 (function (angular, $, _) {
   var module = angular.module('civicase');
 
-  module.directive('civicaseCaseActions', function ($rootScope,
+  module.directive('civicaseCaseActions', function ($q, $rootScope,
     $injector, allowCaseLocks, CaseActions) {
     return {
       restrict: 'A',
@@ -87,8 +87,7 @@
           return;
         }
 
-        caseActionService
-          .doAction($scope.cases, action, $scope.refresh)
+        $q.when(caseActionService.doAction($scope.cases, action, $scope.refresh))
           .then(function (result) {
             // Open popup if callback returns a path & query
             // TODO Move the following code into a service, and the Serivces which

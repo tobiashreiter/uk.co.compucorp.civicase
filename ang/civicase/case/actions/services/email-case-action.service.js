@@ -4,7 +4,7 @@
   module.service('EmailCaseAction', EmailCaseAction);
 
   /**
-   * EmailCaseAction service callback function.
+   * EmailCaseAction service.
    *
    * @param {object} $q $q service
    * @param {object} ts translation service
