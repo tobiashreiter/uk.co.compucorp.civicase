@@ -3,7 +3,7 @@
 /**
  * Default instance custom group post process helper class.
  */
-abstract class CRM_Civicase_Helper_InstanceCustomGroupPostProcess {
+class CRM_Civicase_Helper_InstanceCustomGroupPostProcess {
 
   /**
    * Returns case type ID's for a case category.
@@ -25,7 +25,7 @@ abstract class CRM_Civicase_Helper_InstanceCustomGroupPostProcess {
   }
 
   /**
-   * Fetches the case type category frr the case type.
+   * Fetches the case type category for the case type.
    *
    * @param int $caseTypeId
    *   Case Type ID.
