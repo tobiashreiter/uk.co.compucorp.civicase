@@ -60,6 +60,17 @@ abstract class CRM_Civicase_Service_CaseCategoryInstanceUtils {
   abstract public function getCustomGroupDisplayFormatter();
 
   /**
+   * Returns function to fetch Case category entity types.
+   *
+   * Returns function to fetch entity types for the case category
+   * custom group entity for the category instance. For most case category
+   * instances, this function is not necessary so returning NULL is fine here.
+   */
+  public function getCustomGroupEntityTypesFunction() {
+    return NULL;
+  }
+
+  /**
    * CRM_Civicase_Service_CaseCategoryInstanceUtils constructor.
    *
    * @param int|null $caseCategoryInstanceKey
