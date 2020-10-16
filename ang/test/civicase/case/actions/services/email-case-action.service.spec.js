@@ -32,8 +32,6 @@
 
       $window.location.search = '?case_type_category=cases';
 
-      caseObj = CasesMockData.get().values[0];
-
       actualCRMAlert = CRM.alert;
       CRM.alert = jasmine.createSpy('CRMAlert');
     }));
@@ -42,10 +40,11 @@
       CRM.alert = actualCRMAlert;
     });
 
-    describe('when clicing on the action', () => {
+    describe('when clicing on the action with one case selected', () => {
       var modalOpenCall, returnValue, expectedModelObject;
 
       beforeEach(function () {
+        caseObj = CasesMockData.get().values[0];
         EmailCaseAction.doAction([caseObj], 'email', jasmine.any(Function))
           .then(function (result) {
             returnValue = result;
@@ -102,10 +101,10 @@
             });
           });
 
-          it('returns the path to open the send email popup', () => {
+          it('returns the path to open the send email popup and does not hide the draft button', () => {
             expect(returnValue).toEqual({
               path: 'civicrm/activity/email/add',
-              query: { action: 'add', reset: 1, cid: '4,6', caseid: '141' }
+              query: { action: 'add', reset: 1, cid: '4,6', hideDraftButton: 0, caseid: '141' }
             });
           });
         });
@@ -145,6 +144,35 @@
               'error'
             );
           });
+        });
+      });
+    });
+
+    describe('when clicing on the action with more than one case selected', () => {
+      var modalOpenCall, returnValue;
+
+      beforeEach(function () {
+        EmailCaseAction.doAction(
+          [CasesMockData.get().values[0], CasesMockData.get().values[1]],
+          'email',
+          jasmine.any(Function)
+        ).then(function (result) {
+          returnValue = result;
+        });
+
+        modalOpenCall = dialogServiceMock.open.calls.mostRecent().args;
+
+        civicaseCrmApiMock.and.returnValue($q.resolve({ values: RelationshipData.get() }));
+        modalOpenCall[2].selectedCaseRoles = '11,12';
+        modalOpenCall[3].buttons[0].click();
+
+        $rootScope.$digest();
+      });
+
+      it('returns the path to open the send email popup and hides the draft button', () => {
+        expect(returnValue).toEqual({
+          path: 'civicrm/activity/email/add',
+          query: { action: 'add', reset: 1, cid: '4,6', hideDraftButton: 1 }
         });
       });
     });
