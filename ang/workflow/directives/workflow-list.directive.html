@@ -2,7 +2,7 @@
   <h1 crm-page-title>{{:: ts('Manage Workflows') }}</h1>
 
   <div class="text-center" ng-if="workflows.length === 0 && !isLoading">
-    No workflows are available.
+    {{:: ts('No workflows are available.') }}
   </div>
 
   <div class="panel panel-default civicase-workflow-list" ng-if="workflows.length > 0">
