@@ -2,7 +2,7 @@
 
 (function (_, $) {
   describe('Email Case Action', function () {
-    var $q, $window, $rootScope, EmailCaseAction, CasesMockData, caseObj,
+    var $q, $rootScope, EmailCaseAction, CasesMockData, caseObj,
       actualCRMAlert, dialogServiceMock, civicaseCrmApiMock, RelationshipData;
 
     beforeEach(module('civicase', 'civicase.data'));
@@ -11,15 +11,8 @@
       dialogServiceMock = jasmine.createSpyObj('dialogService', ['open', 'close']);
       civicaseCrmApiMock = jasmine.createSpy('civicaseCrmApi');
 
-      $window = {
-        location: {
-          search: ''
-        }
-      };
-
       $provide.value('civicaseCrmApi', civicaseCrmApiMock);
       $provide.value('dialogService', dialogServiceMock);
-      $provide.value('$window', $window);
     }));
 
     beforeEach(inject(function (_$rootScope_, _EmailCaseAction_, _CasesData_,
@@ -30,8 +23,6 @@
       $rootScope = _$rootScope_;
       RelationshipData = _RelationshipData_;
 
-      $window.location.search = '?case_type_category=cases';
-
       actualCRMAlert = CRM.alert;
       CRM.alert = jasmine.createSpy('CRMAlert');
     }));
@@ -40,7 +31,7 @@
       CRM.alert = actualCRMAlert;
     });
 
-    describe('when clicing on the action with one case selected', () => {
+    describe('when clicking on the action with one case selected', () => {
       var modalOpenCall, returnValue, expectedModelObject;
 
       beforeEach(function () {
@@ -148,7 +139,7 @@
       });
     });
 
-    describe('when clicing on the action with more than one case selected', () => {
+    describe('when clicking on the action with more than one case selected', () => {
       var modalOpenCall, returnValue;
 
       beforeEach(function () {

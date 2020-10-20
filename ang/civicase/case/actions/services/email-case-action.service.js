@@ -10,17 +10,14 @@
    * @param {object} ts translation service
    * @param {Function} isTruthy service to check if value is truthy
    * @param {object} dialogService dialog service
-   * @param {Function} parseUrlParameters parse url parameters
-   * @param {object} $window browsers window object
    * @param {object} CaseType case type service
    * @param {object} CaseTypeCategory case type category service
    * @param {object} civicaseCrmApi service to use civicrm api
    * @param {Function} getSelect2Value service to get select 2 values
+   * @param {Function} currentCaseCategory current case category
    */
-  function EmailCaseAction ($q, ts, isTruthy, dialogService, parseUrlParameters,
-    $window, CaseType, CaseTypeCategory, civicaseCrmApi, getSelect2Value) {
-    var model = {};
-
+  function EmailCaseAction ($q, ts, isTruthy, dialogService, CaseType,
+    CaseTypeCategory, civicaseCrmApi, getSelect2Value, currentCaseCategory) {
     /**
      * Returns the configuration options to open up a mail popup to
      * communicate with the selected role. Displays an error message
@@ -33,7 +30,7 @@
      * @returns {Promise} promise which resolves to the path for the popup
      */
     this.doAction = function (cases, action, callbackFn) {
-      model = {
+      var model = {
         caseRoles: [],
         selectedCaseRoles: '',
         caseIds: [],
@@ -45,7 +42,7 @@
         return caseObj.id;
       });
 
-      openRoleSelectorPopUp();
+      openRoleSelectorPopUp(model);
 
       return model.deferObject.promise;
     };
@@ -53,7 +50,7 @@
     /**
      * @param {string|number[]} caseRoleIds list of case roles ids
      * @param {string|number[]} caseIDs list of case ids
-     * @returns {Promise} promise
+     * @returns {Promise} promise resolves to list of contact ids
      */
     function getContactsForCaseIds (caseRoleIds, caseIDs) {
       return civicaseCrmApi('Relationship', 'get', {
@@ -73,8 +70,7 @@
      * @returns {object[]} list of case roles
      */
     function getCaseRoles () {
-      var caseTypeCategoryName = parseUrlParameters($window.location.search).case_type_category;
-      var caseTypeCategoryID = CaseTypeCategory.findByName(caseTypeCategoryName).value;
+      var caseTypeCategoryID = CaseTypeCategory.findByName(currentCaseCategory).value;
 
       return _.map(CaseType.getAllRolesByCategoryID(caseTypeCategoryID), function (caseRole) {
         return _.extend(caseRole, { text: caseRole.name });
@@ -83,8 +79,10 @@
 
     /**
      * Open a popup where user can select roles
+     *
+     * @param {object} model popups model object
      */
-    function openRoleSelectorPopUp () {
+    function openRoleSelectorPopUp (model) {
       dialogService.open(
         'EmailCaseActionRoleSelector',
         '~/civicase/case/actions/directives/email-role-selector.html',
@@ -97,7 +95,9 @@
           buttons: [{
             text: ts('Draft Email'),
             icons: { primary: 'fa-check' },
-            click: roleSelectorClickHandler
+            click: function () {
+              roleSelectorClickHandler(model);
+            }
           }]
         }
       );
@@ -105,8 +105,10 @@
 
     /**
      * Click handler for role selector popup sace button
+     *
+     * @param {object} model popups model object
      */
-    function roleSelectorClickHandler () {
+    function roleSelectorClickHandler (model) {
       if (model.selectedCaseRoles.length === 0) {
         CRM.alert(
           ts('Select case role(s).'),

@@ -43,29 +43,27 @@
       }
 
       /**
-       * @param {*} caseTypeCategoryID case type category id
+       * @param {string|number} caseTypeCategoryID case type category id
        * @returns {object[]} case roles for the given category id
        */
       function getAllRolesByCategory (caseTypeCategoryID) {
         var allCaseTypesForGivenCategory = getByCategory(caseTypeCategoryID);
-        var caseRoles = [];
 
-        _.each(allCaseTypesForGivenCategory, function (caseType) {
-          _.each(caseType.definition.caseRoles, function (role) {
-            caseRoles.push({ name: role.name });
-          });
-        });
+        // console.log(allCaseTypesForGivenCategory);
+        return _.chain(allCaseTypesForGivenCategory)
+          .map('definition')
+          .map('caseRoles')
+          .flatten()
+          .uniq('name') // removes same role present in different case types
+          .map(function (caseRole) {
+            var relationshipType = RelationshipType.getByName(caseRole.name);
 
-        return _.chain(caseRoles)
-          .uniq(function (caseRole) {
-            return caseRole.name;
+            return {
+              id: relationshipType.id,
+              name: caseRole.name
+            };
           })
-          .each(function (caseRole) {
-            caseRole.id = RelationshipType.getByName(caseRole.name).id;
-          })
-          .uniq(function (caseRole) {
-            return caseRole.id;
-          })
+          .uniq('id') // removes different versions of the same role(A-B or B-A)
           .value();
       }
     }
