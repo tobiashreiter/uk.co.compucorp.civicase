@@ -23,6 +23,7 @@
   function workflowListController ($scope, ts, civicaseCrmApi,
     WorkflowListActionItems) {
     $scope.ts = ts;
+    $scope.isLoading = false;
     $scope.workflows = [];
     $scope.actionItems = WorkflowListActionItems;
 
@@ -36,9 +37,14 @@
      * Refresh workflows list
      */
     function refreshWorkflowsList () {
+      $scope.isLoading = true;
+
       getWorkflows($scope.caseTypeCategory)
         .then(function (workflows) {
           $scope.workflows = workflows;
+        })
+        .finally(function () {
+          $scope.isLoading = false;
         });
     }
 
