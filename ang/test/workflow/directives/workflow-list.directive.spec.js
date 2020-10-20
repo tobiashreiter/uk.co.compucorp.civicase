@@ -26,23 +26,36 @@
           values: CaseTypesMockData.getSequential()
         }));
         initController();
-        $scope.$digest();
       });
 
-      it('fetches the case types for the current case type category', () => {
-        expect(civicaseCrmApiMock).toHaveBeenCalledWith('CaseType', 'get', {
-          sequential: 1,
-          case_type_category: 'some_case_type_category',
-          options: { limit: 0 }
+      it('hides the empty message before case types are loaded', () => {
+        expect($scope.isLoading).toBe(true);
+      });
+
+      describe('after case types are loaded', () => {
+        beforeEach(() => {
+          $scope.$digest();
         });
-      });
 
-      it('displays the list of fetched workflows', () => {
-        expect($scope.workflows).toEqual(CaseTypesMockData.getSequential());
-      });
+        it('shows the results after case types is loaded', () => {
+          expect($scope.isLoading).toBe(false);
+        });
 
-      it('displays the action items dropdown', () => {
-        expect($scope.actionItems).toEqual(WorkflowListActionItems);
+        it('fetches the case types for the current case type category', () => {
+          expect(civicaseCrmApiMock).toHaveBeenCalledWith('CaseType', 'get', {
+            sequential: 1,
+            case_type_category: 'some_case_type_category',
+            options: { limit: 0 }
+          });
+        });
+
+        it('displays the list of fetched workflows', () => {
+          expect($scope.workflows).toEqual(CaseTypesMockData.getSequential());
+        });
+
+        it('displays the action items dropdown', () => {
+          expect($scope.actionItems).toEqual(WorkflowListActionItems);
+        });
       });
     });
 
