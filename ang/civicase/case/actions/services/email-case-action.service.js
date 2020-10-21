@@ -141,7 +141,7 @@
           path: 'civicrm/activity/email/add',
           query: {
             action: 'add',
-            hideDraftButton: (model.caseIds.length > 1) ? 1 : 0,
+            hideDraftButton: 1,
             reset: 1,
             cid: contactIDs.join(',')
           }
