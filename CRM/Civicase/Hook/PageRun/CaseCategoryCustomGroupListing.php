@@ -79,9 +79,9 @@ class CRM_Civicase_Hook_PageRun_CaseCategoryCustomGroupListing {
    *   returns a boolean to determine if hook will run or not.
    */
   private function shouldRun($page) {
-    $hasNoAction = empty(CRM_Utils_Request::retrieve('action', 'String'));
+    $action = (CRM_Utils_Request::retrieve('action', 'String'));
 
-    return $page instanceof CRM_Custom_Page_Group && $hasNoAction;
+    return $page instanceof CRM_Custom_Page_Group && (empty($action) || (!empty($action) && $action == CRM_Core_Action::BROWSE));
   }
 
 }

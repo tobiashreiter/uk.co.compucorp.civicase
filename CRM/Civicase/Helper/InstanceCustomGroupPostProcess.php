@@ -92,7 +92,11 @@ class CRM_Civicase_Helper_InstanceCustomGroupPostProcess {
    *   Mismatched case type custom groups
    */
   public function getCaseTypeCustomGroupsWithCategoryMismatch($caseTypeId) {
-    $caseCategoryId = $this->getCaseCategoryForCaseType($caseTypeId);
+    $caseCategory = $this->getCaseCategoryForCaseType($caseTypeId);
+    if (empty($caseCategory['case_type_category'])) {
+      return [];
+    }
+    $caseCategoryId = $caseCategory['case_type_category'];
 
     $result = civicrm_api3('CustomGroup', 'get', [
       'extends' => 'Case',
