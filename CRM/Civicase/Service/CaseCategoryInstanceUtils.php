@@ -42,7 +42,7 @@ abstract class CRM_Civicase_Service_CaseCategoryInstanceUtils {
    * This processor will be responsible for the events that happen after a
    * case type belonging to a particular case category is saved or updated.
    *
-   * @return CRM_Civicase_Service_BaseCaseTypePostProcessor
+   * @return CRM_Civicase_Service_BaseCaseTypePostProcessor|null
    *   Case type post processor class.
    */
   abstract public function getCaseTypePostProcessor();
