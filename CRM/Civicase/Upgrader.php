@@ -10,6 +10,7 @@ use CRM_Civicase_Uninstall_RemoveCustomGroupSupportForCaseCategory as RemoveCust
 use CRM_Civicase_Setup_ProcessCaseCategoryForCustomGroupSupport as ProcessCaseCategoryForCustomGroupSupport;
 use CRM_Civicase_Setup_CaseCategoryInstanceSupport as CaseCategoryInstanceSupport;
 use CRM_Civicase_Setup_AddChangeCaseRoleDateActivityTypes as AddChangeCaseRoleDateActivityTypes;
+use CRM_Civicase_Setup_AddManageWorkflowMenu as AddManageWorkflowMenu;
 
 /**
  * Collection of upgrade steps.
@@ -77,6 +78,7 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
       new CreateSafeFileExtensionOptionValue(),
       new ProcessCaseCategoryForCustomGroupSupport(),
       new AddChangeCaseRoleDateActivityTypes(),
+      new AddManageWorkflowMenu(),
     ];
     foreach ($steps as $step) {
       $step->apply();

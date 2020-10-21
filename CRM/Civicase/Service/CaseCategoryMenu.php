@@ -204,4 +204,101 @@ class CRM_Civicase_Service_CaseCategoryMenu {
     return !empty($result['values'][0]) ? $result['values'][0] : [];
   }
 
+  /**
+   * Creates Manage Workflow menu for existing case categories.
+   *
+   * @param string $instanceName
+   *   Case category instance name..
+   * @param bool $ifMenuLabelHasInstanceName
+   *   Label for the menu to be added.
+   */
+  public static function createManageWorkflowMenuForExistingCaseCategories(string $instanceName, $ifMenuLabelHasInstanceName) {
+    $caseTypeCategories = civicrm_api3('OptionValue', 'get', [
+      'sequential' => 1,
+      'option_group_id' => 'case_type_categories',
+    ])['values'];
+
+    $instances = civicrm_api3('CaseCategoryInstance', 'get', [
+      'sequential' => 1,
+      'instance_id' => $instanceName,
+    ])['values'];
+
+    foreach ($caseTypeCategories as $caseTypeCategory) {
+      $isCaseCategoryOfSentType = NULL;
+
+      foreach ($instances as $instance) {
+        if ($instance['category_id'] == $caseTypeCategory['value']) {
+          $isCaseCategoryOfSentType = $instance;
+          break;
+        }
+      }
+
+      if ($isCaseCategoryOfSentType) {
+        $parentMenuForCaseCategory = civicrm_api3('Navigation', 'get', [
+          'sequential' => 1,
+          'label' => $caseTypeCategory['name'],
+        ])['values'][0];
+
+        $menuLabel = $ifMenuLabelHasInstanceName
+          ? 'Manage ' . $caseTypeCategory['label']
+          : 'Manage Workflows';
+
+        if ($parentMenuForCaseCategory['id']) {
+          CRM_Civicase_Service_CaseCategoryMenu::addSeparatorToTheLastMenuOf(
+            $parentMenuForCaseCategory['id']
+          );
+          CRM_Civicase_Service_CaseCategoryMenu::createManageWorkflowMenuItemInto(
+            $parentMenuForCaseCategory['id'],
+            $caseTypeCategory['name'],
+            $menuLabel
+          );
+        }
+      }
+    }
+  }
+
+  /**
+   * Creates Manage Workflow menu for the given parent id.
+   *
+   * @param string $parentId
+   *   Id of the parent menu item.
+   * @param string $caseTypeCategoryName
+   *   Case Type Category name.
+   * @param string $menuLabel
+   *   Label for the menu to be added.
+   */
+  private function createManageWorkflowMenuItemInto($parentId, $caseTypeCategoryName, string $menuLabel) {
+    $caseCategoryPermission = new CaseCategoryPermission();
+    $permissions = $caseCategoryPermission->get($caseTypeCategoryName);
+
+    civicrm_api3('Navigation', 'create', [
+      'parent_id' => $parentId,
+      'url' => '/civicrm/workflow/a?case_type_category=' . $caseTypeCategoryName . '#/list',
+      'label' => $menuLabel,
+      'name' => $menuLabel,
+      'is_active' => TRUE,
+      'permission' => "{$permissions['ADMINISTER_CASE_CATEGORY']['name']}, administer CiviCRM",
+      'permission_operator' => 'OR',
+    ]);
+  }
+
+  /**
+   * Add separator to the last child menu of the given parent id.
+   *
+   * @param string $parentId
+   *   Id of the parent menu item.
+   */
+  private function addSeparatorToTheLastMenuOf($parentId) {
+    $childMenuItemWithMaxWeight = civicrm_api3('Navigation', 'get', [
+      'sequential' => 1,
+      'parent_id' => $parentId,
+      'options' => ['sort' => "weight DESC"],
+    ])['values'][0];
+
+    civicrm_api3('Navigation', 'create', [
+      'id' => $childMenuItemWithMaxWeight['id'],
+      'has_separator' => 1,
+    ]);
+  }
+
 }
