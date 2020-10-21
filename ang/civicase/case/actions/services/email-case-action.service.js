@@ -57,6 +57,7 @@
         sequential: 1,
         case_id: { IN: caseIDs },
         relationship_type_id: { IN: caseRoleIds },
+        is_active: 1,
         options: { limit: 0 }
       }).then(function (relationshipsData) {
         return relationshipsData.values.map(function (relationship) {

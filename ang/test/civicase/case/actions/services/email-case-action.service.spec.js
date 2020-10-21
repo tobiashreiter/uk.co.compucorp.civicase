@@ -83,9 +83,10 @@
             $rootScope.$digest();
           });
 
-          it('fetches the relationships', () => {
+          it('fetches the active relationships', () => {
             expect(civicaseCrmApiMock).toHaveBeenCalledWith('Relationship', 'get', {
               sequential: 1,
+              is_active: 1,
               case_id: { IN: ['141'] },
               relationship_type_id: { IN: ['11', '12'] },
               options: { limit: 0 }
