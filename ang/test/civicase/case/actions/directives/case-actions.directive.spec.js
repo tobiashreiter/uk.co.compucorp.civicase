@@ -2,7 +2,7 @@
 
 (function (_, $) {
   describe('case actions', function () {
-    let element, $provide, $compile, $rootScope, CaseActionsData,
+    let $q, element, $provide, $compile, $rootScope, CaseActionsData,
       PrintCaseAction, loadFormOnListener, crmFormSuccessFunction,
       dialogCloseFunction, originalTriggerFunction, civicaseCrmLoadForm;
 
@@ -33,8 +33,9 @@
       });
     }));
 
-    beforeEach(inject(function (_$compile_, _$rootScope_, _CaseActionsData_,
+    beforeEach(inject(function (_$q_, _$compile_, _$rootScope_, _CaseActionsData_,
       _PrintCaseAction_, _civicaseCrmLoadForm_) {
+      $q = _$q_;
       $compile = _$compile_;
       $rootScope = _$rootScope_;
       CaseActionsData = _CaseActionsData_;
@@ -315,17 +316,18 @@
 
         describe('when the action returns an object', () => {
           beforeEach(() => {
-            PrintCaseAction.doAction.and.returnValue({
+            PrintCaseAction.doAction.and.returnValue($q.resolve({
               query: {
                 civicase_reload: ''
               },
               path: 'some_path'
-            });
+            }));
             CRM.url.and.returnValue('CRM Mock URL');
             element.isolateScope().popupParams = jasmine.createSpy('popupParams');
             element.isolateScope().popupParams.and.returnValue('some_params');
 
             element.isolateScope().doAction(action);
+            $rootScope.$digest();
           });
 
           it('opens a new form based on returned parameters', () => {
@@ -416,6 +418,7 @@
         <div
           civicase-case-actions=[]
           ${isBulkMode}
+          popup-params=""
         ></div>
       `;
 

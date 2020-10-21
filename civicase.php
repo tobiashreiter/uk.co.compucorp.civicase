@@ -313,7 +313,9 @@ function civicase_civicrm_buildForm($formName, &$form) {
       'value' => $activityTypeId,
     ];
     if (in_array($activityType, $specialTypes) || ($activityTypeId && civicrm_api3('OptionValue', 'getcount', $checkParams))) {
-      if ($form->_action & (CRM_Core_Action::ADD + CRM_Core_Action::UPDATE)) {
+      $hideDraftButton = CRM_Utils_Request::retrieve('hideDraftButton', 'Boolean', $form);
+
+      if (($form->_action & (CRM_Core_Action::ADD + CRM_Core_Action::UPDATE)) && !$hideDraftButton) {
         $buttonGroup = $form->getElement('buttons');
         $buttons = $buttonGroup->getElements();
         $buttons[] = $form->createElement('submit', $form->getButtonName('refresh'), ts('Save Draft'), [
@@ -484,6 +486,34 @@ function civicase_civicrm_alterAPIPermissions($entity, $action, &$params, &$perm
 
   foreach ($hooks as $hook) {
     $hook->run($entity, $action, $params, $permissions);
+  }
+}
+
+/**
+ * Implements hook_civicrm_tokens().
+ */
+function civicase_civicrm_tokens(&$tokens) {
+  $contactFieldsService = new CRM_Civicase_Service_ContactFieldsProvider();
+  $contactCustomFieldsService = new CRM_Civicase_Service_ContactCustomFieldsProvider();
+  $hooks = [
+    new CRM_Civicase_Hook_Tokens_AddContactTokens($contactFieldsService, $contactCustomFieldsService),
+  ];
+  foreach ($hooks as &$hook) {
+    $hook->run($tokens);
+  }
+}
+
+/**
+ * Implements hook_civicrm_tokenValues().
+ */
+function civicase_civicrm_tokenValues(&$values, $cids, $job = NULL, $tokens = [], $context = NULL) {
+  $contactFieldsService = new CRM_Civicase_Service_ContactFieldsProvider();
+  $contactCustomFieldsService = new CRM_Civicase_Service_ContactCustomFieldsProvider();
+  $hooks = [
+    new CRM_Civicase_Hook_Tokens_AddContactTokensValues($contactFieldsService, $contactCustomFieldsService),
+  ];
+  foreach ($hooks as &$hook) {
+    $hook->run($values, $cids, $job, $tokens, $context);
   }
 }
 

@@ -6,6 +6,7 @@
   CRM.workflow = {};
   CRM['civicase-base'].currentCaseCategory = 'cases';
   CRM.angular = { requires: {} };
+  CRM.config = {};
   /**
    * Dependency Injection for civicase module, defined in ang/civicase.ang.php
    * For unit testing they needs to be mentioned here

@@ -98,10 +98,11 @@
       describe('when loading a subset of case types', () => {
         beforeEach(() => {
           const sampleCaseStatuses = _.sample(CaseStatus.getAll(), 2);
-          const sampleCaseTypes = _.sample(CaseType.getAll(), 2);
+          const sampleCaseTypes = _.sample(CaseType.getAll(), 3);
 
           sampleCaseTypes[0].definition.statuses = [sampleCaseStatuses[0].name];
           sampleCaseTypes[1].definition.statuses = [sampleCaseStatuses[1].name];
+          sampleCaseTypes[2].definition.statuses = [sampleCaseStatuses[1].name];
 
           expectedCaseStatuses = _.chain(sampleCaseStatuses)
             .sortBy('weight')

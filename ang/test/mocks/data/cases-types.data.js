@@ -325,6 +325,71 @@
         ]
       },
       case_type_category: '2'
+    },
+    3: {
+      id: '3',
+      name: 'cases_case_type',
+      title: 'Cases Case Type',
+      description: 'Arranging adult day care for senior individuals',
+      definition: {
+        activityTypes: [
+          {
+            name: 'Open Case',
+            max_instances: '1'
+          },
+          {
+            name: 'Medical evaluation'
+          },
+          {
+            name: 'Mental health evaluation'
+          }
+        ],
+        activitySets: [
+          {
+            name: 'standard_timeline',
+            label: 'Standard Timeline',
+            timeline: '1',
+            activityTypes: [
+              {
+                name: 'Open Case',
+                status: 'Completed'
+              },
+              {
+                name: 'Medical evaluation',
+                reference_activity: 'Open Case',
+                reference_offset: '3',
+                reference_select: 'newest'
+              }
+            ]
+          }
+        ],
+        timelineActivityTypes: [
+          {
+            name: 'Open Case',
+            status: 'Completed'
+          },
+          {
+            name: 'Medical evaluation',
+            reference_activity: 'Open Case',
+            reference_offset: '3',
+            reference_select: 'newest'
+          }
+        ],
+        caseRoles: [
+          {
+            name: 'Senior Services Coordinator',
+            creator: '1',
+            manager: '1'
+          },
+          {
+            name: 'Health Services Coordinator'
+          },
+          {
+            name: 'Benefits Specialist'
+          }
+        ]
+      },
+      case_type_category: '1'
     }
   };
 
