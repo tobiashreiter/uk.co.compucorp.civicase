@@ -78,7 +78,6 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
       new CreateSafeFileExtensionOptionValue(),
       new ProcessCaseCategoryForCustomGroupSupport(),
       new AddChangeCaseRoleDateActivityTypes(),
-      new AddManageWorkflowMenu(),
     ];
     foreach ($steps as $step) {
       $step->apply();
@@ -396,6 +395,9 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
     $this->swapCaseMenuItems();
 
     $this->toggleNav('Manage Cases', TRUE);
+
+    $workflowMenu = new AddManageWorkflowMenu();
+    $workflowMenu->apply();
   }
 
   /**

@@ -1,6 +1,7 @@
 <?php
 
 use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
+use CRM_Civicase_Service_CaseInstance as CaseInstance;
 
 /**
  * Create/Delete Case Type Category Menu items.
@@ -218,16 +219,13 @@ class CRM_Civicase_Service_CaseCategoryMenu {
       'option_group_id' => 'case_type_categories',
     ])['values'];
 
-    $instances = civicrm_api3('CaseCategoryInstance', 'get', [
-      'sequential' => 1,
-      'instance_id' => $instanceName,
-    ])['values'];
+    $instances = CaseInstance::getCaseCategoryInstances($instanceName);
 
     foreach ($caseTypeCategories as $caseTypeCategory) {
       $isCaseCategoryOfSentType = NULL;
 
       foreach ($instances as $instance) {
-        if ($instance['category_id'] == $caseTypeCategory['value']) {
+        if ($instance->category_id == $caseTypeCategory['value']) {
           $isCaseCategoryOfSentType = $instance;
           break;
         }
@@ -240,7 +238,7 @@ class CRM_Civicase_Service_CaseCategoryMenu {
         ])['values'][0];
 
         $menuLabel = $ifMenuLabelHasInstanceName
-          ? 'Manage ' . $caseTypeCategory['label']
+          ? 'Manage ' . $caseTypeCategory['name']
           : 'Manage Workflows';
 
         if ($parentMenuForCaseCategory['id']) {
@@ -271,15 +269,21 @@ class CRM_Civicase_Service_CaseCategoryMenu {
     $caseCategoryPermission = new CaseCategoryPermission();
     $permissions = $caseCategoryPermission->get($caseTypeCategoryName);
 
-    civicrm_api3('Navigation', 'create', [
-      'parent_id' => $parentId,
-      'url' => '/civicrm/workflow/a?case_type_category=' . $caseTypeCategoryName . '#/list',
-      'label' => $menuLabel,
-      'name' => $menuLabel,
-      'is_active' => TRUE,
-      'permission' => "{$permissions['ADMINISTER_CASE_CATEGORY']['name']}, administer CiviCRM",
-      'permission_operator' => 'OR',
-    ]);
+    $ifMenuExist = count(civicrm_api3('Navigation', 'get', [
+      'name' => 'manage_' . $caseTypeCategory['name'] . '_workflows',
+    ])['values']) > 0;
+
+    if (!$ifMenuExist) {
+      civicrm_api3('Navigation', 'create', [
+        'parent_id' => $parentId,
+        'url' => '/civicrm/workflow/a?case_type_category=' . $caseTypeCategoryName . '#/list',
+        'label' => $menuLabel,
+        'name' => 'manage_' . $caseTypeCategory['name'] . '_workflows',
+        'is_active' => TRUE,
+        'permission' => "{$permissions['ADMINISTER_CASE_CATEGORY']['name']}, administer CiviCRM",
+        'permission_operator' => 'OR',
+      ]);
+    }
   }
 
   /**
