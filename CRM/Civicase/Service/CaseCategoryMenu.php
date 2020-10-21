@@ -270,7 +270,7 @@ class CRM_Civicase_Service_CaseCategoryMenu {
     $permissions = $caseCategoryPermission->get($caseTypeCategoryName);
 
     $ifMenuExist = count(civicrm_api3('Navigation', 'get', [
-      'name' => 'manage_' . $caseTypeCategory['name'] . '_workflows',
+      'name' => 'manage_' . $caseTypeCategoryName . '_workflows',
     ])['values']) > 0;
 
     if (!$ifMenuExist) {
@@ -278,7 +278,7 @@ class CRM_Civicase_Service_CaseCategoryMenu {
         'parent_id' => $parentId,
         'url' => '/civicrm/workflow/a?case_type_category=' . $caseTypeCategoryName . '#/list',
         'label' => $menuLabel,
-        'name' => 'manage_' . $caseTypeCategory['name'] . '_workflows',
+        'name' => 'manage_' . $caseTypeCategoryName . '_workflows',
         'is_active' => TRUE,
         'permission' => "{$permissions['ADMINISTER_CASE_CATEGORY']['name']}, administer CiviCRM",
         'permission_operator' => 'OR',
