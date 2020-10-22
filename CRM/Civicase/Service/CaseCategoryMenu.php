@@ -1,7 +1,8 @@
 <?php
 
 use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
-use CRM_Civicase_Service_CaseInstance as CaseInstance;
+use CRM_Civicase_Service_CaseCategoryInstance as CaseCategoryInstance;
+use CRM_Civicase_Helper_CaseCategory as CaseCategory;
 
 /**
  * Create/Delete Case Type Category Menu items.
@@ -213,44 +214,44 @@ class CRM_Civicase_Service_CaseCategoryMenu {
    * @param bool $ifMenuLabelHasInstanceName
    *   Label for the menu to be added.
    */
-  public static function createManageWorkflowMenuForExistingCaseCategories(string $instanceName, $ifMenuLabelHasInstanceName) {
-    $caseTypeCategories = civicrm_api3('OptionValue', 'get', [
-      'sequential' => 1,
-      'option_group_id' => 'case_type_categories',
-    ])['values'];
+  public function createManageWorkflowMenu(string $instanceName, $ifMenuLabelHasInstanceName) {
+    $caseTypeCategories = CaseCategory::getCaseCategories();
 
-    $instances = CaseInstance::getCaseCategoryInstances($instanceName);
+    $instanceObj = new CaseCategoryInstance();
+    $instances = $instanceObj->getCaseCategoryInstances($instanceName);
 
     foreach ($caseTypeCategories as $caseTypeCategory) {
-      $isCaseCategoryOfSentType = NULL;
+      $isInstanceCaseCategory = NULL;
 
       foreach ($instances as $instance) {
         if ($instance->category_id == $caseTypeCategory['value']) {
-          $isCaseCategoryOfSentType = $instance;
+          $isInstanceCaseCategory = $instance;
           break;
         }
       }
 
-      if ($isCaseCategoryOfSentType) {
-        $parentMenuForCaseCategory = civicrm_api3('Navigation', 'get', [
-          'sequential' => 1,
-          'label' => $caseTypeCategory['name'],
-        ])['values'][0];
+      if (!$isInstanceCaseCategory) {
+        continue;
+      }
 
-        $menuLabel = $ifMenuLabelHasInstanceName
-          ? 'Manage ' . $caseTypeCategory['name']
-          : 'Manage Workflows';
+      $parentMenuForCaseCategory = civicrm_api3('Navigation', 'get', [
+        'sequential' => 1,
+        'label' => $caseTypeCategory['name'],
+      ])['values'][0];
 
-        if ($parentMenuForCaseCategory['id']) {
-          CRM_Civicase_Service_CaseCategoryMenu::addSeparatorToTheLastMenuOf(
-            $parentMenuForCaseCategory['id']
-          );
-          CRM_Civicase_Service_CaseCategoryMenu::createManageWorkflowMenuItemInto(
-            $parentMenuForCaseCategory['id'],
-            $caseTypeCategory['name'],
-            $menuLabel
-          );
-        }
+      $menuLabel = $ifMenuLabelHasInstanceName
+        ? 'Manage ' . $caseTypeCategory['name']
+        : 'Manage Workflows';
+
+      if ($parentMenuForCaseCategory['id']) {
+        $this->addSeparatorToTheLastMenuOf(
+          $parentMenuForCaseCategory['id']
+        );
+        $this->createManageWorkflowMenuItemInto(
+          $parentMenuForCaseCategory['id'],
+          $caseTypeCategory['name'],
+          $menuLabel
+        );
       }
     }
   }
@@ -296,7 +297,7 @@ class CRM_Civicase_Service_CaseCategoryMenu {
     $childMenuItemWithMaxWeight = civicrm_api3('Navigation', 'get', [
       'sequential' => 1,
       'parent_id' => $parentId,
-      'options' => ['sort' => "weight DESC"],
+      'options' => ['limit' => 1, 'sort' => "weight DESC"],
     ])['values'][0];
 
     civicrm_api3('Navigation', 'create', [

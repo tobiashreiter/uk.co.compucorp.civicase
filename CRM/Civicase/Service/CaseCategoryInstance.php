@@ -1,11 +1,12 @@
 <?php
 
 use CRM_Civicase_BAO_CaseCategoryInstance as CaseCategoryInstance;
+use CRM_Civicase_Helper_CaseCategory as CaseCategory;
 
 /**
  * Case Instance class.
  */
-class CRM_Civicase_Service_CaseInstance {
+class CRM_Civicase_Service_CaseCategoryInstance {
 
   /**
    * Get case categories instances.
@@ -13,7 +14,7 @@ class CRM_Civicase_Service_CaseInstance {
    * @param string $instanceName
    *   Instance ID.
    */
-  public static function getCaseCategoryInstances($instanceName = NULL) {
+  public function getCaseCategoryInstances($instanceName = NULL) {
     $caseCategoryInstances = [];
     $caseCategoryInstance = new CaseCategoryInstance();
 
@@ -42,13 +43,10 @@ class CRM_Civicase_Service_CaseInstance {
    * Assigns `case_management` instance to the existing case type categories
    * which does not have instance assigned.
    */
-  public static function assignInstanceForExistingCaseCategories() {
-    $caseTypeCategories = civicrm_api3('OptionValue', 'get', [
-      'sequential' => 1,
-      'option_group_id' => 'case_type_categories',
-    ])['values'];
+  public function assignInstanceForExistingCaseCategories() {
+    $caseTypeCategories = CaseCategory::getCaseCategories();
 
-    $instances = CRM_Civicase_Service_CaseInstance::getCaseCategoryInstances();
+    $instances = $this->getCaseCategoryInstances();
 
     foreach ($caseTypeCategories as $caseTypeCategory) {
       $instanceRecord = NULL;
@@ -67,7 +65,7 @@ class CRM_Civicase_Service_CaseInstance {
           'name' => 'case_management',
         ])['values'][0]['value'];
 
-        CRM_Civicase_Service_CaseInstance::createInstanceTypeFor(
+        $this->createInstanceTypeFor(
           $caseTypeCategory['value'],
           $instanceId
         );
@@ -83,7 +81,7 @@ class CRM_Civicase_Service_CaseInstance {
    * @param mixed $instanceId
    *   Instance ID.
    */
-  public static function createInstanceTypeFor($categoryValue, $instanceId) {
+  public function createInstanceTypeFor($categoryValue, $instanceId) {
     $caseCategoryInstance = new CaseCategoryInstance();
     $caseCategoryInstance->instance_id = $instanceId;
     $caseCategoryInstance->category_id = $categoryValue;

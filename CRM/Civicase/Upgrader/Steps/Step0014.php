@@ -1,6 +1,7 @@
 <?php
 
 use CRM_Civicase_Setup_AddManageWorkflowMenu as AddManageWorkflowMenu;
+use CRM_Civicase_Service_CaseCategoryInstance as CaseCategoryInstance;
 
 /**
  * Assigns instance to case type categories without an instance.
@@ -17,6 +18,9 @@ class CRM_Civicase_Upgrader_Steps_Step0014 {
    *   Return value in boolean.
    */
   public function apply() {
+    $instanceObj = new CaseCategoryInstance();
+    $instanceObj->assignInstanceForExistingCaseCategories();
+
     $step = new AddManageWorkflowMenu();
     $step->apply();
 

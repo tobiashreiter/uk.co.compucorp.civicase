@@ -11,6 +11,7 @@ use CRM_Civicase_Setup_ProcessCaseCategoryForCustomGroupSupport as ProcessCaseCa
 use CRM_Civicase_Setup_CaseCategoryInstanceSupport as CaseCategoryInstanceSupport;
 use CRM_Civicase_Setup_AddChangeCaseRoleDateActivityTypes as AddChangeCaseRoleDateActivityTypes;
 use CRM_Civicase_Setup_AddManageWorkflowMenu as AddManageWorkflowMenu;
+use CRM_Civicase_Service_CaseCategoryInstance as CaseCategoryInstance;
 
 /**
  * Collection of upgrade steps.
@@ -395,6 +396,9 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
     $this->swapCaseMenuItems();
 
     $this->toggleNav('Manage Cases', TRUE);
+
+    $instanceObj = new CaseCategoryInstance();
+    $instanceObj->assignInstanceForExistingCaseCategories();
 
     $workflowMenu = new AddManageWorkflowMenu();
     $workflowMenu->apply();
