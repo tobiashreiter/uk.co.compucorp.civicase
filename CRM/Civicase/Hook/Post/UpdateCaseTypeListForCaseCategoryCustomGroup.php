@@ -31,6 +31,10 @@ class CRM_Civicase_Hook_Post_UpdateCaseTypeListForCaseCategoryCustomGroup {
     }
     $caseTypePostProcessor = $caseCategoryInstance->getCaseTypePostProcessor();
 
+    if (empty($caseTypePostProcessor)) {
+      return;
+    }
+
     if ($op === 'create') {
       $caseTypePostProcessor->processCaseTypeCustomGroupsOnCreate($objectId);
     }

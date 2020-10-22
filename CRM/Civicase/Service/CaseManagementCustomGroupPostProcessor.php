@@ -26,6 +26,7 @@ class CRM_Civicase_Service_CaseManagementCustomGroupPostProcessor extends CRM_Ci
    *   Post process helper class.
    */
   public function __construct(CaseManagementCustomGroupPostProcess $postProcessHelper) {
+    parent::__construct();
     $this->postProcessHelper = $postProcessHelper;
   }
 
@@ -43,23 +44,16 @@ class CRM_Civicase_Service_CaseManagementCustomGroupPostProcessor extends CRM_Ci
    *   Custom Group Object.
    */
   public function saveCustomGroupForCaseCategory(CustomGroup $customGroup) {
-    $caseTypeCategories = CRM_Civicase_Helper_CaseCategory::getCaseCategories();
-    $caseTypeCategories = array_column($caseTypeCategories, 'value', 'name');
-
-    if (empty($caseTypeCategories[$customGroup->extends])) {
+    if (empty($this->caseTypeCategories[$customGroup->extends])) {
       return;
     }
 
-    $caseTypeIds = $this->postProcessHelper->getCaseTypeIdsForCaseCategory($caseTypeCategories[$customGroup->extends]);
+    $caseTypeIds = $this->postProcessHelper->getCaseTypeIdsForCaseCategory($this->caseTypeCategories[$customGroup->extends]);
     $ids = 'null';
     if (!empty($caseTypeIds)) {
       $ids = CRM_Core_DAO::VALUE_SEPARATOR . implode(CRM_Core_DAO::VALUE_SEPARATOR, $caseTypeIds) . CRM_Core_DAO::VALUE_SEPARATOR;
     }
-
-    $customGroup->extends_entity_column_value = $ids;
-    $customGroup->extends_entity_column_id = $caseTypeCategories[$customGroup->extends];
-    $customGroup->extends = 'Case';
-    $customGroup->save();
+    $this->updateCustomGroup($customGroup, $ids);
   }
 
 }
