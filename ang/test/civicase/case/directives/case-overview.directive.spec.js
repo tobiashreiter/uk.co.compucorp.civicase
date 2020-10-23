@@ -7,6 +7,8 @@
 
     beforeEach(module('civicase.data', 'civicase', 'civicase.templates', (_$provide_) => {
       $provide = _$provide_;
+
+      $provide.value('civicaseCrmApi', jasmine.createSpy('civicaseCrmApi'));
     }));
 
     beforeEach(inject(function (_$compile_, _$q_, _$rootScope_, BrowserCacheMock,

@@ -2,7 +2,7 @@
   var module = angular.module('civicase');
 
   module.directive('civicaseCaseActions', function ($q, $rootScope,
-    $injector, allowCaseLocks, CaseActions) {
+    $injector, allowCaseLocks, CaseActions, civicaseCrmLoadForm) {
     return {
       restrict: 'A',
       templateUrl: '~/civicase/case/actions/directives/case-actions.directive.html',
@@ -63,7 +63,7 @@
        */
       function isActionAllowed (action) {
         var isActionAllowed = true;
-        var isLockCaseAction = _.startsWith(action.action, 'lockCases');
+        var isLockCaseAction = _.startsWith(action.action, 'LockCases');
         var isCaseLockAllowed = allowCaseLocks;
         var caseActionService = getCaseActionService(action.action);
 
@@ -72,7 +72,10 @@
         }
 
         return isActionAllowed && ((isLockCaseAction && isCaseLockAllowed) ||
-          (!isLockCaseAction && (!action.number || ((isBulkMode && action.number > 1) || (!isBulkMode && action.number === 1)))));
+          (!isLockCaseAction && (
+            !action.number ||
+            ((isBulkMode && action.number > 1) || (!isBulkMode && action.number === 1))
+          )));
       }
 
       /**
@@ -107,7 +110,7 @@
 
               // Mimic the behavior of CRM.popup()
               var formData = false;
-              var dialog = CRM.loadForm(url)
+              var dialog = civicaseCrmLoadForm(url)
                 // Listen for success events and buffer them so we only trigger once
                 .on('crmFormSuccess crmPopupFormSuccess', function (e, data) {
                   formData = data;
