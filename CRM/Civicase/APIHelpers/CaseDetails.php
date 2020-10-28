@@ -92,6 +92,7 @@ class CRM_Civicase_APIHelpers_CaseDetails {
    *   Contains the data used for filtering.
    */
   public static function handleContactInvolvedFilters(CRM_Utils_SQL_Select $sql, array $params) {
+    self::prepareParamsForFiltering($params, 'contact_involved');
     $hasActivitiesForInvolvedContact = CRM_Utils_Array::value(
       'has_activities_for_involved_contact', $params, NULL);
 
