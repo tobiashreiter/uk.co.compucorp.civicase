@@ -121,26 +121,32 @@
       workflow.name = generateWorkflowName(workflow.title);
       workflow.sequential = true;
 
-      var instanceName = CaseTypeCategory.getInstance(workflow.case_type_category).name;
+      var instanceName = CaseTypeCategory.getCaseTypeCategoryInstance(workflow.case_type_category).name;
 
       var service = getServiceToDuplicate(instanceName);
 
-      if (service) {
-        return service.create(_.clone(workflow));
-      }
+      return service.create(_.clone(workflow));
     }
 
     /**
+     * Searches for a angularJS service for the current case type category
+     * instance, if not found, returns the service for case management service
+     * as default.
+     *
      * @param {string} instanceName name of the instance
      * @returns {object/null} service
      */
     function getServiceToDuplicate (instanceName) {
+      var CASE_MANAGEMENT_INSTACE_NAME = 'case_management';
+
       try {
         return $injector.get(
           'DuplicateWorkflow' + capitalizeFirstLetterAndRemoveUnderScore(instanceName)
         );
       } catch (e) {
-        return null;
+        return $injector.get(
+          'DuplicateWorkflow' + capitalizeFirstLetterAndRemoveUnderScore(CASE_MANAGEMENT_INSTACE_NAME)
+        );
       }
     }
 

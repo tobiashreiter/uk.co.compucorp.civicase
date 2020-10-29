@@ -131,7 +131,7 @@
       });
 
       it('returns the instance of the case type category', () => {
-        expect(CaseTypeCategory.getInstance('1')).toEqual(expectedResult);
+        expect(CaseTypeCategory.getCaseTypeCategoryInstance('1')).toEqual(expectedResult);
       });
     });
 

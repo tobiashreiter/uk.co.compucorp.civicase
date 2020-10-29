@@ -25,7 +25,7 @@
 
       it('creates a duplicate workflow', () => {
         expect(civicaseCrmApiMock).toHaveBeenCalledWith([
-          ['CaseType', 'create', _.extend(workflow, { id: null })]
+          ['CaseType', 'create', _.extend({}, workflow, { id: null })]
         ]);
       });
     });

@@ -17,7 +17,7 @@
      */
     function create (workflow) {
       return civicaseCrmApi([
-        ['CaseType', 'create', _.extend(workflow, { id: null })]
+        ['CaseType', 'create', _.extend({}, workflow, { id: null })]
       ]);
     }
   }

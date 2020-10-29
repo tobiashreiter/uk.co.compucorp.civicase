@@ -22,7 +22,7 @@
     this.$get = $get;
     this.findByName = findByName;
     this.findAllByInstance = findAllByInstance;
-    this.getInstance = getInstance;
+    this.getCaseTypeCategoryInstance = getCaseTypeCategoryInstance;
     this.getAll = getAll;
     this.isInstance = isInstance;
 
@@ -37,7 +37,7 @@
         findById: findById,
         findByName: findByName,
         findAllByInstance: findAllByInstance,
-        getInstance: getInstance,
+        getCaseTypeCategoryInstance: getCaseTypeCategoryInstance,
         getCategoriesWithAccessToActivity: getCategoriesWithAccessToActivity,
         isInstance: isInstance
       };
@@ -90,7 +90,7 @@
      * @param {string} caseTypeCategoryValue case type category value
      * @returns {boolean} if the sent case type category is part of the sent instance
      */
-    function getInstance (caseTypeCategoryValue) {
+    function getCaseTypeCategoryInstance (caseTypeCategoryValue) {
       var instanceID = _.find(caseCategoryInstanceMapping, function (instanceMap) {
         return instanceMap.category_id === caseTypeCategoryValue;
       }).instance_id;
