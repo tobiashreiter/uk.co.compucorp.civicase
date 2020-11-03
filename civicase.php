@@ -447,15 +447,9 @@ function civicase_civicrm_postProcess($formName, &$form) {
     $ifDownloadDocumentButtonClicked = array_key_exists('_qf_PDF_upload', $form->getVar('_submitValues')['buttons']);
 
     if ($ifDownloadDocumentButtonClicked && !empty($urlParams['draft_id'])) {
-      $completedActivityStatusId = civicrm_api3('OptionValue', 'get', [
-        'sequential' => 1,
-        'option_group_id' => "activity_status",
-        'name' => "Completed",
-      ])['values'][0]['value'];
-
       civicrm_api3('Activity', 'create', [
         'id' => $urlParams['draft_id'],
-        'status_id' => $completedActivityStatusId,
+        'status_id' => 'Completed',
       ]);
     }
   }
