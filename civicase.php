@@ -444,8 +444,14 @@ function civicase_civicrm_postProcess($formName, &$form) {
   if (in_array($formName, $specialForms)) {
     $urlParams = parse_url(htmlspecialchars_decode($form->controller->_entryURL), PHP_URL_QUERY);
     parse_str($urlParams, $urlParams);
-    if (!empty($urlParams['draft_id'])) {
-      civicrm_api3('Activity', 'delete', ['id' => $urlParams['draft_id']]);
+
+    $ifDownloadDocumentButtonClicked = array_key_exists('_qf_PDF_upload', $form->getVar('_submitValues')['buttons']);
+
+    if ($ifDownloadDocumentButtonClicked && !empty($urlParams['draft_id'])) {
+      civicrm_api3('Activity', 'create', [
+        'id' => $urlParams['draft_id'],
+        'status_id' => 'Completed',
+      ]);
     }
   }
 }
