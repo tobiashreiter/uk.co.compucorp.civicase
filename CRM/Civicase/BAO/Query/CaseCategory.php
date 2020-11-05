@@ -2,6 +2,7 @@
 
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 use CRM_Case_BAO_CaseType as CaseType;
+use CRM_Case_BAO_Case as CaseBao;
 
 /**
  * Limits the contacts in advance search to only accessible case categories.
@@ -28,6 +29,11 @@ class CRM_Civicase_BAO_Query_CaseCategory extends CRM_Contact_BAO_Query_Interfac
    * Alters where statement to limit results to accessible case categories.
    */
   public function where(&$query) {
+    $tables = $query->tables();
+    if (empty($tables[CaseBao::getTableName()])) {
+      return;
+    }
+
     // This query object can be used in other places apart from
     // advanced search page, We need to restrict to this page only.
     if (CRM_Utils_System::currentPath() != 'civicrm/contact/search/advanced' || CRM_Utils_Array::value(
@@ -43,7 +49,6 @@ class CRM_Civicase_BAO_Query_CaseCategory extends CRM_Contact_BAO_Query_Interfac
     $query->_where[0][] = CRM_Contact_BAO_Query::buildClause('civicrm_case_type.case_type_category', 'IN', array_keys($accessibleCaseCategories));
     $query->_element['case_type_category'] = 1;
     $query->_tables['case_type'] = $query->_whereTables['case_type'] = 1;
-    $query->_tables['civicrm_case'] = $query->_whereTables['civicrm_case'] = 1;
 
     list($op, $value) = CRM_Contact_BAO_Query::buildQillForFieldValue(
       'CRM_Case_DAO_CaseType',
