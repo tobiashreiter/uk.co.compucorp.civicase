@@ -5,7 +5,7 @@ use CRM_Civicase_Hook_Helper_CaseTypeCategory as CaseTypeCategoryHelper;
 use CRM_Civicase_Service_CaseCategorySetting as CaseCategorySetting;
 
 /**
- * CRM_Civicase_Helper_NewCaseWebform class.
+ * Webform helper class.
  */
 class CRM_Civicase_Helper_NewCaseWebform {
 
@@ -51,7 +51,7 @@ class CRM_Civicase_Helper_NewCaseWebform {
     $client = 0;
 
     if (isset($data['case'][1]['case'][1]['client_id'])) {
-      $clients = $data['case'][1]['case'][1]['client_id'];
+      $clients = (array) $data['case'][1]['case'][1]['client_id'];
       $client = reset($clients);
     }
 
