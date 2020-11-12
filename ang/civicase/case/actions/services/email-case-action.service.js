@@ -38,6 +38,7 @@
       };
 
       model.caseRoles = getCaseRoles();
+      model.caseClientIDs = getClientIds(cases);
       model.caseIds = cases.map(function (caseObj) {
         return caseObj.id;
       });
@@ -49,10 +50,49 @@
 
     /**
      * @param {string|number[]} caseRoleIds list of case roles ids
+     * @param {object} model popups model object
+     * @returns {Promise} promise resolves to list of contact ids
+     */
+    function getContactsForCaseIds (caseRoleIds, model) {
+      var isClientRoleSelected = caseRoleIds.indexOf('client') !== -1;
+      var contactIDs = [];
+
+      if (isClientRoleSelected) {
+        contactIDs = model.caseClientIDs;
+      }
+
+      var caseRolesWithoutClient = _.without(caseRoleIds, 'client');
+
+      if (caseRolesWithoutClient.length > 0) {
+        return getNonClientContacts(caseRolesWithoutClient, model.caseIds)
+          .then(function (contacts) {
+            contactIDs = contactIDs.concat(contacts);
+
+            return contactIDs;
+          });
+      } else {
+        return $q.resolve(contactIDs);
+      }
+    }
+
+    /**
+     * @param {object[]} cases list of cases object
+     * @returns {number[]} list of client ids
+     */
+    function getClientIds (cases) {
+      return _.flatten(_.map(cases, function (caseObj) {
+        return _.map(caseObj.client, function (client) {
+          return client.contact_id;
+        });
+      }));
+    }
+
+    /**
+     * @param {string|number[]} caseRoleIds list of case roles ids
      * @param {string|number[]} caseIDs list of case ids
      * @returns {Promise} promise resolves to list of contact ids
      */
-    function getContactsForCaseIds (caseRoleIds, caseIDs) {
+    function getNonClientContacts (caseRoleIds, caseIDs) {
       return civicaseCrmApi('Relationship', 'get', {
         sequential: 1,
         case_id: { IN: caseIDs },
@@ -65,6 +105,7 @@
         });
       });
     }
+
     /**
      * Get case roles to be displayed on a dropdown list
      *
@@ -72,10 +113,13 @@
      */
     function getCaseRoles () {
       var caseTypeCategoryID = CaseTypeCategory.findByName(currentCaseCategory).value;
-
-      return _.map(CaseType.getAllRolesByCategoryID(caseTypeCategoryID), function (caseRole) {
+      var allCaseRoles = _.map(CaseType.getAllRolesByCategoryID(caseTypeCategoryID), function (caseRole) {
         return _.extend(caseRole, { text: caseRole.name });
       });
+
+      allCaseRoles.unshift({ id: 'client', name: 'Client', text: ts('Client') });
+
+      return allCaseRoles;
     }
 
     /**
@@ -122,7 +166,7 @@
 
       getContactsForCaseIds(
         getSelect2Value(model.selectedCaseRoles),
-        model.caseIds
+        model
       ).then(function (contactIDs) {
         dialogService.close('EmailCaseActionRoleSelector');
         contactIDs = _.uniq(contactIDs);

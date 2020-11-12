@@ -42,11 +42,13 @@
           });
         expectedModelObject = {
           caseRoles: [
+            { name: 'Client', id: 'client', text: 'Client' },
             { name: 'Homeless Services Coordinator', id: '11', text: 'Homeless Services Coordinator' },
             { name: 'Health Services Coordinator', id: '12', text: 'Health Services Coordinator' },
             { name: 'Benefits Specialist', id: '14', text: 'Benefits Specialist' },
             { name: 'Senior Services Coordinator', id: '16', text: 'Senior Services Coordinator' }
           ],
+          caseClientIDs: ['170'],
           selectedCaseRoles: '',
           caseIds: [caseObj.id],
           deferObject: jasmine.any(Object)
@@ -77,7 +79,7 @@
         describe('and there are roles present for the selected relationships', () => {
           beforeEach(() => {
             civicaseCrmApiMock.and.returnValue($q.resolve({ values: RelationshipData.get() }));
-            modalOpenCall[2].selectedCaseRoles = '11,12';
+            modalOpenCall[2].selectedCaseRoles = 'client,11,12';
             modalOpenCall[3].buttons[0].click();
 
             $rootScope.$digest();
@@ -96,7 +98,7 @@
           it('returns the path to open the send email popup and hides the draft button', () => {
             expect(returnValue).toEqual({
               path: 'civicrm/activity/email/add',
-              query: { action: 'add', reset: 1, cid: '4,6', hideDraftButton: 1, caseid: '141' }
+              query: { action: 'add', reset: 1, cid: '170,4,6', hideDraftButton: 1, caseid: '141' }
             });
           });
         });
