@@ -54,7 +54,7 @@
      * @returns {Promise} promise resolves to list of contact ids
      */
     function getContactsForCaseIds (caseRoleIds, model) {
-      var isClientRoleSelected = caseRoleIds.indexOf('client') !== -1;
+      var isClientRoleSelected = _.includes(caseRoleIds, 'client');
       var contactIDs = [];
 
       if (isClientRoleSelected) {
