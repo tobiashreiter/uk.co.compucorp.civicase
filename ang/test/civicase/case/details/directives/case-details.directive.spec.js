@@ -405,7 +405,7 @@
 
   describe('civicaseCaseDetailsController', function () {
     let $controller, $provide, $rootScope, $route, $scope, apiResponses,
-      CasesData, CasesUtils, civicaseCrmApiMock, controller, DetailsCaseTab,
+      CasesData, civicaseCrmApiMock, controller, DetailsCaseTab,
       loadFormBefore;
 
     beforeEach(module('civicase', 'civicase.data', function (_$provide_) {
@@ -417,12 +417,11 @@
     }));
 
     beforeEach(inject(function (_$controller_, $q, _$rootScope_, _$route_,
-      _CasesData_, _CasesUtils_, _DetailsCaseTab_) {
+      _CasesData_, _DetailsCaseTab_) {
       $controller = _$controller_;
       $rootScope = _$rootScope_;
       $route = _$route_;
       CasesData = _CasesData_;
-      CasesUtils = _CasesUtils_;
       DetailsCaseTab = _DetailsCaseTab_;
       apiResponses = {
         'Contact.get': { values: [] }
@@ -667,7 +666,7 @@
           caseid: $scope.item.id,
           atype: '3',
           reset: 1,
-          cid: CasesUtils.getAllCaseClientContactIds($scope.item.contacts).join(',')
+          cid: '170'
         });
       });
 
