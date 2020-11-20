@@ -23,7 +23,15 @@ class CRM_Civicase_Hook_alterAngular_AngularChangeSet {
 
     return ChangeSet::create('case-type-category')
       ->alterHtml('~/crmCaseType/caseTypeDetails.html', function (phpQueryObject $doc) use ($caseTypeCategoryContent) {
-        $doc->find("div[crm-ui-field*=name: 'caseTypeDetailForm.caseTypeName']")->after($caseTypeCategoryContent);
+        $element = $doc->find("div[crm-ui-field*=name: 'caseTypeDetailForm.caseTypeName']");
+        if ($element->length) {
+          $element->after($caseTypeCategoryContent);
+        }
+        else {
+          $doc->find("[ng-form='caseTypeDetailForm']")->prepend(
+            '<p class="error">The case type name selector is invalid, The Instance field will not be available</p>'
+          );
+        }
       });
   }
 
