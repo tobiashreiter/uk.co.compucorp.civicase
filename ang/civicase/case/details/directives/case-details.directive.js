@@ -141,7 +141,9 @@
         caseid: $scope.item.id,
         atype: '3',
         reset: 1,
-        cid: CasesUtils.getAllCaseClientContactIds($scope.item.contacts).join(',')
+        cid: $scope.item.client.map(function (client) {
+          return client.contact_id;
+        }).join(',')
       };
 
       CRM

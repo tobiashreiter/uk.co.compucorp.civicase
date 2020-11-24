@@ -40,41 +40,5 @@
         expect(contactsFetched).toEqual(expectedContacts);
       });
     });
-
-    describe('getAllCaseClientContactIds()', () => {
-      let cases;
-
-      beforeEach(() => {
-        cases = CasesData.get().values[0];
-      });
-
-      it('fetches all client contact ids of the case', () => {
-        expect(CasesUtils.getAllCaseClientContactIds(cases.contacts)).toEqual(['170']);
-      });
-
-      describe('when the client word has been translated to a different one', () => {
-        beforeEach(() => {
-          cases.contacts = cases.contacts
-            .map((contact) => ({
-              ...contact,
-              role: contact.role === 'Client'
-                ? 'Member'
-                : contact.role
-            }));
-
-          mockTs.and.callFake((string) => {
-            if (string === 'Client') {
-              return 'Member';
-            }
-
-            return string;
-          });
-        });
-
-        it('returns clients even when their roles have been translated', () => {
-          expect(CasesUtils.getAllCaseClientContactIds(cases.contacts)).toEqual(['170']);
-        });
-      });
-    });
   });
 })(CRM._);
