@@ -1019,14 +1019,15 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    *   Row display values.
    * @param string $selectedField
    *   Selected field.
-   * @param string $criteriaFieldName [optional]
+   * @param string $criteriaFieldName
    *   Criteria field name.
    * @param array $specs
    *   Specifications of the column.
    *
    * @return string
+   *   Label of the option ids.
    */
-  public function alterFromOptions($value, &$row, $selectedField, $criteriaFieldName, $specs) {
+  public function alterFromOptions($value, array &$row, $selectedField, $criteriaFieldName, array $specs) {
     if ($specs['data_type'] == 'ContactReference') {
       if (!empty($row[$selectedField])) {
         return CRM_Contact_BAO_Contact::displayName($row[$selectedField]);
@@ -1035,9 +1036,10 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
     }
     $value = trim($value, CRM_Core_DAO::VALUE_SEPARATOR);
     $options = $this->getCustomFieldOptions($specs);
-    if (strpos($value, CRM_Core_DAO::VALUE_SEPARATOR) === false) {
+    if (strpos($value, CRM_Core_DAO::VALUE_SEPARATOR) === FALSE) {
       return CRM_Utils_Array::value($value, $options, $value);
-    } else {
+    }
+    else {
       $values = explode(CRM_Core_DAO::VALUE_SEPARATOR, $value);
       $labels = [];
       foreach ($values as $val) {
