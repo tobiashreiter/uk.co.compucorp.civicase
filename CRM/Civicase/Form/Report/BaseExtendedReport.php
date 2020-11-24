@@ -1009,6 +1009,38 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   }
 
   /**
+   * Use the options for the field to map the display value.
+   *
+   * @param string $value
+   * @param array $row
+   * @param string $selectedField
+   * @param string $criteriaFieldName [optional]
+   * @param array $specs
+   *
+   * @return string
+   */
+  public function alterFromOptions($value, &$row, $selectedField, $criteriaFieldName, $specs) {
+    if ($specs['data_type'] == 'ContactReference') {
+      if (!empty($row[$selectedField])) {
+        return CRM_Contact_BAO_Contact::displayName($row[$selectedField]);
+      }
+      return NULL;
+    }
+    $value = trim($value, CRM_Core_DAO::VALUE_SEPARATOR);
+    $options = $this->getCustomFieldOptions($specs);
+    if (strpos($value, CRM_Core_DAO::VALUE_SEPARATOR) === false) {
+      return CRM_Utils_Array::value($value, $options, $value);
+    } else {
+      $values = explode(CRM_Core_DAO::VALUE_SEPARATOR, $value);
+      $labels = [];
+      foreach ($values as $val) {
+        $labels[] = CRM_Utils_Array::value($val, $options, $val);
+      }
+      return implode(' | ', $labels);
+    }
+  }
+
+  /**
    * Adjusts row total.
    *
    * Since we have introduced other data aggregate functions like COUNT UNIQUE,
