@@ -1014,15 +1014,15 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * Use the options for the field to map the display value.
    *
    * @param string $value
-   *    Value of the field.
+   *   Value of the field.
    * @param array $row
-   *    Row display values.
+   *   Row display values.
    * @param string $selectedField
-   *    Selected field.
+   *   Selected field.
    * @param string $criteriaFieldName [optional]
-   *    Criteria field name.
+   *   Criteria field name.
    * @param array $specs
-   *    Specifications of the column.
+   *   Specifications of the column.
    *
    * @return string
    */
