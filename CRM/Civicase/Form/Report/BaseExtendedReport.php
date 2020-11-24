@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class CRM_Civicase_Form_Report_BaseExtendedReport.
+ * Base class for case reports.
  */
 abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Report_ExtendedReport {
 
