@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class CRM_Civicase_Form_Report_BaseExtendedReport.
+ * Base class for case reports.
  */
 abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_Form_Report_ExtendedReport {
 
@@ -310,7 +310,8 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
       'dbAlias' => $prefix . $field['table_key'] . '.' . $field['column_name'],
       'alias' => $prefix . $field['table_name'] . '_' . 'custom_' . $field['id'],
     ]);
-    $field['is_aggregate_columns'] = in_array($field['html_type'], ['Select', 'Radio']);
+    $field['is_aggregate_columns'] =
+      in_array($field['html_type'], ['Select', 'Radio']);
 
     if (!empty($field['option_group_id'])) {
       if (in_array($field['html_type'], [
@@ -616,7 +617,8 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
     $value = $optionValue;
     $operator = '=';
 
-    if (!empty($spec['htmlType']) && in_array($spec['htmlType'], ['CheckBox', 'MultiSelect'])) {
+    if (!empty($spec['htmlType']) &&
+      in_array($spec['htmlType'], ['CheckBox', 'MultiSelect'])) {
       $value = "%" . CRM_Core_DAO::VALUE_SEPARATOR . $optionValue . CRM_Core_DAO::VALUE_SEPARATOR . "%";
       $operator = 'LIKE';
     }
@@ -1006,6 +1008,45 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
 
     // Use this method for formatting custom rows for display purpose.
     $this->alterCustomDataDisplay($rows);
+  }
+
+  /**
+   * Use the options for the field to map the display value.
+   *
+   * @param string $value
+   *   Value of the field.
+   * @param array $row
+   *   Row display values.
+   * @param string $selectedField
+   *   Selected field.
+   * @param string $criteriaFieldName
+   *   Criteria field name.
+   * @param array $specs
+   *   Specifications of the column.
+   *
+   * @return string
+   *   Label of the option ids.
+   */
+  public function alterFromOptions($value, array &$row, $selectedField, $criteriaFieldName, array $specs) {
+    if ($specs['data_type'] == 'ContactReference') {
+      if (!empty($row[$selectedField])) {
+        return CRM_Contact_BAO_Contact::displayName($row[$selectedField]);
+      }
+      return NULL;
+    }
+    $value = trim($value, CRM_Core_DAO::VALUE_SEPARATOR);
+    $options = $this->getCustomFieldOptions($specs);
+    if (strpos($value, CRM_Core_DAO::VALUE_SEPARATOR) === FALSE) {
+      return CRM_Utils_Array::value($value, $options, $value);
+    }
+    else {
+      $values = explode(CRM_Core_DAO::VALUE_SEPARATOR, $value);
+      $labels = [];
+      foreach ($values as $val) {
+        $labels[] = CRM_Utils_Array::value($val, $options, $val);
+      }
+      return implode(' | ', $labels);
+    }
   }
 
   /**
