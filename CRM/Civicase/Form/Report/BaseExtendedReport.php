@@ -310,7 +310,8 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
       'dbAlias' => $prefix . $field['table_key'] . '.' . $field['column_name'],
       'alias' => $prefix . $field['table_name'] . '_' . 'custom_' . $field['id'],
     ]);
-    $field['is_aggregate_columns'] = in_array($field['html_type'], ['Select', 'Radio']);
+    $field['is_aggregate_columns'] =
+      in_array($field['html_type'], ['Select', 'Radio']);
 
     if (!empty($field['option_group_id'])) {
       if (in_array($field['html_type'], [
