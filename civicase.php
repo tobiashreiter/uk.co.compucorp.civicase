@@ -6,6 +6,7 @@
  */
 
 use Civi\Angular\AngularLoader;
+use Civi\Angular\Manager;
 
 require_once 'civicase.civix.php';
 
@@ -641,6 +642,15 @@ function civicase_civicrm_summaryActions(&$actions, $contactID) {
 
   foreach ($hooks as $hook) {
     $hook->run($actions, $contactID);
+  }
+}
+
+/**
+ * Implements hook_civicrm_alterAngular().
+ */
+function civicase_civicrm_alterAngular(Manager $angular) {
+  if (CRM_Core_Permission::check([['administer CiviCase', 'administer CiviCRM']])) {
+    $angular->add(CRM_Civicase_Hook_alterAngular_AngularChangeSet::getForCaseTypeCategoryField());
   }
 }
 
