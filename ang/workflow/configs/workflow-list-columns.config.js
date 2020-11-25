@@ -6,15 +6,15 @@
       {
         label: ts('Title'),
         templateUrl: '~/workflow/columns/directives/workflow-list-column-title.html',
-        weight: 0
+        weight: 1
       }, {
         label: ts('Description'),
         templateUrl: '~/workflow/columns/directives/workflow-list-column-description.html',
-        weight: 1
+        weight: 10
       }, {
         label: ts('Enabled?'),
         templateUrl: '~/workflow/columns/directives/workflow-list-column-is-enabled.html',
-        weight: 2
+        weight: 20
       }
     ];
 

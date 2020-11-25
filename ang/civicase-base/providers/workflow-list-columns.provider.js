@@ -9,7 +9,6 @@
 
     /**
      * Provides the workflow list columns.
-     * The items are sorted by their weight.
      *
      * @returns {object[]} the list of workflows.
      */
@@ -35,6 +34,7 @@
 
 /**
  * @typedef {object} ColumnsConfig
+ * @property {string} label
  * @property {string} templateUrl
- * @property {number} weight
+ * @property {boolean} onlyVisibleForInstance
  */

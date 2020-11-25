@@ -27,7 +27,7 @@
           values: CaseTypesMockData.getSequential()
         }));
 
-        CasemanagementWorkflow.getWorkflowsList('some_case_type_category')
+        CasemanagementWorkflow.getWorkflowsList({ caseTypeCategory: 'some_case_type_category' })
           .then(function (data) {
             results = data;
           });

@@ -15,13 +15,13 @@
     /**
      * Returns workflows list for case management
      *
-     * @param {Array} caseTypeCategoryName case type category name
+     * @param {Array} scope scope object of the workflows list controller
      * @returns {Array} api call parameters
      */
-    function getWorkflowsList (caseTypeCategoryName) {
+    function getWorkflowsList (scope) {
       return civicaseCrmApi('CaseType', 'get', {
         sequential: 1,
-        case_type_category: caseTypeCategoryName,
+        case_type_category: scope.caseTypeCategory,
         options: { limit: 0 }
       }).then(function (data) {
         return data.values;

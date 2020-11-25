@@ -14,3 +14,32 @@
     width: 100%;
   }
 }
+
+.civicase-workflow-list__filters {
+  .form-group {
+    margin-bottom: 0;
+
+    [type='checkbox'] {
+      margin: 0;
+    }
+
+    > div {
+      display: inline-block;
+      margin-bottom: #{$basic-gutter * 4};
+    }
+
+    > div:nth-child(odd) {
+      margin-right: #{$basic-gutter * 2};
+      width: calc(50% - #{$basic-gutter * 2});
+    }
+
+    > div:nth-child(even) {
+      margin-left: #{$basic-gutter * 2};
+      width: calc(50% - #{$basic-gutter * 2});
+    }
+
+    .select2-container {
+      width: 100% !important;
+    }
+  }
+}

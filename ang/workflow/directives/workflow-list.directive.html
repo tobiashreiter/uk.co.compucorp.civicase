@@ -1,16 +1,37 @@
 <div id="bootstrap-theme">
   <h1 crm-page-title>{{:: ts('Manage Workflows') }}</h1>
 
-  <div class="text-center" ng-if="workflows.length === 0 && !isLoading">
-    {{:: ts('No workflows are available.') }}
+  <div class="panel panel-default civicase-workflow-list__filters" ng-if="filters.length > 0">
+    <div class="panel-body">
+      <div class="form-group">
+        <ng-include
+          ng-repeat="filter in filters"
+          civicase-include-replace src="filter.templateUrl">
+        </ng-include>
+      </div>
+      <button
+        ng-click="refreshWorkflowsList()"
+        type="button" class="btn btn-primary pull-right">
+        {{ts('Filter')}}
+      </button>
+    </div>
   </div>
+
+  <div class="panel panel-default" ng-if="workflows.length === 0 && !isLoading">
+    <div class="panel-body">
+      <div class="text-center">
+        {{:: ts('No workflows are available.') }}
+      </div>
+    </div>
+  </div>
+
 
   <div class="panel panel-default civicase-workflow-list" ng-if="workflows.length > 0">
     <div class="panel-body">
       <table class="table">
         <thead>
           <tr>
-            <th ng-repeat="tableColumn in tableColumns" ng-show="tableColumn.isVisible">
+            <th ng-repeat="tableColumn in tableColumns">
               {{:: tableColumn.label}}
             </th>
             <th width="20"></th>
@@ -18,7 +39,7 @@
         </thead>
         <tbody>
           <tr ng-repeat="workflow in workflows">
-            <td ng-repeat="tableColumn in tableColumns" ng-show="tableColumn.isVisible">
+            <td ng-repeat="tableColumn in tableColumns">
               <ng-include
                 civicase-include-replace src="tableColumn.templateUrl">
               </ng-include>

@@ -19,7 +19,7 @@
    * Controller Function for civicase-search directive
    */
   module.controller('civicaseSearchController', function ($scope, $rootScope, $window,
-    $timeout, civicaseCrmApi, getSelect2Value, ts, CaseStatus, CaseTypeCategory,
+    $timeout, civicaseCrmApi, Select2Utils, ts, CaseStatus, CaseTypeCategory,
     CaseType, currentCaseCategory, CustomSearchField, includeActivitiesForInvolvedContact) {
     var caseTypes = CaseType.getAll();
     var caseStatuses = CaseStatus.getAll();
@@ -192,8 +192,8 @@
      */
     function caseRoleWatcher () {
       var filters = $scope.filters;
-      var selectedContacts = getSelect2Value($scope.contactRoleFilter.selectedContacts);
-      var selectedContactRoles = getSelect2Value($scope.contactRoleFilter.selectedContactRoles);
+      var selectedContacts = Select2Utils.getSelect2Value($scope.contactRoleFilter.selectedContacts);
+      var selectedContactRoles = Select2Utils.getSelect2Value($scope.contactRoleFilter.selectedContactRoles);
       var hasAllCaseRolesSelected = selectedContactRoles.indexOf('all-case-roles') >= 0;
       var hasClientSelected = selectedContactRoles.indexOf('client') >= 0;
       var caseRoleIds = _.filter(selectedContactRoles, function (roleId) {

@@ -6,28 +6,24 @@
       civicaseCrmApiMock, WorkflowListActionItems, CasemanagementWorkflow,
       WorkflowListColumns;
 
-    beforeEach(module('workflow', 'civicase.data', ($provide) => {
-      civicaseCrmApiMock = jasmine.createSpy('civicaseCrmApi');
-
-      $provide.value('civicaseCrmApi', civicaseCrmApiMock);
-    }));
-
-    beforeEach(inject((_$q_, _$controller_, _$rootScope_, _CaseTypesMockData_,
-      _WorkflowListActionItems_, _CasemanagementWorkflow_,
-      _WorkflowListColumns_) => {
-      $q = _$q_;
-      $controller = _$controller_;
-      $rootScope = _$rootScope_;
-      WorkflowListActionItems = _WorkflowListActionItems_;
-      WorkflowListColumns = _WorkflowListColumns_;
-      CaseTypesMockData = _CaseTypesMockData_;
-      CasemanagementWorkflow = _CasemanagementWorkflow_;
-
-      spyOn(CasemanagementWorkflow, 'getWorkflowsList');
-    }));
+    const testFilters = [
+      {
+        filterIdentifier: 'test1',
+        defaultValue: true,
+        onlyVisibleForInstance: 'case_management',
+        templateUrl: '~/test.html'
+      },
+      {
+        filterIdentifier: 'test2',
+        defaultValue: '',
+        onlyVisibleForInstance: 'applicant_management',
+        templateUrl: '~/test2.html'
+      }
+    ];
 
     describe('basic tests', () => {
       beforeEach(() => {
+        injectModulesAndDependencies();
         CasemanagementWorkflow.getWorkflowsList.and.returnValue($q.resolve(
           CaseTypesMockData.getSequential()
         ));
@@ -55,27 +51,23 @@
           expect($scope.actionItems).toEqual(WorkflowListActionItems);
         });
 
-        describe('columns', () => {
-          var expectedColumns;
+        it('displays the columns', () => {
+          expect($scope.tableColumns).toEqual(WorkflowListColumns);
+        });
 
-          beforeEach(function () {
-            expectedColumns = _.map(WorkflowListColumns, function (column) {
-              column = _.extend({}, column);
-              column.isVisible = true;
+        it('displays the filters only meant for current instance', () => {
+          expect($scope.filters).toEqual([testFilters[0]]);
+        });
 
-              return column;
-            });
-          });
-
-          it('displays the columns', () => {
-            expect($scope.tableColumns).toEqual(expectedColumns);
-          });
+        it('displays the filters default values', () => {
+          expect($scope.selectedFilters).toEqual({ test1: true });
         });
       });
     });
 
     describe('when list refresh event is fired', () => {
       beforeEach(() => {
+        injectModulesAndDependencies();
         CasemanagementWorkflow.getWorkflowsList.and.returnValue($q.resolve(
           CaseTypesMockData.getSequential()
         ));
@@ -94,6 +86,43 @@
         expect($scope.workflows).toEqual(CaseTypesMockData.getSequential());
       });
     });
+
+    /**
+     * Initialises a spy module by hoisting the filters provider.
+     */
+    function initSpyModule () {
+      angular.module('civicase.spy', ['civicase-base'])
+        .config((WorkflowListFiltersProvider) => {
+          WorkflowListFiltersProvider.addItems(testFilters);
+        });
+    }
+
+    /**
+     * Injects modules and dependencies.
+     */
+    function injectModulesAndDependencies () {
+      initSpyModule();
+
+      module('workflow', 'civicase.data', 'civicase.spy', ($provide) => {
+        civicaseCrmApiMock = jasmine.createSpy('civicaseCrmApi');
+
+        $provide.value('civicaseCrmApi', civicaseCrmApiMock);
+      });
+
+      inject((_$q_, _$controller_, _$rootScope_, _CaseTypesMockData_,
+        _WorkflowListActionItems_, _CasemanagementWorkflow_,
+        _WorkflowListColumns_) => {
+        $q = _$q_;
+        $controller = _$controller_;
+        $rootScope = _$rootScope_;
+        WorkflowListActionItems = _WorkflowListActionItems_;
+        WorkflowListColumns = _WorkflowListColumns_;
+        CaseTypesMockData = _CaseTypesMockData_;
+        CasemanagementWorkflow = _CasemanagementWorkflow_;
+
+        spyOn(CasemanagementWorkflow, 'getWorkflowsList');
+      });
+    }
 
     /**
      * Initializes the contact case tab case details controller.

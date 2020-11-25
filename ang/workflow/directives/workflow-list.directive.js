@@ -17,37 +17,57 @@
   /**
    * @param {object} $scope scope object
    * @param {object} $injector injector service of angular
-   * @param {object} ts ts
+   * @param {object} ts translation service
    * @param {object} civicaseCrmApi service to use civicrm api
    * @param {object[]} WorkflowListColumns list of workflow list columns
    * @param {object[]} WorkflowListActionItems list of workflow list action items
    * @param {object} CaseTypeCategory case type catgory service
    * @param {object} CivicaseUtil utility service
+   * @param {object[]} WorkflowListFilters list of workflow filters
    */
   function workflowListController ($scope, $injector, ts, civicaseCrmApi,
     WorkflowListColumns, WorkflowListActionItems, CaseTypeCategory,
-    CivicaseUtil) {
+    CivicaseUtil, WorkflowListFilters) {
     $scope.ts = ts;
     $scope.isLoading = false;
     $scope.workflows = [];
     $scope.actionItems = WorkflowListActionItems;
-    $scope.tableColumns = _.map(WorkflowListColumns, function (column) {
-      column = _.extend({}, column);
-      column.isVisible =
-        !column.onlyVisibleForInstance ||
-        CaseTypeCategory.isInstance(
-          $scope.caseTypeCategory,
-          column.onlyVisibleForInstance
-        );
-
-      return column;
-    });
+    $scope.tableColumns = filterArrayForCurrentInstance(WorkflowListColumns);
+    $scope.filters = filterArrayForCurrentInstance(WorkflowListFilters);
+    $scope.selectedFilters = {};
+    $scope.refreshWorkflowsList = refreshWorkflowsList;
 
     (function init () {
+      applyDefaultValueToFilters();
       refreshWorkflowsList();
 
       $scope.$on('workflow::list::refresh', refreshWorkflowsList);
     }());
+
+    /**
+     * Apply default value to filters
+     */
+    function applyDefaultValueToFilters () {
+      _.each($scope.filters, function (filter) {
+        $scope.selectedFilters[filter.filterIdentifier] = filter.defaultValue;
+      });
+    }
+
+    /**
+     * Preapres visibility settings for the sent array
+     *
+     * @param {object[]} arrayList array list
+     * @returns {object[]} list
+     */
+    function filterArrayForCurrentInstance (arrayList) {
+      return _.filter(arrayList, function (arrayItem) {
+        return !arrayItem.onlyVisibleForInstance ||
+          CaseTypeCategory.isInstance(
+            $scope.caseTypeCategory,
+            arrayItem.onlyVisibleForInstance
+          );
+      });
+    }
 
     /**
      * Refresh workflows list
@@ -75,7 +95,7 @@
       var instanceName = CaseTypeCategory.getCaseTypeCategoryInstance(categoryObject.value).name;
 
       return getServiceForInstance(instanceName)
-        .getWorkflowsList(caseTypeCategory);
+        .getWorkflowsList($scope);
     }
 
     /**
