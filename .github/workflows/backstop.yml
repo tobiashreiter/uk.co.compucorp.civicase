@@ -38,7 +38,7 @@ jobs:
 
       - name: Build Drupal site
         run: |
-          civibuild create drupal-clean --civi-ver 5.28.3 --web-root $GITHUB_WORKSPACE/site
+          civibuild create drupal-clean --civi-ver 5.28.3 --cms-ver 7.74 --web-root $GITHUB_WORKSPACE/site
           chmod -R 777 $GITHUB_WORKSPACE/site
 
       - name: Installing CiviCase and Shoreditch
