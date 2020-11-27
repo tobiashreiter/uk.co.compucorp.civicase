@@ -3,7 +3,7 @@
 ((_) => {
   describe('case management workflow', () => {
     let $q, $rootScope, civicaseCrmApiMock, CaseTypesMockData,
-      CasemanagementWorkflow;
+      CaseManagementWorkflow;
 
     beforeEach(module('workflow', 'civicase.data', ($provide) => {
       civicaseCrmApiMock = jasmine.createSpy('civicaseCrmApi');
@@ -11,11 +11,11 @@
       $provide.value('civicaseCrmApi', civicaseCrmApiMock);
     }));
 
-    beforeEach(inject((_$q_, _$rootScope_, _CasemanagementWorkflow_,
+    beforeEach(inject((_$q_, _$rootScope_, _CaseManagementWorkflow_,
       _CaseTypesMockData_) => {
       $q = _$q_;
       $rootScope = _$rootScope_;
-      CasemanagementWorkflow = _CasemanagementWorkflow_;
+      CaseManagementWorkflow = _CaseManagementWorkflow_;
       CaseTypesMockData = _CaseTypesMockData_;
     }));
 
@@ -27,7 +27,7 @@
           values: CaseTypesMockData.getSequential()
         }));
 
-        CasemanagementWorkflow.getWorkflowsList({ caseTypeCategory: 'some_case_type_category' })
+        CaseManagementWorkflow.getWorkflowsList({ caseTypeCategory: 'some_case_type_category' })
           .then(function (data) {
             results = data;
           });
@@ -52,7 +52,7 @@
 
       beforeEach(() => {
         workflow = CaseTypesMockData.getSequential(0);
-        CasemanagementWorkflow.createDuplicate(workflow);
+        CaseManagementWorkflow.createDuplicate(workflow);
       });
 
       it('creates a duplicate workflow', () => {

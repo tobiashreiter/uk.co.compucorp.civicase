@@ -18,16 +18,15 @@
    * @param {object} $scope scope object
    * @param {object} $injector injector service of angular
    * @param {object} ts translation service
-   * @param {object} civicaseCrmApi service to use civicrm api
    * @param {object[]} WorkflowListColumns list of workflow list columns
    * @param {object[]} WorkflowListActionItems list of workflow list action items
    * @param {object} CaseTypeCategory case type catgory service
-   * @param {object} CivicaseUtil utility service
+   * @param {object} pascalCase service to convert a string to pascal case
    * @param {object[]} WorkflowListFilters list of workflow filters
    */
-  function workflowListController ($scope, $injector, ts, civicaseCrmApi,
+  function workflowListController ($scope, $injector, ts,
     WorkflowListColumns, WorkflowListActionItems, CaseTypeCategory,
-    CivicaseUtil, WorkflowListFilters) {
+    pascalCase, WorkflowListFilters) {
     $scope.ts = ts;
     $scope.isLoading = false;
     $scope.workflows = [];
@@ -111,11 +110,11 @@
 
       try {
         return $injector.get(
-          CivicaseUtil.capitalizeFirstLetterAndRemoveUnderScore(instanceName) + 'Workflow'
+          pascalCase(instanceName) + 'Workflow'
         );
       } catch (e) {
         return $injector.get(
-          CivicaseUtil.capitalizeFirstLetterAndRemoveUnderScore(CASE_MANAGEMENT_INSTACE_NAME) + 'Workflow'
+          pascalCase(CASE_MANAGEMENT_INSTACE_NAME) + 'Workflow'
         );
       }
     }

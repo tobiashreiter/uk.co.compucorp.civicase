@@ -11,10 +11,10 @@
    * @param {object} dialogService service to open dialog box
    * @param {object} crmStatus civicrm status service
    * @param {object} CaseTypeCategory case type category service
-   * @param {object} CivicaseUtil utility service
+   * @param {object} pascalCase service to convert a string to pascal case
    */
   function WorkflowDuplicateController ($scope, $rootScope, $q, $injector,
-    dialogService, crmStatus, CaseTypeCategory, CivicaseUtil) {
+    dialogService, crmStatus, CaseTypeCategory, pascalCase) {
     $scope.submitInProgress = false;
     $scope.clickHandler = clickHandler;
 
@@ -142,11 +142,11 @@
 
       try {
         return $injector.get(
-          CivicaseUtil.capitalizeFirstLetterAndRemoveUnderScore(instanceName) + 'Workflow'
+          pascalCase(instanceName) + 'Workflow'
         );
       } catch (e) {
         return $injector.get(
-          CivicaseUtil.capitalizeFirstLetterAndRemoveUnderScore(CASE_MANAGEMENT_INSTACE_NAME) + 'Workflow'
+          pascalCase(CASE_MANAGEMENT_INSTACE_NAME) + 'Workflow'
         );
       }
     }

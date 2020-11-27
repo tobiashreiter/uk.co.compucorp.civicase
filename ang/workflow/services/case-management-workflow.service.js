@@ -1,14 +1,14 @@
 (function (_, angular) {
   var module = angular.module('workflow');
 
-  module.service('CasemanagementWorkflow', CasemanagementWorkflow);
+  module.service('CaseManagementWorkflow', CaseManagementWorkflow);
 
   /**
    * Service for case management workflows
    *
    * @param {Function} civicaseCrmApi civicrm api service
    */
-  function CasemanagementWorkflow (civicaseCrmApi) {
+  function CaseManagementWorkflow (civicaseCrmApi) {
     this.createDuplicate = createDuplicate;
     this.getWorkflowsList = getWorkflowsList;
 

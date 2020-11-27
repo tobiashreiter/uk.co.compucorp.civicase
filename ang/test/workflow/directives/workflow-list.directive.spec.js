@@ -3,7 +3,7 @@
 ((_) => {
   describe('workflow list', () => {
     let $q, $controller, $rootScope, $scope, CaseTypesMockData,
-      civicaseCrmApiMock, WorkflowListActionItems, CasemanagementWorkflow,
+      civicaseCrmApiMock, WorkflowListActionItems, CaseManagementWorkflow,
       WorkflowListColumns;
 
     const testFilters = [
@@ -24,7 +24,7 @@
     describe('basic tests', () => {
       beforeEach(() => {
         injectModulesAndDependencies();
-        CasemanagementWorkflow.getWorkflowsList.and.returnValue($q.resolve(
+        CaseManagementWorkflow.getWorkflowsList.and.returnValue($q.resolve(
           CaseTypesMockData.getSequential()
         ));
         initController();
@@ -68,7 +68,7 @@
     describe('when list refresh event is fired', () => {
       beforeEach(() => {
         injectModulesAndDependencies();
-        CasemanagementWorkflow.getWorkflowsList.and.returnValue($q.resolve(
+        CaseManagementWorkflow.getWorkflowsList.and.returnValue($q.resolve(
           CaseTypesMockData.getSequential()
         ));
         initController();
@@ -79,7 +79,7 @@
       });
 
       it('fetches the case types for the current case type category', () => {
-        expect(CasemanagementWorkflow.getWorkflowsList).toHaveBeenCalled();
+        expect(CaseManagementWorkflow.getWorkflowsList).toHaveBeenCalled();
       });
 
       it('refreshes the workflows list', () => {
@@ -110,7 +110,7 @@
       });
 
       inject((_$q_, _$controller_, _$rootScope_, _CaseTypesMockData_,
-        _WorkflowListActionItems_, _CasemanagementWorkflow_,
+        _WorkflowListActionItems_, _CaseManagementWorkflow_,
         _WorkflowListColumns_) => {
         $q = _$q_;
         $controller = _$controller_;
@@ -118,9 +118,9 @@
         WorkflowListActionItems = _WorkflowListActionItems_;
         WorkflowListColumns = _WorkflowListColumns_;
         CaseTypesMockData = _CaseTypesMockData_;
-        CasemanagementWorkflow = _CasemanagementWorkflow_;
+        CaseManagementWorkflow = _CaseManagementWorkflow_;
 
-        spyOn(CasemanagementWorkflow, 'getWorkflowsList');
+        spyOn(CaseManagementWorkflow, 'getWorkflowsList');
       });
     }
 
