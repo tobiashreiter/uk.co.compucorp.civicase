@@ -87,6 +87,23 @@
       });
     });
 
+    describe('when clicking on New Workflow button', () => {
+      beforeEach(() => {
+        injectModulesAndDependencies();
+        CaseManagementWorkflow.getWorkflowsList.and.returnValue($q.resolve(
+          CaseTypesMockData.getSequential()
+        ));
+        spyOn(CaseManagementWorkflow, 'redirectToWorkflowCreationScreen');
+        initController();
+
+        $scope.redirectToWorkflowCreationScreen();
+      });
+
+      it('redirects to the create new workflow screen for the current instance', () => {
+        expect(CaseManagementWorkflow.redirectToWorkflowCreationScreen).toHaveBeenCalled();
+      });
+    });
+
     /**
      * Initialises a spy module by hoisting the filters provider.
      */

@@ -2,19 +2,21 @@
 
 ((_) => {
   describe('case management workflow', () => {
-    let $q, $rootScope, civicaseCrmApiMock, CaseTypesMockData,
+    let $q, $rootScope, $window, civicaseCrmApiMock, CaseTypesMockData,
       CaseManagementWorkflow;
 
     beforeEach(module('workflow', 'civicase.data', ($provide) => {
       civicaseCrmApiMock = jasmine.createSpy('civicaseCrmApi');
 
       $provide.value('civicaseCrmApi', civicaseCrmApiMock);
+      $provide.value('$window', { location: {} });
     }));
 
-    beforeEach(inject((_$q_, _$rootScope_, _CaseManagementWorkflow_,
+    beforeEach(inject((_$q_, _$rootScope_, _$window_, _CaseManagementWorkflow_,
       _CaseTypesMockData_) => {
       $q = _$q_;
       $rootScope = _$rootScope_;
+      $window = _$window_;
       CaseManagementWorkflow = _CaseManagementWorkflow_;
       CaseTypesMockData = _CaseTypesMockData_;
     }));
@@ -59,6 +61,16 @@
         expect(civicaseCrmApiMock).toHaveBeenCalledWith([
           ['CaseType', 'create', _.extend({}, workflow, { id: null })]
         ]);
+      });
+    });
+
+    describe('when redirecting to the create workflow page', () => {
+      beforeEach(() => {
+        CaseManagementWorkflow.redirectToWorkflowCreationScreen();
+      });
+
+      it('redirects to the case management new workflow page', () => {
+        expect($window.location.href).toBe('/civicrm/a/#/caseType/new');
       });
     });
   });

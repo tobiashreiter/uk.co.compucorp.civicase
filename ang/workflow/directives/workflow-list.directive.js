@@ -35,6 +35,7 @@
     $scope.filters = filterArrayForCurrentInstance(WorkflowListFilters);
     $scope.selectedFilters = {};
     $scope.refreshWorkflowsList = refreshWorkflowsList;
+    $scope.redirectToWorkflowCreationScreen = redirectToWorkflowCreationScreen;
 
     (function init () {
       applyDefaultValueToFilters();
@@ -50,6 +51,17 @@
       _.each($scope.filters, function (filter) {
         $scope.selectedFilters[filter.filterIdentifier] = filter.defaultValue;
       });
+    }
+
+    /**
+     * Apply default value to filters
+     */
+    function redirectToWorkflowCreationScreen () {
+      var categoryObject = CaseTypeCategory.findByName($scope.caseTypeCategory);
+      var instanceName = CaseTypeCategory.getCaseTypeCategoryInstance(categoryObject.value).name;
+
+      getServiceForInstance(instanceName)
+        .redirectToWorkflowCreationScreen(categoryObject);
     }
 
     /**

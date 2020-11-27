@@ -7,10 +7,22 @@
    * Service for case management workflows
    *
    * @param {Function} civicaseCrmApi civicrm api service
+   * @param {object} $window window object of the browser
    */
-  function CaseManagementWorkflow (civicaseCrmApi) {
+  function CaseManagementWorkflow (civicaseCrmApi, $window) {
     this.createDuplicate = createDuplicate;
     this.getWorkflowsList = getWorkflowsList;
+    this.redirectToWorkflowCreationScreen = redirectToWorkflowCreationScreen;
+
+    /**
+     * @param {object} workflow workflow object
+     * @returns {Array} api call parameters
+     */
+    function createDuplicate (workflow) {
+      return civicaseCrmApi([
+        ['CaseType', 'create', _.extend({}, workflow, { id: null })]
+      ]);
+    }
 
     /**
      * Returns workflows list for case management
@@ -29,13 +41,10 @@
     }
 
     /**
-     * @param {object} workflow workflow object
-     * @returns {Array} api call parameters
+     * Redirect to the workflow creation screen
      */
-    function createDuplicate (workflow) {
-      return civicaseCrmApi([
-        ['CaseType', 'create', _.extend({}, workflow, { id: null })]
-      ]);
+    function redirectToWorkflowCreationScreen () {
+      $window.location.href = '/civicrm/a/#/caseType/new';
     }
   }
 })(CRM._, angular);
