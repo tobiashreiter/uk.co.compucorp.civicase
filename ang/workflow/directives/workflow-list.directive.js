@@ -94,7 +94,7 @@
       var instanceName = CaseTypeCategory.getCaseTypeCategoryInstance(categoryObject.value).name;
 
       return getServiceForInstance(instanceName)
-        .getWorkflowsList($scope);
+        .getWorkflowsList($scope.caseTypeCategory, $scope.selectedFilters);
     }
 
     /**
