@@ -10,7 +10,7 @@
       Select2Utils = _Select2Utils_;
     }));
 
-    describe('when getting values from select 2 ', () => {
+    describe('when getting values from select2', () => {
       let returnedValue;
 
       beforeEach(() => {
@@ -22,7 +22,7 @@
       });
     });
 
-    describe('when mapping object to show as select 2 option ', () => {
+    describe('when mapping object to show as select2 option ', () => {
       let returnedValue;
 
       describe('when sending option with value and label field', () => {

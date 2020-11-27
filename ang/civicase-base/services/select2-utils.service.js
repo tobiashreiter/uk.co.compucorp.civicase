@@ -26,15 +26,15 @@
      * Map the option parameter from API
      * to show up correctly on the UI.
      *
-     * @param {object} opt object for caseTypes
+     * @param {object} option object for caseTypes
      * @returns {object} mapped value to be used in UI
      */
-    function mapSelectOptions (opt) {
+    function mapSelectOptions (option) {
       return {
-        id: opt.value || opt.name,
-        text: opt.label || opt.title,
-        color: opt.color,
-        icon: opt.icon
+        id: option.value || option.name,
+        text: option.label || option.title,
+        color: option.color,
+        icon: option.icon
       };
     }
   });
