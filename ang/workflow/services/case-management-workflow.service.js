@@ -11,6 +11,7 @@
    */
   function CaseManagementWorkflow (civicaseCrmApi, $window) {
     this.createDuplicate = createDuplicate;
+    this.getEditWorkflowURL = getEditWorkflowURL;
     this.getWorkflowsList = getWorkflowsList;
     this.redirectToWorkflowCreationScreen = redirectToWorkflowCreationScreen;
 
@@ -22,6 +23,14 @@
       return civicaseCrmApi([
         ['CaseType', 'create', _.extend({}, workflow, { id: null })]
       ]);
+    }
+
+    /**
+     * @param {string/number} workflow workflow object
+     * @returns {string} url to edit workflow page
+     */
+    function getEditWorkflowURL (workflow) {
+      return 'civicrm/a/#/caseType/' + workflow.id;
     }
 
     /**
