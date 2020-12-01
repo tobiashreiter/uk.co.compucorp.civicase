@@ -65,6 +65,53 @@
         });
       });
 
+      describe('when the display name contains "Mr" honorific', function () {
+        beforeEach(function () {
+          spyOn(ContactsCache, 'add').and.returnValue($q.resolve(ContactsData.values[0]));
+          spyOn(ContactsCache, 'getCachedContact').and.returnValue({ display_name: 'Mr. John Doe' });
+          compileDirective(true, ContactsData.values[0].id);
+        });
+
+        it('ignores the honorific while creating the avatar', function () {
+          expect(element.isolateScope().contacts[0].avatar).toBe('JD');
+        });
+      });
+
+      describe('when the display name contains "Mrs" honorific', function () {
+        beforeEach(function () {
+          spyOn(ContactsCache, 'add').and.returnValue($q.resolve(ContactsData.values[0]));
+          spyOn(ContactsCache, 'getCachedContact').and.returnValue({ display_name: 'Mrs. John Doe' });
+          compileDirective(true, ContactsData.values[0].id);
+        });
+
+        it('ignores the honorific while creating the avatar', function () {
+          expect(element.isolateScope().contacts[0].avatar).toBe('JD');
+        });
+      });
+
+      describe('when the display name contains "Dr" honorific', function () {
+        beforeEach(function () {
+          spyOn(ContactsCache, 'add').and.returnValue($q.resolve(ContactsData.values[0]));
+          spyOn(ContactsCache, 'getCachedContact').and.returnValue({ display_name: 'Dr. John Doe' });
+          compileDirective(true, ContactsData.values[0].id);
+        });
+
+        it('ignores the honorific while creating the avatar', function () {
+          expect(element.isolateScope().contacts[0].avatar).toBe('JD');
+        });
+      });
+
+      describe('when the display name contains "Ms" honorific', function () {
+        beforeEach(function () {
+          spyOn(ContactsCache, 'add').and.returnValue($q.resolve(ContactsData.values[0]));
+          spyOn(ContactsCache, 'getCachedContact').and.returnValue({ display_name: 'Ms. John Doe' });
+          compileDirective(true, ContactsData.values[0].id);
+        });
+
+        it('ignores the honorific while creating the avatar', function () {
+          expect(element.isolateScope().contacts[0].avatar).toBe('JD');
+        });
+      });
       describe('image url', function () {
         beforeEach(function () {
           civicaseCrmApi.and.returnValue($q.resolve(ContactsData));

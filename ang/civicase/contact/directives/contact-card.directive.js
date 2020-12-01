@@ -97,6 +97,12 @@
        */
       function getInitials (contactFullName) {
         var names = contactFullName.split(' ');
+        var ifNameContainsHonorificStrings = _.contains(['Mr.', 'Ms.', 'Mrs.', 'Dr.'], names[0]);
+
+        if (ifNameContainsHonorificStrings) {
+          names.shift();
+        }
+
         var initials = names[0].substring(0, 1).toUpperCase();
 
         if (names.length > 1) {
