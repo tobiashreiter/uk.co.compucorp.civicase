@@ -189,7 +189,8 @@
             hideDraftButton: 1,
             reset: 1,
             cid: contactIDs.join(','),
-            caseid: model.caseIds[0]
+            caseid: model.caseIds[0],
+            caseRolesBulkEmail: 1
           }
         };
 
