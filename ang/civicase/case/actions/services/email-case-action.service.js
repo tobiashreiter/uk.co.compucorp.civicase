@@ -188,12 +188,13 @@
             action: 'add',
             hideDraftButton: 1,
             reset: 1,
-            cid: contactIDs.join(',')
+            cid: contactIDs.join(','),
+            caseid: model.caseIds[0]
           }
         };
 
-        if (model.caseIds.length === 1) {
-          popupPath.query.caseid = model.caseIds[0];
+        if (model.caseIds.length > 1) {
+          popupPath.query.allCaseIds = model.caseIds.join(',');
         }
 
         model.deferObject.resolve(popupPath);

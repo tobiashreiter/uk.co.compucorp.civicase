@@ -141,5 +141,36 @@
         });
       });
     });
+    describe('when clicking on the action with more than one case selected', () => {
+      var modalOpenCall, returnValue;
+
+      beforeEach(function () {
+        caseObj = CasesMockData.get().values[0];
+        var case2Obj = CasesMockData.get().values[1];
+        EmailCaseAction.doAction([caseObj, case2Obj], 'email', jasmine.any(Function))
+          .then(function (result) {
+            returnValue = result;
+          });
+        modalOpenCall = dialogServiceMock.open.calls.mostRecent().args;
+        civicaseCrmApiMock.and.returnValue($q.resolve({ values: RelationshipData.get() }));
+        modalOpenCall[2].selectedCaseRoles = 'client,11,12';
+        modalOpenCall[3].buttons[0].click();
+        $rootScope.$digest();
+      });
+
+      it('adds bulk email activitiy to all the selected cases', () => {
+        expect(returnValue).toEqual({
+          path: 'civicrm/activity/email/add',
+          query: {
+            action: 'add',
+            reset: 1,
+            cid: '170,4,6',
+            hideDraftButton: 1,
+            caseid: '141',
+            allCaseIds: '141,3'
+          }
+        });
+      });
+    });
   });
 })(CRM._, CRM.$);

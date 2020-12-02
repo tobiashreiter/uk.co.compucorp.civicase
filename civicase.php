@@ -430,6 +430,7 @@ function civicase_civicrm_postProcess($formName, &$form) {
     new CRM_Civicase_Hook_PostProcess_CaseCategoryPostProcessor(),
     new CRM_Civicase_Hook_PostProcess_ActivityFormStatusWordReplacement(),
     new CRM_Civicase_Hook_PostProcess_RedirectToCaseDetails(),
+    new CRM_Civicase_Hook_PostProcess_AttachEmailActivityToAllCases(),
   ];
 
   foreach ($hooks as $hook) {
@@ -649,7 +650,9 @@ function civicase_civicrm_summaryActions(&$actions, $contactID) {
  * Implements hook_civicrm_alterAngular().
  */
 function civicase_civicrm_alterAngular(Manager $angular) {
-  if (CRM_Core_Permission::check([['administer CiviCase', 'administer CiviCRM']])) {
+  if (CRM_Core_Permission::check(
+    [['administer CiviCase', 'administer CiviCRM']]
+  )) {
     $angular->add(CRM_Civicase_Hook_alterAngular_AngularChangeSet::getForCaseTypeCategoryField());
   }
 }
