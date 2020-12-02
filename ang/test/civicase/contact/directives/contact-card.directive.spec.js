@@ -112,6 +112,7 @@
           expect(element.isolateScope().contacts[0].avatar).toBe('JD');
         });
       });
+
       describe('image url', function () {
         beforeEach(function () {
           civicaseCrmApi.and.returnValue($q.resolve(ContactsData));

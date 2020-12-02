@@ -1,7 +1,7 @@
 (function (angular, $, _, CRM) {
   var module = angular.module('civicase');
 
-  module.directive('civicaseContactCard', function ($document, ContactsCache) {
+  module.directive('civicaseContactCard', function (ContactsCache, IndividualPrefix) {
     return {
       restrict: 'A',
       replace: true,
@@ -23,6 +23,7 @@
      * @param {object} $scope scope object reference.
      */
     function civicaseContactCardController ($scope) {
+      var INDIVIDUAL_PREFIXES = IndividualPrefix.getAll();
       $scope.url = CRM.url;
       $scope.mainContact = null;
 
@@ -97,7 +98,7 @@
        */
       function getInitials (contactFullName) {
         var names = contactFullName.split(' ');
-        var ifNameContainsHonorificStrings = _.contains(['Mr.', 'Ms.', 'Mrs.', 'Dr.'], names[0]);
+        var ifNameContainsHonorificStrings = _.contains(INDIVIDUAL_PREFIXES, names[0]);
 
         if (ifNameContainsHonorificStrings) {
           names.shift();
