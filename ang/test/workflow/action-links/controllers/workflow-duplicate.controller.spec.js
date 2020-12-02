@@ -3,7 +3,7 @@
 ((_) => {
   describe('workflow duplicate controller', () => {
     let $controller, $rootScope, $q, $scope, dialogService, CaseTypesMockData,
-      crmStatus, DuplicateWorkflowCasemanagement;
+      crmStatus, CaseManagementWorkflow;
 
     beforeEach(module('workflow', 'civicase.data', ($provide) => {
       $provide.value('dialogService',
@@ -12,19 +12,19 @@
     }));
 
     beforeEach(inject((_$q_, _$controller_, _$rootScope_, _CaseTypesMockData_,
-      _dialogService_, _crmStatus_, _DuplicateWorkflowCasemanagement_) => {
+      _dialogService_, _crmStatus_, _CaseManagementWorkflow_) => {
       $q = _$q_;
       $controller = _$controller_;
       $rootScope = _$rootScope_;
       dialogService = _dialogService_;
       CaseTypesMockData = _CaseTypesMockData_;
       crmStatus = _crmStatus_;
-      DuplicateWorkflowCasemanagement = _DuplicateWorkflowCasemanagement_;
+      CaseManagementWorkflow = _CaseManagementWorkflow_;
 
       dialogService.dialogs = {};
 
-      spyOn(DuplicateWorkflowCasemanagement, 'create');
-      DuplicateWorkflowCasemanagement.create.and.returnValue($q.resolve({
+      spyOn(CaseManagementWorkflow, 'createDuplicate');
+      CaseManagementWorkflow.createDuplicate.and.returnValue($q.resolve({
         values: CaseTypesMockData.getSequential()
       }));
 
@@ -101,7 +101,7 @@
             });
 
             it('duplicates the workflow', () => {
-              expect(DuplicateWorkflowCasemanagement.create)
+              expect(CaseManagementWorkflow.createDuplicate)
                 .toHaveBeenCalledWith(expectedApiParam);
             });
 
@@ -135,7 +135,7 @@
 
           describe('when there is error while saving', () => {
             beforeEach(() => {
-              DuplicateWorkflowCasemanagement.create.and.returnValue($q.reject({
+              CaseManagementWorkflow.createDuplicate.and.returnValue($q.reject({
                 error_code: 'already exists'
               }));
               saveButtonClickFunction();
@@ -160,7 +160,7 @@
           });
 
           it('does not call the api to save the workflow', () => {
-            expect(DuplicateWorkflowCasemanagement.create).not.toHaveBeenCalled();
+            expect(CaseManagementWorkflow.createDuplicate).not.toHaveBeenCalled();
           });
         });
       });

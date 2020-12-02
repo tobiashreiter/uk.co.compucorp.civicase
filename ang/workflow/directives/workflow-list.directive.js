@@ -16,22 +16,57 @@
 
   /**
    * @param {object} $scope scope object
-   * @param {object} ts ts
-   * @param {object} civicaseCrmApi service to use civicrm api
+   * @param {object} $injector injector service of angular
+   * @param {object} ts translation service
+   * @param {object[]} WorkflowListColumns list of workflow list columns
    * @param {object[]} WorkflowListActionItems list of workflow list action items
+   * @param {object} CaseTypeCategory case type catgory service
+   * @param {object} pascalCase service to convert a string to pascal case
+   * @param {object[]} WorkflowListFilters list of workflow filters
    */
-  function workflowListController ($scope, ts, civicaseCrmApi,
-    WorkflowListActionItems) {
+  function workflowListController ($scope, $injector, ts,
+    WorkflowListColumns, WorkflowListActionItems, CaseTypeCategory,
+    pascalCase, WorkflowListFilters) {
     $scope.ts = ts;
     $scope.isLoading = false;
     $scope.workflows = [];
     $scope.actionItems = WorkflowListActionItems;
+    $scope.tableColumns = filterArrayForCurrentInstance(WorkflowListColumns);
+    $scope.filters = filterArrayForCurrentInstance(WorkflowListFilters);
+    $scope.selectedFilters = {};
+    $scope.refreshWorkflowsList = refreshWorkflowsList;
 
     (function init () {
+      applyDefaultValueToFilters();
       refreshWorkflowsList();
 
       $scope.$on('workflow::list::refresh', refreshWorkflowsList);
     }());
+
+    /**
+     * Apply default value to filters
+     */
+    function applyDefaultValueToFilters () {
+      _.each($scope.filters, function (filter) {
+        $scope.selectedFilters[filter.filterIdentifier] = filter.defaultValue;
+      });
+    }
+
+    /**
+     * Preapres visibility settings for the sent array
+     *
+     * @param {object[]} arrayList array list
+     * @returns {object[]} list
+     */
+    function filterArrayForCurrentInstance (arrayList) {
+      return _.filter(arrayList, function (arrayItem) {
+        return !arrayItem.onlyVisibleForInstance ||
+          CaseTypeCategory.isInstance(
+            $scope.caseTypeCategory,
+            arrayItem.onlyVisibleForInstance
+          );
+      });
+    }
 
     /**
      * Refresh workflows list
@@ -55,13 +90,33 @@
      * @returns {Promise} list of workflows
      */
     function getWorkflows (caseTypeCategory) {
-      return civicaseCrmApi('CaseType', 'get', {
-        sequential: 1,
-        case_type_category: caseTypeCategory,
-        options: { limit: 0 }
-      }).then(function (data) {
-        return data.values;
-      });
+      var categoryObject = CaseTypeCategory.findByName(caseTypeCategory);
+      var instanceName = CaseTypeCategory.getCaseTypeCategoryInstance(categoryObject.value).name;
+
+      return getServiceForInstance(instanceName)
+        .getWorkflowsList($scope.caseTypeCategory, $scope.selectedFilters);
+    }
+
+    /**
+     * Searches for a angularJS service for the current case type category
+     * instance, if not found, returns the service for case management service
+     * as default.
+     *
+     * @param {string} instanceName name of the instance
+     * @returns {object/null} service
+     */
+    function getServiceForInstance (instanceName) {
+      var CASE_MANAGEMENT_INSTACE_NAME = 'case_management';
+
+      try {
+        return $injector.get(
+          pascalCase(instanceName) + 'Workflow'
+        );
+      } catch (e) {
+        return $injector.get(
+          pascalCase(CASE_MANAGEMENT_INSTACE_NAME) + 'Workflow'
+        );
+      }
     }
   }
 })(CRM.$, CRM._, angular);

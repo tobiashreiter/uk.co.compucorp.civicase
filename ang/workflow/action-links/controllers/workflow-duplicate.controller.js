@@ -11,9 +11,10 @@
    * @param {object} dialogService service to open dialog box
    * @param {object} crmStatus civicrm status service
    * @param {object} CaseTypeCategory case type category service
+   * @param {object} pascalCase service to convert a string to pascal case
    */
   function WorkflowDuplicateController ($scope, $rootScope, $q, $injector,
-    dialogService, crmStatus, CaseTypeCategory) {
+    dialogService, crmStatus, CaseTypeCategory, pascalCase) {
     $scope.submitInProgress = false;
     $scope.clickHandler = clickHandler;
 
@@ -125,7 +126,7 @@
 
       var service = getServiceToDuplicate(instanceName);
 
-      return service.create(_.clone(workflow));
+      return service.createDuplicate(_.clone(workflow));
     }
 
     /**
@@ -141,21 +142,13 @@
 
       try {
         return $injector.get(
-          'DuplicateWorkflow' + capitalizeFirstLetterAndRemoveUnderScore(instanceName)
+          pascalCase(instanceName) + 'Workflow'
         );
       } catch (e) {
         return $injector.get(
-          'DuplicateWorkflow' + capitalizeFirstLetterAndRemoveUnderScore(CASE_MANAGEMENT_INSTACE_NAME)
+          pascalCase(CASE_MANAGEMENT_INSTACE_NAME) + 'Workflow'
         );
       }
-    }
-
-    /**
-     * @param {string} string string to capitalize
-     * @returns {string} capitalized string
-     */
-    function capitalizeFirstLetterAndRemoveUnderScore (string) {
-      return (string.charAt(0).toUpperCase() + string.slice(1)).replace('_', '');
     }
 
     /**

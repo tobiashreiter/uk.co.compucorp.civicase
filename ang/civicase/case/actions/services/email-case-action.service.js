@@ -13,11 +13,11 @@
    * @param {object} CaseType case type service
    * @param {object} CaseTypeCategory case type category service
    * @param {object} civicaseCrmApi service to use civicrm api
-   * @param {Function} getSelect2Value service to get select 2 values
+   * @param {object} Select2Utils select 2 utility service
    * @param {Function} currentCaseCategory current case category
    */
   function EmailCaseAction ($q, ts, isTruthy, dialogService, CaseType,
-    CaseTypeCategory, civicaseCrmApi, getSelect2Value, currentCaseCategory) {
+    CaseTypeCategory, civicaseCrmApi, Select2Utils, currentCaseCategory) {
     /**
      * Returns the configuration options to open up a mail popup to
      * communicate with the selected role. Displays an error message
@@ -165,7 +165,7 @@
       }
 
       getContactsForCaseIds(
-        getSelect2Value(model.selectedCaseRoles),
+        Select2Utils.getSelect2Value(model.selectedCaseRoles),
         model
       ).then(function (contactIDs) {
         dialogService.close('EmailCaseActionRoleSelector');

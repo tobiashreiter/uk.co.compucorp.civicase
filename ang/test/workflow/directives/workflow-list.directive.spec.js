@@ -3,28 +3,30 @@
 ((_) => {
   describe('workflow list', () => {
     let $q, $controller, $rootScope, $scope, CaseTypesMockData,
-      civicaseCrmApiMock, WorkflowListActionItems;
+      civicaseCrmApiMock, WorkflowListActionItems, CaseManagementWorkflow,
+      WorkflowListColumns;
 
-    beforeEach(module('workflow', 'civicase.data', ($provide) => {
-      civicaseCrmApiMock = jasmine.createSpy('civicaseCrmApi');
-
-      $provide.value('civicaseCrmApi', civicaseCrmApiMock);
-    }));
-
-    beforeEach(inject((_$q_, _$controller_, _$rootScope_, _CaseTypesMockData_,
-      _WorkflowListActionItems_) => {
-      $q = _$q_;
-      $controller = _$controller_;
-      $rootScope = _$rootScope_;
-      WorkflowListActionItems = _WorkflowListActionItems_;
-      CaseTypesMockData = _CaseTypesMockData_;
-    }));
+    const testFilters = [
+      {
+        filterIdentifier: 'test1',
+        defaultValue: true,
+        onlyVisibleForInstance: 'case_management',
+        templateUrl: '~/test.html'
+      },
+      {
+        filterIdentifier: 'test2',
+        defaultValue: '',
+        onlyVisibleForInstance: 'applicant_management',
+        templateUrl: '~/test2.html'
+      }
+    ];
 
     describe('basic tests', () => {
       beforeEach(() => {
-        civicaseCrmApiMock.and.returnValue($q.resolve({
-          values: CaseTypesMockData.getSequential()
-        }));
+        injectModulesAndDependencies();
+        CaseManagementWorkflow.getWorkflowsList.and.returnValue($q.resolve(
+          CaseTypesMockData.getSequential()
+        ));
         initController();
       });
 
@@ -41,14 +43,6 @@
           expect($scope.isLoading).toBe(false);
         });
 
-        it('fetches the case types for the current case type category', () => {
-          expect(civicaseCrmApiMock).toHaveBeenCalledWith('CaseType', 'get', {
-            sequential: 1,
-            case_type_category: 'some_case_type_category',
-            options: { limit: 0 }
-          });
-        });
-
         it('displays the list of fetched workflows', () => {
           expect($scope.workflows).toEqual(CaseTypesMockData.getSequential());
         });
@@ -56,14 +50,27 @@
         it('displays the action items dropdown', () => {
           expect($scope.actionItems).toEqual(WorkflowListActionItems);
         });
+
+        it('displays the columns', () => {
+          expect($scope.tableColumns).toEqual(WorkflowListColumns);
+        });
+
+        it('displays the filters only meant for current instance', () => {
+          expect($scope.filters).toEqual([testFilters[0]]);
+        });
+
+        it('displays the filters default values', () => {
+          expect($scope.selectedFilters).toEqual({ test1: true });
+        });
       });
     });
 
     describe('when list refresh event is fired', () => {
       beforeEach(() => {
-        civicaseCrmApiMock.and.returnValue($q.resolve({
-          values: CaseTypesMockData.getSequential()
-        }));
+        injectModulesAndDependencies();
+        CaseManagementWorkflow.getWorkflowsList.and.returnValue($q.resolve(
+          CaseTypesMockData.getSequential()
+        ));
         initController();
         $scope.$digest();
         $scope.workflows = [];
@@ -72,12 +79,7 @@
       });
 
       it('fetches the case types for the current case type category', () => {
-        expect(civicaseCrmApiMock.calls.count()).toBe(2);
-        expect(civicaseCrmApiMock.calls.mostRecent().args).toEqual(['CaseType', 'get', {
-          sequential: 1,
-          case_type_category: 'some_case_type_category',
-          options: { limit: 0 }
-        }]);
+        expect(CaseManagementWorkflow.getWorkflowsList).toHaveBeenCalled();
       });
 
       it('refreshes the workflows list', () => {
@@ -86,11 +88,48 @@
     });
 
     /**
+     * Initialises a spy module by hoisting the filters provider.
+     */
+    function initSpyModule () {
+      angular.module('civicase.spy', ['civicase-base'])
+        .config((WorkflowListFiltersProvider) => {
+          WorkflowListFiltersProvider.addItems(testFilters);
+        });
+    }
+
+    /**
+     * Injects modules and dependencies.
+     */
+    function injectModulesAndDependencies () {
+      initSpyModule();
+
+      module('workflow', 'civicase.data', 'civicase.spy', ($provide) => {
+        civicaseCrmApiMock = jasmine.createSpy('civicaseCrmApi');
+
+        $provide.value('civicaseCrmApi', civicaseCrmApiMock);
+      });
+
+      inject((_$q_, _$controller_, _$rootScope_, _CaseTypesMockData_,
+        _WorkflowListActionItems_, _CaseManagementWorkflow_,
+        _WorkflowListColumns_) => {
+        $q = _$q_;
+        $controller = _$controller_;
+        $rootScope = _$rootScope_;
+        WorkflowListActionItems = _WorkflowListActionItems_;
+        WorkflowListColumns = _WorkflowListColumns_;
+        CaseTypesMockData = _CaseTypesMockData_;
+        CaseManagementWorkflow = _CaseManagementWorkflow_;
+
+        spyOn(CaseManagementWorkflow, 'getWorkflowsList');
+      });
+    }
+
+    /**
      * Initializes the contact case tab case details controller.
      */
     function initController () {
       $scope = $rootScope.$new();
-      $scope.caseTypeCategory = 'some_case_type_category';
+      $scope.caseTypeCategory = 'Cases';
 
       $controller('workflowListController', { $scope: $scope });
     }
