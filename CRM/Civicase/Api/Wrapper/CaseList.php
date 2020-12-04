@@ -106,7 +106,7 @@ class CRM_Civicase_Api_Wrapper_CaseList implements API_Wrapper {
       }
 
       foreach ($case['contacts'] as $contact) {
-        if ($contact['manager'] == 1) {
+        if (isset($contact['manager']) && $contact['manager'] == 1) {
           $case['manager'] = $contact;
         }
 
@@ -115,7 +115,7 @@ class CRM_Civicase_Api_Wrapper_CaseList implements API_Wrapper {
         }
       }
 
-      $case['next_activity'] = CRM_Utils_Array::value(0, $case['activity_summary']['next']);
+      $case['next_activity'] = isset($case['activity_summary']['next'][0]) ? $case['activity_summary']['next'][0] : NULL;
     }
 
     return $cases;
