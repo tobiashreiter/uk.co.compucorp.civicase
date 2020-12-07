@@ -331,7 +331,8 @@
         return: [
           'subject', 'case_type_id', 'status_id', 'is_deleted', 'start_date',
           'modified_date', 'contacts', 'activity_summary', 'category_count',
-          'tag_id.name', 'tag_id.color', 'tag_id.description'
+          'tag_id.name', 'tag_id.color', 'tag_id.description',
+          'case_type_id.case_type_category'
         ],
         options: {
           sort: sort.field + ' ' + sort.dir,
