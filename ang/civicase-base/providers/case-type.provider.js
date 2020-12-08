@@ -54,6 +54,7 @@
           .map('definition')
           .map('caseRoles')
           .flatten()
+          .compact() // removes undefined values
           .uniq('name') // removes same role present in different case types
           .map(function (caseRole) {
             var relationshipType = RelationshipType.getByName(caseRole.name);

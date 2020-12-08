@@ -393,7 +393,13 @@
     }
   };
 
-  CRM['civicase-base'].caseTypes = _.clone(caseTypesMock);
+  (function init () {
+    CRM['civicase-base'].caseTypes = _.extend(
+      {},
+      CRM['civicase-base'].caseTypes,
+      _.clone(caseTypesMock)
+    );
+  })();
 
   module.provider('CaseTypesMockData', function () {
     /**
@@ -425,6 +431,13 @@
           var clonesCaseTypesData = _.clone(caseTypesMock);
 
           return Object.values(clonesCaseTypesData);
+        },
+
+        /**
+         * Restores the mock data case types after it has been altered.
+         */
+        reset: function () {
+          CRM['civicase-base'].caseTypes = _.clone(caseTypesMock);
         }
       };
     };
