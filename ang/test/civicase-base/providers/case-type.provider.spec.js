@@ -2,7 +2,7 @@
 
 ((_) => {
   describe('Case Type', () => {
-    let CaseType, CaseTypesData, CaseTypesMockDataProvider;
+    let CaseType, CaseTypesData, CaseTypesMockData;
 
     describe('when getting all case types', () => {
       let returnedCaseTypes;
@@ -104,13 +104,13 @@
           }).not.toThrow();
         });
       });
-    })
+    });
 
     /**
      * Initialises the civicase and mock data modules. Will also hoist
      * the services required by the spec file.
      */
-    function initModulesAndServices() {
+    function initModulesAndServices () {
       module('civicase', 'civicase.data');
 
       inject((_CaseType_, _CaseTypesMockData_) => {
