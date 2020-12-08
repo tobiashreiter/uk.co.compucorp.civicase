@@ -2,17 +2,12 @@
 
 ((_) => {
   describe('Case Type', () => {
-    let CaseType, CaseTypesData;
-
-    beforeEach(module('civicase', 'civicase.data'));
-
-    beforeEach(inject((_CaseType_, _CaseTypesMockData_) => {
-      CaseType = _CaseType_;
-      CaseTypesData = _CaseTypesMockData_.get();
-    }));
+    let CaseType, CaseTypesData, CaseTypesMockDataProvider;
 
     describe('when getting all case types', () => {
       let returnedCaseTypes;
+
+      beforeEach(() => initModulesAndServices());
 
       beforeEach(() => {
         returnedCaseTypes = CaseType.getAll();
@@ -25,6 +20,8 @@
 
     describe('when getting the titles for case types using their name', () => {
       let returnedTitles;
+
+      beforeEach(() => initModulesAndServices());
 
       beforeEach(() => {
         returnedTitles = CaseType.getTitlesForNames([
@@ -44,6 +41,8 @@
     describe('when getting a case type by id', () => {
       let expectedCaseType, returnedCaseType;
 
+      beforeEach(() => initModulesAndServices());
+
       beforeEach(() => {
         const caseTypeId = _.chain(CaseTypesData).keys().sample().value();
         expectedCaseType = CaseTypesData[caseTypeId];
@@ -55,23 +54,70 @@
       });
     });
 
-    describe('when getting all roles for the given case type category id', () => {
+    describe('case roles', () => {
       let expectedResult, returnedResult;
 
       beforeEach(() => {
-        const casesCategoryId = '1';
         expectedResult = [
           { name: 'Homeless Services Coordinator', id: '11' },
           { name: 'Health Services Coordinator', id: '12' },
           { name: 'Benefits Specialist', id: '14' },
           { name: 'Senior Services Coordinator', id: '16' }
         ];
-        returnedResult = CaseType.getAllRolesByCategoryID(casesCategoryId);
       });
 
-      it('returns all the unique case roles', () => {
-        expect(returnedResult).toEqual(expectedResult);
+      describe('when getting all roles for the given case type category id', () => {
+        beforeEach(() => initModulesAndServices());
+
+        beforeEach(() => {
+          const casesCategoryId = '1';
+          returnedResult = CaseType.getAllRolesByCategoryID(casesCategoryId);
+        });
+
+        it('returns all the unique case roles', () => {
+          expect(returnedResult).toEqual(expectedResult);
+        });
       });
-    });
+
+      describe('when there is a case type with no definition', () => {
+        beforeEach(() => {
+          CRM['civicase-base'].caseTypes = {
+            4: {
+              id: '4',
+              name: 'case_with_no_definition',
+              title: 'Case With No Definition',
+              description: '',
+              definition: [],
+              case_type_category: '1'
+            }
+          };
+          initModulesAndServices();
+        });
+
+        afterEach(() => {
+          CaseTypesMockData.reset();
+        });
+
+        it('does not throw an error when trying to get the case roles', () => {
+          expect(() => {
+            CaseType.getAllRolesByCategoryID('1');
+          }).not.toThrow();
+        });
+      });
+    })
+
+    /**
+     * Initialises the civicase and mock data modules. Will also hoist
+     * the services required by the spec file.
+     */
+    function initModulesAndServices() {
+      module('civicase', 'civicase.data');
+
+      inject((_CaseType_, _CaseTypesMockData_) => {
+        CaseType = _CaseType_;
+        CaseTypesMockData = _CaseTypesMockData_;
+        CaseTypesData = CaseTypesMockData.get();
+      });
+    }
   });
 })(CRM._);
