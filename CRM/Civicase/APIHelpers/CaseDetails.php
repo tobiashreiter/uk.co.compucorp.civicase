@@ -277,7 +277,9 @@ class CRM_Civicase_APIHelpers_CaseDetails {
       'where' => $where
     ) = self::getRoleQuery($params);
 
-    $roleSubQuery->where($where);
+    if ($where) {
+      $roleSubQuery->where($where);
+    }
 
     $roleSubQueryString = $roleSubQuery->toSql();
 
