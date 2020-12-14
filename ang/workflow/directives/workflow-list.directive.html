@@ -1,6 +1,13 @@
 <div id="bootstrap-theme">
   <h1 crm-page-title>{{:: ts('Manage Workflows') }}</h1>
 
+  <a
+    ng-click="redirectToWorkflowCreationScreen()"
+    class="btn btn-primary civicase-workflow-list__new-button">
+    <i class="material-icons">add_circle</i>
+    New Workflow
+  </a>
+
   <div class="panel panel-default civicase-workflow-list__filters" ng-if="filters.length > 0">
     <div class="panel-body">
       <div class="form-group">
