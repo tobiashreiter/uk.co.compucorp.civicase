@@ -217,10 +217,6 @@ function civicrm_api3_case_getdetails(array $params) {
         $case['related_case_ids'] = CRM_Case_BAO_Case::getRelatedCaseIds($case['id']);
       }
     }
-    // Get last update.
-    if (in_array('last_update', $toReturn)) {
-      // todo.
-    }
     if (!empty($params['sequential'])) {
       $result['values'] = array_values($result['values']);
     }
