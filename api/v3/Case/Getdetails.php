@@ -217,10 +217,6 @@ function civicrm_api3_case_getdetails(array $params) {
         $case['related_case_ids'] = CRM_Case_BAO_Case::getRelatedCaseIds($case['id']);
       }
     }
-    // Get last update.
-    if (in_array('last_update', $toReturn)) {
-      // todo.
-    }
     if (!empty($params['sequential'])) {
       $result['values'] = array_values($result['values']);
     }
@@ -288,7 +284,7 @@ function calculate_activities_for_category($category, array $ids, $statusTypeIds
   $query = "SELECT COUNT(a.id) as count, ca.case_id
   FROM civicrm_activity a, civicrm_case_activity ca
   WHERE ca.activity_id = a.id AND a.is_current_revision = 1 AND a.is_test = 0 AND ca.case_id IN (" . implode(',', $ids) . ")
-  AND a.activity_type_id IN (SELECT value FROM civicrm_option_value WHERE grouping "
+  AND a.activity_type_id IN (SELECT value FROM civicrm_option_value WHERE `grouping` "
   . $categoryCondition . " AND option_group_id = (SELECT id FROM civicrm_option_group WHERE name = 'activity_type'))
   " . $isOverdueCondition . "
   AND is_current_revision = 1
