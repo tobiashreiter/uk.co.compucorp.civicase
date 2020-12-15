@@ -1,14 +1,14 @@
 (function (angular, $, _, CRM) {
   var module = angular.module('civicase-base');
 
-  module.service('IndividualPrefix', IndividualPrefix);
+  module.service('IndividualSuffix', IndividualSuffix);
 
   /**
-   * Individual Prefix Service
+   * Individual Suffix Service
    */
-  function IndividualPrefix () {
+  function IndividualSuffix () {
     this.getAll = function () {
-      return _.chain(CRM['civicase-base'].individualPrefix)
+      return _.chain(CRM['civicase-base'].individualSuffix)
         .values()
         .pluck('name')
         .value();

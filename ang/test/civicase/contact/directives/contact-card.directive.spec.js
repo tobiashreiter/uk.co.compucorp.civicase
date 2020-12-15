@@ -113,6 +113,18 @@
         });
       });
 
+      describe('when the display name contains both prefix and suffix honorific', function () {
+        beforeEach(function () {
+          spyOn(ContactsCache, 'add').and.returnValue($q.resolve(ContactsData.values[0]));
+          spyOn(ContactsCache, 'getCachedContact').and.returnValue({ display_name: 'Ms. John Doe Jr.' });
+          compileDirective(true, ContactsData.values[0].id);
+        });
+
+        it('ignores the honorific while creating the avatar', function () {
+          expect(element.isolateScope().contacts[0].avatar).toBe('JD');
+        });
+      });
+
       describe('image url', function () {
         beforeEach(function () {
           civicaseCrmApi.and.returnValue($q.resolve(ContactsData));

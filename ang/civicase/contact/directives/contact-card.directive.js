@@ -1,7 +1,7 @@
 (function (angular, $, _, CRM) {
   var module = angular.module('civicase');
 
-  module.directive('civicaseContactCard', function (ContactsCache, IndividualPrefix) {
+  module.directive('civicaseContactCard', function (ContactsCache, IndividualPrefix, IndividualSuffix) {
     return {
       restrict: 'A',
       replace: true,
@@ -24,6 +24,7 @@
      */
     function civicaseContactCardController ($scope) {
       var INDIVIDUAL_PREFIXES = IndividualPrefix.getAll();
+      var INDIVIDUAL_SUFFIXES = IndividualSuffix.getAll();
       $scope.url = CRM.url;
       $scope.mainContact = null;
 
@@ -98,10 +99,14 @@
        */
       function getInitials (contactFullName) {
         var names = contactFullName.split(' ');
-        var ifNameContainsHonorificStrings = _.contains(INDIVIDUAL_PREFIXES, names[0]);
+        var ifNameContainsIndividualPrefixes = _.contains(INDIVIDUAL_PREFIXES, names[0]);
+        var ifNameContainsIndividualSuffixes = _.contains(INDIVIDUAL_SUFFIXES, names[names.length - 1]);
 
-        if (ifNameContainsHonorificStrings) {
+        if (ifNameContainsIndividualPrefixes) {
           names.shift();
+        }
+        if (ifNameContainsIndividualSuffixes) {
+          names.pop();
         }
 
         var initials = names[0].substring(0, 1).toUpperCase();
