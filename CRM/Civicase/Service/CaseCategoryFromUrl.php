@@ -96,7 +96,7 @@ class CRM_Civicase_Service_CaseCategoryFromUrl {
    *   Category URL.
    */
   private function getCaseCategoryFromUrl($caseTypeCategoryParam) {
-    $caseCategory = $this->getRequestResponse($caseTypeCategoryParam, 'String');
+    $caseCategory = CRM_Utils_Request::retrieve($caseTypeCategoryParam, 'String');
     if ($caseCategory) {
       if (is_numeric($caseCategory)) {
         $caseTypeCategories = CaseType::buildOptions($caseTypeCategoryParam, 'validate');
@@ -120,7 +120,7 @@ class CRM_Civicase_Service_CaseCategoryFromUrl {
    *   Parameter value.
    */
   private function getParamValueFromEntryUrl($param) {
-    $entryURL = $this->getRequestResponse('entryURL', 'String');
+    $entryURL = CRM_Utils_Request::retrieve('entryURL', 'String');
 
     $urlParams = parse_url(htmlspecialchars_decode($entryURL), PHP_URL_QUERY);
     parse_str($urlParams, $urlParams);
@@ -142,7 +142,7 @@ class CRM_Civicase_Service_CaseCategoryFromUrl {
    *   Case category name.
    */
   private function getCaseCategoryFromActivityIdInUrl($activityIdParamName) {
-    $activityId = $this->getRequestResponse($activityIdParamName, 'Integer');
+    $activityId = CRM_Utils_Request::retrieve($activityIdParamName, 'Integer');
 
     if ($activityId) {
       $result = civicrm_api3('Activity', 'get', [
@@ -173,7 +173,7 @@ class CRM_Civicase_Service_CaseCategoryFromUrl {
    *   Case category name.
    */
   private function getCaseCategoryNameFromCaseIdInUrl($caseIdParamName) {
-    $caseId = $this->getRequestResponse($caseIdParamName, 'Integer');
+    $caseId = CRM_Utils_Request::retrieve($caseIdParamName, 'Integer');
 
     if (!$caseId) {
       $caseId = $this->getParamValueFromEntryUrl($caseIdParamName);
@@ -192,8 +192,8 @@ class CRM_Civicase_Service_CaseCategoryFromUrl {
    *   Case category name.
    */
   private function getCaseCategoryForAjaxRequest($caseTypeCategoryParam) {
-    $entity = $this->getRequestResponse('entity', 'String');
-    $json = $this->getRequestResponse('json', 'String');
+    $entity = CRM_Utils_Request::retrieve('entity', 'String');
+    $json = CRM_Utils_Request::retrieve('json', 'String');
     $json = $json ? json_decode($json, TRUE) : [];
 
     if ($entity && strtolower($entity) == 'case') {
@@ -248,13 +248,6 @@ class CRM_Civicase_Service_CaseCategoryFromUrl {
     }
 
     return CaseCategoryHelper::getCaseCategoryNameFromOptionValue($caseTypeCategory);
-  }
-
-  /**
-   * Get information from the Request.
-   */
-  public function getRequestResponse($name, $type) {
-    return CRM_Utils_Request::retrieve($name, $type);
   }
 
 }
