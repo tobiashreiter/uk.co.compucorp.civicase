@@ -573,6 +573,14 @@ function civicase_civicrm_selectWhereClause($entity, &$clauses) {
   if ($entity === 'Case') {
     unset($clauses['id']);
   }
+
+  $hooks = [
+    new CRM_Civicase_Hook_SelectWhereClause_LimitCaseQueryToAccessibleCaseCategories(),
+  ];
+
+  foreach ($hooks as $hook) {
+    $hook->run($entity, $clauses);
+  }
 }
 
 /**
