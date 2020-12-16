@@ -607,7 +607,6 @@ function civicase_civicrm_entityTypes(&$entityTypes) {
 function civicase_civicrm_queryObjects(&$queryObjects, $type) {
   if ($type == 'Contact') {
     $queryObjects[] = new CRM_Civicase_BAO_Query_ContactLock();
-    $queryObjects[] = new CRM_Civicase_BAO_Query_CaseCategory();
   }
 }
 
