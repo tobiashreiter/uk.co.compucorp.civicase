@@ -363,6 +363,9 @@ class CRM_Civicase_Service_CaseRoleCreationPostProcessTest extends BaseHeadlessT
     $this->assertEquals($expectedActivitySubject, $activity['values'][0]['subject']);
   }
 
+  /**
+   * Test reassigning case role with no start date.
+   */
   public function testRoleReassignment() {
     $caseType = CaseTypeFabricator::fabricate();
     $client = ContactFabricator::fabricate();
@@ -405,6 +408,9 @@ class CRM_Civicase_Service_CaseRoleCreationPostProcessTest extends BaseHeadlessT
     $this->assertEquals('1', $currentManagerRelationshipDetails['is_active'], 'current manager is active');
   }
 
+  /**
+   * Test reassign case role with start and end date.
+   */
   public function testRoleReassignmentWithStartDate() {
     $caseType = CaseTypeFabricator::fabricate();
     $client = ContactFabricator::fabricate();

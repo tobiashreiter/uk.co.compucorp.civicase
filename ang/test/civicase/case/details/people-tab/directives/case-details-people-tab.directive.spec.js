@@ -524,6 +524,44 @@ describe('Case Details People Tab', () => {
           ]));
         });
       });
+
+      describe('when reassining to a past date', () => {
+        beforeEach(() => {
+          sampleContact = CRM._.sample(ContactsData.values);
+          relationshipTypeId = CRM._.uniqueId();
+
+          $scope.unassignRole({
+            contact_id: sampleContact.contact_id,
+            display_name: sampleContact.display_name,
+            relationship_type_id: relationshipTypeId,
+            role: 'Role',
+            start_date: moment().add(-5, 'day')
+          });
+
+          updateDialogModel({
+            description: roleDescription,
+            endDate: { value: moment().add(-3, 'day').format('YYYY-MM-DD') }
+          });
+          submitDialog();
+
+          $rootScope.$digest();
+        });
+
+        it('marks the current role relationship as finished using the end date of the new relationship start date', () => {
+          expect($scope.refresh).toHaveBeenCalledWith(jasmine.arrayContaining([
+            ['Relationship', 'get', {
+              relationship_type_id: relationshipTypeId,
+              contact_id_b: sampleContact.contact_id,
+              case_id: $scope.item.id,
+              is_active: 1,
+              'api.Relationship.create': {
+                end_date: moment().add(-3, 'day').format('YYYY-MM-DD'),
+                is_active: 0
+              }
+            }]
+          ]));
+        });
+      });
     });
   });
 
