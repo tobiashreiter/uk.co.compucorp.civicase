@@ -22,10 +22,11 @@ class CRM_Civicase_Service_CaseCategoryFromUrlTest extends BaseHeadlessTest {
    */
   public function testGetCategoryNameFromCaseIdInRequestBody() {
     $case = $this->createCase();
-    $categoryFromUrlServiceMock = $this->mockRequestResponse([$case['id']]);
     $requestedUrl = $this->getUrlByType(CategoryFromUrlService::CASE_TYPE_URL);
+    $param = $this->getParamByUrl($requestedUrl);
+    $_GET[$param] = $_REQUEST[$param] = $case['id'];
 
-    $categoryName = $categoryFromUrlServiceMock->get($requestedUrl);
+    $categoryName = (new CategoryFromUrlService())->get($requestedUrl);
 
     $this->assertEquals(
       $this->getCaseTypeCategoryNameByCaseTypeId($case['case_type_id']),
@@ -44,12 +45,11 @@ class CRM_Civicase_Service_CaseCategoryFromUrlTest extends BaseHeadlessTest {
 
     $requestedUrl = $this->getUrlByType(CategoryFromUrlService::CASE_TYPE_URL);
     $requestedUrlWithQueryString = $this->getUrlWithQueryString($requestedUrl, $case['id']);
+    $param = $this->getParamByUrl($requestedUrl);
+    $_GET[$param] = $_REQUEST[$param] = NULL;
+    $_GET['entryURL'] = $_REQUEST['entryURL'] = $requestedUrlWithQueryString;
 
-    $categoryFromUrlServiceMock = $this->mockRequestResponse(
-      [NULL, $requestedUrlWithQueryString]
-    );
-
-    $categoryName = $categoryFromUrlServiceMock->get($requestedUrl);
+    $categoryName = (new CategoryFromUrlService())->get($requestedUrl);
 
     $this->assertEquals(
       $this->getCaseTypeCategoryNameByCaseTypeId($case['case_type_id']),
@@ -65,10 +65,11 @@ class CRM_Civicase_Service_CaseCategoryFromUrlTest extends BaseHeadlessTest {
    */
   public function testGetCategoryNameFromRequestBodyContainingTheCategoryName() {
     $category = CaseCategoryFabricator::fabricate();
-    $categoryFromUrlServiceMock = $this->mockRequestResponse([$category['name']]);
     $requestedUrl = $this->getUrlByType(CategoryFromUrlService::CASE_CATEGORY_TYPE_URL);
+    $param = $this->getParamByUrl($requestedUrl);
+    $_GET[$param] = $_REQUEST[$param] = $category['name'];
 
-    $categoryName = $categoryFromUrlServiceMock->get($requestedUrl);
+    $categoryName = (new CategoryFromUrlService())->get($requestedUrl);
 
     $this->assertEquals($category['name'], $categoryName);
   }
@@ -76,15 +77,16 @@ class CRM_Civicase_Service_CaseCategoryFromUrlTest extends BaseHeadlessTest {
   /**
    * Test get category name from category Id in request.
    *
-   * Test the detection of the category name, when it is received the category
-   * Id on the request body.
+   * Test the detection of the category name, when it is received from the
+   * category Id on the request body.
    */
   public function testGetCategoryNameFromRequestBodyContainingTheCategoryId() {
     $category = CaseCategoryFabricator::fabricate();
-    $categoryFromUrlServiceMock = $this->mockRequestResponse([$category['value']]);
     $requestedUrl = $this->getUrlByType(CategoryFromUrlService::CASE_CATEGORY_TYPE_URL);
+    $param = $this->getParamByUrl($requestedUrl);
+    $_GET[$param] = $_REQUEST[$param] = $category['value'];
 
-    $categoryName = $categoryFromUrlServiceMock->get($requestedUrl);
+    $categoryName = (new CategoryFromUrlService())->get($requestedUrl);
 
     $this->assertEquals($category['name'], $categoryName);
   }
@@ -99,13 +101,10 @@ class CRM_Civicase_Service_CaseCategoryFromUrlTest extends BaseHeadlessTest {
     $category = CaseCategoryFabricator::fabricate();
 
     $requestedUrl = $this->getUrlByType(CategoryFromUrlService::CASE_CATEGORY_TYPE_URL);
-    $requestedUrlWithQueryString = $this->getUrlWithQueryString($requestedUrl, $category['name']);
+    $param = $this->getParamByUrl($requestedUrl);
+    $_GET[$param] = $_REQUEST[$param] = $category['name'];
 
-    $categoryFromUrlServiceMock = $this->mockRequestResponse(
-      [NULL, $requestedUrlWithQueryString]
-    );
-
-    $categoryName = $categoryFromUrlServiceMock->get($requestedUrl);
+    $categoryName = (new CategoryFromUrlService())->get($requestedUrl);
 
     $this->assertEquals($category['name'], $categoryName);
   }
@@ -119,10 +118,11 @@ class CRM_Civicase_Service_CaseCategoryFromUrlTest extends BaseHeadlessTest {
   public function testGetCategoryNameFromActivityIdInRequestBody() {
     $case = $this->createCase();
     $activity = $this->createActivityForCaseId($case['id']);
-    $categoryFromUrlServiceMock = $this->mockRequestResponse([$activity['id']]);
     $requestedUrl = $this->getUrlByType(CategoryFromUrlService::ACTIVITY_TYPE_URL);
+    $param = $this->getParamByUrl($requestedUrl);
+    $_GET[$param] = $_REQUEST[$param] = $activity['id'];
 
-    $categoryName = $categoryFromUrlServiceMock->get($requestedUrl);
+    $categoryName = (new CategoryFromUrlService())->get($requestedUrl);
 
     $this->assertEquals(
       $this->getCaseTypeCategoryNameByCaseTypeId($case['case_type_id']),
@@ -137,10 +137,11 @@ class CRM_Civicase_Service_CaseCategoryFromUrlTest extends BaseHeadlessTest {
    * when it is received an invalid activity Id on the request body.
    */
   public function testGetCategoryNameFromInvalidActivityIdInRequestBody() {
-    $categoryFromUrlServiceMock = $this->mockRequestResponse([rand()]);
     $requestedUrl = $this->getUrlByType(CategoryFromUrlService::ACTIVITY_TYPE_URL);
+    $param = $this->getParamByUrl($requestedUrl);
+    $_GET[$param] = $_REQUEST[$param] = rand();
 
-    $categoryName = $categoryFromUrlServiceMock->get($requestedUrl);
+    $categoryName = (new CategoryFromUrlService())->get($requestedUrl);
 
     $this->assertNull($categoryName);
   }
@@ -148,21 +149,17 @@ class CRM_Civicase_Service_CaseCategoryFromUrlTest extends BaseHeadlessTest {
   /**
    * Test get category name from category Id in case entity ajax request.
    *
-   * Test the detection of the category name, when it is received the category
-   * Id on an ajax request, related to case entity URL.
+   * Test the detection of the category name, when it is received from the
+   * category Id on an ajax request, related to case entity URL.
    */
   public function testGetCategoryNameFromAjaxRequestOfCaseEntityContainingTheCategoryId() {
     $category = CaseCategoryFabricator::fabricate();
     $requestedUrl = $this->getUrlByType(CategoryFromUrlService::AJAX_TYPE_URL);
     $param = $this->getParamByUrl($requestedUrl);
-    $categoryFromUrlServiceMock = $this->mockRequestResponse(
-      [
-        'case',
-        json_encode([$param => $category['value']]),
-      ]
-    );
+    $_GET['entity'] = $_REQUEST['entity'] = 'case';
+    $_GET['json'] = $_REQUEST['json'] = json_encode([$param => $category['value']]);
 
-    $categoryName = $categoryFromUrlServiceMock->get($requestedUrl);
+    $categoryName = (new CategoryFromUrlService())->get($requestedUrl);
 
     $this->assertEquals($category['name'], $categoryName);
   }
@@ -170,8 +167,8 @@ class CRM_Civicase_Service_CaseCategoryFromUrlTest extends BaseHeadlessTest {
   /**
    * Test get category name from case entity ajax request.
    *
-   * Test the detection of the category name, when it is received that category
-   * name on an ajax request, related to case entity URL.
+   * Test the detection of the category name, when it is received from that
+   * category name on an ajax request, related to case entity URL.
    */
   public function testGetCategoryNameFromAjaxRequestOfCaseEntityContainingTheCategoryName() {
     $category = CaseCategoryFabricator::fabricate();
@@ -179,14 +176,10 @@ class CRM_Civicase_Service_CaseCategoryFromUrlTest extends BaseHeadlessTest {
     $requestedUrl = $this->getUrlByType(CategoryFromUrlService::AJAX_TYPE_URL);
     $param = $this->getParamByUrl($requestedUrl);
 
-    $categoryFromUrlServiceMock = $this->mockRequestResponse(
-      [
-        'case',
-        json_encode([$param => $category['name']]),
-      ]
-    );
+    $_GET['entity'] = $_REQUEST['entity'] = 'case';
+    $_GET['json'] = $_REQUEST['json'] = json_encode([$param => $category['name']]);
 
-    $categoryName = $categoryFromUrlServiceMock->get($requestedUrl);
+    $categoryName = (new CategoryFromUrlService())->get($requestedUrl);
 
     $this->assertEquals($category['name'], $categoryName);
   }
@@ -194,8 +187,8 @@ class CRM_Civicase_Service_CaseCategoryFromUrlTest extends BaseHeadlessTest {
   /**
    * Test get category name from category Id in api3 ajax request.
    *
-   * Test the detection of the category name, when it is received the category
-   * Id on an ajax request, related to an api3 URL.
+   * Test the detection of the category name, when it is received from the
+   * category Id on an ajax request, related to an api3 URL.
    */
   public function testGetCategoryNameFromAjaxRequestOfApi3ContainingTheCategoryId() {
     $category = CaseCategoryFabricator::fabricate();
@@ -203,18 +196,14 @@ class CRM_Civicase_Service_CaseCategoryFromUrlTest extends BaseHeadlessTest {
     $requestedUrl = $this->getUrlByType(CategoryFromUrlService::AJAX_TYPE_URL);
     $param = $this->getParamByUrl($requestedUrl);
 
-    $categoryFromUrlServiceMock = $this->mockRequestResponse(
+    $_GET['entity'] = $_REQUEST['entity'] = 'api3';
+    $_GET['json'] = $_REQUEST['json'] = json_encode(
       [
-        'api3',
-        json_encode(
-          [
-            ['case', '', [$param => $category['value']]],
-          ]
-        ),
+        ['case', '', [$param => $category['value']]],
       ]
     );
 
-    $categoryName = $categoryFromUrlServiceMock->get($requestedUrl);
+    $categoryName = (new CategoryFromUrlService())->get($requestedUrl);
 
     $this->assertEquals($category['name'], $categoryName);
   }
@@ -222,52 +211,24 @@ class CRM_Civicase_Service_CaseCategoryFromUrlTest extends BaseHeadlessTest {
   /**
    * Test get category name from api3 ajax request.
    *
-   * Test the detection of the category name, when it is received that category
-   * name on an ajax request, related to an api3 URL.
+   * Test the detection of the category name, when it is received from that
+   * category name on an ajax request, related to an api3 URL.
    */
   public function testGetCategoryNameFromAjaxRequestOfApi3ContainingTheCategoryName() {
     $category = CaseCategoryFabricator::fabricate();
     $requestedUrl = $this->getUrlByType(CategoryFromUrlService::AJAX_TYPE_URL);
     $param = $this->getParamByUrl($requestedUrl);
 
-    $categoryFromUrlServiceMock = $this->mockRequestResponse(
+    $_GET['entity'] = $_REQUEST['entity'] = 'api3';
+    $_GET['json'] = $_REQUEST['json'] = json_encode(
       [
-        'api3',
-        json_encode(
-          [
-            ['case', '', [$param => $category['name']]],
-          ]
-        ),
+        ['case', '', [$param => $category['name']]],
       ]
     );
 
-    $categoryName = $categoryFromUrlServiceMock->get($requestedUrl);
+    $categoryName = (new CategoryFromUrlService())->get($requestedUrl);
 
     $this->assertEquals($category['name'], $categoryName);
-  }
-
-  /**
-   * Mock method getRequestResponse from the tested class.
-   *
-   * This method interacts with a static method from another class
-   * (CRM_Utils_Request), then we mock the results for doing appropriate tests.
-   *
-   * @param array $responses
-   *   Response/s that the mocked method will return.
-   *
-   * @return CRM_Civicase_Service_CaseCategoryFromUrl|PHPUnit_Framework_MockObject_MockObject
-   *   Mocked instance of CategoryFromUrlService.
-   */
-  private function mockRequestResponse(array $responses) {
-    $categoryFromUrlServiceMock = $this->getMockBuilder(CategoryFromUrlService::class)
-      ->setMethods(['getRequestResponse'])
-      ->getMock();
-    $categoryFromUrlServiceMock
-      ->expects($this->exactly(count($responses)))
-      ->method('getRequestResponse')
-      ->willReturnOnConsecutiveCalls(...$responses);
-
-    return $categoryFromUrlServiceMock;
   }
 
   /**
@@ -320,7 +281,7 @@ class CRM_Civicase_Service_CaseCategoryFromUrlTest extends BaseHeadlessTest {
    */
   private function getUrlWithQueryString(string $requestedUrl, $valueForParam) {
     $param = $this->getParamByUrl($requestedUrl);
-    $requestedUrl = (parse_url($requestedUrl, PHP_URL_QUERY) ? '&' : '?');
+    $requestedUrl .= (parse_url($requestedUrl, PHP_URL_QUERY) ? '&' : '?');
     $requestedUrl .= $param . '=' . $valueForParam;
 
     return $requestedUrl;
