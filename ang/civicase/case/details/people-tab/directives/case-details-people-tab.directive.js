@@ -782,17 +782,15 @@
      * @returns {Array} API call
      */
     function unassignRoleCall (role, endDate) {
-      var isEndDateSameAsToday = moment().isSame(endDate, 'day');
-      var unassignRelationshipApiCall = isEndDateSameAsToday
-        ? { is_active: 0 }
-        : { end_date: endDate };
-
       return ['Relationship', 'get', {
         relationship_type_id: role.relationship_type_id,
         contact_id_b: role.contact_id,
         case_id: item.id,
         is_active: 1,
-        'api.Relationship.create': unassignRelationshipApiCall
+        'api.Relationship.create': {
+          end_date: endDate,
+          is_active: 0
+        }
       }];
     }
 

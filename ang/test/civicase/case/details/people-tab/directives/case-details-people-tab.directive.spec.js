@@ -517,6 +517,7 @@ describe('Case Details People Tab', () => {
               case_id: $scope.item.id,
               is_active: 1,
               'api.Relationship.create': {
+                end_date: moment().format('YYYY-MM-DD'),
                 is_active: 0
               }
             }]
