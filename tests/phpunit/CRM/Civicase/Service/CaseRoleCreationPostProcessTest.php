@@ -363,6 +363,93 @@ class CRM_Civicase_Service_CaseRoleCreationPostProcessTest extends BaseHeadlessT
     $this->assertEquals($expectedActivitySubject, $activity['values'][0]['subject']);
   }
 
+  public function testRoleReassignment() {
+    $caseType = CaseTypeFabricator::fabricate();
+    $client = ContactFabricator::fabricate();
+    $previousManager = ContactFabricator::fabricate();
+    $existingManager = ContactFabricator::fabricate();
+
+    $case = CaseFabricator::fabricate(
+      [
+        'case_type_id' => $caseType['id'],
+        'contact_id' => $client['id'],
+        'creator_id' => $client['id'],
+      ]
+    );
+
+    $managerRelationshipType = RelationshipTypeFabricator::fabricate([
+      'name_a_b' => 'Manager is',
+      'name_b_a' => 'Manager',
+    ]);
+
+    $previousManagerRelationship = RelationshipFabricator::fabricate([
+      'contact_id_b' => $previousManager['id'],
+      'contact_id_a' => $client['id'],
+      'relationship_type_id' => $managerRelationshipType['id'],
+      'case_id' => $case['id'],
+    ]);
+
+    $currentManagerRelationship = RelationshipFabricator::fabricate([
+      'contact_id_b' => $existingManager['id'],
+      'contact_id_a' => $client['id'],
+      'relationship_type_id' => $managerRelationshipType['id'],
+      'case_id' => $case['id'],
+      'reassign_rel_id' => $previousManagerRelationship['id'],
+    ]);
+
+    $previousManagerRelationshipDetails = $this->getRelationshipDetails($previousManagerRelationship['id']);
+    $currentManagerRelationshipDetails = $this->getRelationshipDetails($currentManagerRelationship['id']);
+
+    $this->assertEquals('0', $previousManagerRelationshipDetails['is_active'], 'previous manager is not active');
+    $this->assertEquals(date('Y-m-d'), $previousManagerRelationshipDetails['end_date'], 'previous manager end date is today');
+    $this->assertEquals('1', $currentManagerRelationshipDetails['is_active'], 'current manager is active');
+  }
+
+  public function testRoleReassignmentWithStartDate() {
+    $caseType = CaseTypeFabricator::fabricate();
+    $client = ContactFabricator::fabricate();
+    $previousManager = ContactFabricator::fabricate();
+    $existingManager = ContactFabricator::fabricate();
+    $fiveDaysAgo = date('Y-m-d', strtotime('-5 days'));
+
+    $case = CaseFabricator::fabricate(
+      [
+        'case_type_id' => $caseType['id'],
+        'contact_id' => $client['id'],
+        'creator_id' => $client['id'],
+      ]
+    );
+
+    $managerRelationshipType = RelationshipTypeFabricator::fabricate([
+      'name_a_b' => 'Manager is',
+      'name_b_a' => 'Manager',
+    ]);
+
+    $previousManagerRelationship = RelationshipFabricator::fabricate([
+      'contact_id_b' => $previousManager['id'],
+      'contact_id_a' => $client['id'],
+      'relationship_type_id' => $managerRelationshipType['id'],
+      'case_id' => $case['id'],
+    ]);
+
+    $currentManagerRelationship = RelationshipFabricator::fabricate([
+      'contact_id_b' => $existingManager['id'],
+      'contact_id_a' => $client['id'],
+      'relationship_type_id' => $managerRelationshipType['id'],
+      'case_id' => $case['id'],
+      'start_date' => $fiveDaysAgo,
+      'reassign_rel_id' => $previousManagerRelationship['id'],
+    ]);
+
+    $previousManagerRelationshipDetails = $this->getRelationshipDetails($previousManagerRelationship['id']);
+    $currentManagerRelationshipDetails = $this->getRelationshipDetails($currentManagerRelationship['id']);
+
+    $this->assertEquals('0', $previousManagerRelationshipDetails['is_active'], 'previous manager is not active');
+    $this->assertEquals($fiveDaysAgo, $previousManagerRelationshipDetails['end_date'], 'previous manager end date is 5 days ago');
+    $this->assertEquals('1', $currentManagerRelationshipDetails['is_active'], 'current manager is active');
+    $this->assertEquals($fiveDaysAgo, $currentManagerRelationshipDetails['start_date'], 'currrent manager start date is 5 days ago');
+  }
+
   /**
    * Get relationship details.
    *
