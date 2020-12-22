@@ -47,13 +47,13 @@
       let expectedActivityFormUrlParams;
 
       beforeEach(() => {
-        activity.assignee_contact_id = [_.uniqueId()];
+        activity.target_contact_id = [_.uniqueId()];
 
         expectedActivityFormUrlParams = {
           action: 'add',
           atype: activity.activity_type_id,
           caseid: activity.case_id,
-          cid: activity.source_contact_id[0],
+          cid: activity.target_contact_id[0],
           draft_id: activity.id,
           id: activity.id,
           reset: '1'
