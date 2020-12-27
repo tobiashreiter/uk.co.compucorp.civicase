@@ -11,8 +11,9 @@
      */
     function viewInPopup ($event, activity) {
       var isClickingAButton = $event && $($event.target).is('a, a *, input, button, button *');
+      var isEmailTypeActivity = activity.type.toLowerCase() === 'email';
       var activityForm = ActivityForms.getActivityFormService(activity, {
-        action: 'update'
+        action: isEmailTypeActivity ? 'view' : 'update'
       });
 
       if (!activityForm || isClickingAButton) {
