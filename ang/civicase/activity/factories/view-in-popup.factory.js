@@ -1,9 +1,9 @@
 (function (angular, $, _, CRM) {
   var module = angular.module('civicase');
 
-  module.factory('viewInPopup', function (ActivityForms, ActivityType) {
+  module.factory('viewInPopup', function (ActivityForms) {
     /**
-     * View given activity in a popup
+     * View activity in a popup
      *
      * @param {object} $event event
      * @param {*} activity activity to be viewed
