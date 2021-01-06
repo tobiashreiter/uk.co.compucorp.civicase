@@ -66,6 +66,6 @@ return [
   ],
   'civicrm/case/activity/download-all-files' => [
     'url_type' => CaseCategoryFromUrl::ACTIVITY_TYPE_URL,
-    'param' => 'activity_id',
+    'param' => 'activity_ids',
   ],
 ];
