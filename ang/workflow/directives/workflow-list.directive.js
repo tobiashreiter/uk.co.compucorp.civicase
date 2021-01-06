@@ -30,7 +30,7 @@
     $scope.ts = ts;
     $scope.isLoading = false;
     $scope.workflows = [];
-    $scope.actionItems = WorkflowListActionItems;
+    $scope.actionItems = filterArrayForCurrentInstance(WorkflowListActionItems);
     $scope.tableColumns = filterArrayForCurrentInstance(WorkflowListColumns);
     $scope.filters = filterArrayForCurrentInstance(WorkflowListFilters);
     $scope.selectedFilters = {};
