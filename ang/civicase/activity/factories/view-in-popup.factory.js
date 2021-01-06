@@ -1,9 +1,9 @@
 (function (angular, $, _, CRM) {
   var module = angular.module('civicase');
 
-  module.factory('viewInPopup', function (ActivityForms, ActivityType) {
+  module.factory('viewInPopup', function (ActivityForms) {
     /**
-     * View given activity in a popup
+     * View activity in a popup
      *
      * @param {object} $event event
      * @param {*} activity activity to be viewed
@@ -11,8 +11,9 @@
      */
     function viewInPopup ($event, activity) {
       var isClickingAButton = $event && $($event.target).is('a, a *, input, button, button *');
+      var isEmailTypeActivity = activity.type.toLowerCase() === 'email';
       var activityForm = ActivityForms.getActivityFormService(activity, {
-        action: 'update'
+        action: isEmailTypeActivity ? 'view' : 'update'
       });
 
       if (!activityForm || isClickingAButton) {
