@@ -53,7 +53,7 @@
       var workflow;
 
       beforeEach(() => {
-        workflow = CaseTypesMockData.getSequential(0);
+        workflow = CaseTypesMockData.getSequential()[0];
         CaseManagementWorkflow.createDuplicate(workflow);
       });
 
@@ -71,6 +71,20 @@
 
       it('redirects to the case management new workflow page', () => {
         expect($window.location.href).toBe('/civicrm/a/#/caseType/new');
+      });
+    });
+
+    describe('when editing a workflow', () => {
+      var returnValue;
+
+      beforeEach(() => {
+        var workflow = CaseTypesMockData.getSequential()[0];
+
+        returnValue = CaseManagementWorkflow.getEditWorkflowURL(workflow);
+      });
+
+      it('redirects to the case type page for the clicked workflow', () => {
+        expect(returnValue).toBe('civicrm/a/#/caseType/1');
       });
     });
   });
