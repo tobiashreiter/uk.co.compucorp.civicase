@@ -21,6 +21,12 @@
       }
     ];
 
+    const applicantManagementActionItem = {
+      templateUrl: '~/test-action.html',
+      onlyVisibleForInstance: 'applicant_management',
+      weight: 1
+    };
+
     describe('basic tests', () => {
       beforeEach(() => {
         injectModulesAndDependencies();
@@ -47,8 +53,18 @@
           expect($scope.workflows).toEqual(CaseTypesMockData.getSequential());
         });
 
-        it('displays the action items dropdown', () => {
-          expect($scope.actionItems).toEqual(WorkflowListActionItems);
+        describe('action items', () => {
+          var expectedActionItems;
+
+          beforeEach(() => {
+            expectedActionItems = _.filter(WorkflowListActionItems, function (actionItem) {
+              return actionItem.onlyVisibleForInstance !== 'applicant_management';
+            });
+          });
+
+          it('displays the action items only meant for current instance', () => {
+            expect($scope.actionItems).toEqual(expectedActionItems);
+          });
         });
 
         it('displays the columns', () => {
@@ -109,8 +125,9 @@
      */
     function initSpyModule () {
       angular.module('civicase.spy', ['civicase-base'])
-        .config((WorkflowListFiltersProvider) => {
+        .config((WorkflowListFiltersProvider, WorkflowListActionItemsProvider) => {
           WorkflowListFiltersProvider.addItems(testFilters);
+          WorkflowListActionItemsProvider.addItems([applicantManagementActionItem]);
         });
     }
 

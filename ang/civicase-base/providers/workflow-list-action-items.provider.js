@@ -36,5 +36,6 @@
 /**
  * @typedef {object} ActionItemConfig
  * @property {string} templateUrl
+ * @property {boolean} onlyVisibleForInstance
  * @property {number} weight
  */
