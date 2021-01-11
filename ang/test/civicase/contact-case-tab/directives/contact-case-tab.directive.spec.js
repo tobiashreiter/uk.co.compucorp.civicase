@@ -88,6 +88,16 @@
           })
         ]));
       });
+
+      it('requests all cases even disabled ones', () => {
+        expect(civicaseCrmApi.calls.allArgs()).not.toContain(jasmine.arrayContaining([
+          jasmine.objectContaining({
+            cases: ['Case', 'getcaselist', jasmine.objectContaining({
+              'case_type_id.is_active': jasmine.anything()
+            })]
+          })
+        ]));
+      });
     });
 
     describe('when changing contact tabs', () => {
