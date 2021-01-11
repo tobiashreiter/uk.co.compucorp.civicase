@@ -48,10 +48,23 @@
       /**
        * Check if the sent action is enabled.
        *
+       * An action is disabled when:
+       * - They can modify the target cases and the cases have been disabled.
+       * - The right number of cases have not been selected.
+       *
        * @param {object} action action object
        * @returns {boolean} if the sent action is enabled.
        */
       function isActionEnabled (action) {
+        var hasADisabledCaseType = _.some(
+          $scope.cases,
+          _.matches({ 'case_type_id.is_active': '0' })
+        );
+
+        if (action.is_write_action !== false && hasADisabledCaseType) {
+          return false;
+        }
+
         return (!action.number || $scope.cases.length === +action.number);
       }
 
