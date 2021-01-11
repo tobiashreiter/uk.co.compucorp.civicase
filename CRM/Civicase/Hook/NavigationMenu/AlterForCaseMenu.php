@@ -85,7 +85,7 @@ class CRM_Civicase_Hook_NavigationMenu_AlterForCaseMenu {
         'label' => ts('CiviCase Webforms'),
         'name' => 'CiviCase Webforms',
         'url' => 'civicrm/case/webforms',
-        'permission' => 'access CiviCase',
+        'permission' => 'access all cases and activities',
         'operator' => 'OR',
         'separator' => 1,
         'parentID' => $caseID,
