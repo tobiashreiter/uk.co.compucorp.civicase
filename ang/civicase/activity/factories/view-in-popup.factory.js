@@ -6,21 +6,27 @@
      * View activity in a popup
      *
      * @param {object} $event event
-     * @param {*} activity activity to be viewed
+     * @param {object} activity activity to be viewed
+     * @param {object} options configurations to use when opening the activity form.
+     * @param {string} options.isReadOnly will display the form in view mode only.
      * @returns {object} jQuery object
      */
-    function viewInPopup ($event, activity) {
-      var isClickingAButton = $event && $($event.target).is('a, a *, input, button, button *');
+    function viewInPopup ($event, activity, options) {
       var isEmailTypeActivity = activity.type.toLowerCase() === 'email';
-      var activityForm = ActivityForms.getActivityFormService(activity, {
-        action: isEmailTypeActivity ? 'view' : 'update'
-      });
+      var action = (options && options.isReadOnly) || isEmailTypeActivity
+        ? 'view'
+        : 'update';
+      var formOptions = {
+        action: action
+      };
+      var isClickingAButton = $event && $($event.target).is('a, a *, input, button, button *');
+      var activityForm = ActivityForms.getActivityFormService(activity, formOptions);
 
       if (!activityForm || isClickingAButton) {
         return;
       }
 
-      return CRM.loadForm(activityForm.getActivityFormUrl(activity));
+      return CRM.loadForm(activityForm.getActivityFormUrl(activity, formOptions));
     }
 
     return viewInPopup;
