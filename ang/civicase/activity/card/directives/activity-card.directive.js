@@ -20,6 +20,7 @@
       scope: {
         activity: '=caseActivityCard',
         case: '=?',
+        isReadOnly: '<',
         customDropdownClass: '@',
         refresh: '=refreshCallback',
         refreshOnCheckboxToggle: '=?',
@@ -131,7 +132,9 @@
      * @param {object} activity activity object
      */
     $scope.viewInPopup = function ($event, activity) {
-      var response = viewInPopup($event, activity);
+      var response = viewInPopup($event, activity, {
+        isReadOnly: $scope.isReadOnly
+      });
 
       if (response) {
         response

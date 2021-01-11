@@ -42,6 +42,7 @@
           <div class="btn-group btn-group-md civicase__contact-cases-tab__status">
             <button
               type="button" class="btn btn-primary"
+              ng-disabled="item['case_type_id.is_active'] === '0'"
               style="background-color: {{ caseStatuses[item.status_id].color }};"
               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
               title="{{ ts('Change case status') }}">
@@ -176,6 +177,7 @@
         </div>
         <div
           case-activity-card="item.activity_summary.last[0]"
+          is-read-only="item['case_type_id.is_active'] === '0'"
           refresh-callback="refresh"
           case="item"
           crm-popup-form-success="pushCaseData($data.civicase_reload[0])"
@@ -190,6 +192,7 @@
         </div>
         <div
           case-activity-card="item.activity_summary.next[0]"
+          is-read-only="item['case_type_id.is_active'] === '0'"
           refresh-callback="refresh"
           case="item"
           crm-popup-form-success="pushCaseData($data.civicase_reload[0])"
