@@ -141,7 +141,7 @@
         });
       });
 
-      describe('when using write actions', () => {
+      describe('when using actions that makes changes to the case', () => {
         describe('when the case is disabled', () => {
           beforeEach(() => {
             compileDirective();
