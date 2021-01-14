@@ -17,8 +17,6 @@ $caseCategoryName = CRM_Utils_Request::retrieve('case_type_category', 'String');
 $caseCategorySetting = new CRM_Civicase_Service_CaseCategorySetting();
 
 $options = [
-  'individualPrefix' => 'individual_prefix',
-  'individualSuffix' => 'individual_suffix',
   'activityTypes' => 'activity_type',
   'activityStatuses' => 'activity_status',
   'caseStatuses' => 'case_status',
