@@ -713,7 +713,7 @@
           $scope.gotoCase(caseItem, clickEvent);
         });
 
-        it('it goes to the other case', () => {
+        it('goes to the other case', () => {
           expect($route.updateParams).toHaveBeenCalledWith(jasmine.objectContaining({
             caseId: caseItem.id
           }));
@@ -743,7 +743,7 @@
           $scope.gotoCase(caseItem, clickEvent);
         });
 
-        it('it does not go to the other case', () => {
+        it('does not go to the other case', () => {
           expect($route.updateParams).not.toHaveBeenCalled();
         });
       });
