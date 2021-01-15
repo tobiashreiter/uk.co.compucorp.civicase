@@ -25,7 +25,7 @@
           id: '11',
           return: [
             'subject', 'details', 'contact_id', 'case_type_id', 'case_type_id.case_type_category',
-            'status_id', 'contacts', 'start_date', 'end_date', 'is_deleted',
+            'status_id', 'contacts', 'start_date','end_date', 'is_deleted',
             'activity_summary', 'activity_count', 'category_count', 'tag_id.name',
             'tag_id.color', 'tag_id.description', 'tag_id.parent_id', 'related_case_ids'
           ],
@@ -35,14 +35,16 @@
             contact_id: { IN: '$value.contact_id' },
             id: { '!=': '$value.id' },
             is_deleted: 0,
-            return: ['case_type_id', 'start_date', 'end_date', 'status_id', 'contacts', 'subject']
+            return: ['case_type_id', 'case_type_id.is_active', 'start_date',
+              'end_date', 'status_id', 'contacts', 'subject']
           },
           // Linked cases
           'api.Case.getcaselist.linkedCases': {
             'case_type_id.case_type_category': 'cases',
             id: { IN: '$value.related_case_ids' },
             is_deleted: 0,
-            return: ['case_type_id', 'start_date', 'end_date', 'status_id', 'contacts', 'subject']
+            return: ['case_type_id', 'case_type_id.is_active', 'start_date',
+              'end_date', 'status_id', 'contacts', 'subject']
           },
           // For the "recent communication" panel
           'api.Activity.get.recentCommunication': {
