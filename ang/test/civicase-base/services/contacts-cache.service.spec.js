@@ -41,6 +41,8 @@
           sequential: 1,
           options: { limit: 0 },
           return: [
+            'first_name',
+            'last_name',
             'birth_date',
             'city',
             'contact_type',

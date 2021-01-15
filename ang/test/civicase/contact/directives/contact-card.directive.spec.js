@@ -44,7 +44,11 @@
       describe('when the display name is a name', function () {
         beforeEach(function () {
           spyOn(ContactsCache, 'add').and.returnValue($q.resolve(ContactsData.values[0]));
-          spyOn(ContactsCache, 'getCachedContact').and.returnValue({ display_name: 'John Doe' });
+          spyOn(ContactsCache, 'getCachedContact').and.returnValue({
+            display_name: 'John Doe',
+            first_name: 'John',
+            last_name: 'Doe'
+          });
           compileDirective(true, ContactsData.values[0].id);
         });
 
@@ -62,6 +66,23 @@
 
         it('sets the first letter of the email address as the avatar', function () {
           expect(element.isolateScope().contacts[0].avatar).toBe('E');
+        });
+      });
+
+      describe('when the display name contains both prefix and suffix honorific', function () {
+        beforeEach(function () {
+          spyOn(ContactsCache, 'add').and.returnValue($q.resolve(ContactsData.values[0]));
+          spyOn(ContactsCache, 'getCachedContact').and.returnValue({
+            display_name: 'Mr. John Doe Jr.',
+            first_name: 'John',
+            last_name: 'Doe'
+          });
+
+          compileDirective(true, ContactsData.values[0].id);
+        });
+
+        it('ignores the honorific while creating the avatar', function () {
+          expect(element.isolateScope().contacts[0].avatar).toBe('JD');
         });
       });
 

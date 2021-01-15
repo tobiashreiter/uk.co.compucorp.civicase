@@ -15,6 +15,8 @@
     var savedContacts = [];
     var savedContactDetails = {};
     var requiredContactFields = [
+      'first_name',
+      'last_name',
       'birth_date',
       'city',
       'contact_type',
