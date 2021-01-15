@@ -25,7 +25,7 @@
           id: '11',
           return: [
             'subject', 'details', 'contact_id', 'case_type_id', 'case_type_id.case_type_category',
-            'status_id', 'contacts', 'start_date','end_date', 'is_deleted',
+            'status_id', 'contacts', 'start_date', 'end_date', 'is_deleted',
             'activity_summary', 'activity_count', 'category_count', 'tag_id.name',
             'tag_id.color', 'tag_id.description', 'tag_id.parent_id', 'related_case_ids'
           ],
