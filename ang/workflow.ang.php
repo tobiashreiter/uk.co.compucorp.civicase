@@ -24,6 +24,7 @@ function get_workflow_js_files() {
 
 $requires = [
   'crmUi',
+  'crmCaseType',
   'ngRoute',
   'dialogService',
   'civicase-base',
