@@ -1,11 +1,34 @@
 <div class="civicase__people-tab__sub-tab" ng-show="tab == 'relations'">
   <div class="civicase__people-tab__search">
     <div class="btn-group btn-group-md pull-right">
-      <a ng-if="item.client.length === 1" class="btn btn-primary crm-popup" crm-popup-form-success="getRelations()" ng-href="{{ 'civicrm/contact/view/rel' | civicaseCrmUrl:{ action: 'add', reset: 1, cid: item.client[0].contact_id } }}">
-        <i class="material-icons">add_circle</i>{{ ts('Relationship') }}
+      <a
+        ng-if="item.client.length === 1 && item['case_type_id.is_active'] !== '0'"
+        class="btn btn-primary crm-popup"
+        crm-popup-form-success="getRelations()"
+        ng-href="{{ 'civicrm/contact/view/rel' | civicaseCrmUrl:{ action: 'add', reset: 1, cid: item.client[0].contact_id } }}"
+      >
+        <i class="material-icons">add_circle</i>
+        {{ ts('Relationship') }}
       </a>
-      <button ng-if="item.client.length > 1" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-       <i class="material-icons">add_circle</i>{{ ts('Relationship') }} <span class="caret"></span>
+      <button
+        ng-if="item.client.length === 1 && item['case_type_id.is_active'] === '0'"
+        disabled
+        class="btn btn-primary"
+      >
+        <i class="material-icons">add_circle</i>
+        {{ ts('Relationship') }}
+      </button>
+      <button
+        ng-if="item.client.length > 1"
+        class="btn btn-primary dropdown-toggle"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+        ng-disabled="item['case_type_id.is_active'] === '0'"
+      >
+       <i class="material-icons">add_circle</i>
+       {{ ts('Relationship') }}
+       <span class="caret"></span>
       </button>
       <ul ng-if="item.client.length > 1" class="dropdown-menu dropdown-menu-right" crm-popup-form-success="getRelations()">
         <li ng-repeat="client in item.client">
@@ -87,7 +110,14 @@
         </td>
         <td class="civicase__people-tab__table-column civicase__people-tab__table-column--last">
           <div class="btn-group btn-group-sm">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button
+              type="button"
+              class="btn btn-default dropdown-toggle"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+              ng-disabled="item['case_type_id.is_active'] === '0'"
+            >
               <i class="material-icons">more_vert</i>
             </button>
             <ul class="dropdown-menu dropdown-menu-right" crm-popup-form-success="getRelations()">

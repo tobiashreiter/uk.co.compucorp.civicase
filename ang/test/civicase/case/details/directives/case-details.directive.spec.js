@@ -1,5 +1,5 @@
 /* eslint-env jasmine */
-(function (_) {
+(function ($, _) {
   describe('civicaseCaseDetails', function () {
     var $httpBackend, element, controller, activitiesMockData, $controller, $compile,
       $document, $rootScope, $scope, $provide, civicaseCrmApi, civicaseCrmApiMock, $q,
@@ -685,6 +685,70 @@
       });
     });
 
+    describe('going to other cases', () => {
+      let caseItem, clickEvent;
+
+      beforeEach(() => {
+        spyOn($route, 'updateParams');
+        initController();
+
+        clickEvent = $.Event('click');
+        clickEvent.target = document.createElement('span');
+        caseItem = {
+          id: _.uniqueId(),
+          case_type_id: '1',
+          status_id: '1',
+          'case_type_id.is_active': '0'
+        };
+      });
+
+      describe('when clicking on a non button element', () => {
+        beforeEach(() => {
+          $route.current = {
+            params: {
+              customParam: 'custom-value'
+            }
+          };
+
+          $scope.gotoCase(caseItem, clickEvent);
+        });
+
+        it('goes to the other case', () => {
+          expect($route.updateParams).toHaveBeenCalledWith(jasmine.objectContaining({
+            caseId: caseItem.id
+          }));
+        });
+
+        it('retains existing route filters', () => {
+          expect($route.updateParams).toHaveBeenCalledWith(jasmine.objectContaining({
+            customParam: 'custom-value'
+          }));
+        });
+
+        it('adds filters for the case\'s case type, status, and active status', () => {
+          expect($route.updateParams).toHaveBeenCalledWith(jasmine.objectContaining({
+            cf: JSON.stringify({
+              case_type_id: ['housing_support'],
+              status_id: ['Open'],
+              'case_type_id.is_active': '0'
+            })
+          }));
+        });
+      });
+
+      describe('when a button element is clicked', () => {
+        beforeEach(() => {
+          clickEvent.target = document.createElement('a');
+
+          $scope.gotoCase(caseItem, clickEvent);
+        });
+
+        it('does not go to the other case', () => {
+          expect($route.updateParams).not.toHaveBeenCalled();
+        });
+      });
+    });
+
     /**
      * Initializes the case details controller.
      *
@@ -702,4 +766,4 @@
       $scope.$digest();
     }
   });
-})(CRM._);
+})(CRM.$, CRM._);

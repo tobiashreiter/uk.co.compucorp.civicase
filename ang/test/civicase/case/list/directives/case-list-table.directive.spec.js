@@ -163,7 +163,7 @@
               'subject', 'case_type_id', 'status_id', 'is_deleted', 'start_date',
               'modified_date', 'contacts', 'activity_summary', 'category_count',
               'tag_id.name', 'tag_id.color', 'tag_id.description',
-              'case_type_id.case_type_category'
+              'case_type_id.case_type_category', 'case_type_id.is_active'
             ],
             options: jasmine.any(Object),
             'case_type_id.is_active': 1,

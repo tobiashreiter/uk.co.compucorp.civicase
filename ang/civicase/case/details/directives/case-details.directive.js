@@ -204,7 +204,8 @@
       }
       var cf = {
         case_type_id: [CaseType.getById(item.case_type_id).name],
-        status_id: [caseStatuses[item.status_id].name]
+        status_id: [caseStatuses[item.status_id].name],
+        'case_type_id.is_active': item['case_type_id.is_active']
       };
       var p = angular.extend({}, $route.current.params, { caseId: item.id, cf: JSON.stringify(cf) });
       $route.updateParams(p);
