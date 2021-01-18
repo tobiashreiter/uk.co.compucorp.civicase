@@ -58,7 +58,6 @@
     // The ts() and hs() functions help load strings for this module.
     // TODO: Move the common logic into a common controller (based on the usage of ContactCaseTabCaseDetails)
     $scope.ts = ts;
-    var caseTypes = CaseType.getAll();
     var caseStatuses = $scope.caseStatuses = CaseStatus.getAll();
     var activityTypes = $scope.activityTypes = ActivityType.getAll(true);
     var panelLimit = 5;
@@ -69,7 +68,7 @@
     $scope.getActivityFeedUrl = getActivityFeedUrl;
     $scope.bulkAllowed = BulkActions.isAllowed();
     $scope.caseDetailsSummaryBlocks = CaseDetailsSummaryBlocks;
-    $scope.caseTypesLength = _.size(caseTypes);
+    $scope.caseTypesLength = _.size(CaseType.getAll());
     $scope.CRM = CRM;
     $scope.tabs = _.cloneDeep(CaseDetailsTabs);
     $scope.trustAsHtml = $sce.trustAsHtml;
@@ -204,7 +203,7 @@
         return;
       }
       var cf = {
-        case_type_id: [caseTypes[item.case_type_id].name],
+        case_type_id: [CaseType.getById(item.case_type_id).name],
         status_id: [caseStatuses[item.status_id].name]
       };
       var p = angular.extend({}, $route.current.params, { caseId: item.id, cf: JSON.stringify(cf) });
@@ -427,7 +426,7 @@
      */
     function formatCaseDetails (item) {
       formatCase(item);
-      item.definition = caseTypes[item.case_type_id].definition;
+      item.definition = CaseType.getById(item.case_type_id).definition;
 
       prepareRelatedCases(item);
 

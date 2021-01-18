@@ -20,6 +20,7 @@
       scope: {
         activity: '=caseActivityCard',
         case: '=?',
+        isReadOnly: '<',
         customDropdownClass: '@',
         refresh: '=refreshCallback',
         refreshOnCheckboxToggle: '=?',
@@ -58,7 +59,6 @@
   function caseActivityCardController ($filter, $scope, CaseType,
     CaseTypeCategory, dialogService, civicaseCrmApi, crmBlocker, crmStatus,
     DateHelper, ts, viewInPopup, isTruthy) {
-    var caseTypes = CaseType.getAll();
     var caseTypeCategories = CaseTypeCategory.getAll();
 
     $scope.areFromAndToFieldsVisible = false;
@@ -132,7 +132,9 @@
      * @param {object} activity activity object
      */
     $scope.viewInPopup = function ($event, activity) {
-      var response = viewInPopup($event, activity);
+      var response = viewInPopup($event, activity, {
+        isReadOnly: $scope.isReadOnly
+      });
 
       if (response) {
         response
@@ -187,12 +189,17 @@
      */
     function getCaseDetailUrl () {
       var caseTypeId = $scope.activity.case.case_type_id;
-      var caseType = caseTypes[caseTypeId];
+      var caseType = CaseType.getById(caseTypeId);
       var caseTypeCategory = caseTypeCategories[caseType.case_type_category];
       var caseDetailUrl = 'civicrm/case/a/?' +
         $.param({ case_type_category: caseTypeCategory.name }) +
         '#/case/list';
-      var angularParams = $.param({ caseId: $scope.activity.case_id });
+      var angularParams = $.param({
+        caseId: $scope.activity.case_id,
+        cf: JSON.stringify({
+          'case_type_id.is_active': caseType.is_active
+        })
+      });
 
       return $filter('civicaseCrmUrl')(caseDetailUrl) + '?' + angularParams;
     }

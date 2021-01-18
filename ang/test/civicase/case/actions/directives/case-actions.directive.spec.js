@@ -140,6 +140,34 @@
           expect(element.isolateScope().isActionEnabled(action)).toBe(false);
         });
       });
+
+      describe('when using actions that makes changes to the case', () => {
+        describe('when the case is disabled', () => {
+          beforeEach(() => {
+            compileDirective();
+
+            action = _.find(CaseActionsData.get(), { is_write_action: true });
+            element.isolateScope().cases = [{ 'case_type_id.is_active': '0' }];
+          });
+
+          it('disables the action', () => {
+            expect(element.isolateScope().isActionEnabled(action)).toBe(false);
+          });
+        });
+
+        describe('when the case is enabled', () => {
+          beforeEach(() => {
+            compileDirective();
+
+            action = _.find(CaseActionsData.get(), { is_write_action: true });
+            element.isolateScope().cases = [{ 'case_type_id.is_active': '1' }];
+          });
+
+          it('enables the action', () => {
+            expect(element.isolateScope().isActionEnabled(action)).toBe(true);
+          });
+        });
+      });
     });
 
     describe('visibility of the action', () => {
