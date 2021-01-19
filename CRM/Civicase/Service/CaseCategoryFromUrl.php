@@ -163,6 +163,8 @@ class CRM_Civicase_Service_CaseCategoryFromUrl {
 
       return NULL;
     }
+
+    return NULL;
   }
 
   /**
@@ -224,8 +226,8 @@ class CRM_Civicase_Service_CaseCategoryFromUrl {
     }
 
     if (strtolower($entity) == 'api3') {
-      foreach ($json as $entity) {
-        [$entityName, $action, $params] = $entity;
+      foreach ($json as $entityParam) {
+        [$entityName, $action, $params] = $entityParam;
 
         if (strtolower($entityName) == 'case') {
           $this->isCaseEntity = TRUE;
@@ -235,6 +237,8 @@ class CRM_Civicase_Service_CaseCategoryFromUrl {
         }
       }
     }
+
+    return NULL;
   }
 
   /**
