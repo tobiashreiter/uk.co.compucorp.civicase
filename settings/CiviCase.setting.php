@@ -147,19 +147,19 @@ $setting = [
     'description' => E::ts('This setting will only allow one active instance of each case role for all case types.'),
     'help_text' => '',
   ],
-  'civicaseLimitCcAndBCC' => [
+  'civicaseLimitRecipientFields' => [
     'group_name' => 'CiviCRM Preferences',
     'group' => 'core',
-    'name' => 'civicaseLimitCcAndBcc',
+    'name' => 'civicaseLimitRecipientFields',
     'type' => 'Boolean',
     'quick_form_type' => 'YesNo',
     'default' => FALSE,
     'html_type' => 'radio',
     'add' => '4.7',
-    'title' => E::ts('Limit cc and bcc fields'),
+    'title' => E::ts('Limit recipients field on bulk email'),
     'is_domain' => 1,
     'is_contact' => 0,
-    'description' => E::ts('This setting will only allow selected contacts to be added to Cc/Bcc fields in bulk email.'),
+    'description' => E::ts('This setting will only allow selected contacts to be added to recipient and Cc/Bcc fields in bulk email.'),
     'help_text' => '',
   ],
   'civicaseRestrictCaseEmailContacts' => [
