@@ -114,8 +114,9 @@
             entity_type: 'Case',
             return: [
               'custom_group.id', 'custom_group.name', 'custom_group.title',
-              'custom_field.name', 'custom_field.label', 'custom_value.display',
-              'custom_group.style'
+              'custom_group.weight', 'custom_group.style',
+              'custom_field.name', 'custom_field.label',
+              'custom_value.display'
             ]
           },
           // Relationship description field
