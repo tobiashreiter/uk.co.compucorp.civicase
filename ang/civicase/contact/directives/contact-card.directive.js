@@ -10,6 +10,7 @@
       scope: {
         caseId: '<?',
         data: '=contacts',
+        totalContacts: '=',
         isAvatar: '=avatar',
         noIcon: '=',
         displayMoreFields: '=',
@@ -35,10 +36,10 @@
        * Watch function for data refresh
        */
       function refresh () {
-        $scope.contacts = [];
-
         fetchContactsInfo()
           .then(function () {
+            $scope.contacts = [];
+
             if (_.isPlainObject($scope.data)) {
               _.each($scope.data, function (name, contactID) {
                 if ($scope.isAvatar) {

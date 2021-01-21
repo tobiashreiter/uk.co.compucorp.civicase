@@ -47,7 +47,7 @@
               'end_date', 'status_id', 'contacts', 'subject']
           },
           // For the "recent communication" panel
-          'api.Activity.get.recentCommunication': {
+          'api.Activity.getAll.recentCommunication': {
             case_id: '11',
             is_current_revision: 1,
             is_test: 0,
@@ -62,7 +62,7 @@
             ]
           },
           // For the "tasks" panel
-          'api.Activity.get.tasks': {
+          'api.Activity.getAll.tasks': {
             case_id: '11',
             is_current_revision: 1,
             is_test: 0,
@@ -77,7 +77,7 @@
             ]
           },
           // For the "Next Activity" panel
-          'api.Activity.get.nextActivitiesWhichIsNotMileStone': {
+          'api.Activity.getAll.nextActivitiesWhichIsNotMileStone': {
             case_id: '11',
             status_id: { '!=': 'Completed' },
             'activity_type_id.grouping': { 'NOT LIKE': '%milestone%' },
