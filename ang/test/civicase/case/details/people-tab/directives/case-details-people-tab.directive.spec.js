@@ -131,7 +131,7 @@ describe('Case Details People Tab', () => {
             role: roleName,
             id: '101',
             relationship: {
-              start_date: moment().add(5, 'day'),
+              start_date: moment().add(5, 'day')
             }
           });
           selectDialogContact(contact);
