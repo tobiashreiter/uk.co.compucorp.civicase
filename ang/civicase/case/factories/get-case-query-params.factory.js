@@ -55,7 +55,6 @@
           case_id: filters.caseId,
           is_current_revision: 1,
           is_test: 0,
-          activity_type_id: { '!=': 'Bulk Email' },
           'activity_type_id.grouping': { LIKE: '%communication%' },
           'status_id.filter': 1,
           options: { limit: filters.panelLimit, sort: 'activity_date_time DESC' },
@@ -66,7 +65,6 @@
           case_id: filters.caseId,
           is_current_revision: 1,
           is_test: 0,
-          activity_type_id: { '!=': 'Bulk Email' },
           'activity_type_id.grouping': { LIKE: '%task%' },
           'status_id.filter': 0,
           options: { limit: filters.panelLimit, sort: 'activity_date_time ASC' },
@@ -76,7 +74,6 @@
         'api.Activity.get.nextActivitiesWhichIsNotMileStone': {
           case_id: filters.caseId,
           status_id: { '!=': 'Completed' },
-          activity_type_id: { '!=': 'Bulk Email' },
           'activity_type_id.grouping': { 'NOT LIKE': '%milestone%' },
           options: {
             limit: 1
@@ -87,7 +84,6 @@
           case_id: filters.caseId,
           is_current_revision: 1,
           is_deleted: 0,
-          activity_type_id: { '!=': 'Bulk Email' },
           status_id: 'Scheduled'
         },
         // For the "scheduled-overdue" count
@@ -96,7 +92,6 @@
           is_current_revision: 1,
           is_deleted: 0,
           is_overdue: 1,
-          activity_type_id: { '!=': 'Bulk Email' },
           status_id: 'Scheduled'
         },
         // Custom data
