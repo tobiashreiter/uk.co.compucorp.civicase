@@ -136,14 +136,12 @@
               description: caseTypeRole.description,
               desc: caseRelation.description,
               display_name: contact.display_name,
-              end_date: caseRelation.end_date,
               email: contact.email,
               is_active: caseRelation.is_active,
               phone: contact.phone,
               relationship_type_id: caseTypeRole.relationship_type_id,
               role: caseTypeRole.role,
               relationship: caseRelation,
-              start_date: caseRelation.start_date,
               previousValues: {
                 end_date: caseRelation.end_date,
                 start_date: caseRelation.start_date

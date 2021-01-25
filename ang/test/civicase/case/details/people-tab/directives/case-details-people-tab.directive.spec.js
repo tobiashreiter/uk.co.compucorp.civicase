@@ -129,8 +129,10 @@ describe('Case Details People Tab', () => {
             display_name: previousContact.display_name,
             relationship_type_id: relationshipTypeId,
             role: roleName,
-            start_date: moment().add(5, 'day'),
-            id: '101'
+            id: '101',
+            relationship: {
+              start_date: moment().add(5, 'day')
+            }
           });
           selectDialogContact(contact);
           updateDialogModel({
@@ -158,8 +160,10 @@ describe('Case Details People Tab', () => {
             display_name: previousContact.display_name,
             relationship_type_id: relationshipTypeId,
             role: roleName,
-            start_date: moment().add(-1, 'day'),
-            id: '101'
+            id: '101',
+            relationship: {
+              start_date: moment().add(-1, 'day')
+            }
           });
           selectDialogContact(contact);
           updateDialogModel({
@@ -233,7 +237,10 @@ describe('Case Details People Tab', () => {
         var client = CRM._.first($scope.item.client);
         $scope.replaceRoleOrClient({
           relationship_type_id: relationshipTypeId,
-          role: roleName
+          role: roleName,
+          relationship: {
+            start_date: moment().format('YYYY-MM-DD')
+          }
         });
         selectDialogContact(CRM._.assign({}, client, {
           id: client.contact_id
@@ -472,7 +479,9 @@ describe('Case Details People Tab', () => {
             display_name: sampleContact.display_name,
             relationship_type_id: relationshipTypeId,
             role: 'Role',
-            start_date: moment().add(5, 'day')
+            relationship: {
+              start_date: moment().add(5, 'day')
+            }
           });
 
           updateDialogModel({
@@ -498,7 +507,9 @@ describe('Case Details People Tab', () => {
             display_name: sampleContact.display_name,
             relationship_type_id: relationshipTypeId,
             role: 'Role',
-            start_date: moment().add(-5, 'day')
+            relationship: {
+              start_date: moment().add(-5, 'day')
+            }
           });
 
           updateDialogModel({
@@ -535,7 +546,9 @@ describe('Case Details People Tab', () => {
             display_name: sampleContact.display_name,
             relationship_type_id: relationshipTypeId,
             role: 'Role',
-            start_date: moment().add(-5, 'day')
+            relationship: {
+              start_date: moment().add(-5, 'day')
+            }
           });
 
           updateDialogModel({

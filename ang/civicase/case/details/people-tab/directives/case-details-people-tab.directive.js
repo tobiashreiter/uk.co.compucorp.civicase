@@ -259,8 +259,8 @@
       if (!isReplacingClient) {
         promptForContactParams.reassignmentDate = {
           maxDate: moment().format('YYYY-MM-DD'),
-          value: moment().isBefore(moment(role.start_date))
-            ? moment(role.start_date).format('YYYY-MM-DD')
+          value: moment().isBefore(moment(role.relationship.start_date))
+            ? moment(role.relationship.start_date).format('YYYY-MM-DD')
             : moment().format('YYYY-MM-DD')
         };
       }
@@ -301,7 +301,10 @@
             }
           },
           function (contactPromptResult) {
-            if (!isSameOrAfter(contactPromptResult.endDate, contactPromptResult.role.start_date)) {
+            if (!isSameOrAfter(
+              contactPromptResult.endDate,
+              contactPromptResult.role.relationship.start_date
+            )) {
               contactPromptResult.showErrorMessageFor(
                 'endDate',
                 PeoplesTabMessageConstants.RELATIONSHIP_END_DATE_MESSAGE
@@ -743,8 +746,13 @@
           isError = true;
         }
 
-        if (contactPromptResult.reassignmentDate &&
-          !isSameOrAfter(contactPromptResult.reassignmentDate, contactPromptResult.role.start_date)) {
+        if (
+          contactPromptResult.reassignmentDate &&
+          !isSameOrAfter(
+            contactPromptResult.reassignmentDate,
+            contactPromptResult.role.relationship.start_date
+          )
+        ) {
           contactPromptResult.showErrorMessageFor(
             'reassignmentDate',
             PeoplesTabMessageConstants.RELATIONSHIP_REASSIGNMENT_DATE_MESSAGE
