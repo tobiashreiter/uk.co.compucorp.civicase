@@ -111,10 +111,14 @@ function civicrm_api3_case_getstats(array $params) {
  * @return array
  *   An API response containing the filtered case types.
  */
-function _civicrm_api3_case_getstats_get_case_types(array $params, $query) {
+function _civicrm_api3_case_getstats_get_case_types(array $params, CRM_Utils_SQL_Select $query) {
+  $isActiveCaseType = isset($params['case_type_id.is_active'])
+    ? $params['case_type_id.is_active']
+    : '1';
   $caseTypesParams = [
     'options' => ['limit' => 0],
     'return' => 'id',
+    'is_active' => $isActiveCaseType,
   ];
 
   $caseTypes = [];
@@ -138,7 +142,8 @@ function _civicrm_api3_case_getstats_get_case_types(array $params, $query) {
 
   if (empty($caseTypes)) {
     return civicrm_api3('CaseType', 'get', $caseTypesParams);
-  } else {
+  }
+  else {
     return $caseTypes;
   }
 }
