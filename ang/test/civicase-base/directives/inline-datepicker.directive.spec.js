@@ -164,14 +164,92 @@
       });
     });
 
+    describe('min and max dates', () => {
+      describe('minimum date limit', () => {
+        beforeEach(() => {
+          $scope.date = '1999-06-01';
+          $scope.minDate = '1999-01-01';
+
+          initDirective(`
+            data-min-date="{{minDate}}"
+          `);
+          $scope.$digest();
+        });
+
+        it('sets the minimum date as the provided value', () => {
+          expect($.fn.datepicker).toHaveBeenCalledWith(
+            'option',
+            'minDate',
+            new Date('1999-01-01')
+          );
+        });
+
+        describe('when the minimum date is updated', () => {
+          beforeEach(() => {
+            $scope.minDate = '1999-01-31';
+
+            $scope.$digest();
+          });
+
+          it('updates the minimum date limit', () => {
+            expect($.fn.datepicker).toHaveBeenCalledWith(
+              'option',
+              'minDate',
+              new Date('1999-01-31')
+            );
+          });
+        });
+      });
+
+      describe('maximum date limit', () => {
+        beforeEach(() => {
+          $scope.date = '1999-06-01';
+          $scope.maxDate = '1999-12-31';
+
+          initDirective(`
+            data-max-date="{{maxDate}}"
+          `);
+          $scope.$digest();
+        });
+
+        it('sets the maximum date as the provided value', () => {
+          expect($.fn.datepicker).toHaveBeenCalledWith(
+            'option',
+            'maxDate',
+            new Date('1999-12-31')
+          );
+        });
+
+        describe('when the maximum date is updated', () => {
+          beforeEach(() => {
+            $scope.maxDate = '1999-01-01';
+
+            $scope.$digest();
+          });
+
+          it('updates the minimum date limit', () => {
+            expect($.fn.datepicker).toHaveBeenCalledWith(
+              'option',
+              'maxDate',
+              new Date('1999-01-01')
+            );
+          });
+        });
+      });
+    });
+
     /**
      * Initialises the Inline Datepicker directive on an input element using
      * the global $scope variable.
+     *
+     * @param {string} extraAttributes custom attributes to add to the input
+     *   element alongside the inline datepicker directive.
      */
-    function initDirective () {
+    function initDirective (extraAttributes = '') {
       element = $compile(`
         <input
           civicase-inline-datepicker
+          ${extraAttributes}
           ng-model="date"
           type="text"
         />
