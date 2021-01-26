@@ -54,15 +54,14 @@ class CRM_Civicase_Hook_Tokens_AddContactTokensValues {
     }
     $contactFields = $this->contactFieldsService->get();
     $customFields = $this->contactCustomFieldsService->get();
-    $allFields = array_merge($contactFields, $customFields);
+    $allFields = array_merge($contactFields, array_keys($customFields));
     try {
-      $contactValues = $this->getContactValues(array_merge($contactFields, array_keys($customFields)));
+      $contactValues = $this->getContactValues($allFields);
       $currentUsersContact = [];
       foreach ($contactValues as $fieldName => $value) {
         if (strpos($fieldName, 'civicrm_value_') !== FALSE) {
           continue;
         }
-        $fieldName = (strpos($fieldName, 'custom_') !== FALSE) ? $customFields[$fieldName] : $fieldName;
         if (in_array($fieldName, $allFields)) {
           $key = 'current_user.contact_' . $fieldName;
           $currentUsersContact[$key] = $value;
