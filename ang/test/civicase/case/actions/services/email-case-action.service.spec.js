@@ -98,7 +98,14 @@
           it('returns the path to open the send email popup and hides the draft button', () => {
             expect(returnValue).toEqual({
               path: 'civicrm/activity/email/add',
-              query: { action: 'add', reset: 1, cid: '170,4,6', hideDraftButton: 1, caseid: '141' }
+              query: {
+                action: 'add',
+                reset: 1,
+                cid: '170,4,6',
+                hideDraftButton: 1,
+                caseid: '141',
+                caseRolesBulkEmail: 1
+              }
             });
           });
         });
@@ -167,7 +174,8 @@
             cid: '170,4,6',
             hideDraftButton: 1,
             caseid: '141',
-            allCaseIds: '141,3'
+            allCaseIds: '141,3',
+            caseRolesBulkEmail: 1
           }
         });
       });

@@ -43,8 +43,9 @@ class CRM_Civicase_Hook_BuildForm_RestrictCaseEmailContacts {
     $isEmailForm = get_class($this->form) === CRM_Contact_Form_Task_Email::class;
     $isCaseEmail = !empty($this->form->getVar('_caseId'));
     $shouldRestrictContacts = (bool) Civi::settings()->get('civicaseRestrictCaseEmailContacts');
+    $isBulkEmail = CRM_Utils_Array::value('caseRolesBulkEmail', $_GET, '0') === '1';
 
-    return $isEmailForm && $isCaseEmail && $shouldRestrictContacts;
+    return $isEmailForm && $isCaseEmail && $shouldRestrictContacts && !$isBulkEmail;
   }
 
   /**
@@ -74,10 +75,10 @@ class CRM_Civicase_Hook_BuildForm_RestrictCaseEmailContacts {
     }, $caseDetails['contacts']);
 
     CRM_Core_Resources::singleton()
-      ->addScriptFile('uk.co.compucorp.civicase', 'js/restrict-case-email-contacts.js')
+      ->addScriptFile('uk.co.compucorp.civicase', 'js/restrict-email-contacts.js')
       ->addSetting([
         'civicase-base' => [
-          'case_contacts' => json_encode($caseContacts),
+          'recipients' => json_encode($caseContacts),
         ],
       ]);
   }
