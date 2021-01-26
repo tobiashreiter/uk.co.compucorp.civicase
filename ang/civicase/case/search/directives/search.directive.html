@@ -105,7 +105,7 @@
         ng-if="checkPerm('administer CiviCase') && isEnabled('case_type_id.is_active')"
         ng-model="filters['case_type_id.is_active']"
       >
-        {{ts('Show Cases from disabled Case Types')}}
+        {{ts('Only Show Disabled Cases')}}
       </div>
       <div ng-if="isEnabled('start_date')" class="civicase__case-filter-form-elements">
         <label>{{ ts('Case Start Date') }}</label>
