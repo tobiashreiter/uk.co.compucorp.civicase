@@ -3,7 +3,6 @@
 
   module.factory('formatCase', function (formatActivity, ContactsCache,
     CaseStatus, CaseType, isTruthy) {
-    var caseTypes = CaseType.getAll();
     var caseStatuses = CaseStatus.getAll(true);
 
     return function (item) {
@@ -11,7 +10,7 @@
       item.subject = (typeof item.subject === 'undefined') ? '' : item.subject;
       item.status = caseStatuses[item.status_id].label;
       item.color = caseStatuses[item.status_id].color;
-      item.case_type = caseTypes[item.case_type_id].title;
+      item.case_type = CaseType.getById(item.case_type_id).title;
       item.selected = false;
       item.is_deleted = isTruthy(item.is_deleted);
 

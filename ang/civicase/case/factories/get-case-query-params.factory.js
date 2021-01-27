@@ -21,7 +21,8 @@
         'activity_summary', 'activity_count', 'category_count', 'tag_id.name',
         'tag_id.color', 'tag_id.description', 'tag_id.parent_id', 'related_case_ids'
       ];
-      var caseListReturnParams = ['case_type_id', 'start_date', 'end_date', 'status_id', 'contacts', 'subject'];
+      var caseListReturnParams = ['case_type_id', 'case_type_id.is_active',
+        'start_date', 'end_date', 'status_id', 'contacts', 'subject'];
       var customValuesReturnParams = [
         'custom_group.id', 'custom_group.name', 'custom_group.title',
         'custom_group.weight', 'custom_group.style',

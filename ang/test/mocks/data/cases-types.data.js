@@ -196,7 +196,8 @@
       },
       icon: 'icon',
       color: 'color',
-      case_type_category: '1'
+      case_type_category: '1',
+      is_active: '1'
     },
     2: {
       id: '2',
@@ -324,7 +325,8 @@
           }
         ]
       },
-      case_type_category: '2'
+      case_type_category: '2',
+      is_active: '1'
     },
     3: {
       id: '3',
@@ -389,7 +391,8 @@
           }
         ]
       },
-      case_type_category: '1'
+      case_type_category: '1',
+      is_active: '1'
     }
   };
 
@@ -402,25 +405,32 @@
   })();
 
   module.provider('CaseTypesMockData', function () {
+    this.reset = reset;
+
     /**
      * Merges the given case types to the global case types list.
      *
-     * @param {object} newCaseTypes a map of case types indexed by their id.
+     * @param {object} newCaseType a case type object.
      */
-    this.add = function (newCaseTypes) {
-      caseTypesMock = _.assign({}, caseTypesMock, newCaseTypes);
-      CRM['civicase-base'].caseTypes = _.clone(caseTypesMock);
+    this.add = function (newCaseType) {
+      if (!newCaseType.id) {
+        newCaseType.id = _.uniqueId();
+      }
+
+      CRM['civicase-base'].caseTypes[newCaseType.id] = newCaseType;
     };
 
     this.$get = () => {
       return {
+        reset: reset,
+
         /**
          * Returns a list of case types
          *
          * @returns {object} a list of case types indexed by id.
          */
         get: function () {
-          return _.clone(caseTypesMock);
+          return _.cloneDeep(CRM['civicase-base'].caseTypes);
         },
         /**
          * Returns a list of case types in array format
@@ -428,18 +438,18 @@
          * @returns {object[]} a list of case types.
          */
         getSequential: function () {
-          var clonesCaseTypesData = _.clone(caseTypesMock);
+          var clonesCaseTypesData = _.cloneDeep(caseTypesMock);
 
           return Object.values(clonesCaseTypesData);
-        },
-
-        /**
-         * Restores the mock data case types after it has been altered.
-         */
-        reset: function () {
-          CRM['civicase-base'].caseTypes = _.clone(caseTypesMock);
         }
       };
     };
+
+    /**
+     * Restores the mock data case types after it has been altered.
+     */
+    function reset () {
+      CRM['civicase-base'].caseTypes = _.cloneDeep(caseTypesMock);
+    }
   });
 }(CRM._));

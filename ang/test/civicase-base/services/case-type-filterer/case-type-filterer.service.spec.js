@@ -2,20 +2,33 @@
 
 ((_) => {
   describe('CaseTypeFilterer service', () => {
-    let allCaseTypeCategories, allCaseTypes, CaseTypeFilterer, expectedCaseTypes,
-      returnedCaseTypes;
+    let allCaseTypeCategories, allCaseTypes, CaseTypeFilterer,
+      CaseTypesMockDataProvider, expectedCaseTypes, returnedCaseTypes;
 
-    beforeEach(module('civicase-base'));
+    beforeEach(module('civicase-base', 'civicase.data', (_CaseTypesMockDataProvider_) => {
+      CaseTypesMockDataProvider = _CaseTypesMockDataProvider_;
+
+      CaseTypesMockDataProvider.add({
+        title: 'inactive case type',
+        is_active: '0'
+      });
+    }));
 
     beforeEach(inject((_CaseType_, _CaseTypeCategory_, _CaseTypeFilterer_) => {
       allCaseTypeCategories = _CaseTypeCategory_.getAll();
-      allCaseTypes = _CaseType_.getAll();
+      allCaseTypes = _CaseType_.getAll({ includeInactive: true });
       CaseTypeFilterer = _CaseTypeFilterer_;
     }));
 
+    afterEach(() => {
+      CaseTypesMockDataProvider.reset();
+    });
     describe('when filtering by case type id', () => {
       beforeEach(() => {
-        const sampleCaseType = _.sample(allCaseTypes);
+        const sampleCaseType = _.chain(allCaseTypes)
+          .filter({ is_active: '1' })
+          .sample()
+          .value();
 
         expectedCaseTypes = [
           sampleCaseType
@@ -27,14 +40,16 @@
       });
 
       it('returns a list of case types that only includes the requested case type', () => {
-        expect(returnedCaseTypes)
-          .toEqual(jasmine.arrayWithExactContents(expectedCaseTypes));
+        expect(returnedCaseTypes).toEqual(expectedCaseTypes);
       });
     });
 
     describe('when filtering by a list of case type ids', () => {
       beforeEach(() => {
-        expectedCaseTypes = _.sample(allCaseTypes, 2);
+        expectedCaseTypes = _.chain(allCaseTypes)
+          .filter({ is_active: '1' })
+          .sample(2)
+          .value();
         const expectedCaseTypeIds = _.map(expectedCaseTypes, 'id');
 
         returnedCaseTypes = CaseTypeFilterer.filter({
@@ -66,8 +81,7 @@
       });
 
       it('returns a list of case types belonging to the case type category', () => {
-        expect(returnedCaseTypes)
-          .toEqual(jasmine.arrayWithExactContents(expectedCaseTypes));
+        expect(returnedCaseTypes).toEqual(expectedCaseTypes);
       });
     });
 
@@ -92,8 +106,55 @@
         });
 
         it('returns a list of case types filtered by multiple parameters', () => {
-          expect(returnedCaseTypes)
-            .toEqual(jasmine.arrayWithExactContents(expectedCaseTypes));
+          expect(returnedCaseTypes).toEqual(expectedCaseTypes);
+        });
+      });
+    });
+
+    describe('active and disabled case types', () => {
+      describe('when filtering without specifying the case type active field', () => {
+        beforeEach(() => {
+          expectedCaseTypes = _.filter(allCaseTypes, {
+            is_active: '1'
+          });
+
+          returnedCaseTypes = CaseTypeFilterer.filter({});
+        });
+
+        it('returns all active case types', () => {
+          expect(returnedCaseTypes).toEqual(expectedCaseTypes);
+        });
+      });
+
+      describe('when filtering for active case types', () => {
+        beforeEach(() => {
+          expectedCaseTypes = _.filter(allCaseTypes, {
+            is_active: '1'
+          });
+
+          returnedCaseTypes = CaseTypeFilterer.filter({
+            is_active: '1'
+          });
+        });
+
+        it('returns all active case types', () => {
+          expect(returnedCaseTypes).toEqual(expectedCaseTypes);
+        });
+      });
+
+      describe('when filtering for disabled case types', () => {
+        beforeEach(() => {
+          expectedCaseTypes = _.filter(allCaseTypes, {
+            is_active: '0'
+          });
+
+          returnedCaseTypes = CaseTypeFilterer.filter({
+            is_active: '0'
+          });
+        });
+
+        it('returns disabled case types only', () => {
+          expect(returnedCaseTypes).toEqual(expectedCaseTypes);
         });
       });
     });
