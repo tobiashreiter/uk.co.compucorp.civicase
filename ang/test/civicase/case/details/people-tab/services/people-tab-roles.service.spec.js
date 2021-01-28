@@ -102,13 +102,11 @@
             description: `Case Manager. ${caseTypeRole.name}`,
             desc: caseRelation.description,
             display_name: caseManager.display_name,
-            end_date: caseRelation.end_date,
             email: caseManager.email,
             is_active: caseRelation.is_active,
             phone: caseManager.phone,
             relationship_type_id: caseRelation.relationship_type_id,
             role: caseTypeRole.name,
-            start_date: caseRelation.start_date,
             relationship: jasmine.objectContaining(caseRelation),
             previousValues: {
               end_date: caseRelation.end_date,

@@ -157,9 +157,10 @@
         </td>
         <td class="civicase__people-tab__table-column">
           <input
-            civicase-inline-datepicker
-            civicase-send-to-api-on-change
             class="form-control"
+            civicase-inline-datepicker
+            data-max-date="{{role.relationship.end_date}}"
+            civicase-send-to-api-on-change
             data-api-data="roleDatesUpdater.getApiCallsForStartDate(role, item.id)"
             data-on-api-data-sent="roleDatesUpdater.updatePreviousValue(role, 'start_date')"
             name="role_start_date"
@@ -171,9 +172,10 @@
         </td>
         <td class="civicase__people-tab__table-column">
           <input
-            civicase-inline-datepicker
-            civicase-send-to-api-on-change
             class="form-control"
+            civicase-inline-datepicker
+            data-min-date="{{role.relationship.start_date}}"
+            civicase-send-to-api-on-change
             data-api-data="roleDatesUpdater.getApiCallsForEndDate(role, item.id)"
             data-on-api-data-sent="roleDatesUpdater.updatePreviousValue(role, 'end_date')"
             name="role_end_date"

@@ -45,8 +45,16 @@ class CRM_Civicase_Service_CaseRoleCreationPostProcess extends CRM_Civicase_Serv
     }
 
     if (!empty($existingRelationship)) {
-      $this->setRelationshipsInactive(array_column($existingRelationship, 'id'), $requestParams['params']);
+      $endDate = !empty($requestParams['params']['start_date'])
+        ? $requestParams['params']['start_date']
+        : date('Y-m-d');
+
+      $this->setRelationshipsInactive(
+        array_column($existingRelationship, 'id'),
+        $endDate
+      );
     }
+
     $activitySubject = $this->getActivitySubjectOnCreate($currentRelContactName, $relTypeDetails, $previousRelContactName);
     $this->createCaseActivity($requestParams['params']['case_id'], 'Assign Case Role', $activitySubject);
   }
@@ -152,29 +160,21 @@ class CRM_Civicase_Service_CaseRoleCreationPostProcess extends CRM_Civicase_Serv
   }
 
   /**
-   * Set the relationship Id's inactive and end date to be today.
+   * Set the relationship Id's inactive using the given end date.
    *
    * @param array $relIds
    *   Relationship Ids.
-   * @param array $params
-   *   API request parameters.
+   * @param string $endDate
+   *   End date to use when setting the relationships as innactive.
    */
-  private function setRelationshipsInactive(array $relIds, array $params) {
-    $endDate = empty($params['end_date']) ? new DateTime() : new DateTime($params['end_date']);
-    $today = new DateTime();
-    $isEndDateSameAsToday = $endDate->format('Y-m-d') === $today->format('Y-m-d');
-    $relationshipActiveFields = $isEndDateSameAsToday
-      ? ['is_active' => 0]
-      : ['end_date' => $params['end_date']];
-
+  private function setRelationshipsInactive(array $relIds, string $endDate) {
     foreach ($relIds as $relId) {
-      civicrm_api3('Relationship', 'create', array_merge(
-        $relationshipActiveFields,
-        [
-          'id' => $relId,
-          'skip_post_processing' => 1,
-        ]
-      ));
+      civicrm_api3('Relationship', 'create', [
+        'id' => $relId,
+        'is_active' => 0,
+        'end_date' => $endDate,
+        'skip_post_processing' => 1,
+      ]);
     }
   }
 
