@@ -256,7 +256,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
    */
   private function addCurrentUserTokens(array $currentUserTokens, array &$newTokenTree) {
     $newTokenTree[self::CURRENT_USER_TOKEN_TEXT] = [
-      'id' => self::CURRENT_USER_TOKEN_TEXT,
+      'id' => str_replace(" ", "", self::CURRENT_USER_TOKEN_TEXT),
       'text' => self::CURRENT_USER_TOKEN_TEXT,
       'children' => [],
     ];
