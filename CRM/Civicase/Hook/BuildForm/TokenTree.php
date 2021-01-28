@@ -160,7 +160,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
         $contactRoleCount++;
         $tokenName = 'Contact Role ' . $contactRoleCount . ' "' . trim($roleName) . '"';
         $contactRoleTokens[$tokenName] = [
-          'id' => str_replace(" ", "", $tokenName) . uniqid(),
+          'id' => $this->clean($tokenName) . uniqid(),
           'text' => $tokenName,
           'children' => [],
         ];
@@ -256,7 +256,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
    */
   private function addCurrentUserTokens(array $currentUserTokens, array &$newTokenTree) {
     $newTokenTree[self::CURRENT_USER_TOKEN_TEXT] = [
-      'id' => str_replace(" ", "", self::CURRENT_USER_TOKEN_TEXT),
+      'id' => $this->clean(self::CURRENT_USER_TOKEN_TEXT),
       'text' => self::CURRENT_USER_TOKEN_TEXT,
       'children' => [],
     ];
@@ -333,7 +333,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
       }
       else {
         $newTokenTree[$label]['children'][1]['children'][$customFieldLabel] = [
-          'id' => str_replace(" ", "", $customFieldLabel) . uniqid(),
+          'id' => $this->clean($customFieldLabel) . uniqid(),
           'text' => $customFieldLabel,
           'children' => [$token],
         ];
@@ -346,7 +346,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
         'children' => [
           $customFieldLabel =>
             [
-              'id' => str_replace(" ", "", $customFieldLabel) . uniqid(),
+              'id' => $this->clean($customFieldLabel) . uniqid(),
               'text' => $customFieldLabel,
               'children' => [$token],
             ],
@@ -372,6 +372,21 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
         $formName,
         [CRM_Contact_Form_Task_Email::class, CRM_Contact_Form_Task_PDF::class]
       );
+  }
+
+  /**
+   * Removes special characters from a string.
+   *
+   * @param string $string
+   *   String from which special characters should be removed.
+   *
+   * @return string
+   *   Formatted string.
+   */
+  private function clean($string) {
+    $string = str_replace(' ', '-', $string);
+
+    return preg_replace('/[^A-Za-z0-9\-]/', '', $string);
   }
 
 }
