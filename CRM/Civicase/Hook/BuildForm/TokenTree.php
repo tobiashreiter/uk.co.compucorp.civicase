@@ -160,7 +160,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
         $contactRoleCount++;
         $tokenName = 'Contact Role ' . $contactRoleCount . ' "' . trim($roleName) . '"';
         $contactRoleTokens[$tokenName] = [
-          'id' => str_replace(" ", "", $tokenName),
+          'id' => str_replace(" ", "", $tokenName) . uniqid(),
           'text' => $tokenName,
           'children' => [],
         ];
@@ -171,7 +171,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
       else {
         if (empty($contactRoleTokens[$tokenName]['children'][0])) {
           $contactRoleTokens[$tokenName]['children'][0] = [
-            'id' => 'CoreFields',
+            'id' => 'CoreFields' . uniqid(),
             'text' => 'Core Fields',
             'children' => [$token],
           ];
@@ -210,7 +210,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
       'text' => self::CASE_TOKEN_TEXT,
       'children' => [
         [
-          'id' => 'CoreFields',
+          'id' => 'CoreFields' . uniqid(),
           'text' => 'Core Fields',
           'children' => $caseTokens,
         ],
@@ -233,7 +233,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
         'text' => self::CLIENT_TOKEN_TEXT,
         'children' => [
           [
-            'id' => 'CoreFields',
+            'id' => 'CoreFields' . uniqid(),
             'text' => 'Core Fields',
             'children' => $clientTokens,
           ],
@@ -256,7 +256,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
    */
   private function addCurrentUserTokens(array $currentUserTokens, array &$newTokenTree) {
     $newTokenTree[self::CURRENT_USER_TOKEN_TEXT] = [
-      'id' => str_replace(" ", "", self::CURRENT_USER_TOKEN_TEXT),
+      'id' => self::CURRENT_USER_TOKEN_TEXT,
       'text' => self::CURRENT_USER_TOKEN_TEXT,
       'children' => [],
     ];
@@ -267,7 +267,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
       else {
         if (empty($newTokenTree[self::CURRENT_USER_TOKEN_TEXT]['children'][0])) {
           $newTokenTree[self::CURRENT_USER_TOKEN_TEXT]['children'][0] = [
-            'id' => 'CoreFields',
+            'id' => 'CoreFields' . uniqid(),
             'text' => 'Core Fields',
             'children' => [$token],
           ];
@@ -333,7 +333,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
       }
       else {
         $newTokenTree[$label]['children'][1]['children'][$customFieldLabel] = [
-          'id' => str_replace(" ", "", $customFieldLabel),
+          'id' => str_replace(" ", "", $customFieldLabel) . uniqid(),
           'text' => $customFieldLabel,
           'children' => [$token],
         ];
@@ -341,12 +341,12 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
     }
     else {
       $newTokenTree[$label]['children'][1] = [
-        'id' => 'CustomFields',
+        'id' => 'CustomFields' . uniqid(),
         'text' => 'Custom Fields',
         'children' => [
           $customFieldLabel =>
             [
-              'id' => str_replace(" ", "", $customFieldLabel),
+              'id' => str_replace(" ", "", $customFieldLabel) . uniqid(),
               'text' => $customFieldLabel,
               'children' => [$token],
             ],
