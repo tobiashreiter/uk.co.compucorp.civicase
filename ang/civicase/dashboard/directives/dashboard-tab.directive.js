@@ -94,7 +94,7 @@
         cardRefresh: activityCardRefreshActivities
       },
       handlers: {
-        range: _.curry(rangeHandler)('activity_date_time')('YYYY-MM-DD HH:mm:ss')(false),
+        range: _.curry(rangeHandler)('activity_date_time')('YYYY-MM-DD HH:mm:ss'),
         results: _.curry(resultsHandler)(formatActivity)('case_id.contacts')
       }
     };
@@ -113,7 +113,7 @@
         cardRefresh: activityCardRefreshMilestones
       },
       handlers: {
-        range: _.curry(rangeHandler)('activity_date_time')('YYYY-MM-DD HH:mm:ss')(true),
+        range: _.curry(rangeHandler)('activity_date_time')('YYYY-MM-DD HH:mm:ss'),
         results: _.curry(resultsHandler)(formatActivity)('case_id.contacts')
       }
     };
@@ -131,7 +131,7 @@
         params: getQueryParams('cases')
       },
       handlers: {
-        range: _.curry(rangeHandler)('start_date')('YYYY-MM-DD')(false),
+        range: _.curry(rangeHandler)('start_date')('YYYY-MM-DD'),
         results: _.curry(resultsHandler)(formatCase)('contacts')
       }
     };
@@ -317,14 +317,12 @@
      * @param {string} property the property where the information about the
      *   date is stored
      * @param {string} format the date format
-     * @param {boolean} useNowAsStart whether the starting point should be the
-     *   current datetime
      * @param {string} selectedRange the currently selected period range
      * @param {object} queryParams params
      */
-    function rangeHandler (property, format, useNowAsStart, selectedRange, queryParams) {
+    function rangeHandler (property, format, selectedRange, queryParams) {
       var now = moment();
-      var start = (useNowAsStart ? now : now.startOf(selectedRange)).format(format);
+      var start = now.startOf(selectedRange).format(format);
       var end = now.endOf(selectedRange).format(format);
 
       queryParams[property] = { BETWEEN: [start, end] };
