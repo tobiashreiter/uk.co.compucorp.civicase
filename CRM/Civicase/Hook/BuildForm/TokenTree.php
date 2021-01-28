@@ -38,7 +38,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
     if (!$this->shouldRun($formName)) {
       return;
     }
-    $this->fetchAllRelevantCustomFields();
+    $this->setAllRelevantCustomFields();
     $this->attachNewTokenTreeToForm($form);
   }
 
@@ -52,16 +52,19 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
     $tokens = $form->get_template_vars('tokens');
     $newTokenTree = [];
     foreach ($tokens as $key => $tokenList) {
-      if (!empty($tokenList['text']) && $tokenList['text'] === self::CASE_ROLE_TOKEN_TEXT) {
+      if (empty($tokenList['text'])) {
+        continue;
+      }
+      if ($tokenList['text'] === self::CASE_ROLE_TOKEN_TEXT) {
         $this->addCaseRoleTokens($tokenList['children'], $newTokenTree);
       }
-      elseif (!empty($tokenList['text']) && $tokenList['text'] === self::CURRENT_USER_TOKEN_TEXT) {
+      elseif ($tokenList['text'] === self::CURRENT_USER_TOKEN_TEXT) {
         $this->addCurrentUserTokens($tokenList['children'], $newTokenTree);
       }
-      elseif (!empty($tokenList['text']) && $tokenList['text'] === self::CASE_TOKEN_TEXT) {
+      elseif ($tokenList['text'] === self::CASE_TOKEN_TEXT) {
         $this->addCaseTokens($tokenList['children'], $newTokenTree);
       }
-      elseif (!empty($tokenList['text']) && in_array(
+      elseif (in_array(
         $tokenList['text'],
         [self::CONTACT_TOKEN_TEXT, self::ADDRESS_TOKEN_TEXT]
         )) {
@@ -72,6 +75,39 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
       }
     }
     $this->reFormatCustomTokens($newTokenTree);
+    $this->addTokensToJs($newTokenTree);
+  }
+
+  /**
+   * Reformat the custom fields.
+   *
+   * @param array $newTokenTree
+   *   Restructured token tree.
+   */
+  private function reFormatCustomTokens(array &$newTokenTree) {
+    $tokenTexts = [
+      self::CURRENT_USER_TOKEN_TEXT,
+      self::CLIENT_TOKEN_TEXT,
+      self::CASE_TOKEN_TEXT,
+    ];
+
+    foreach ($tokenTexts as $tokenText) {
+      for ($i = 0; $i < 2; $i++) {
+        if (!empty($newTokenTree[$tokenText]['children'][$i]['children'])) {
+          $newTokenTree[$tokenText]['children'][$i]['children']
+            = array_values($newTokenTree[$tokenText]['children'][$i]['children']);
+        }
+      }
+    }
+  }
+
+  /**
+   * Add new token tree to the js.
+   *
+   * @param array $newTokenTree
+   *   Restructured token tree.
+   */
+  private function addTokensToJs(array &$newTokenTree) {
     CRM_Core_Resources::singleton()
       ->addScriptFile('uk.co.compucorp.civicase', 'js/token-tree.js')
       ->addSetting([
@@ -82,42 +118,9 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
   }
 
   /**
-   * Reformat the custom fields.
-   *
-   * @param array $newTokenTree
-   *   Restructured token tree.
-   */
-  private function reFormatCustomTokens(array &$newTokenTree) {
-    if (!empty($newTokenTree[self::CURRENT_USER_TOKEN_TEXT]['children'][0]['children'])) {
-      $newTokenTree[self::CURRENT_USER_TOKEN_TEXT]['children'][0]['children']
-        = array_values($newTokenTree[self::CURRENT_USER_TOKEN_TEXT]['children'][0]['children']);
-    }
-    if (!empty($newTokenTree[self::CURRENT_USER_TOKEN_TEXT]['children'][1]['children'])) {
-      $newTokenTree[self::CURRENT_USER_TOKEN_TEXT]['children'][1]['children']
-        = array_values($newTokenTree[self::CURRENT_USER_TOKEN_TEXT]['children'][1]['children']);
-    }
-    if (!empty($newTokenTree[self::CLIENT_TOKEN_TEXT]['children'][0]['children'])) {
-      $newTokenTree[self::CLIENT_TOKEN_TEXT]['children'][0]['children']
-        = array_values($newTokenTree[self::CLIENT_TOKEN_TEXT]['children'][0]['children']);
-    }
-    if (!empty($newTokenTree[self::CLIENT_TOKEN_TEXT]['children'][1]['children'])) {
-      $newTokenTree[self::CLIENT_TOKEN_TEXT]['children'][1]['children']
-        = array_values($newTokenTree[self::CLIENT_TOKEN_TEXT]['children'][1]['children']);
-    }
-    if (!empty($newTokenTree[self::CASE_TOKEN_TEXT]['children'][0]['children'])) {
-      $newTokenTree[self::CASE_TOKEN_TEXT]['children'][0]['children']
-        = array_values($newTokenTree[self::CASE_TOKEN_TEXT]['children'][0]['children']);
-    }
-    if (!empty($newTokenTree[self::CASE_TOKEN_TEXT]['children'][1]['children'])) {
-      $newTokenTree[self::CASE_TOKEN_TEXT]['children'][1]['children']
-        = array_values($newTokenTree[self::CASE_TOKEN_TEXT]['children'][1]['children']);
-    }
-  }
-
-  /**
    * Fetch all contact and case related custom fields.
    */
-  private function fetchAllRelevantCustomFields() {
+  private function setAllRelevantCustomFields() {
     $customFields = [];
     try {
       $customFields = civicrm_api3('CustomField', 'get', [
@@ -159,29 +162,32 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
       if (empty($contactRoleTokens[$tokenName])) {
         $contactRoleCount++;
         $tokenName = 'Contact Role ' . $contactRoleCount . ' "' . trim($roleName) . '"';
-        $contactRoleTokens[$tokenName] = [
-          'id' => $this->clean($tokenName) . uniqid(),
-          'text' => $tokenName,
-          'children' => [],
-        ];
+        $this->initializeTokenType($contactRoleTokens, $tokenName);
       }
       if (strpos($token['id'], '_custom_') !== FALSE) {
         $this->addCustomTokens($contactRoleTokens, $tokenName, $token);
       }
       else {
         if (empty($contactRoleTokens[$tokenName]['children'][0])) {
-          $contactRoleTokens[$tokenName]['children'][0] = [
-            'id' => 'CoreFields' . uniqid(),
-            'text' => 'Core Fields',
-            'children' => [$token],
-          ];
+          $this->initializeTokenTypeCoreField($contactRoleTokens, $tokenName, $token);
         }
         else {
           $contactRoleTokens[$tokenName]['children'][0]['children'][] = $token;
         }
       }
     }
+    $this->processAndAddCaseRoleTokens($contactRoleTokens, $newTokenTree);
+  }
 
+  /**
+   * Add case tokens to the new token tree.
+   *
+   * @param array $contactRoleTokens
+   *   Array of case contact role tokens.
+   * @param array $newTokenTree
+   *   Restructured token tree.
+   */
+  private function processAndAddCaseRoleTokens(array $contactRoleTokens, array &$newTokenTree) {
     foreach ($contactRoleTokens as $key => $caseRoleToken) {
       $caseRoleToken['children'] = array_values($caseRoleToken['children']);
       if (!empty($caseRoleToken['children'][1]['children'])) {
@@ -255,22 +261,14 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
    *   Restructured token tree.
    */
   private function addCurrentUserTokens(array $currentUserTokens, array &$newTokenTree) {
-    $newTokenTree[self::CURRENT_USER_TOKEN_TEXT] = [
-      'id' => $this->clean(self::CURRENT_USER_TOKEN_TEXT),
-      'text' => self::CURRENT_USER_TOKEN_TEXT,
-      'children' => [],
-    ];
+    $this->initializeTokenType($newTokenTree, self::CURRENT_USER_TOKEN_TEXT);
     foreach ($currentUserTokens as $key => $token) {
       if (strpos($token['id'], '_custom_') !== FALSE) {
         $this->addCustomTokens($newTokenTree, self::CURRENT_USER_TOKEN_TEXT, $token);
       }
       else {
         if (empty($newTokenTree[self::CURRENT_USER_TOKEN_TEXT]['children'][0])) {
-          $newTokenTree[self::CURRENT_USER_TOKEN_TEXT]['children'][0] = [
-            'id' => 'CoreFields' . uniqid(),
-            'text' => 'Core Fields',
-            'children' => [$token],
-          ];
+          $this->initializeTokenTypeCoreField($newTokenTree, self::CURRENT_USER_TOKEN_TEXT, $token);
         }
         else {
           $newTokenTree[self::CURRENT_USER_TOKEN_TEXT]['children'][0]['children'][] = $token;
@@ -366,7 +364,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
    * @return bool
    *   Determines if the hook will run.
    */
-  public function shouldRun($formName) {
+  private function shouldRun($formName) {
     return CRM_Utils_Request::retrieve('caseid', 'Integer') &&
       in_array(
         $formName,
@@ -387,6 +385,40 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
     $string = str_replace(' ', '-', $string);
 
     return preg_replace('/[^A-Za-z0-9\-]/', '', $string);
+  }
+
+  /**
+   * Initialize a sub token tree.
+   *
+   * @param array $newTokenTree
+   *   Restructured token tree.
+   * @param string $tokenName
+   *   Token name.
+   */
+  private function initializeTokenType(array &$newTokenTree, $tokenName) {
+    $newTokenTree[$tokenName] = [
+      'id' => $this->clean($tokenName) . uniqid(),
+      'text' => $tokenName,
+      'children' => [],
+    ];
+  }
+
+  /**
+   * Initialize a core field token tree and assign the first token.
+   *
+   * @param array $newTokenTree
+   *   Restructured token tree.
+   * @param string $tokenName
+   *   Token name.
+   * @param array $token
+   *   Token to be added.
+   */
+  private function initializeTokenTypeCoreField(array &$newTokenTree, $tokenName, array $token) {
+    $newTokenTree[$tokenName]['children'][0] = [
+      'id' => 'CoreFields' . uniqid(),
+      'text' => 'Core Fields',
+      'children' => [$token],
+    ];
   }
 
 }
