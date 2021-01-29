@@ -19,6 +19,10 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
 
   const ADDRESS_TOKEN_TEXT = 'Address';
 
+  const CUSTOM_FIELDS_TEXT = 'Custom Fields';
+
+  const CORE_FIELDS_TEXT = 'Core Fields';
+
   /**
    * All case and contact related custom fields.
    *
@@ -97,6 +101,12 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
           $newTokenTree[$tokenText]['children'][$i]['children']
             = array_values($newTokenTree[$tokenText]['children'][$i]['children']);
         }
+        if ($newTokenTree[$tokenText]['children'][$i]['text'] === self::CUSTOM_FIELDS_TEXT) {
+          usort(
+            $newTokenTree[$tokenText]['children'][$i]['children'],
+            [$this, 'sortCustomFields']
+          );
+        }
       }
     }
   }
@@ -127,7 +137,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
         'custom_group_id.extends' => [
           'IN' => ['Contact', 'Individual', 'Household', 'Organization', 'Case'],
         ],
-        'options' => ['limit' => 0],
+        'options' => ['limit' => 0, 'sort' => "custom_group_id.weight ASC"],
         'sequential' => 1,
         'return' => ['id', 'custom_group_id.title'],
       ]);
@@ -182,13 +192,36 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
   /**
    * Add case tokens to the new token tree.
    *
+   * @param array $a
+   *   Array of custom fields.
+   * @param array $b
+   *   Array of custom fields.
+   *
+   * @return int
+   *   sorting direction.
+   */
+  private function sortCustomFields(array $a, array $b) {
+    $firstKey = array_search($a['text'], $this->customFields);
+    $secondKey = array_search($b['text'], $this->customFields);
+
+    return $firstKey <=> $secondKey;
+  }
+
+  /**
+   * Add case tokens to the new token tree.
+   *
    * @param array $contactRoleTokens
    *   Array of case contact role tokens.
    * @param array $newTokenTree
    *   Restructured token tree.
    */
   private function processAndAddCaseRoleTokens(array $contactRoleTokens, array &$newTokenTree) {
+    ksort($contactRoleTokens, SORT_NATURAL);
     foreach ($contactRoleTokens as $key => $caseRoleToken) {
+      usort(
+        $caseRoleToken['children'][1]['children'],
+        [$this, 'sortCustomFields']
+      );
       $caseRoleToken['children'] = array_values($caseRoleToken['children']);
       if (!empty($caseRoleToken['children'][1]['children'])) {
         $caseRoleToken['children'][1]['children']
@@ -217,7 +250,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
       'children' => [
         [
           'id' => 'CoreFields' . uniqid(),
-          'text' => 'Core Fields',
+          'text' => self::CORE_FIELDS_TEXT,
           'children' => $caseTokens,
         ],
       ],
@@ -240,7 +273,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
         'children' => [
           [
             'id' => 'CoreFields' . uniqid(),
-            'text' => 'Core Fields',
+            'text' => self::CORE_FIELDS_TEXT,
             'children' => $clientTokens,
           ],
         ],
@@ -340,7 +373,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
     else {
       $newTokenTree[$label]['children'][1] = [
         'id' => 'CustomFields' . uniqid(),
-        'text' => 'Custom Fields',
+        'text' => self::CUSTOM_FIELDS_TEXT,
         'children' => [
           $customFieldLabel =>
             [
@@ -416,7 +449,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
   private function initializeTokenTypeCoreField(array &$newTokenTree, $tokenName, array $token) {
     $newTokenTree[$tokenName]['children'][0] = [
       'id' => 'CoreFields' . uniqid(),
-      'text' => 'Core Fields',
+      'text' => self::CORE_FIELDS_TEXT,
       'children' => [$token],
     ];
   }
