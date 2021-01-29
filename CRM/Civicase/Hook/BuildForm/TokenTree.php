@@ -190,7 +190,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
   }
 
   /**
-   * Add case tokens to the new token tree.
+   * Sort custom fields.
    *
    * @param array $a
    *   Array of custom fields.
