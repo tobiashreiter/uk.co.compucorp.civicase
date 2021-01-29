@@ -10,9 +10,7 @@
         formatSelection: formatOptions,
         placeholder: 'Tokens'
       })
-      .on('select2-selecting', function (event) {
-        selectEventHandler(event);
-      });
+      .on('select2-selecting', selectEventHandler);
 
     /**
      * Select event handler
@@ -30,7 +28,7 @@
       childElement.toggle();
 
       // Toggle the collapse/expand icon
-      element.html(getDropdownElementText(event.choice, !childElement.is(':visible')));
+      element.html(getDropdownElementText(event.choice, childElement.is(':visible')));
 
       event.preventDefault();
     }
@@ -40,19 +38,19 @@
      * @returns {string} dropdown item markup
      */
     function formatOptions (item) {
-      return getDropdownElementText(item, false);
+      return getDropdownElementText(item, true);
     }
 
     /**
      * @param {object} item item
-     * @param {object} showPlusIcon if plus icon should be shown
+     * @param {object} isOpen if nested tree is shown
      * @returns {string} dropdown item markup
      */
-    function getDropdownElementText (item, showPlusIcon) {
+    function getDropdownElementText (item, isOpen) {
       var icon = '';
 
       if (item.children) {
-        if (!showPlusIcon) {
+        if (isOpen) {
           icon = '<i class="fa fa-minus-square-o" style="margin-right: 5px;"></i>';
         } else {
           icon = '<i class="fa fa-plus-square-o" style="margin-right: 5px;"></i>';
