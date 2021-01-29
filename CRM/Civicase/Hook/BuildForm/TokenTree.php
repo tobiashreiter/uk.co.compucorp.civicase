@@ -31,6 +31,13 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
   private $customFields = [];
 
   /**
+   * All case roles token name.
+   *
+   * @var array
+   */
+  private $caseRolesTokenNames = [];
+
+  /**
    * Attaches a new token tree to the form.
    *
    * @param CRM_Core_Form $form
@@ -79,7 +86,35 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
       }
     }
     $this->reFormatCustomTokens($newTokenTree);
+    $newTokenTree = $this->reOrderTokens($newTokenTree);
     $this->addTokensToJs($newTokenTree);
+  }
+
+  /**
+   * Reorder the main tokens categories array in a specified order.
+   *
+   * @param array $newTokenTree
+   *   Restructured token tree.
+   *
+   * @return array
+   *   Reordered token tree.
+   */
+  private function reOrderTokens(array $newTokenTree) {
+    $reorderedTree = [];
+    $tokenTexts = [
+      self::CASE_TOKEN_TEXT,
+      self::CLIENT_TOKEN_TEXT,
+      self::CURRENT_USER_TOKEN_TEXT,
+    ];
+    $tokenTexts = array_merge($tokenTexts, $this->caseRolesTokenNames);
+    $tokenTexts[] = self::OTHER_TOKEN_TEXT;
+    foreach ($tokenTexts as $tokenText) {
+      if (!empty($newTokenTree[$tokenText])) {
+        $reorderedTree[$tokenText] = $newTokenTree[$tokenText];
+      }
+    }
+
+    return $reorderedTree;
   }
 
   /**
@@ -168,10 +203,11 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
       }
       $roleName = explode('-', $token['text']);
       $roleName = $roleName[0];
-      $tokenName = 'Contact Role ' . $contactRoleCount . ' "' . trim($roleName) . '"';
+      $tokenName = 'Case Role ' . $contactRoleCount . ' "' . trim($roleName) . '"';
       if (empty($contactRoleTokens[$tokenName])) {
         $contactRoleCount++;
-        $tokenName = 'Contact Role ' . $contactRoleCount . ' "' . trim($roleName) . '"';
+        $tokenName = 'Case Role ' . $contactRoleCount . ' "' . trim($roleName) . '"';
+        $this->caseRolesTokenNames[] = $tokenName;
         $this->initializeTokenType($contactRoleTokens, $tokenName);
       }
       if (strpos($token['id'], '_custom_') !== FALSE) {
@@ -208,7 +244,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
   }
 
   /**
-   * Add case tokens to the new token tree.
+   * Process and add case role tokens to the new token tree.
    *
    * @param array $contactRoleTokens
    *   Array of case contact role tokens.
