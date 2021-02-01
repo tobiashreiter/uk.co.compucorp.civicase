@@ -23,15 +23,16 @@
 
     /**
      * @param {object} activity an activity object.
-     * @param {object} [optionsWithoutDefaults={action: 'add'}]
-     *   a list of options to display the form.
+     * @param {object} options a list of options to display the form.
      * @returns {string} the form URL for activities that are email drafts.
      */
-    function getActivityFormUrl (activity, optionsWithoutDefaults) {
-      var options = _.defaults({}, optionsWithoutDefaults, { action: 'add' });
+    function getActivityFormUrl (activity, options) {
+      var action = options && options.action === 'view'
+        ? 'view'
+        : 'add';
       var targetContactId = _.first(activity.target_contact_id);
       var draftFormParameters = {
-        action: options.action,
+        action: action,
         atype: activity.activity_type_id,
         cid: targetContactId,
         draft_id: activity.id,
@@ -44,7 +45,7 @@
       }
 
       return getCrmUrl(
-        'civicrm/activity/email/' + options.action,
+        'civicrm/activity/email/' + action,
         draftFormParameters
       );
     }

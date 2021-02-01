@@ -5,11 +5,13 @@
 
   /**
    * Update Activity Form service.
+   *
+   * @param {Function} getActivityFormUrl The get activity form URL service.
    */
-  function UpdateActivityForm () {
+  function UpdateActivityForm (getActivityFormUrl) {
     this.canChangeStatus = true;
     this.canHandleActivity = canHandleActivity;
-    this.getActivityFormUrl = getActivityFormUrl;
+    this.getActivityFormUrl = getUpdateActivityFormUrl;
 
     /**
      * Only handles activity forms that will be updated.
@@ -27,20 +29,8 @@
      * @param {object} activity an activity object.
      * @returns {string} the URL for the activity form that will be updated.
      */
-    function getActivityFormUrl (activity) {
-      var urlPath = 'civicrm/activity';
-      var urlParams = {
-        action: 'update',
-        id: activity.id,
-        reset: 1
-      };
-
-      if (activity.case_id) {
-        urlPath = 'civicrm/case/activity';
-        urlParams.caseid = activity.case_id;
-      }
-
-      return getCrmUrl(urlPath, urlParams);
+    function getUpdateActivityFormUrl (activity) {
+      return getActivityFormUrl(activity, { action: 'update' });
     }
   }
 })(angular, CRM.url);

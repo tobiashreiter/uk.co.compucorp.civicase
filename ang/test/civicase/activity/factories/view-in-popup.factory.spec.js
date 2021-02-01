@@ -46,21 +46,7 @@
         event.target = document.createElement('span');
       });
 
-      describe('and the activity is email type', () => {
-        beforeEach(function () {
-          activity = { type: 'Email' };
-          returnValue = viewInPopup(event, activity);
-        });
-
-        it('shows the activity in a popup in view mode', () => {
-          expect(mockGetActivityFormService).toHaveBeenCalledWith(activity, { action: 'view' });
-          expect(mockGetActivityFormUrl).toHaveBeenCalledWith(activity, { action: 'view' });
-          expect(loadCrmForm).toHaveBeenCalledWith('mock GetActivityFormUrl return value');
-          expect(returnValue).toBe('loadForm');
-        });
-      });
-
-      describe('and the activity is not email type', () => {
+      describe('and we want to update the activity', () => {
         beforeEach(function () {
           activity = { type: 'Meeting' };
           returnValue = viewInPopup(event, activity);

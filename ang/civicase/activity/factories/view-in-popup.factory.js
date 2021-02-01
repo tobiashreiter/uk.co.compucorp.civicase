@@ -12,8 +12,7 @@
      * @returns {object} jQuery object
      */
     function viewInPopup ($event, activity, options) {
-      var isEmailTypeActivity = activity.type.toLowerCase() === 'email';
-      var action = (options && options.isReadOnly) || isEmailTypeActivity
+      var action = (options && options.isReadOnly)
         ? 'view'
         : 'update';
       var formOptions = {
