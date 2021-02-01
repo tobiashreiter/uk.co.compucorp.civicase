@@ -48,9 +48,12 @@ class CRM_Civicase_Hook_Tokens_AddContactTokens {
    *   List of tokens.
    */
   public function run(array &$tokens) {
-    $fields = array_merge($this->contactFieldsService->get(), $this->contactCustomFieldsService->get());
-    foreach ($fields as $field) {
+    foreach ($this->contactFieldsService->get() as $field) {
       $tokens[self::TOKEN_KEY]['current_user.contact_' . $field] =
+        ts('Current User ' . ucwords(str_replace("_", " ", $field)));
+    }
+    foreach ($this->contactCustomFieldsService->get() as $key => $field) {
+      $tokens[self::TOKEN_KEY]['current_user.contact_' . $key] =
         ts('Current User ' . ucwords(str_replace("_", " ", $field)));
     }
   }
