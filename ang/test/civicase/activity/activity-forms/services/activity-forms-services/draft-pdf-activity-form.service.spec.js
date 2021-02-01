@@ -49,7 +49,7 @@
         activity.target_contact_id = [_.uniqueId()];
 
         activityFormUrlParams = {
-          action: 'add',
+          action: 'update',
           caseid: activity.case_id,
           cid: activity.target_contact_id[0],
           context: 'standalone',
@@ -61,6 +61,7 @@
 
       describe('when the activity is part of a case', () => {
         beforeEach(() => {
+          activityFormUrlParams.action = 'add';
           expectedActivityFormUrl = getCrmUrl('civicrm/activity/pdf/add', activityFormUrlParams);
           activityFormUrl = DraftPdfActivityForm.getActivityFormUrl(activity);
         });

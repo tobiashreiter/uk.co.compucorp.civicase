@@ -31,6 +31,10 @@
       var options = _.defaults({}, optionsWithoutDefaults, { action: 'add' });
       var targetContactId = _.first(activity.target_contact_id);
 
+      // Draft PDF cannot be opened in Update mode as it still in draft, so
+      // enforcing 'add' action
+      options.action = options.action === 'update' ? 'add' : options.action;
+
       return getCrmUrl('civicrm/activity/pdf/' + options.action, {
         action: options.action,
         caseid: activity.case_id,
