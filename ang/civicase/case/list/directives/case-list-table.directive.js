@@ -50,10 +50,10 @@
     }
   });
 
-  module.controller('CivicaseCaseListTableController', function ($q, $rootScope,
-    $route, $scope, $window, BulkActions, civicaseCrmApi, crmStatus, crmUiHelp,
-    crmThrottle, currentCaseCategory, $timeout, formatCase, ContactsCache,
-    CasesUtils, ts, ActivityCategory, ActivityType, CaseStatus) {
+  module.controller('CivicaseCaseListTableController', function ($q, $route,
+    $scope, $window, BulkActions, civicaseCrmApi, currentCaseCategory,
+    crmThrottle, formatCase, CasesUtils, ts, ActivityCategory, ActivityType,
+    CaseStatus) {
     var firstLoad = true;
     var allCases = [];
 

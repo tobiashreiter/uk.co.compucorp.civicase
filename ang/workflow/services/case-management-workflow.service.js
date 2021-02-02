@@ -37,16 +37,32 @@
      * Returns workflows list for case management
      *
      * @param {object} caseTypeCategoryName case type category name
+     * @param {object} selectedFilters filters
+     * @param {object} page page object needed for pagination
      * @returns {Array} api call parameters
      */
-    function getWorkflowsList (caseTypeCategoryName) {
-      return civicaseCrmApi('CaseType', 'get', {
-        sequential: 1,
-        case_type_category: caseTypeCategoryName,
-        options: { limit: 0 }
-      }).then(function (data) {
-        return data.values;
-      });
+    function getWorkflowsList (caseTypeCategoryName, selectedFilters, page) {
+      var apiCalls = [
+        [
+          'CaseType',
+          'get', {
+            sequential: 1,
+            case_type_category: caseTypeCategoryName,
+            options: {
+              limit: page.size,
+              offset: page.size * (page.num - 1)
+            }
+          }
+        ],
+        [
+          'CaseType',
+          'getcount', {
+            case_type_category: caseTypeCategoryName
+          }
+        ]
+      ];
+
+      return civicaseCrmApi(apiCalls);
     }
 
     /**

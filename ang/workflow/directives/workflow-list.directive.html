@@ -17,7 +17,7 @@
         </ng-include>
       </div>
       <button
-        ng-click="refreshWorkflowsList()"
+        ng-click="refreshWorkflowsList(true)"
         type="button" class="btn btn-primary pull-right">
         {{ts('Filter')}}
       </button>
@@ -75,6 +75,26 @@
                   </li>
                 </ul>
               </div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="{{tableColumns.length + 1}}">
+              <paging
+                class="pull-right"
+                ng-show="pageObj.total > 1"
+                page="pageObj.num"
+                page-size="pageObj.size"
+                total="totalCount"
+                adjacent="1"
+                dots="..."
+                show-prev-next="true"
+                show-first-last="true"
+                text-first="&laquo;"
+                text-last="&raquo;"
+                text-next="&rsaquo;"
+                text-prev="&lsaquo;"
+                paging-action="setPageTo(page)"
+              ></paging>
             </td>
           </tr>
         </tbody>

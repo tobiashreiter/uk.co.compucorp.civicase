@@ -30,19 +30,35 @@
     $scope.ts = ts;
     $scope.isLoading = false;
     $scope.workflows = [];
+    $scope.pageObj = { total: 0, size: 25, num: 1 };
+    $scope.totalCount = 0;
     $scope.actionItems = filterArrayForCurrentInstance(WorkflowListActionItems);
     $scope.tableColumns = filterArrayForCurrentInstance(WorkflowListColumns);
     $scope.filters = filterArrayForCurrentInstance(WorkflowListFilters);
     $scope.selectedFilters = {};
     $scope.refreshWorkflowsList = refreshWorkflowsList;
     $scope.redirectToWorkflowCreationScreen = redirectToWorkflowCreationScreen;
+    $scope.setPageTo = setPageTo;
 
     (function init () {
       applyDefaultValueToFilters();
       refreshWorkflowsList();
 
-      $scope.$on('workflow::list::refresh', refreshWorkflowsList);
+      $scope.$on('workflow::list::refresh', function () {
+        refreshWorkflowsList(true);
+      });
     }());
+
+    /**
+     * Set Page Number
+     *
+     * @param {number} page new page number
+     */
+    function setPageTo (page) {
+      $scope.pageObj.num = page;
+
+      refreshWorkflowsList();
+    }
 
     /**
      * Apply default value to filters
@@ -82,8 +98,14 @@
 
     /**
      * Refresh workflows list
+     *
+     * @param {boolean} resetPagination reset pagination
      */
-    function refreshWorkflowsList () {
+    function refreshWorkflowsList (resetPagination) {
+      if (resetPagination) {
+        $scope.pageObj = { total: 0, size: 25, num: 1 };
+      }
+
       $scope.isLoading = true;
 
       getWorkflows($scope.caseTypeCategory)
@@ -106,7 +128,13 @@
       var instanceName = CaseTypeCategory.getCaseTypeCategoryInstance(categoryObject.value).name;
 
       return getServiceForInstance(instanceName)
-        .getWorkflowsList($scope.caseTypeCategory, $scope.selectedFilters);
+        .getWorkflowsList($scope.caseTypeCategory, $scope.selectedFilters, $scope.pageObj)
+        .then(function (result) {
+          $scope.totalCount = result[1];
+          $scope.pageObj.total = Math.ceil(result[1] / $scope.pageObj.size);
+
+          return result[0].values;
+        });
     }
 
     /**
