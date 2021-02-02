@@ -30,9 +30,10 @@
     describe('basic tests', () => {
       beforeEach(() => {
         injectModulesAndDependencies();
-        CaseManagementWorkflow.getWorkflowsList.and.returnValue($q.resolve(
-          CaseTypesMockData.getSequential()
-        ));
+        CaseManagementWorkflow.getWorkflowsList.and.returnValue($q.resolve([
+          { values: CaseTypesMockData.getSequential() },
+          CaseTypesMockData.getSequential().length
+        ]));
         initController();
       });
 
@@ -45,7 +46,12 @@
           $scope.$digest();
         });
 
-        it('shows the results after case types is loaded', () => {
+        it('displays the first 25 records', () => {
+          expect($scope.pageObj).toEqual({ total: 1, size: 25, num: 1 });
+          expect($scope.totalCount).toBe(CaseTypesMockData.getSequential().length);
+        });
+
+        it('shows the results after case types are loaded', () => {
           expect($scope.isLoading).toBe(false);
         });
 
@@ -84,10 +90,12 @@
     describe('when list refresh event is fired', () => {
       beforeEach(() => {
         injectModulesAndDependencies();
-        CaseManagementWorkflow.getWorkflowsList.and.returnValue($q.resolve(
-          CaseTypesMockData.getSequential()
-        ));
+        CaseManagementWorkflow.getWorkflowsList.and.returnValue($q.resolve([
+          { values: CaseTypesMockData.getSequential() },
+          CaseTypesMockData.getSequential().length
+        ]));
         initController();
+        $scope.pageObj = { total: 2, size: 25, num: 2 };
         $scope.$digest();
         $scope.workflows = [];
         $rootScope.$broadcast('workflow::list::refresh');
@@ -100,6 +108,10 @@
 
       it('refreshes the workflows list', () => {
         expect($scope.workflows).toEqual(CaseTypesMockData.getSequential());
+      });
+
+      it('resets the pagination', () => {
+        expect($scope.pageObj).toEqual({ total: 1, size: 25, num: 1 });
       });
     });
 

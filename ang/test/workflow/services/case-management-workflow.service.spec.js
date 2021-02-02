@@ -24,28 +24,98 @@
     describe('when getting list of workflow', () => {
       var results;
 
-      beforeEach(() => {
-        civicaseCrmApiMock.and.returnValue($q.resolve({
-          values: CaseTypesMockData.getSequential()
-        }));
+      describe('when page in page 1', () => {
+        beforeEach(() => {
+          civicaseCrmApiMock.and.returnValue($q.resolve([
+            { values: CaseTypesMockData.getSequential() },
+            CaseTypesMockData.getSequential().length
+          ]));
 
-        CaseManagementWorkflow.getWorkflowsList('some_case_type_category')
-          .then(function (data) {
-            results = data;
-          });
-        $rootScope.$digest();
-      });
+          CaseManagementWorkflow.getWorkflowsList('some_case_type_category', {}, {
+            size: 25,
+            num: 1
+          })
+            .then(function (data) {
+              results = data;
+            });
+          $rootScope.$digest();
+        });
 
-      it('fetches the workflows for the case management instance', () => {
-        expect(civicaseCrmApiMock).toHaveBeenCalledWith('CaseType', 'get', {
-          sequential: 1,
-          case_type_category: 'some_case_type_category',
-          options: { limit: 0 }
+        it('fetches the first 25 workflows for the case management instance', () => {
+          expect(civicaseCrmApiMock).toHaveBeenCalledWith([
+            [
+              'CaseType',
+              'get', {
+                sequential: 1,
+                case_type_category: 'some_case_type_category',
+                options: {
+                  limit: 25,
+                  offset: 0
+                }
+              }
+            ],
+            [
+              'CaseType',
+              'getcount', {
+                case_type_category: 'some_case_type_category'
+              }
+            ]
+          ]);
+        });
+
+        it('displays the list of fetched workflows and pagination', () => {
+          expect(results).toEqual([
+            { values: CaseTypesMockData.getSequential() },
+            CaseTypesMockData.getSequential().length
+          ]);
         });
       });
 
-      it('displays the list of fetched workflows', () => {
-        expect(results).toEqual(CaseTypesMockData.getSequential());
+      describe('when page in page 2', () => {
+        beforeEach(() => {
+          civicaseCrmApiMock.and.returnValue($q.resolve([
+            { values: CaseTypesMockData.getSequential() },
+            CaseTypesMockData.getSequential().length
+          ]));
+
+          CaseManagementWorkflow.getWorkflowsList('some_case_type_category', {}, {
+            size: 25,
+            num: 2
+          })
+            .then(function (data) {
+              results = data;
+            });
+          $rootScope.$digest();
+        });
+
+        it('fetches the workflows from 26th to 50th for the case management instance', () => {
+          expect(civicaseCrmApiMock).toHaveBeenCalledWith([
+            [
+              'CaseType',
+              'get', {
+                sequential: 1,
+                case_type_category: 'some_case_type_category',
+                options: {
+                  limit: 25,
+                  offset: 25
+                }
+              }
+            ],
+            [
+              'CaseType',
+              'getcount', {
+                case_type_category: 'some_case_type_category'
+              }
+            ]
+          ]);
+        });
+
+        it('displays the list of fetched workflows and pagination', () => {
+          expect(results).toEqual([
+            { values: CaseTypesMockData.getSequential() },
+            CaseTypesMockData.getSequential().length
+          ]);
+        });
       });
     });
 
