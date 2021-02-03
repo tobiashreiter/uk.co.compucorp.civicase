@@ -3,6 +3,11 @@
 
   module.directive('civicaseDashboardTab', function () {
     return {
+      scope: {
+        currentCaseCategory: '=',
+        activityFilters: '=',
+        filters: '='
+      },
       restrict: 'E',
       controller: 'dashboardTabController',
       templateUrl: '~/civicase/dashboard/directives/dashboard-tab.directive.html'
@@ -16,7 +21,6 @@
    *
    * @param {object} $location location service
    * @param {object} $rootScope rootScope object
-   * @param {object} $route route object
    * @param {object} $sce sce service
    * @param {object} $scope scope object
    * @param {object} CaseType Case Type service
@@ -27,8 +31,9 @@
    * @param {object} ts ts
    * @param {object} ActivityStatusType activity status type service
    */
-  function dashboardTabController ($location, $rootScope, $route, $sce, $scope,
-    CaseType, ContactsCache, civicaseCrmApi, formatCase, formatActivity, ts, ActivityStatusType) {
+  function dashboardTabController ($location, $rootScope, $sce, $scope,
+    CaseType, ContactsCache, civicaseCrmApi, formatCase, formatActivity, ts,
+    ActivityStatusType) {
     var ACTIVITIES_QUERY_PARAMS_DEFAULTS = {
       contact_id: 'user_contact_id',
       is_current_revision: 1,
