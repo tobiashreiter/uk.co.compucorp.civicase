@@ -67,6 +67,7 @@
     $scope.getItemsForCaseType = CaseType.getItemsForCaseType;
     $scope.toggleBreakdownVisibility = toggleBreakdownVisibility;
     $scope.toggleStatusVisibility = toggleStatusVisibility;
+    $scope.setPageTo = setPageTo;
 
     (function init () {
       $scope.$watch('caseFilter', caseFilterWatcher, true);
@@ -92,7 +93,7 @@
     function caseFilterWatcher (caseFilters) {
       var caseStatusNames;
 
-      getCaseTypes(caseFilters)
+      getCaseTypes()
         .then(function () {
           caseStatusNames = getCaseStatusNamesBelongingToCaseTypes($scope.caseTypes);
           $scope.caseStatuses = getSortedCaseStatusesByName(caseStatusNames);
@@ -195,6 +196,17 @@
       civicaseCrmApi(apiCalls).then(function (response) {
         $scope.summaryData = response[0].values;
       });
+    }
+
+    /**
+     * Set Page Number
+     *
+     * @param {number} page new page number
+     */
+    function setPageTo (page) {
+      $scope.pageObj.num = page;
+
+      getCaseTypes();
     }
 
     /**

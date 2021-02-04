@@ -122,7 +122,6 @@
      * Initialise watchers
      */
     function initWatchers () {
-      // $scope.$on('civicase::dashboard-filters::updated', updateFilterParams);
       $scope.$watch('filters.caseRelationshipType', caseRelationshipTypeWatcher);
     }
 
