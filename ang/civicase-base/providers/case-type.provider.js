@@ -52,7 +52,6 @@
       function getAllRolesByCategory (caseTypeCategoryID) {
         var allCaseTypesForGivenCategory = getByCategory(caseTypeCategoryID);
 
-        // console.log(allCaseTypesForGivenCategory);
         return _.chain(allCaseTypesForGivenCategory)
           .map('definition')
           .map('caseRoles')

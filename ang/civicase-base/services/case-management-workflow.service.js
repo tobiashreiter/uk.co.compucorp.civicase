@@ -14,6 +14,7 @@
     this.createDuplicate = createDuplicate;
     this.getEditWorkflowURL = getEditWorkflowURL;
     this.getWorkflowsList = getWorkflowsList;
+    this.getFormattedWorkflowsList = getWorkflowsList;
     this.redirectToWorkflowCreationScreen = redirectToWorkflowCreationScreen;
 
     /**

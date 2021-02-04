@@ -30,7 +30,7 @@
     describe('basic tests', () => {
       beforeEach(() => {
         injectModulesAndDependencies();
-        CaseManagementWorkflow.getWorkflowsList.and.returnValue($q.resolve([
+        CaseManagementWorkflow.getFormattedWorkflowsList.and.returnValue($q.resolve([
           { values: CaseTypesMockData.getSequential() },
           CaseTypesMockData.getSequential().length
         ]));
@@ -90,7 +90,7 @@
     describe('when list refresh event is fired', () => {
       beforeEach(() => {
         injectModulesAndDependencies();
-        CaseManagementWorkflow.getWorkflowsList.and.returnValue($q.resolve([
+        CaseManagementWorkflow.getFormattedWorkflowsList.and.returnValue($q.resolve([
           { values: CaseTypesMockData.getSequential() },
           CaseTypesMockData.getSequential().length
         ]));
@@ -103,7 +103,7 @@
       });
 
       it('fetches the case types for the current case type category', () => {
-        expect(CaseManagementWorkflow.getWorkflowsList).toHaveBeenCalled();
+        expect(CaseManagementWorkflow.getFormattedWorkflowsList).toHaveBeenCalled();
       });
 
       it('refreshes the workflows list', () => {
@@ -118,7 +118,7 @@
     describe('when clicking on New Workflow button', () => {
       beforeEach(() => {
         injectModulesAndDependencies();
-        CaseManagementWorkflow.getWorkflowsList.and.returnValue($q.resolve(
+        CaseManagementWorkflow.getFormattedWorkflowsList.and.returnValue($q.resolve(
           CaseTypesMockData.getSequential()
         ));
         spyOn(CaseManagementWorkflow, 'redirectToWorkflowCreationScreen');
@@ -166,7 +166,7 @@
         CaseTypesMockData = _CaseTypesMockData_;
         CaseManagementWorkflow = _CaseManagementWorkflow_;
 
-        spyOn(CaseManagementWorkflow, 'getWorkflowsList');
+        spyOn(CaseManagementWorkflow, 'getFormattedWorkflowsList');
       });
     }
 

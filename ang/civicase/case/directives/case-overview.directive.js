@@ -92,6 +92,7 @@
      */
     function caseFilterWatcher (caseFilters) {
       var caseStatusNames;
+      $scope.pageObj = { total: 0, size: 25, num: 1 };
 
       getCaseTypes()
         .then(function () {
@@ -114,6 +115,8 @@
       var instanceName = CaseTypeCategory.getCaseTypeCategoryInstance(categoryObject.value).name;
       var params = {};
 
+      // extract the params starting with `case_type_id` from case filters
+      // Which means those params are meant for CaseType api.
       _.each($scope.caseFilter, function (value, key) {
         if (_.startsWith(key, 'case_type_id.')) {
           params[key.substr('case_type_id.'.length)] = value;

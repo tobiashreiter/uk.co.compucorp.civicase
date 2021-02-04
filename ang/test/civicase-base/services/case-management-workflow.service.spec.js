@@ -31,7 +31,7 @@
             CaseTypesMockData.getSequential().length
           ]));
 
-          CaseManagementWorkflow.getWorkflowsList('some_case_type_category', {}, {
+          CaseManagementWorkflow.getWorkflowsList({ case_type_category: 'some_case_type_category' }, {
             size: 25,
             num: 1
           })
@@ -78,13 +78,12 @@
             CaseTypesMockData.getSequential().length
           ]));
 
-          CaseManagementWorkflow.getWorkflowsList('some_case_type_category', {}, {
+          CaseManagementWorkflow.getWorkflowsList({ case_type_category: 'some_case_type_category' }, {
             size: 25,
             num: 2
-          })
-            .then(function (data) {
-              results = data;
-            });
+          }).then(function (data) {
+            results = data;
+          });
           $rootScope.$digest();
         });
 
@@ -155,6 +154,20 @@
 
       it('redirects to the case type page for the clicked workflow', () => {
         expect(returnValue).toBe('civicrm/a/#/caseType/1');
+      });
+    });
+
+    describe('when loading dashboard', () => {
+      var returnValue;
+
+      beforeEach(() => {
+        returnValue = CaseManagementWorkflow.getActivityFilters();
+      });
+
+      it('shows the cases from active case types and non deleted contacts', () => {
+        expect(returnValue).toEqual({
+          case_filter: { 'case_type_id.is_active': 1, contact_is_deleted: 0 }
+        });
       });
     });
   });

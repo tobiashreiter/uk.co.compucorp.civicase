@@ -3,7 +3,7 @@
   describe('CaseOverview', () => {
     let $compile, $provide, $q, $rootScope, $scope, BrowserCache,
       CasesOverviewStats, civicaseCrmApi, element, targetElementScope,
-      CaseStatus, CaseType, CaseTypeFilterer;
+      CaseStatus, CaseType, CaseTypesMockData, CaseManagementWorkflow;
 
     beforeEach(module('civicase.data', 'civicase', 'civicase.templates', (_$provide_) => {
       $provide = _$provide_;
@@ -13,7 +13,7 @@
 
     beforeEach(inject(function (_$compile_, _$q_, _$rootScope_, BrowserCacheMock,
       _civicaseCrmApi_, _CasesOverviewStatsData_, _CaseStatus_, _CaseType_,
-      _CaseTypeFilterer_) {
+      _CaseTypesMockData_, _CaseManagementWorkflow_) {
       $compile = _$compile_;
       $q = _$q_;
       $rootScope = _$rootScope_;
@@ -23,12 +23,18 @@
       BrowserCache = BrowserCacheMock;
       CaseStatus = _CaseStatus_;
       CaseType = _CaseType_;
-      CaseTypeFilterer = _CaseTypeFilterer_;
+      CaseTypesMockData = _CaseTypesMockData_;
+      CaseManagementWorkflow = _CaseManagementWorkflow_;
 
       BrowserCache.get.and.returnValue([1, 3]);
       $provide.value('BrowserCache', BrowserCache);
       civicaseCrmApi.and.returnValue($q.resolve([CasesOverviewStats]));
-      spyOn(CaseTypeFilterer, 'filter').and.callThrough();
+
+      spyOn(CaseManagementWorkflow, 'getWorkflowsList');
+      CaseManagementWorkflow.getWorkflowsList.and.returnValue($q.resolve([
+        { values: CaseTypesMockData.getSequential() },
+        CaseTypesMockData.getSequential().length
+      ]));
     }));
 
     beforeEach(() => {
@@ -38,7 +44,7 @@
 
     beforeEach(() => {
       listenForCaseOverviewRecalculate();
-      compileDirective({});
+      compileDirective({ caseTypeCategory: 'Cases' });
     });
 
     describe('compile directive', () => {
@@ -52,26 +58,29 @@
 
       beforeEach(() => {
         expectedFilters = {
-          case_type_category: 'Cases',
-          id: { IN: ['1', '2'] },
-          is_active: '1'
+          'case_type_id.case_type_category': 'Cases'
         };
+        expectedCaseTypes = CaseTypesMockData.getSequential();
 
         civicaseCrmApi.and.returnValue($q.resolve([CasesOverviewStats]));
-        expectedCaseTypes = CaseTypeFilterer.filter(expectedFilters);
-        CaseTypeFilterer.filter.calls.reset();
         compileDirective({
-          caseTypeCategory: 'Cases',
-          caseTypeID: { IN: ['1', '2'] }
+          caseTypeCategory: 'Cases'
         });
+
+        $rootScope.$digest();
       });
 
       it('passes the filter parameters to the case type filterer', () => {
-        expect(CaseTypeFilterer.filter).toHaveBeenCalledWith(expectedFilters);
+        expect(civicaseCrmApi).toHaveBeenCalledWith([['Case', 'getstats', expectedFilters]]);
       });
 
       it('stores the filtered case types', () => {
-        expect(element.isolateScope().caseTypes).toEqual(expectedCaseTypes);
+        expect(angular.copy(element.isolateScope().caseTypes)).toEqual(angular.copy(expectedCaseTypes));
+      });
+
+      it('shows pagination', () => {
+        expect(element.isolateScope().totalCount).toBe(CaseTypesMockData.getSequential().length);
+        expect(element.isolateScope().pageObj.total).toBe(1);
       });
     });
 
@@ -80,15 +89,13 @@
         civicaseCrmApi.and.returnValue($q.resolve([CasesOverviewStats]));
         compileDirective({
           caseTypeCategory: 'Cases',
-          caseTypeID: { IN: ['1', '2'] },
           status_id: '1'
         });
       });
 
       it('fetches the case statistics, but shows all case statuses', () => {
         expect(civicaseCrmApi).toHaveBeenCalledWith([['Case', 'getstats', {
-          'case_type_id.case_type_category': 'Cases',
-          case_type_id: { IN: ['1', '2'] }
+          'case_type_id.case_type_category': 'Cases'
         }]]);
       });
     });
@@ -110,15 +117,14 @@
             .indexBy('value')
             .value();
 
-          civicaseCrmApi.and.callFake((entity) => {
-            const response = entity === 'CaseType'
-              ? { values: sampleCaseTypes }
-              : [CasesOverviewStats];
+          CaseManagementWorkflow.getWorkflowsList.and.returnValue($q.resolve([
+            { values: sampleCaseTypes },
+            sampleCaseTypes.length
+          ]));
 
-            return $q.resolve(response);
-          });
+          compileDirective({ caseTypeCategory: 'Cases' });
 
-          compileDirective({});
+          $rootScope.$digest();
         });
 
         it('only displays the case statuses belonging to the case types subset', () => {
@@ -138,15 +144,14 @@
             .indexBy('value')
             .value();
 
-          civicaseCrmApi.and.callFake((entity) => {
-            const response = entity === 'CaseType'
-              ? { values: [caseType] }
-              : [CasesOverviewStats];
+          CaseManagementWorkflow.getWorkflowsList.and.returnValue($q.resolve([
+            { values: [caseType] },
+            1
+          ]));
 
-            return $q.resolve(response);
-          });
+          compileDirective({ caseTypeCategory: 'Cases' });
 
-          compileDirective({});
+          $rootScope.$digest();
         });
 
         it('only displays all case statuses', () => {
@@ -240,17 +245,29 @@
       });
     });
 
+    describe('when using pagination', () => {
+      beforeEach(() => {
+        element.isolateScope().setPageTo(5);
+      });
+
+      it('displays the content for the clicked page', () => {
+        expect(element.isolateScope().pageObj.num).toBe(5);
+        expect(CaseManagementWorkflow.getWorkflowsList).toHaveBeenCalled();
+      });
+    });
+
     /**
      * Initialise directive.
      *
      * @param {string} params the case type category name.
      */
     function compileDirective (params) {
+      $scope.currentCaseCategory = params.caseTypeCategory;
       $scope.caseFilter = {
-        'case_type_id.case_type_category': params.caseTypeCategory,
-        case_type_id: params.caseTypeID
+        'case_type_id.case_type_category': params.caseTypeCategory
       };
-      element = $compile('<civicase-case-overview case-filter="caseFilter"></civicase-case-overview>')($scope);
+
+      element = $compile('<civicase-case-overview case-filter="caseFilter" current-case-category="currentCaseCategory"></civicase-case-overview>')($scope);
       $scope.$digest();
     }
 

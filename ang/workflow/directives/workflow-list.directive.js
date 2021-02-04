@@ -135,7 +135,7 @@
       filters.case_type_category = $scope.caseTypeCategory;
 
       return getServiceForInstance(instanceName)
-        .getWorkflowsList(filters, $scope.pageObj, true)
+        .getFormattedWorkflowsList(filters, $scope.pageObj)
         .then(function (result) {
           $scope.totalCount = result[1];
           $scope.pageObj.total = Math.ceil(result[1] / $scope.pageObj.size);
