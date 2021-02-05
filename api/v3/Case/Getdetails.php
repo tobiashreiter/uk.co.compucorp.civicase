@@ -257,7 +257,7 @@ function _civicrm_api3_case_get_activities(array $case_ids, array $params = []) 
 
   $params = array_merge($default_params, $params);
 
-  return civicrm_api3('Activity', 'get', $params);
+  return civicrm_api3('Activity', 'getAll', $params);
 }
 
 /**

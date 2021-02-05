@@ -33,18 +33,36 @@ function civicrm_api3_activity_getall(array $params) {
   $result = civicrm_api3('Activity', 'get', $params);
 
   if (!$result['is_error']) {
-    foreach ($result['values'] as &$record) {
-      $targetContactIds = $record['target_contact_id'];
-      $limitTargetContactIdsTo = 25;
-
-      if (!empty($targetContactIds) && count($targetContactIds) > $limitTargetContactIdsTo) {
-        $record['total_target_contacts'] = count($targetContactIds);
-        $record['target_contact_id'] = array_slice($record['target_contact_id'], 0, $limitTargetContactIdsTo, TRUE);
-        $record['target_contact_name'] = array_slice($record['target_contact_name'], 0, $limitTargetContactIdsTo, TRUE);
-        $record['target_contact_sort_name'] = array_slice($record['target_contact_sort_name'], 0, $limitTargetContactIdsTo, TRUE);
-      }
-    }
+    _limitContacts($result['values'], 'target_contact');
+    _limitContacts($result['values'], 'assignee_contact');
   }
 
   return $result;
+}
+
+/**
+ * Limit contacts.
+ *
+ * @param array $result
+ *   Results from which fields should be limited.
+ * @param string $fieldName
+ *   Name of the field to limit.
+ */
+function _limitContacts(array &$result, string $fieldName) {
+  foreach ($result as &$record) {
+    if (empty($record[$fieldName . '_id'])) {
+      return;
+    }
+
+    $contactIds = $record[$fieldName . '_id'];
+    $limitContactIdsTo = 25;
+
+    if (!empty($contactIds) && count($contactIds) > $limitContactIdsTo) {
+      $record['total_' . $fieldName . 's'] = count($contactIds);
+      $record[$fieldName . '_id'] = array_slice($record[$fieldName . '_id'], 0, $limitContactIdsTo, TRUE);
+      $record[$fieldName . '_name'] = array_slice($record[$fieldName . '_name'], 0, $limitContactIdsTo, TRUE);
+      $record[$fieldName . '_sort_name'] = array_slice($record[$fieldName . '_sort_name'], 0, $limitContactIdsTo, TRUE);
+    }
+  }
+
 }
