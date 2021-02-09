@@ -1,7 +1,7 @@
 (function ($, angular) {
   var module = angular.module('civicase-base');
 
-  module.filter('crmDate', crmDate);
+  module.filter('civicaseCrmDate', crmDate);
 
   /**
    * CRM Date filter.
