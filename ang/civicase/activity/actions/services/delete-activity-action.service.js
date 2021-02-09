@@ -8,10 +8,30 @@
    *
    * @param {object} $rootScope rootscope object
    * @param {object} civicaseCrmApi service to use civicrm api
-   * @param {object} dialogService service to open dialog box
+   * @param {object} pascalCase pascal case service
+   * @param {object} $injector angulars injector service
    */
-  function DeleteActivityAction ($rootScope, civicaseCrmApi, dialogService) {
+  function DeleteActivityAction ($rootScope, civicaseCrmApi, pascalCase,
+    $injector) {
     var ts = CRM.ts('civicase');
+
+    /**
+     * Check if the Action is enabled
+     *
+     * @param {object} $scope scope object
+     * @returns {boolean} if the action is enabled
+     */
+    this.isActionEnabled = function ($scope) {
+      return _.every($scope.selectedActivities, function (activity) {
+        var activityStatusService = getActivityStatusService(activity.type);
+
+        if (activityStatusService && activityStatusService.isDeleteVisible) {
+          return activityStatusService.isDeleteVisible(activity);
+        }
+
+        return true;
+      });
+    };
 
     /**
      * Perform the action
@@ -68,6 +88,20 @@
             return activity.id;
           })
         }]];
+      }
+    }
+
+    /**
+     * Get Activity Status Action Service
+     *
+     * @param {string} statusName name of the status
+     * @returns {object/null} action service
+     */
+    function getActivityStatusService (statusName) {
+      try {
+        return $injector.get(pascalCase(statusName) + 'ActivityStatus');
+      } catch (e) {
+        return null;
       }
     }
   }
