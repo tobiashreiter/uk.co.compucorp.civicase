@@ -8,7 +8,7 @@ describe('CRM Date Filter', () => {
   }));
 
   beforeEach(inject(($filter) => {
-    crmDate = $filter('crmDate');
+    crmDate = $filter('civicaseCrmDate');
   }));
 
   describe('when passing a string date to the CRM Date filter', () => {
