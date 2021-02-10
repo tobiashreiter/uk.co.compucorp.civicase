@@ -81,7 +81,6 @@
    * Controller for civicaseUiDateRange directive
    */
   module.controller('civicaseUiDateRangeController', function ($scope) {
-    $scope.ts = CRM.ts('civicase');
     $scope.input = {};
 
     $scope.$watchCollection('data', function () {
