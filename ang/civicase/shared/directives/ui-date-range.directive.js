@@ -7,7 +7,8 @@
       restrict: 'E',
       replace: true,
       scope: {
-        data: '=dateRange'
+        data: '=dateRange',
+        onChange: '&'
       },
       templateUrl: '~/civicase/shared/directives/ui-date-range.directive.html',
       controller: 'civicaseUiDateRangeController',
@@ -94,6 +95,8 @@
       } else if ($scope.data['<=']) {
         $scope.input = { to: $scope.data['<='] };
       }
+
+      $scope.onChange();
     });
   });
 })(angular, CRM.$, CRM._, CRM);
