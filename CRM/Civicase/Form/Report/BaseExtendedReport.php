@@ -812,6 +812,47 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
   }
 
   /**
+   * Build custom data from clause.
+   *
+   * Overridden to support custom data for multiple entities of the same type.
+   */
+  public function extendedCustomDataFrom() {
+    foreach ($this->getMetadataByType('metadata') as $prop) {
+      $table = $prop['table_name'];
+      if (empty($prop['extends']) || !$this->isCustomTableSelected($table)) {
+        continue;
+      }
+
+      $baseJoin = CRM_Utils_Array::value($prop['extends'], $this->_customGroupExtendsJoin, "{$this->_aliases[$prop['extends_table']]}.id");
+
+      $customJoin = is_array($this->_customGroupJoin) ? $this->_customGroupJoin[$table] : $this->_customGroupJoin;
+      $tableKey = CRM_Utils_Array::value('prefix', $prop) . $prop['table_name'];
+      if (!stristr($this->_from, ' ' . $this->_aliases[$tableKey] . ' ')) {
+        // Protect against conflict with selectableCustomFrom.
+        $this->_from .= "
+{$customJoin} {$prop['table_name']} {$this->_aliases[$tableKey]} ON {$this->_aliases[$tableKey]}.entity_id = {$baseJoin}";
+      }
+      // Handle for ContactReference.
+      if (array_key_exists('fields', $prop)) {
+        foreach ($prop['fields'] as $fieldName => $field) {
+          if (CRM_Utils_Array::value('dataType', $field) ==
+            'ContactReference'
+          ) {
+            $customFieldID = CRM_Core_BAO_CustomField::getKeyID($fieldName);
+            if (!$customFieldID) {
+              // Seems it can be passed with wierd things appended...
+              continue;
+            }
+            $columnName = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', CRM_Core_BAO_CustomField::getKeyID($fieldName), 'column_name');
+            $this->_from .= "
+LEFT JOIN civicrm_contact {$field['alias']} ON {$field['alias']}.id = {$this->_aliases[$tableKey]}.{$columnName} ";
+          }
+        }
+      }
+    }
+  }
+
+  /**
    * Add Select for pivot chart style report.
    *
    * @param string $fieldName
