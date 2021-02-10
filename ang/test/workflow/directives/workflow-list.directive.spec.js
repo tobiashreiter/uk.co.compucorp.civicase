@@ -30,10 +30,10 @@
     describe('basic tests', () => {
       beforeEach(() => {
         injectModulesAndDependencies();
-        CaseManagementWorkflow.getFormattedWorkflowsList.and.returnValue($q.resolve([
-          { values: CaseTypesMockData.getSequential() },
-          CaseTypesMockData.getSequential().length
-        ]));
+        CaseManagementWorkflow.getWorkflowsListForManageWorkflow.and.returnValue($q.resolve({
+          values: CaseTypesMockData.getSequential(),
+          count: CaseTypesMockData.getSequential().length
+        }));
         initController();
       });
 
@@ -90,10 +90,10 @@
     describe('when list refresh event is fired', () => {
       beforeEach(() => {
         injectModulesAndDependencies();
-        CaseManagementWorkflow.getFormattedWorkflowsList.and.returnValue($q.resolve([
-          { values: CaseTypesMockData.getSequential() },
-          CaseTypesMockData.getSequential().length
-        ]));
+        CaseManagementWorkflow.getWorkflowsListForManageWorkflow.and.returnValue($q.resolve({
+          values: CaseTypesMockData.getSequential(),
+          count: CaseTypesMockData.getSequential().length
+        }));
         initController();
         $scope.pageObj = { total: 2, size: 25, num: 2 };
         $scope.$digest();
@@ -103,7 +103,7 @@
       });
 
       it('fetches the case types for the current case type category', () => {
-        expect(CaseManagementWorkflow.getFormattedWorkflowsList).toHaveBeenCalled();
+        expect(CaseManagementWorkflow.getWorkflowsListForManageWorkflow).toHaveBeenCalled();
       });
 
       it('refreshes the workflows list', () => {
@@ -118,7 +118,7 @@
     describe('when clicking on New Workflow button', () => {
       beforeEach(() => {
         injectModulesAndDependencies();
-        CaseManagementWorkflow.getFormattedWorkflowsList.and.returnValue($q.resolve(
+        CaseManagementWorkflow.getWorkflowsListForManageWorkflow.and.returnValue($q.resolve(
           CaseTypesMockData.getSequential()
         ));
         spyOn(CaseManagementWorkflow, 'redirectToWorkflowCreationScreen');
@@ -166,7 +166,7 @@
         CaseTypesMockData = _CaseTypesMockData_;
         CaseManagementWorkflow = _CaseManagementWorkflow_;
 
-        spyOn(CaseManagementWorkflow, 'getFormattedWorkflowsList');
+        spyOn(CaseManagementWorkflow, 'getWorkflowsListForManageWorkflow');
       });
     }
 

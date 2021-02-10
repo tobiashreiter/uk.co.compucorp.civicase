@@ -8,7 +8,6 @@
       templateUrl: '~/civicase/case/directives/case-overview.directive.html',
       controller: civicaseCaseOverviewController,
       scope: {
-        currentCaseCategory: '=',
         caseFilter: '<',
         linkToManageCase: '='
       },
@@ -48,9 +47,11 @@
    * @param {object} CaseType the case type service reference.
    * @param {object} CaseTypeCategory the case type category service reference.
    * @param {Function} getServiceForInstance get service for a specific instance
+   * @param {string} currentCaseCategory current case category
    */
   function civicaseCaseOverviewController ($scope, civicaseCrmApi, BrowserCache,
-    CaseStatus, CaseType, CaseTypeCategory, getServiceForInstance) {
+    CaseStatus, CaseType, CaseTypeCategory, getServiceForInstance,
+    currentCaseCategory) {
     var BROWSER_CACHE_IDENTIFIER = 'civicase.CaseOverview.hiddenCaseStatuses';
     var MAXIMUM_CASE_TYPES_TO_DISPLAY_BREAKDOWN = 1;
     var allCaseStatusNames = _.map(CaseStatus.getAll(true), 'name');
@@ -111,7 +112,7 @@
      * @returns {Promise} promise
      */
     function getCaseTypes () {
-      var categoryObject = CaseTypeCategory.findByName($scope.currentCaseCategory);
+      var categoryObject = CaseTypeCategory.findByName(currentCaseCategory);
       var instanceName = CaseTypeCategory.getCaseTypeCategoryInstance(categoryObject.value).name;
       var params = {};
 
@@ -124,12 +125,12 @@
       });
 
       return getServiceForInstance(instanceName)
-        .getWorkflowsList(params, $scope.pageObj)
+        .getWorkflowsListForCaseOverview(params, $scope.pageObj)
         .then(function (result) {
-          $scope.totalCount = result[1];
-          $scope.pageObj.total = Math.ceil(result[1] / $scope.pageObj.size);
+          $scope.totalCount = result.count;
+          $scope.pageObj.total = Math.ceil(result.count / $scope.pageObj.size);
 
-          $scope.caseTypes = result[0].values;
+          $scope.caseTypes = result.values;
         });
     }
 

@@ -17,7 +17,7 @@
         </ng-include>
       </div>
       <button
-        ng-click="refreshWorkflowsList(true)"
+        ng-click="resetPagination(); refreshWorkflowsList();"
         type="button" class="btn btn-primary pull-right">
         {{ts('Filter')}}
       </button>

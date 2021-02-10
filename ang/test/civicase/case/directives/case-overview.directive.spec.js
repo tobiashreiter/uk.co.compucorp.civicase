@@ -30,11 +30,11 @@
       $provide.value('BrowserCache', BrowserCache);
       civicaseCrmApi.and.returnValue($q.resolve([CasesOverviewStats]));
 
-      spyOn(CaseManagementWorkflow, 'getWorkflowsList');
-      CaseManagementWorkflow.getWorkflowsList.and.returnValue($q.resolve([
-        { values: CaseTypesMockData.getSequential() },
-        CaseTypesMockData.getSequential().length
-      ]));
+      spyOn(CaseManagementWorkflow, 'getWorkflowsListForCaseOverview');
+      CaseManagementWorkflow.getWorkflowsListForCaseOverview.and.returnValue($q.resolve({
+        values: CaseTypesMockData.getSequential(),
+        count: CaseTypesMockData.getSequential().length
+      }));
     }));
 
     beforeEach(() => {
@@ -117,10 +117,10 @@
             .indexBy('value')
             .value();
 
-          CaseManagementWorkflow.getWorkflowsList.and.returnValue($q.resolve([
-            { values: sampleCaseTypes },
-            sampleCaseTypes.length
-          ]));
+          CaseManagementWorkflow.getWorkflowsListForCaseOverview.and.returnValue($q.resolve({
+            values: sampleCaseTypes,
+            count: sampleCaseTypes.length
+          }));
 
           compileDirective({ caseTypeCategory: 'Cases' });
 
@@ -144,10 +144,10 @@
             .indexBy('value')
             .value();
 
-          CaseManagementWorkflow.getWorkflowsList.and.returnValue($q.resolve([
-            { values: [caseType] },
-            1
-          ]));
+          CaseManagementWorkflow.getWorkflowsListForCaseOverview.and.returnValue($q.resolve({
+            values: [caseType],
+            count: 1
+          }));
 
           compileDirective({ caseTypeCategory: 'Cases' });
 
@@ -252,7 +252,7 @@
 
       it('displays the content for the clicked page', () => {
         expect(element.isolateScope().pageObj.num).toBe(5);
-        expect(CaseManagementWorkflow.getWorkflowsList).toHaveBeenCalled();
+        expect(CaseManagementWorkflow.getWorkflowsListForCaseOverview).toHaveBeenCalled();
       });
     });
 
@@ -262,12 +262,15 @@
      * @param {string} params the case type category name.
      */
     function compileDirective (params) {
-      $scope.currentCaseCategory = params.caseTypeCategory;
       $scope.caseFilter = {
         'case_type_id.case_type_category': params.caseTypeCategory
       };
 
-      element = $compile('<civicase-case-overview case-filter="caseFilter" current-case-category="currentCaseCategory"></civicase-case-overview>')($scope);
+      element = $compile(`
+        <civicase-case-overview
+          case-filter="caseFilter"
+          current-case-category="currentCaseCategory"
+        ></civicase-case-overview>`)($scope);
       $scope.$digest();
     }
 

@@ -4,7 +4,6 @@
   module.directive('civicaseDashboardTab', function () {
     return {
       scope: {
-        currentCaseCategory: '=',
         activityFilters: '=',
         filters: '='
       },

@@ -13,8 +13,8 @@
     this.getActivityFilters = getActivityFilters;
     this.createDuplicate = createDuplicate;
     this.getEditWorkflowURL = getEditWorkflowURL;
-    this.getWorkflowsList = getWorkflowsList;
-    this.getFormattedWorkflowsList = getWorkflowsList;
+    this.getWorkflowsListForCaseOverview = getWorkflowsListForCaseOverview;
+    this.getWorkflowsListForManageWorkflow = getWorkflowsListForCaseOverview;
     this.redirectToWorkflowCreationScreen = redirectToWorkflowCreationScreen;
 
     /**
@@ -53,7 +53,7 @@
      * @param {object} page page object needed for pagination
      * @returns {Array} api call parameters
      */
-    function getWorkflowsList (selectedFilters, page) {
+    function getWorkflowsListForCaseOverview (selectedFilters, page) {
       var apiCalls = [
         [
           'CaseType',
@@ -71,7 +71,13 @@
         ]
       ];
 
-      return civicaseCrmApi(apiCalls);
+      return civicaseCrmApi(apiCalls)
+        .then(function (data) {
+          return {
+            values: data[0].values,
+            count: data[1]
+          };
+        });
     }
 
     /**

@@ -44,7 +44,8 @@
       refreshWorkflowsList();
 
       $scope.$on('workflow::list::refresh', function () {
-        refreshWorkflowsList(true);
+        resetPagination();
+        refreshWorkflowsList();
       });
     }());
 
@@ -102,14 +103,8 @@
 
     /**
      * Refresh workflows list
-     *
-     * @param {boolean} resetPagination reset pagination
      */
-    function refreshWorkflowsList (resetPagination) {
-      if (resetPagination) {
-        $scope.pageObj = { total: 0, size: 25, num: 1 };
-      }
-
+    function refreshWorkflowsList () {
       $scope.isLoading = true;
 
       getWorkflows($scope.caseTypeCategory)
@@ -119,6 +114,13 @@
         .finally(function () {
           $scope.isLoading = false;
         });
+    }
+
+    /**
+     * Reset Pagination
+     */
+    function resetPagination () {
+      $scope.pageObj = { total: 0, size: 25, num: 1 };
     }
 
     /**
@@ -135,12 +137,12 @@
       filters.case_type_category = $scope.caseTypeCategory;
 
       return getServiceForInstance(instanceName)
-        .getFormattedWorkflowsList(filters, $scope.pageObj)
+        .getWorkflowsListForManageWorkflow(filters, $scope.pageObj)
         .then(function (result) {
-          $scope.totalCount = result[1];
-          $scope.pageObj.total = Math.ceil(result[1] / $scope.pageObj.size);
+          $scope.totalCount = result.count;
+          $scope.pageObj.total = Math.ceil(result.count / $scope.pageObj.size);
 
-          return result[0].values;
+          return result.values;
         });
     }
   }

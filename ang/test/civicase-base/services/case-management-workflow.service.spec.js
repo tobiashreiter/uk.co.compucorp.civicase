@@ -31,7 +31,7 @@
             CaseTypesMockData.getSequential().length
           ]));
 
-          CaseManagementWorkflow.getWorkflowsList({ case_type_category: 'some_case_type_category' }, {
+          CaseManagementWorkflow.getWorkflowsListForCaseOverview({ case_type_category: 'some_case_type_category' }, {
             size: 25,
             num: 1
           })
@@ -64,10 +64,10 @@
         });
 
         it('displays the list of fetched workflows and pagination', () => {
-          expect(results).toEqual([
-            { values: CaseTypesMockData.getSequential() },
-            CaseTypesMockData.getSequential().length
-          ]);
+          expect(results).toEqual({
+            values: CaseTypesMockData.getSequential(),
+            count: CaseTypesMockData.getSequential().length
+          });
         });
       });
 
@@ -78,7 +78,7 @@
             CaseTypesMockData.getSequential().length
           ]));
 
-          CaseManagementWorkflow.getWorkflowsList({ case_type_category: 'some_case_type_category' }, {
+          CaseManagementWorkflow.getWorkflowsListForCaseOverview({ case_type_category: 'some_case_type_category' }, {
             size: 25,
             num: 2
           }).then(function (data) {
@@ -110,10 +110,10 @@
         });
 
         it('displays the list of fetched workflows and pagination', () => {
-          expect(results).toEqual([
-            { values: CaseTypesMockData.getSequential() },
-            CaseTypesMockData.getSequential().length
-          ]);
+          expect(results).toEqual({
+            values: CaseTypesMockData.getSequential(),
+            count: CaseTypesMockData.getSequential().length
+          });
         });
       });
     });
