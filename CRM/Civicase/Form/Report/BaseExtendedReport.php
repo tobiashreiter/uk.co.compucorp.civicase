@@ -57,6 +57,13 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
     ['Select', 'Radio', 'Autocomplete-Select', 'CheckBox'];
 
   /**
+   * Used options list.
+   *
+   * @var array
+   */
+  protected $usedOptions = [];
+
+  /**
    * CRM_Civicase_Form_Report_BaseExtendedReport constructor.
    */
   public function __construct() {
@@ -154,7 +161,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
       if (isset($this->customDataDAOs[$extendsKey])) {
         continue;
       }
-      $customDAOs = $this->getCustomDataDAOs($groupSpec['extends']);
+      $customDAOs = $this->getCustomDataDaos($groupSpec['extends']);
       $customFieldMeta = $this->getCustomFieldsMeta($customDAOs);
       foreach ($customDAOs as $customField) {
         $tableKey = $customField['prefix'] . $customField['table_name'];
@@ -545,6 +552,10 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    *   Used options for column.
    */
   private function getUsedOptions($dbAlias, $fieldName) {
+    if (!empty($this->usedOptions[$dbAlias])) {
+      return $this->usedOptions[$dbAlias];
+    }
+
     if (!empty($this->_having)) {
       $having = "{$this->_having} AND COUNT(*) > 0";
     }
@@ -571,7 +582,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
         }
       }
     }
-
+    $this->usedOptions[$dbAlias] = $validOptions;
     return $validOptions;
   }
 
@@ -597,6 +608,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
     $this->from();
     $this->where();
     $this->extendedCustomDataFrom();
+    $this->extendedWhereForContactReferenceFields();
     $this->aggregateSelect();
 
     if ($this->isInProcessOfPreconstraining()) {
@@ -636,7 +648,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * @return array
    *   Custom data.
    */
-  protected function getCustomDataDAOs($extends) {
+  protected function getCustomDataDaos($extends) {
     $extendsKey = implode(',', $extends);
     if (isset($this->customDataDAOs[$extendsKey])) {
       return $this->customDataDAOs[$extendsKey];
@@ -751,6 +763,24 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
     }
 
     return $options;
+  }
+
+  /**
+   * Restrict rows to only used options in where clause.
+   */
+  public function extendedWhereForContactReferenceFields() {
+    $rowFields = $this->getAggregateFieldSpec('row');
+    if (!empty($rowFields)) {
+      foreach ($rowFields as $field => $fieldDetails) {
+        if (CRM_Utils_Array::value('data_type', $fieldDetails) === 'ContactReference') {
+          $usedOptions = implode(
+            "','",
+            array_keys($this->getUsedOptions($fieldDetails['dbAlias'], $fieldDetails['name']))
+          );
+          $this->_where .= " AND {$fieldDetails['dbAlias']} IN ('{$usedOptions}') ";
+        }
+      }
+    }
   }
 
   /**
@@ -1292,10 +1322,10 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    */
   public function alterFromOptions($value, array &$row, $selectedField, $criteriaFieldName, array $specs) {
     if ($specs['data_type'] == 'ContactReference') {
-      if (!empty($row[$selectedField])) {
+      if (!empty($row[$selectedField]) && $row[$selectedField] !== 'NULL') {
         return CRM_Contact_BAO_Contact::displayName($row[$selectedField]);
       }
-      return NULL;
+      return $row[$selectedField];
     }
     $value = trim($value, CRM_Core_DAO::VALUE_SEPARATOR);
     $options = $this->getCustomFieldOptions($specs);
