@@ -6,15 +6,14 @@
   /**
    * Tags Activity Action Service
    *
+   * @param {object} $injector angulars injector service
    * @param {object} $rootScope rootscope object
    * @param {object} civicaseCrmApi service to use civicrm api
    * @param {object} pascalCase pascal case service
-   * @param {object} $injector angulars injector service
+   * @param {Function} ts Translation Service
    */
-  function DeleteActivityAction ($rootScope, civicaseCrmApi, pascalCase,
-    $injector) {
-    var ts = CRM.ts('civicase');
-
+  function DeleteActivityAction ($injector, $rootScope, civicaseCrmApi, pascalCase,
+    ts) {
     /**
      * Check if the Action is enabled
      *
