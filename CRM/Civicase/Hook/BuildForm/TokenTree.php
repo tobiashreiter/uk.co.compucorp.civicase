@@ -135,12 +135,12 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
         if (!empty($newTokenTree[$tokenText]['children'][$i]['children'])) {
           $newTokenTree[$tokenText]['children'][$i]['children']
             = array_values($newTokenTree[$tokenText]['children'][$i]['children']);
-        }
-        if ($newTokenTree[$tokenText]['children'][$i]['text'] === self::CUSTOM_FIELDS_TEXT) {
-          usort(
-            $newTokenTree[$tokenText]['children'][$i]['children'],
-            [$this, 'sortCustomFields']
-          );
+          if ($newTokenTree[$tokenText]['children'][$i]['text'] === self::CUSTOM_FIELDS_TEXT) {
+            usort(
+              $newTokenTree[$tokenText]['children'][$i]['children'],
+              [$this, 'sortCustomFields']
+            );
+          }
         }
       }
     }
@@ -254,10 +254,12 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
   private function processAndAddCaseRoleTokens(array $contactRoleTokens, array &$newTokenTree) {
     ksort($contactRoleTokens, SORT_NATURAL);
     foreach ($contactRoleTokens as $key => $caseRoleToken) {
-      usort(
-        $caseRoleToken['children'][1]['children'],
-        [$this, 'sortCustomFields']
-      );
+      if (!empty($caseRoleToken['children'][1]['children'])) {
+        usort(
+          $caseRoleToken['children'][1]['children'],
+          [$this, 'sortCustomFields']
+        );
+      }
       $caseRoleToken['children'] = array_values($caseRoleToken['children']);
       if (!empty($caseRoleToken['children'][1]['children'])) {
         $caseRoleToken['children'][1]['children']
