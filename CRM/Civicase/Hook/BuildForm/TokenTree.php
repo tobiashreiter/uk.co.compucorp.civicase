@@ -195,7 +195,6 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
    *   Restructured token tree.
    */
   private function addCaseRoleTokens(array $caseRoleTokens, array &$newTokenTree) {
-    $contactRoleCount = 0;
     $contactRoleTokens = [];
     foreach ($caseRoleTokens as $key => $token) {
       if ($token['id'] === '{case_roles.client}') {
@@ -203,10 +202,8 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
       }
       $roleName = explode('-', $token['text']);
       $roleName = $roleName[0];
-      $tokenName = 'Case Role ' . $contactRoleCount . ' "' . trim($roleName) . '"';
+      $tokenName = trim($roleName);
       if (empty($contactRoleTokens[$tokenName])) {
-        $contactRoleCount++;
-        $tokenName = 'Case Role ' . $contactRoleCount . ' "' . trim($roleName) . '"';
         $this->caseRolesTokenNames[] = $tokenName;
         $this->initializeTokenType($contactRoleTokens, $tokenName);
       }
