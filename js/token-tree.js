@@ -2,7 +2,7 @@
 // These variables are defined in civicrm/templates/CRM/Mailing/Form/InsertTokens.tpl
 
 (function ($, CiviCaseBase) {
-  $(document).on('crmLoad', function (eventObj) {
+  $(document).off('crmLoad').on('crmLoad', function (eventObj) {
     // When opening the form in new tab, instead of modal
     // the tokens are initialised in core after crmLoad event is fired
     // (In civicrm/templates/CRM/Mailing/Form/InsertTokens.tpl)
@@ -36,8 +36,8 @@
         formatSelection: formatOptions,
         placeholder: 'Tokens'
       })
-      .on('select2-open', collapseAll)
-      .on('select2-selecting', selectEventHandler);
+      .off('select2-open').on('select2-open', collapseAll)
+      .off('select2-selecting').on('select2-selecting', selectEventHandler);
   }
 
   /**
