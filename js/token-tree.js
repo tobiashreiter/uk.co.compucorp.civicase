@@ -12,6 +12,13 @@
   });
 
   /**
+   * Collapse all tree elements
+   */
+  function collapseAll () {
+    $('[has-children]').parent().siblings('.select2-result-sub').hide();
+  }
+
+  /**
    * Initialise Token Tree widget
    *
    * @param {object} form form element
@@ -26,6 +33,7 @@
         formatSelection: formatOptions,
         placeholder: 'Tokens'
       })
+      .on('select2-open', collapseAll)
       .on('select2-selecting', selectEventHandler);
   }
 
@@ -55,7 +63,7 @@
    * @returns {string} dropdown item markup
    */
   function formatOptions (item) {
-    return getDropdownElementText(item, true);
+    return getDropdownElementText(item, false);
   }
 
   /**
@@ -65,8 +73,10 @@
    */
   function getDropdownElementText (item, isOpen) {
     var icon = '';
+    var hasChildrenIdentifier = '';
 
     if (item.children) {
+      hasChildrenIdentifier = 'has-children ';
       if (isOpen) {
         icon = '<i class="fa fa-minus-square-o" style="margin-right: 5px;"></i>';
       } else {
@@ -74,6 +84,6 @@
       }
     }
 
-    return '<span data-token-select-id="' + item.id + '">' + icon + item.text + '</span>';
+    return '<span ' + hasChildrenIdentifier + 'data-token-select-id="' + item.id + '">' + icon + item.text + '</span>';
   }
 })(CRM.$, CRM['civicase-base']);
