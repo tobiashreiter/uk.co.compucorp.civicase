@@ -1,3 +1,6 @@
+/* global isMailing, verify */
+// These variables are defined in civicrm/templates/CRM/Mailing/Form/InsertTokens.tpl
+
 (function ($, CiviCaseBase) {
   $(document).on('crmLoad', function (eventObj) {
     // When opening the form in new tab, instead of modal
@@ -44,9 +47,35 @@
    */
   function selectEventHandler (event) {
     if (!event.choice.children) {
+      insertTokenIntoTextBox.call(this, event);
+
       return;
     }
+    toggleTreeElement(event);
+  }
 
+  /**
+   * @param {object} event event object
+   */
+  function insertTokenIntoTextBox (event) {
+    var token = event.choice.id;
+    var field = $(this).data('field');
+    if (field.indexOf('html') < 0) {
+      field = textMsgID($(this));
+    }
+    CRM.wysiwyg.insert('#' + field, token);
+    $(this).select2('val', '');
+    if (isMailing) {
+      verify();
+    }
+
+    event.preventDefault();
+  }
+
+  /**
+   * @param {object} event event object
+   */
+  function toggleTreeElement (event) {
     var element = $('[data-token-select-id=' + event.choice.id + ']');
     var childElement = element.closest('.select2-result-label').siblings('.select2-result-sub');
 
@@ -56,6 +85,26 @@
     element.html(getDropdownElementText(event.choice, childElement.is(':visible')));
 
     event.preventDefault();
+  }
+
+  /**
+   * Copied from (In civicrm/templates/CRM/Mailing/Form/InsertTokens.tpl)
+   *
+   * @param {object} obj jquery element
+   * @returns {*} field id
+   */
+  function textMsgID (obj) {
+    var field;
+
+    if (obj.parents().is('#sms')) {
+      field = 'sms #' + obj.data('field');
+    } else if (obj.parents().is('#email')) {
+      field = 'email #' + obj.data('field');
+    } else {
+      field = obj.data('field');
+    }
+
+    return field;
   }
 
   /**
