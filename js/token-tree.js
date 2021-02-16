@@ -1,8 +1,20 @@
 /* global isMailing, verify */
 // These variables are defined in civicrm/templates/CRM/Mailing/Form/InsertTokens.tpl
 
+/**
+ * This is not added inside an IIFE, because
+ * We remove the crmLoad event before assigning it again. And for this to work,
+ * the reference to the listener being removed needs to be the same.
+ * But when the function is defined inside an IIFE, the function gets assigned
+ * a new reference every time. So the event listener does not get removed.
+ */
+CRM['civicase-base'].tokentree = {};
+
 (function ($, CiviCaseBase) {
-  $(document).off('crmLoad').on('crmLoad', function (eventObj) {
+  /**
+   * @param {object} eventObj event object
+   */
+  CiviCaseBase.tokentree.onCrmLoad = function (eventObj) {
     // When opening the form in new tab, instead of modal
     // the tokens are initialised in core after crmLoad event is fired
     // (In civicrm/templates/CRM/Mailing/Form/InsertTokens.tpl)
@@ -12,7 +24,11 @@
 
       initialiseTokenTree(form);
     });
-  });
+  };
+
+  $(document)
+    .off('crmLoad', CiviCaseBase.tokentree.onCrmLoad)
+    .on('crmLoad', CiviCaseBase.tokentree.onCrmLoad);
 
   /**
    * Collapse all tree elements
@@ -55,6 +71,10 @@
   }
 
   /**
+   * Copied from (In civicrm/templates/CRM/Mailing/Form/InsertTokens.tpl)
+   * except the last line, which is added to stop the dropdown from closing
+   * after selecting a value
+   *
    * @param {object} event event object
    */
   function insertTokenIntoTextBox (event) {
@@ -89,9 +109,10 @@
 
   /**
    * Copied from (In civicrm/templates/CRM/Mailing/Form/InsertTokens.tpl)
+   * Returns the ID of the Textbox where tokens needs to be inserted.
    *
    * @param {object} obj jquery element
-   * @returns {*} field id
+   * @returns {string} field id
    */
   function textMsgID (obj) {
     var field;
