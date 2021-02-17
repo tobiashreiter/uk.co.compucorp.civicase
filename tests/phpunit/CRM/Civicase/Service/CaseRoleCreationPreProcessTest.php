@@ -48,6 +48,31 @@ class CRM_Civicase_Service_CaseRoleCreationPreProcessTest extends BaseHeadlessTe
   }
 
   /**
+   * Test relationship ID is filled when is not on request params.
+   */
+  public function testIdIsFilledWhenIsNotReceived() {
+    $this->setSingleCaseRoleSetting(FALSE);
+
+    $params = [];
+    $apiRequestParams = $this->callPreProcessCreate($params);
+
+    $this->assertArrayHasKey('id', $apiRequestParams['params']);
+    $this->assertFalse($apiRequestParams['params']['id']);
+  }
+
+  /**
+   * Test relationship ID is not replaced when is already present on params.
+   */
+  public function testIdIsNotReplacedWhenIsReceived() {
+    $this->setSingleCaseRoleSetting(FALSE);
+
+    $params = ['id' => rand()];
+    $apiRequestParams = $this->callPreProcessCreate($params);
+
+    $this->assertEquals($params['id'], $apiRequestParams['params']['id']);
+  }
+
+  /**
    * Call the case role pre process and return results.
    *
    * @param array $params
