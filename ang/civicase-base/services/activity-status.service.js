@@ -18,6 +18,7 @@
       .value();
 
     this.getAll = getAll;
+    this.findByName = findByName;
 
     /**
      * Get all Activity statuses
@@ -29,6 +30,18 @@
       var returnValue = includeInactive ? allActivityStatuses : activeActivityStatuses;
 
       return returnValue;
+    }
+
+    /**
+     * Find Activity Status by Name
+     *
+     * @param {string} statusName name of the status
+     * @returns {object} activity status object
+     */
+    function findByName (statusName) {
+      return _.find(allActivityStatuses, function (status) {
+        return status.name === statusName;
+      });
     }
   }
 })(angular, CRM.$, CRM._, CRM);
