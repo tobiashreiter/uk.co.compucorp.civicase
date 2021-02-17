@@ -61,7 +61,7 @@
     $scope.caseTypes = [];
     $scope.hiddenCaseStatuses = {};
     $scope.summaryData = [];
-    $scope.pageObj = { total: 0, size: 25, num: 1 };
+    $scope.pageObj = { total: 0, size: 10, num: 1 };
     $scope.totalCount = 0;
 
     $scope.areAllStatusesHidden = areAllStatusesHidden;
@@ -93,7 +93,7 @@
      */
     function caseFilterWatcher (caseFilters) {
       var caseStatusNames;
-      $scope.pageObj = { total: 0, size: 25, num: 1 };
+      $scope.pageObj = { total: 0, size: 10, num: 1 };
 
       getCaseTypes()
         .then(function () {
