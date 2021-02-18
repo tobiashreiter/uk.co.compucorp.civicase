@@ -94,8 +94,20 @@
        * @returns {string} the contact's initials.
        */
       function getInitials (contactObj) {
-        return contactObj.first_name.substring(0, 1).toUpperCase() +
-          contactObj.last_name.substring(0, 1).toUpperCase();
+        // for organisation contact types
+        if (contactObj.first_name || contactObj.last_name) {
+          return contactObj.first_name.substring(0, 1).toUpperCase() +
+            contactObj.last_name.substring(0, 1).toUpperCase();
+        } else {
+          var names = contactObj.display_name.split(' ');
+          var initials = names[0].substring(0, 1).toUpperCase();
+
+          if (names.length > 1) {
+            initials += names[names.length - 1].substring(0, 1).toUpperCase();
+          }
+
+          return initials;
+        }
       }
 
       /**
