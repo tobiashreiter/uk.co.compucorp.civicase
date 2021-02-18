@@ -69,7 +69,7 @@
         });
       });
 
-      describe('when the display name does not have first name or last name but an email id either', function () {
+      describe('when first name or last name does not exist, and display name is not an email id either', function () {
         beforeEach(function () {
           spyOn(ContactsCache, 'add').and.returnValue($q.resolve(ContactsData.values[0]));
           spyOn(ContactsCache, 'getCachedContact').and.returnValue({

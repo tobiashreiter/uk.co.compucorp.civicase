@@ -33,8 +33,8 @@ function civicrm_api3_activity_getall(array $params) {
   $result = civicrm_api3('Activity', 'get', $params);
 
   if (!$result['is_error']) {
-    _limitContacts($result['values'], 'target_contact');
-    _limitContacts($result['values'], 'assignee_contact');
+    _civicrm_api3_activity_getall_limitContacts($result['values'], 'target_contact');
+    _civicrm_api3_activity_getall_limitContacts($result['values'], 'assignee_contact');
   }
 
   return $result;
@@ -48,7 +48,7 @@ function civicrm_api3_activity_getall(array $params) {
  * @param string $fieldName
  *   Name of the field to limit.
  */
-function _limitContacts(array &$result, string $fieldName) {
+function _civicrm_api3_activity_getall_limitContacts(array &$result, string $fieldName) {
   foreach ($result as &$record) {
     if (empty($record[$fieldName . '_id'])) {
       return;
