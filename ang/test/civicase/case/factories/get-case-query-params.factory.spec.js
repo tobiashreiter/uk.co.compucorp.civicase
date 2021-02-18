@@ -127,6 +127,9 @@
             'api.Contact.get': {
               contact_id: '$value.contact_id_b'
             },
+            options: {
+              limit: 0
+            },
             return: [
               'id', 'relationship_type_id', 'contact_id_a', 'contact_id_b',
               'description', 'end_date', 'is_active', 'start_date'
