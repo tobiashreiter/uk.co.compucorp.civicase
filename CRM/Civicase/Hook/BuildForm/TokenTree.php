@@ -13,7 +13,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
 
   const CONTACT_TOKEN_TEXT = 'Contact';
 
-  const CLIENT_TOKEN_TEXT = 'Client';
+  const RECIPIENT_TOKEN_TEXT = 'Email Recipient';
 
   const OTHER_TOKEN_TEXT = 'Other';
 
@@ -101,11 +101,26 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
    */
   private function reOrderTokens(array $newTokenTree) {
     $reorderedTree = [];
-    $tokenTexts = [
-      self::CASE_TOKEN_TEXT,
-      self::CLIENT_TOKEN_TEXT,
-      self::CURRENT_USER_TOKEN_TEXT,
-    ];
+    $caseClientRole = 'Case Client';
+    if (in_array($caseClientRole, $this->caseRolesTokenNames)) {
+      $this->caseRolesTokenNames = array_diff(
+        $this->caseRolesTokenNames,
+        [$caseClientRole]
+      );
+      $tokenTexts = [
+        self::CASE_TOKEN_TEXT,
+        $caseClientRole,
+        self::RECIPIENT_TOKEN_TEXT,
+        self::CURRENT_USER_TOKEN_TEXT,
+      ];
+    }
+    else {
+      $tokenTexts = [
+        self::CASE_TOKEN_TEXT,
+        self::RECIPIENT_TOKEN_TEXT,
+        self::CURRENT_USER_TOKEN_TEXT,
+      ];
+    }
     $tokenTexts = array_merge($tokenTexts, $this->caseRolesTokenNames);
     $tokenTexts[] = self::OTHER_TOKEN_TEXT;
     foreach ($tokenTexts as $tokenText) {
@@ -126,7 +141,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
   private function reFormatCustomTokens(array &$newTokenTree) {
     $tokenTexts = [
       self::CURRENT_USER_TOKEN_TEXT,
-      self::CLIENT_TOKEN_TEXT,
+      self::RECIPIENT_TOKEN_TEXT,
       self::CASE_TOKEN_TEXT,
     ];
 
@@ -299,10 +314,10 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
    *   Restructured token tree.
    */
   private function addClientTokens(array $clientTokens, array &$newTokenTree) {
-    if (empty($newTokenTree[self::CLIENT_TOKEN_TEXT])) {
-      $newTokenTree[self::CLIENT_TOKEN_TEXT] = [
-        'id' => self::CLIENT_TOKEN_TEXT,
-        'text' => self::CLIENT_TOKEN_TEXT,
+    if (empty($newTokenTree[self::RECIPIENT_TOKEN_TEXT])) {
+      $newTokenTree[self::RECIPIENT_TOKEN_TEXT] = [
+        'id' => self::RECIPIENT_TOKEN_TEXT,
+        'text' => self::RECIPIENT_TOKEN_TEXT,
         'children' => [
           [
             'id' => 'CoreFields' . uniqid(),
@@ -313,8 +328,8 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
       ];
     }
     else {
-      $newTokenTree[self::CLIENT_TOKEN_TEXT]['children'][0]['children'] =
-        array_merge($newTokenTree[self::CLIENT_TOKEN_TEXT]['children'][0]['children'], $clientTokens);
+      $newTokenTree[self::RECIPIENT_TOKEN_TEXT]['children'][0]['children'] =
+        array_merge($newTokenTree[self::RECIPIENT_TOKEN_TEXT]['children'][0]['children'], $clientTokens);
     }
   }
 
@@ -356,7 +371,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
   private function addOtherTokens(array $otherTokens, array &$newTokenTree) {
     foreach ($otherTokens as $key => $token) {
       if (strpos($token['id'], 'contact.custom_') !== FALSE) {
-        $this->addCustomTokens($newTokenTree, self::CLIENT_TOKEN_TEXT, $token);
+        $this->addCustomTokens($newTokenTree, self::RECIPIENT_TOKEN_TEXT, $token);
       }
       elseif (strpos($token['id'], 'case.custom_') !== FALSE) {
         $this->addCustomTokens($newTokenTree, self::CASE_TOKEN_TEXT, $token);
