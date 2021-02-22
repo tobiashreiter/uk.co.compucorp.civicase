@@ -316,7 +316,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
   private function addClientTokens(array $clientTokens, array &$newTokenTree) {
     if (empty($newTokenTree[self::RECIPIENT_TOKEN_TEXT])) {
       $newTokenTree[self::RECIPIENT_TOKEN_TEXT] = [
-        'id' => self::RECIPIENT_TOKEN_TEXT,
+        'id' => $this->clean(self::RECIPIENT_TOKEN_TEXT) . uniqid(),
         'text' => self::RECIPIENT_TOKEN_TEXT,
         'children' => [
           [
