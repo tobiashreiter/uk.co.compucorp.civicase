@@ -83,11 +83,13 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
       elseif ($tokenList['text'] === self::CASE_TOKEN_TEXT) {
         $this->addCaseTokens($tokenList['children'], $newTokenTree);
       }
-      elseif ($this->isEmailForm && in_array(
+      elseif (in_array(
         $tokenList['text'],
         [self::CONTACT_TOKEN_TEXT, self::ADDRESS_TOKEN_TEXT]
         )) {
-        $this->addClientTokens($tokenList['children'], $newTokenTree);
+        if ($this->isEmailForm) {
+          $this->addClientTokens($tokenList['children'], $newTokenTree);
+        }
       }
       else {
         $this->addOtherTokens($tokenList['children'], $newTokenTree);
