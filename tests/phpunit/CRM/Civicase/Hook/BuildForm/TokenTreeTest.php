@@ -149,22 +149,22 @@ class CRM_Civicase_Hook_BuildForm_TokenTreeTest extends BaseHeadlessTest {
    *   List of tokens.
    */
   private function verifyCurrentUserTokens(array $newTokenTree) {
-    $this->assertNotEmpty($newTokenTree['Current User']);
+    $this->assertNotEmpty($newTokenTree[TokenTree::CURRENT_USER_TOKEN_TEXT]);
     $this->assertEquals(
       '{current_user.contact_city}',
-      $newTokenTree['Current User']['children'][0]['children'][0]['id']
+      $newTokenTree[TokenTree::CURRENT_USER_TOKEN_TEXT]['children'][0]['children'][0]['id']
     );
     $this->assertEquals(
       'Current User City',
-      $newTokenTree['Current User']['children'][0]['children'][0]['text']
+      $newTokenTree[TokenTree::CURRENT_USER_TOKEN_TEXT]['children'][0]['children'][0]['text']
     );
     $this->assertEquals(
       '{current_user.contact_custom_' . $this->contactCustomField['id'] . '}',
-      $newTokenTree['Current User']['children'][1]['children'][0]['children'][0]['id']
+      $newTokenTree[TokenTree::CURRENT_USER_TOKEN_TEXT]['children'][1]['children'][0]['children'][0]['id']
     );
     $this->assertEquals(
       'Current User ' . $this->contactCustomField['name'],
-      $newTokenTree['Current User']['children'][1]['children'][0]['children'][0]['text']
+      $newTokenTree[TokenTree::CURRENT_USER_TOKEN_TEXT]['children'][1]['children'][0]['children'][0]['text']
     );
   }
 
@@ -175,39 +175,39 @@ class CRM_Civicase_Hook_BuildForm_TokenTreeTest extends BaseHeadlessTest {
    *   List of tokens.
    */
   private function verifyCaseRoleTokens(array $newTokenTree) {
-    $this->assertNotEmpty($newTokenTree['Case Role 1 "Benefits Specialist"']);
+    $this->assertNotEmpty($newTokenTree['Benefits Specialist']);
     $this->assertEquals(
       '{case_roles.benefits_specialist_id}',
-      $newTokenTree['Case Role 1 "Benefits Specialist"']['children'][0]['children'][0]['id']
+      $newTokenTree['Benefits Specialist']['children'][0]['children'][0]['id']
     );
     $this->assertEquals(
       'Benefits Specialist - Contact ID',
-      $newTokenTree['Case Role 1 "Benefits Specialist"']['children'][0]['children'][0]['text']
+      $newTokenTree['Benefits Specialist']['children'][0]['children'][0]['text']
     );
     $this->assertEquals(
       '{case_roles.benefits_specialist_custom_' . $this->contactCustomField['id'] . '}',
-      $newTokenTree['Case Role 1 "Benefits Specialist"']['children'][1]['children'][0]['children'][0]['id']
+      $newTokenTree['Benefits Specialist']['children'][1]['children'][0]['children'][0]['id']
     );
     $this->assertEquals(
       'Benefits Specialist - ' . $this->contactCustomField['name'],
-      $newTokenTree['Case Role 1 "Benefits Specialist"']['children'][1]['children'][0]['children'][0]['text']
+      $newTokenTree['Benefits Specialist']['children'][1]['children'][0]['children'][0]['text']
     );
-    $this->assertNotEmpty($newTokenTree['Case Role 2 "Health Services Coordinator"']);
+    $this->assertNotEmpty($newTokenTree['Health Services Coordinator']);
     $this->assertEquals(
       '{case_roles.health_services_coordinator_contact_sub_type}',
-      $newTokenTree['Case Role 2 "Health Services Coordinator"']['children'][0]['children'][0]['id']
+      $newTokenTree['Health Services Coordinator']['children'][0]['children'][0]['id']
     );
     $this->assertEquals(
       'Health Services Coordinator - Contact Subtype',
-      $newTokenTree['Case Role 2 "Health Services Coordinator"']['children'][0]['children'][0]['text']
+      $newTokenTree['Health Services Coordinator']['children'][0]['children'][0]['text']
     );
     $this->assertEquals(
       '{case_roles.health_services_coordinator_custom_' . $this->contactCustomField['id'] . '}',
-      $newTokenTree['Case Role 2 "Health Services Coordinator"']['children'][1]['children'][0]['children'][0]['id']
+      $newTokenTree['Health Services Coordinator']['children'][1]['children'][0]['children'][0]['id']
     );
     $this->assertEquals(
       'Health Services Coordinator - ' . $this->contactCustomField['name'],
-      $newTokenTree['Case Role 2 "Health Services Coordinator"']['children'][1]['children'][0]['children'][0]['text']
+      $newTokenTree['Health Services Coordinator']['children'][1]['children'][0]['children'][0]['text']
     );
   }
 
@@ -218,22 +218,22 @@ class CRM_Civicase_Hook_BuildForm_TokenTreeTest extends BaseHeadlessTest {
    *   List of tokens.
    */
   private function verifyClientTokens(array $newTokenTree) {
-    $this->assertNotEmpty($newTokenTree['Client']);
+    $this->assertNotEmpty($newTokenTree[TokenTree::RECIPIENT_TOKEN_TEXT]);
     $this->assertEquals(
       '{contact.addressee_id}',
-      $newTokenTree['Client']['children'][0]['children'][0]['id']
+      $newTokenTree[TokenTree::RECIPIENT_TOKEN_TEXT]['children'][0]['children'][0]['id']
     );
     $this->assertEquals(
       'Addressee ID',
-      $newTokenTree['Client']['children'][0]['children'][0]['text']
+      $newTokenTree[TokenTree::RECIPIENT_TOKEN_TEXT]['children'][0]['children'][0]['text']
     );
     $this->assertEquals(
       '{contact.custom_' . $this->contactCustomField['id'] . '}',
-      $newTokenTree['Client']['children'][1]['children'][0]['children'][0]['id']
+      $newTokenTree[TokenTree::RECIPIENT_TOKEN_TEXT]['children'][1]['children'][0]['children'][0]['id']
     );
     $this->assertEquals(
       $this->contactCustomField['name'],
-      $newTokenTree['Client']['children'][1]['children'][0]['children'][0]['text']
+      $newTokenTree[TokenTree::RECIPIENT_TOKEN_TEXT]['children'][1]['children'][0]['children'][0]['text']
     );
   }
 
@@ -245,22 +245,22 @@ class CRM_Civicase_Hook_BuildForm_TokenTreeTest extends BaseHeadlessTest {
    */
   private function verifyCaseTokens(array $newTokenTree) {
 
-    $this->assertNotEmpty($newTokenTree['Case']);
+    $this->assertNotEmpty($newTokenTree[TokenTree::CASE_TOKEN_TEXT]);
     $this->assertEquals(
       '{case.id}',
-      $newTokenTree['Case']['children'][0]['children'][0]['id']
+      $newTokenTree[TokenTree::CASE_TOKEN_TEXT]['children'][0]['children'][0]['id']
     );
     $this->assertEquals(
       'Case Id',
-      $newTokenTree['Case']['children'][0]['children'][0]['text']
+      $newTokenTree[TokenTree::CASE_TOKEN_TEXT]['children'][0]['children'][0]['text']
     );
     $this->assertEquals(
       '{case.custom_' . $this->caseCustomField['id'] . '}',
-      $newTokenTree['Case']['children'][1]['children'][0]['children'][0]['id']
+      $newTokenTree[TokenTree::CASE_TOKEN_TEXT]['children'][1]['children'][0]['children'][0]['id']
     );
     $this->assertEquals(
       $this->caseCustomField['name'],
-      $newTokenTree['Case']['children'][1]['children'][0]['children'][0]['text']
+      $newTokenTree[TokenTree::CASE_TOKEN_TEXT]['children'][1]['children'][0]['children'][0]['text']
     );
   }
 
