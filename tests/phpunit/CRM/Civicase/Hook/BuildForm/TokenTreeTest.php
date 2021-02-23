@@ -244,7 +244,6 @@ class CRM_Civicase_Hook_BuildForm_TokenTreeTest extends BaseHeadlessTest {
    *   List of tokens.
    */
   private function verifyCaseTokens(array $newTokenTree) {
-
     $this->assertNotEmpty($newTokenTree[TokenTree::CASE_TOKEN_TEXT]);
     $this->assertEquals(
       '{case.id}',
