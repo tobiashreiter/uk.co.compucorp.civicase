@@ -136,9 +136,12 @@
      *
      * @param {object} role A role object as provided by the roles service.
      * @param {string} fieldName The name of the field to store.
+     * @param {Function} callbackFn call back function to be called.
      */
-    function updatePreviousValue (role, fieldName) {
+    function updatePreviousValue (role, fieldName, callbackFn) {
       role.previousValues[fieldName] = role.relationship[fieldName];
+
+      callbackFn && callbackFn();
     }
 
     /**

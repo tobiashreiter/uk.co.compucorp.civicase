@@ -162,7 +162,7 @@
             data-max-date="{{role.relationship.end_date}}"
             civicase-send-to-api-on-change
             data-api-data="roleDatesUpdater.getApiCallsForStartDate(role, item.id)"
-            data-on-api-data-sent="roleDatesUpdater.updatePreviousValue(role, 'start_date')"
+            data-on-api-data-sent="roleDatesUpdater.updatePreviousValue(role, 'start_date', refresh)"
             name="role_start_date"
             ng-disabled="roleForm.role_start_date.isSaving"
             ng-if="!!role.relationship"
@@ -177,7 +177,7 @@
             data-min-date="{{role.relationship.start_date}}"
             civicase-send-to-api-on-change
             data-api-data="roleDatesUpdater.getApiCallsForEndDate(role, item.id)"
-            data-on-api-data-sent="roleDatesUpdater.updatePreviousValue(role, 'end_date')"
+            data-on-api-data-sent="roleDatesUpdater.updatePreviousValue(role, 'end_date', refresh)"
             name="role_end_date"
             ng-disabled="roleForm.role_end_date.isSaving"
             ng-if="!!role.relationship"
