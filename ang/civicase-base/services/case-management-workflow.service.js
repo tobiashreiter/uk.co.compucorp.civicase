@@ -1,5 +1,5 @@
 (function (_, angular) {
-  var module = angular.module('workflow');
+  var module = angular.module('civicase-base');
 
   module.service('CaseManagementWorkflow', CaseManagementWorkflow);
 
@@ -10,10 +10,23 @@
    * @param {object} $window window object of the browser
    */
   function CaseManagementWorkflow (civicaseCrmApi, $window) {
+    this.getActivityFilters = getActivityFilters;
     this.createDuplicate = createDuplicate;
     this.getEditWorkflowURL = getEditWorkflowURL;
-    this.getWorkflowsList = getWorkflowsList;
+    this.getWorkflowsListForCaseOverview = getWorkflowsListForCaseOverview;
+    this.getWorkflowsListForManageWorkflow = getWorkflowsListForCaseOverview;
     this.redirectToWorkflowCreationScreen = redirectToWorkflowCreationScreen;
+
+    /**
+     * Get Initial Activity Filters to load dashboard
+     *
+     * @returns {object} filter
+     */
+    function getActivityFilters () {
+      return {
+        case_filter: { 'case_type_id.is_active': 1, contact_is_deleted: 0 }
+      };
+    }
 
     /**
      * @param {object} workflow workflow object
@@ -36,17 +49,35 @@
     /**
      * Returns workflows list for case management
      *
-     * @param {object} caseTypeCategoryName case type category name
+     * @param {object} selectedFilters filters
+     * @param {object} page page object needed for pagination
      * @returns {Array} api call parameters
      */
-    function getWorkflowsList (caseTypeCategoryName) {
-      return civicaseCrmApi('CaseType', 'get', {
-        sequential: 1,
-        case_type_category: caseTypeCategoryName,
-        options: { limit: 0 }
-      }).then(function (data) {
-        return data.values;
-      });
+    function getWorkflowsListForCaseOverview (selectedFilters, page) {
+      var apiCalls = [
+        [
+          'CaseType',
+          'get', _.extend({}, selectedFilters, {
+            sequential: 1,
+            options: {
+              limit: page.size,
+              offset: page.size * (page.num - 1)
+            }
+          })
+        ],
+        [
+          'CaseType',
+          'getcount', selectedFilters
+        ]
+      ];
+
+      return civicaseCrmApi(apiCalls)
+        .then(function (data) {
+          return {
+            values: data[0].values,
+            count: data[1]
+          };
+        });
     }
 
     /**

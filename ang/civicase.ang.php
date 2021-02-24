@@ -38,7 +38,6 @@ $requires = [
   'crmUi',
   'ngRoute',
   'angularFileUpload',
-  'bw.paging',
   'crmRouteBinder',
   'crmResource',
   'ui.bootstrap',
