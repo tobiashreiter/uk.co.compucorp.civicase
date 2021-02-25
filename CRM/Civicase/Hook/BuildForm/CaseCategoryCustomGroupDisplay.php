@@ -1,7 +1,7 @@
 <?php
 
 /**
- * CRM_Civicase_Hook_BuildForm_CaseCategoryCustomGroupDisplay class.
+ * Case category custom group display build form hook class.
  */
 class CRM_Civicase_Hook_BuildForm_CaseCategoryCustomGroupDisplay {
 
@@ -60,7 +60,10 @@ class CRM_Civicase_Hook_BuildForm_CaseCategoryCustomGroupDisplay {
    */
   private function shouldRun($formName, CRM_Core_Form $form) {
     $defaults = $form->getVar('_defaults');
-    $extends = $defaults['extends'][0];
+    $extends = !empty($defaults['extends'][0]) ? $defaults['extends'][0] : [];
+    if (empty($extends)) {
+      return FALSE;
+    }
 
     return $formName == CRM_Custom_Form_Group::class &&
       $form->getVar('_action') != CRM_Core_Action::ADD &&
