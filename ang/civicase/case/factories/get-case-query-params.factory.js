@@ -111,6 +111,9 @@
           return: relationshipReturnParams,
           'api.Contact.get': {
             contact_id: '$value.contact_id_b'
+          },
+          options: {
+            limit: 0
           }
         },
         sequential: 1

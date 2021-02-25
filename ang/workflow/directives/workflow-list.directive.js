@@ -16,40 +16,61 @@
 
   /**
    * @param {object} $scope scope object
-   * @param {object} $injector injector service of angular
    * @param {object} ts translation service
    * @param {object[]} WorkflowListColumns list of workflow list columns
    * @param {object[]} WorkflowListActionItems list of workflow list action items
    * @param {object} CaseTypeCategory case type catgory service
-   * @param {object} pascalCase service to convert a string to pascal case
    * @param {object[]} WorkflowListFilters list of workflow filters
+   * @param {Function} getServiceForInstance get service for a specific instance
    */
-  function workflowListController ($scope, $injector, ts,
-    WorkflowListColumns, WorkflowListActionItems, CaseTypeCategory,
-    pascalCase, WorkflowListFilters) {
+  function workflowListController ($scope, ts, WorkflowListColumns,
+    WorkflowListActionItems, CaseTypeCategory, WorkflowListFilters,
+    getServiceForInstance) {
     $scope.ts = ts;
     $scope.isLoading = false;
     $scope.workflows = [];
+    $scope.pageObj = { total: 0, size: 25, num: 1 };
+    $scope.totalCount = 0;
     $scope.actionItems = filterArrayForCurrentInstance(WorkflowListActionItems);
     $scope.tableColumns = filterArrayForCurrentInstance(WorkflowListColumns);
     $scope.filters = filterArrayForCurrentInstance(WorkflowListFilters);
     $scope.selectedFilters = {};
     $scope.refreshWorkflowsList = refreshWorkflowsList;
     $scope.redirectToWorkflowCreationScreen = redirectToWorkflowCreationScreen;
+    $scope.setPageTo = setPageTo;
 
     (function init () {
       applyDefaultValueToFilters();
       refreshWorkflowsList();
 
-      $scope.$on('workflow::list::refresh', refreshWorkflowsList);
+      $scope.$on('workflow::list::refresh', function () {
+        resetPagination();
+        refreshWorkflowsList();
+      });
     }());
+
+    /**
+     * Set Page Number
+     *
+     * @param {number} page new page number
+     */
+    function setPageTo (page) {
+      $scope.pageObj.num = page;
+
+      refreshWorkflowsList();
+    }
 
     /**
      * Apply default value to filters
      */
     function applyDefaultValueToFilters () {
       _.each($scope.filters, function (filter) {
-        $scope.selectedFilters[filter.filterIdentifier] = filter.defaultValue;
+        if (filter.filterSubObject) {
+          $scope.selectedFilters[filter.filterSubObject] = $scope.selectedFilters[filter.filterSubObject] || {};
+          $scope.selectedFilters[filter.filterSubObject][filter.filterIdentifier] = filter.defaultValue;
+        } else {
+          $scope.selectedFilters[filter.filterIdentifier] = filter.defaultValue;
+        }
       });
     }
 
@@ -96,6 +117,13 @@
     }
 
     /**
+     * Reset Pagination
+     */
+    function resetPagination () {
+      $scope.pageObj = { total: 0, size: 25, num: 1 };
+    }
+
+    /**
      * Get list of workflows for the sent case type category
      *
      * @param {string} caseTypeCategory case type category
@@ -105,30 +133,17 @@
       var categoryObject = CaseTypeCategory.findByName(caseTypeCategory);
       var instanceName = CaseTypeCategory.getCaseTypeCategoryInstance(categoryObject.value).name;
 
+      var filters = _.cloneDeep($scope.selectedFilters);
+      filters.case_type_category = $scope.caseTypeCategory;
+
       return getServiceForInstance(instanceName)
-        .getWorkflowsList($scope.caseTypeCategory, $scope.selectedFilters);
-    }
+        .getWorkflowsListForManageWorkflow(filters, $scope.pageObj)
+        .then(function (result) {
+          $scope.totalCount = result.count;
+          $scope.pageObj.total = Math.ceil(result.count / $scope.pageObj.size);
 
-    /**
-     * Searches for a angularJS service for the current case type category
-     * instance, if not found, returns the service for case management service
-     * as default.
-     *
-     * @param {string} instanceName name of the instance
-     * @returns {object/null} service
-     */
-    function getServiceForInstance (instanceName) {
-      var CASE_MANAGEMENT_INSTACE_NAME = 'case_management';
-
-      try {
-        return $injector.get(
-          pascalCase(instanceName) + 'Workflow'
-        );
-      } catch (e) {
-        return $injector.get(
-          pascalCase(CASE_MANAGEMENT_INSTACE_NAME) + 'Workflow'
-        );
-      }
+          return result.values;
+        });
     }
   }
 })(CRM.$, CRM._, angular);

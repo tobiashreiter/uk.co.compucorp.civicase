@@ -217,6 +217,7 @@ function civicase_civicrm_buildForm($formName, &$form) {
     new CRM_Civicase_Hook_BuildForm_RestrictCaseEmailContacts(),
     new CRM_Civicase_Hook_BuildForm_LimitRecipientFieldsToOnlySelectedContacts(),
     new CRM_Civicase_Hook_BuildForm_TokenTree(),
+    new CRM_Civicase_Hook_BuildForm_LinkCaseActivityDefaultStatus(),
   ];
 
   foreach ($hooks as $hook) {
