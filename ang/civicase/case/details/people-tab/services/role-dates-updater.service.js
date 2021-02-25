@@ -14,7 +14,6 @@
 
     this.getApiCallsForEndDate = getApiCallsForEndDate;
     this.getApiCallsForStartDate = getApiCallsForStartDate;
-    this.updatePreviousValue = updatePreviousValue;
 
     /**
      * @param {string} dateString A date in a year-month-day format.
@@ -128,20 +127,6 @@
           return ['Relationship', 'create', apiParams];
         })
         .value();
-    }
-
-    /**
-     * Stores the current value of the role's relationship in the previous
-     * values object. Useful for storing the relationship date changes.
-     *
-     * @param {object} role A role object as provided by the roles service.
-     * @param {string} fieldName The name of the field to store.
-     * @param {Function} callbackFn call back function to be called.
-     */
-    function updatePreviousValue (role, fieldName, callbackFn) {
-      role.previousValues[fieldName] = role.relationship[fieldName];
-
-      callbackFn && callbackFn();
     }
 
     /**

@@ -147,43 +147,5 @@
         ]));
       });
     });
-
-    describe('when updating the previous end date value', () => {
-      var callbackFn;
-
-      beforeEach(() => {
-        callbackFn = jasmine.createSpy('callbackFn');
-        roleData.relationship.end_date = '2000-12-31';
-
-        roleDatesUpdater.updatePreviousValue(roleData, 'end_date', callbackFn);
-      });
-
-      it('updates the previous end date value', () => {
-        expect(roleData.previousValues.end_date).toBe('2000-12-31');
-      });
-
-      it('calls the callback function', () => {
-        expect(callbackFn).toHaveBeenCalled();
-      });
-    });
-
-    describe('when updating the previous start date value', () => {
-      var callbackFn;
-
-      beforeEach(() => {
-        callbackFn = jasmine.createSpy('callbackFn');
-        roleData.relationship.start_date = '2000-01-31';
-
-        roleDatesUpdater.updatePreviousValue(roleData, 'start_date', callbackFn);
-      });
-
-      it('updates the previous start date value', () => {
-        expect(roleData.previousValues.start_date).toBe('2000-01-31');
-      });
-
-      it('calls the callback function', () => {
-        expect(callbackFn).toHaveBeenCalled();
-      });
-    });
   });
 })(CRM._);
