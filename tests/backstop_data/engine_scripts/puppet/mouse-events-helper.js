@@ -2,7 +2,7 @@
 
 const Utility = require('./utility.js');
 
-module.exports = async (page, scenario, viewport) => {
+module.exports = async (page, scenario, viewport, dontWait) => {
   const actions = [
     { name: 'hoverSelector', execute: hoverSelectorAction },
     { name: 'hoverSelectors', execute: hoverSelectorAction },
@@ -13,7 +13,7 @@ module.exports = async (page, scenario, viewport) => {
   for (const action of actions) {
     const scenarioHasAction = !!scenario[action.name];
 
-    scenarioHasAction && await action.execute(page, scenario, viewport);
+    scenarioHasAction && await action.execute(page, scenario, viewport, dontWait);
   }
 };
 
@@ -43,8 +43,9 @@ async function hoverSelectorAction (page, scenario, viewport) {
  * @param {object} page pupettter engine object
  * @param {object} scenario object of each scenario
  * @param {object} viewport viewport configurations
+ * @param {boolean} dontWait whether to apply additional wait
  */
-async function clickSelectorAction (page, scenario, viewport) {
+async function clickSelectorAction (page, scenario, viewport, dontWait) {
   const clickSelectors = scenario.clickSelectors || [scenario.clickSelector];
   const utility = new Utility(page, scenario, viewport);
 
@@ -57,6 +58,10 @@ async function clickSelectorAction (page, scenario, viewport) {
 
     if (scenario.waitForUIModalLoad) {
       await utility.waitForUIModalLoad();
+    }
+
+    if (!dontWait) {
+      await page.waitFor(1000);
     }
   }
 }

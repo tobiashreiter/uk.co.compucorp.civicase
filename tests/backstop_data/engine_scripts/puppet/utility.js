@@ -103,6 +103,11 @@ module.exports = class CrmPage {
    */
   async waitForAngular () {
     await this.engine.waitForSelector('#bootstrap-theme');
+
+    // remove drupal/civicrm error logging, which creates difference
+    await this.removeElements('#console');
+
+    await this.closeSystemErrorNotification();
   }
 
   /**
@@ -129,6 +134,7 @@ module.exports = class CrmPage {
     await this.engine.waitFor('.modal-dialog > form');
     await this.cleanups();
     await this.openAllAccordions();
+    await this.engine.waitFor(1000);
   }
 
   /**
@@ -201,6 +207,35 @@ module.exports = class CrmPage {
       await this.engine.evaluate(fn, selector);
     } catch (e) {
       console.log('Selector "' + selector + '" not found');
+    }
+  }
+
+  /**
+   * Waits for the System Error Notification to close.
+   */
+  async closeSystemErrorNotification () {
+    try {
+      const isSystemErrorNotificationVisible = await this.isElementVisible('#crm-notification-container a[title="close"]');
+
+      if (isSystemErrorNotificationVisible) {
+        await this.engine.click('#crm-notification-container a[title="close"]');
+        await this.engine.waitFor(1000);
+      }
+    } catch (e) {
+      console.log('System Error Notification not found');
+    }
+  }
+
+  /**
+   * @param {string} selector - the css selector for the element to wait
+   */
+  async removeElements (selector) {
+    try {
+      await this.engine.evaluate((selector) => {
+        CRM.$(selector).hide();
+      }, selector);
+    } catch (e) {
+      console.log('Selector not found');
     }
   }
 };

@@ -10,9 +10,13 @@ on:
       civicase_test_branch:
         description: CiviCase Test Branch/tag Name
         required: true
-      civicrm_version:
-        description: CiviCRM Version
-        default: master
+      civicrm_reference_version:
+        description: CiviCRM Reference Version
+        default: 5.28 # change this to the current civicrm version in use
+        required: true
+      civicrm_test_version:
+        description: CiviCRM Test Version
+        default: 5.28 # change this to the current civicrm version in use
         required: true
       reference_shoreditch_branch:
         description: Shoreditch Reference Branch/Tag Name
@@ -57,14 +61,14 @@ jobs:
           echo "IncludeOptional $HOME/.amp/apache.d/*.conf" >> /etc/apache2/apache2.conf
           /usr/sbin/apache2ctl restart
 
-      - name: Build Reference Drupal site (CiviCRM - ${{ github.event.inputs.civicrm_version }}, CiviCase - ${{ github.event.inputs.civicase_reference_branch }}, Shoreditch - ${{ github.event.inputs.reference_shoreditch_branch }})
+      - name: Build Reference Drupal site (CiviCRM - ${{ github.event.inputs.civicrm_reference_version }}, CiviCase - ${{ github.event.inputs.civicase_reference_branch }}, Shoreditch - ${{ github.event.inputs.reference_shoreditch_branch }})
         run: |
-          civibuild create drupal-clean --civi-ver ${{ github.event.inputs.civicrm_version }} --cms-ver 7.74 --web-root $GITHUB_WORKSPACE/${{ env.REFERENCE_SITE_FOLDER }} --url ${{ env.REFERENCE_SITE_URL }}
+          civibuild create drupal-clean --civi-ver ${{ github.event.inputs.civicrm_reference_version }} --cms-ver 7.74 --web-root $GITHUB_WORKSPACE/${{ env.REFERENCE_SITE_FOLDER }} --url ${{ env.REFERENCE_SITE_URL }}
           chmod -R 777 $GITHUB_WORKSPACE/${{ env.REFERENCE_SITE_FOLDER }}
 
-      - name: Build Test Drupal site (CiviCRM - ${{ github.event.inputs.civicrm_version }}, CiviCase - ${{ github.event.inputs.civicase_test_branch }}, Shoreditch - ${{ github.event.inputs.test_shoreditch_branch }})
+      - name: Build Test Drupal site (CiviCRM - ${{ github.event.inputs.civicrm_test_version }}, CiviCase - ${{ github.event.inputs.civicase_test_branch }}, Shoreditch - ${{ github.event.inputs.test_shoreditch_branch }})
         run: |
-          civibuild create drupal-clean --civi-ver ${{ github.event.inputs.civicrm_version }} --cms-ver 7.74 --web-root $GITHUB_WORKSPACE/${{ env.TEST_SITE_FOLDER }} --url ${{ env.TEST_SITE_URL }}
+          civibuild create drupal-clean --civi-ver ${{ github.event.inputs.civicrm_test_version }} --cms-ver 7.74 --web-root $GITHUB_WORKSPACE/${{ env.TEST_SITE_FOLDER }} --url ${{ env.TEST_SITE_URL }}
           chmod -R 777 $GITHUB_WORKSPACE/${{ env.TEST_SITE_FOLDER }}
 
       - name: Installing CiviCase and Shoreditch in Reference Site
@@ -99,7 +103,7 @@ jobs:
           npm install
           npx gulp backstopjs:setup-data
 
-      - name: Reference Screenshots in (CiviCRM - ${{ github.event.inputs.civicrm_version }}, CiviCase - ${{ github.event.inputs.civicase_reference_branch }}, Shoreditch - ${{ github.event.inputs.reference_shoreditch_branch }})
+      - name: Reference Screenshots in (CiviCRM - ${{ github.event.inputs.civicrm_reference_version }}, CiviCase - ${{ github.event.inputs.civicase_reference_branch }}, Shoreditch - ${{ github.event.inputs.reference_shoreditch_branch }})
         continue-on-error: true
         working-directory: ${{ env.REFERENCE_SITE_FOLDER }}/${{ env.CIVICRM_EXTENSIONS_DIR }}/${{ env.CIVICASE_BACKSTOP_DIR }}
         run: |
@@ -143,9 +147,9 @@ jobs:
           sed -i 's+${{ env.REFERENCE_SITE_URL }}+${{ env.TEST_SITE_URL }}+' site-config.json
           sed -i 's+${{ env.REFERENCE_SITE_FOLDER }}+${{ env.TEST_SITE_FOLDER }}+' site-config.json
 
-      - name: Test Screenshots in (CiviCRM - ${{ github.event.inputs.civicrm_version }}, CiviCase - ${{ github.event.inputs.civicase_test_branch }}, Shoreditch - ${{ github.event.inputs.test_shoreditch_branch }})
-        working-directory: ${{ env.REFERENCE_SITE_FOLDER }}/${{ env.CIVICRM_EXTENSIONS_DIR }}/${{ env.CIVICASE_BACKSTOP_DIR }}
+      - name: Test Screenshots in (CiviCRM - ${{ github.event.inputs.civicrm_test_version }}, CiviCase - ${{ github.event.inputs.civicase_test_branch }}, Shoreditch - ${{ github.event.inputs.test_shoreditch_branch }})
         continue-on-error: true
+        working-directory: ${{ env.REFERENCE_SITE_FOLDER }}/${{ env.CIVICRM_EXTENSIONS_DIR }}/${{ env.CIVICASE_BACKSTOP_DIR }}
         run: |
           npx gulp backstopjs:test
 

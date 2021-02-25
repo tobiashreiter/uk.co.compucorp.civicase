@@ -8,11 +8,7 @@ module.exports = async (page, scenario, vp) => {
 
   await utility.waitForAngular();
 
-  if (!scenario.captureLoadingScreen) {
-    await utility.waitForLoadingComplete(scenario.waitForLoadingComplete);
-  }
-
-  await mouseEventsHelper(page, scenario);
+  await mouseEventsHelper(page, scenario, null, true);
 
   if (scenario.isUIBPopover) {
     // Clone the popover to a new element so that it doesn't get lost
