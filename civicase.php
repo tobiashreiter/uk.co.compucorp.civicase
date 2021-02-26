@@ -664,6 +664,7 @@ function civicase_civicrm_alterAngular(Manager $angular) {
     [['administer CiviCase', 'administer CiviCRM']]
   )) {
     $angular->add(CRM_Civicase_Hook_alterAngular_AngularChangeSet::getForCaseTypeCategoryField());
+    $angular->add(CRM_Civicase_Hook_alterAngular_AngularChangeSet::getForHidingNewCaseTypeButton());
   }
 }
 
