@@ -35,4 +35,23 @@ class CRM_Civicase_Hook_alterAngular_AngularChangeSet {
       });
   }
 
+  /**
+   * Returns ChangeSet for hiding New Case Type button.
+   *
+   * On the case type listing, we don't want to show the "New Case Type" button
+   * because that action is performed specifically on every "Manage Workflows".
+   *
+   * @return \Civi\Angular\ChangeSet
+   *   Angular ChangeSet.
+   */
+  public static function getForHidingNewCaseTypeButton() {
+    return ChangeSet::create('hide-new-case-type-button')
+      ->alterHtml('~/crmCaseType/list.html', function (phpQueryObject $doc) {
+        $element = $doc->find("a[ng-href*=#/caseType/new");
+        if ($element->length) {
+          $element->remove();
+        }
+      });
+  }
+
 }
