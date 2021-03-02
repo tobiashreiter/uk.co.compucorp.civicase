@@ -106,8 +106,8 @@ module.exports = class CrmPage {
 
     // remove drupal/civicrm error logging, which creates difference
     await this.removeElements('#console');
-
-    await this.closeSystemErrorNotification();
+    // remove system error notification
+    await this.removeElements('#crm-notification-container');
   }
 
   /**
@@ -207,22 +207,6 @@ module.exports = class CrmPage {
       await this.engine.evaluate(fn, selector);
     } catch (e) {
       console.log('Selector "' + selector + '" not found');
-    }
-  }
-
-  /**
-   * Waits for the System Error Notification to close.
-   */
-  async closeSystemErrorNotification () {
-    try {
-      const isSystemErrorNotificationVisible = await this.isElementVisible('#crm-notification-container a[title="close"]');
-
-      if (isSystemErrorNotificationVisible) {
-        await this.engine.click('#crm-notification-container a[title="close"]');
-        await this.engine.waitFor(1000);
-      }
-    } catch (e) {
-      console.log('System Error Notification not found');
     }
   }
 
