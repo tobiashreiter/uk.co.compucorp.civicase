@@ -136,7 +136,7 @@
               })
             }]];
 
-            spyOn($rootScope, '$broadcast');
+            spyOn($rootScope, '$broadcast').and.callThrough();
             civicaseCrmApiMock.and.returnValue($q.resolve([{ values: $scope.selectedActivities }]));
             saveMethod();
             $rootScope.$digest();
@@ -160,7 +160,7 @@
             const saveMethod = modalOpenCall[3].buttons[0].click;
             model.case_id = $scope.selectedActivities[0].case_id;
 
-            spyOn($rootScope, '$broadcast');
+            spyOn($rootScope, '$broadcast').and.callThrough();
             civicaseCrmApiMock.and.returnValue($q.resolve([{ values: $scope.selectedActivities }]));
             saveMethod();
             $rootScope.$digest();
@@ -303,7 +303,7 @@
               })
             }]];
 
-            spyOn($rootScope, '$broadcast');
+            spyOn($rootScope, '$broadcast').and.callThrough();
             civicaseCrmApiMock.and.returnValue($q.resolve([{ values: $scope.selectedActivities }]));
             saveMethod();
             $rootScope.$digest();
@@ -327,7 +327,7 @@
             const saveMethod = modalOpenCall[3].buttons[0].click;
             model.case_id = $scope.selectedActivities[0].case_id;
 
-            spyOn($rootScope, '$broadcast');
+            spyOn($rootScope, '$broadcast').and.callThrough();
             civicaseCrmApiMock.and.returnValue($q.resolve([{ values: $scope.selectedActivities }]));
             saveMethod();
             $rootScope.$digest();

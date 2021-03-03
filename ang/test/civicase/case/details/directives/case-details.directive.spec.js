@@ -123,7 +123,7 @@
 
       describe('when case is unfocused and screen width is more than 1690px', function () {
         beforeEach(function () {
-          spyOn($rootScope, '$broadcast');
+          spyOn($rootScope, '$broadcast').and.callThrough();
           spyOn($document, 'width').and.returnValue(1700);
           compileDirective();
           element.isolateScope().isFocused = true;
@@ -337,7 +337,7 @@
 
     describe('when clear all filters button is pressed', function () {
       beforeEach(function () {
-        spyOn($rootScope, '$broadcast');
+        spyOn($rootScope, '$broadcast').and.callThrough();
         compileDirective();
 
         element.isolateScope().clearAllFiltersToLoadSpecificCase();
@@ -644,7 +644,7 @@
 
       beforeEach(function () {
         initController();
-        spyOn($rootScope, '$broadcast');
+        spyOn($rootScope, '$broadcast').and.callThrough();
         loadFormBefore = CRM.loadForm;
         CRM.loadForm = jasmine.createSpy();
         CRM.loadForm.and.returnValue({
