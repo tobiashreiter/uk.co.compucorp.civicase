@@ -51,7 +51,7 @@ function civicrm_api3_activity_getall(array $params) {
 function _civicrm_api3_activity_getall_limitContacts(array &$result, string $fieldName) {
   foreach ($result as &$record) {
     if (empty($record[$fieldName . '_id'])) {
-      return;
+      continue;
     }
 
     $contactIds = $record[$fieldName . '_id'];
