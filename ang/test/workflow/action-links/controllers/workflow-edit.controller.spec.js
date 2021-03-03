@@ -5,7 +5,7 @@
     let $controller, $rootScope, $scope, $window,
       CaseTypesMockData, CaseManagementWorkflow;
 
-    beforeEach(module('workflow', 'civicase.data', ($provide) => {
+    beforeEach(module('workflow.mock', 'workflow', 'civicase.data', ($provide) => {
       $provide.value('$window', { location: {} });
     }));
 

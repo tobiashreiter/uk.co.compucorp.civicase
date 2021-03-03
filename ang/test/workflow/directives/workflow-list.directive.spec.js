@@ -149,7 +149,7 @@
     function injectModulesAndDependencies () {
       initSpyModule();
 
-      module('workflow', 'civicase.data', 'civicase.spy', ($provide) => {
+      module('workflow.mock', 'workflow', 'civicase.data', 'civicase.spy', ($provide) => {
         civicaseCrmApiMock = jasmine.createSpy('civicaseCrmApi');
 
         $provide.value('civicaseCrmApi', civicaseCrmApiMock);

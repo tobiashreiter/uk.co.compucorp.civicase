@@ -5,7 +5,7 @@
     let $q, $rootScope, $window, civicaseCrmApiMock, CaseTypesMockData,
       CaseManagementWorkflow;
 
-    beforeEach(module('workflow', 'civicase.data', ($provide) => {
+    beforeEach(module('workflow.mock', 'workflow', 'civicase.data', ($provide) => {
       civicaseCrmApiMock = jasmine.createSpy('civicaseCrmApi');
 
       $provide.value('civicaseCrmApi', civicaseCrmApiMock);

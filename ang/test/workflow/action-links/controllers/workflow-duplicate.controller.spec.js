@@ -5,7 +5,7 @@
     let $controller, $rootScope, $q, $scope, dialogService, CaseTypesMockData,
       crmStatus, CaseManagementWorkflow;
 
-    beforeEach(module('workflow', 'civicase.data', ($provide) => {
+    beforeEach(module('workflow.mock', 'workflow', 'civicase.data', ($provide) => {
       $provide.value('dialogService',
         jasmine.createSpyObj('dialogService', ['open', 'close'])
       );
