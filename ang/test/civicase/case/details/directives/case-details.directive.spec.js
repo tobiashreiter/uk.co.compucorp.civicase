@@ -605,9 +605,9 @@
             // refresh case details:
             caseItem['api.Case.getcaselist.relatedCasesByContact'] = { values: [] };
             caseItem['api.Case.getcaselist.linkedCases'] = { values: [] };
-            caseItem['api.Activity.get.recentCommunication'] = { values: [] };
-            caseItem['api.Activity.get.tasks'] = { values: [] };
-            caseItem['api.Activity.get.nextActivitiesWhichIsNotMileStone'] = { values: [] };
+            caseItem['api.Activity.getAll.recentCommunication'] = { values: [] };
+            caseItem['api.Activity.getAll.tasks'] = { values: [] };
+            caseItem['api.Activity.getAll.nextActivitiesWhichIsNotMileStone'] = { values: [] };
             caseItem['api.CustomValue.getalltreevalues'] = {
               values: customDataBlocks
             };

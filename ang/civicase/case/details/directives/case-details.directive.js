@@ -438,14 +438,14 @@
       delete (item['api.Activity.getcount.scheduled']);
       delete (item['api.Activity.getcount.scheduled_overdue']);
       // Recent communications
-      item.recentCommunication = _.each(_.cloneDeep(item['api.Activity.get.recentCommunication'].values), formatAct);
-      delete (item['api.Activity.get.recentCommunication']);
+      item.recentCommunication = _.each(_.cloneDeep(item['api.Activity.getAll.recentCommunication'].values), formatAct);
+      delete (item['api.Activity.getAll.recentCommunication']);
       // Tasks
-      item.tasks = _.each(_.cloneDeep(item['api.Activity.get.tasks'].values), formatAct);
-      delete (item['api.Activity.get.tasks']);
+      item.tasks = _.each(_.cloneDeep(item['api.Activity.getAll.tasks'].values), formatAct);
+      delete (item['api.Activity.getAll.tasks']);
       // nextActivitiesWhichIsNotMileStoneList
-      item.nextActivityNotMilestone = _.each(_.cloneDeep(item['api.Activity.get.nextActivitiesWhichIsNotMileStone'].values), formatAct)[0];
-      delete (item['api.Activity.get.nextActivitiesWhichIsNotMileStone']);
+      item.nextActivityNotMilestone = _.each(_.cloneDeep(item['api.Activity.getAll.nextActivitiesWhichIsNotMileStone'].values), formatAct)[0];
+      delete (item['api.Activity.getAll.nextActivitiesWhichIsNotMileStone']);
 
       // Custom fields
       var customData = item['api.CustomValue.getalltreevalues'].values || [];
