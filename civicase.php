@@ -590,17 +590,7 @@ function civicase_civicrm_selectWhereClause($entity, &$clauses) {
  * Implements hook_civicrm_entityTypes().
  */
 function civicase_civicrm_entityTypes(&$entityTypes) {
-  $entityTypes[] = [
-    'name'  => 'CaseContactLock',
-    'class' => 'CRM_Civicase_DAO_CaseContactLock',
-    'table' => 'civicase_contactlock',
-  ];
-  $entityTypes[] = [
-    'name'  => 'CaseCategoryInstance',
-    'class' => 'CRM_Civicase_DAO_CaseCategoryInstance',
-    'table' => 'civicrm_case_category_instance',
-  ];
-
+  _civicase_civix_civicrm_entityTypes($entityTypes);
   _civicase_add_case_category_case_type_entity($entityTypes);
 }
 
