@@ -131,7 +131,7 @@
         });
 
         it('does not fire the case details unfocused event', function () {
-          expect($rootScope.$broadcast).not.toHaveBeenCalled();
+          expect($rootScope.$broadcast).not.toHaveBeenCalledWith('civicase::case-details::unfocused');
         });
       });
     });
