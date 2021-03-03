@@ -588,11 +588,7 @@
         initController(null);
 
         url = $scope.seeAllLinkUrl(dates.yesterday);
-        queryParams = CRM.testUtils.extractQueryStringParams(url.$$unwrapTrustedValue());
-      });
-
-      it('is a trusted url', function () {
-        expect(url.$$unwrapTrustedValue).toBeDefined();
+        queryParams = CRM.testUtils.extractQueryStringParams(url);
       });
 
       it('displays the activities from the dashboard by default', function () {
