@@ -16,7 +16,7 @@ use CRM_Civicase_Event_Listener_ActivityFilter as CivicaseActivityFilter;
  * @see http://wiki.civicrm.org/confluence/display/CRMDOC/API+Architecture+Standards
  */
 function _civicrm_api3_activity_Getmonthswithactivities_spec(array &$spec) {
-  $activityFields = civicrm_api3('Activity', 'getfields', array('api_action' => 'get'));
+  $activityFields = civicrm_api3('Activity', 'getfields', ['api_action' => 'get']);
   $spec = $activityFields['values'];
 }
 
@@ -67,11 +67,11 @@ function civicrm_api3_activity_Getmonthswithactivities(array $params) {
     }
 
     if ($activity_group_index === -1) {
-      $grouped_activity_dates[] = array(
+      $grouped_activity_dates[] = [
         'year' => $activity_year,
         'month' => $activity_month,
         'count' => 1,
-      );
+      ];
     }
     else {
       $grouped_activity_dates[$activity_group_index]['count'] = $grouped_activity_dates[$activity_group_index]['count'] + 1;
