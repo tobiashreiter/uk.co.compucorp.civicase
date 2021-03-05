@@ -13,7 +13,7 @@ jobs:
   Test:
     runs-on: ubuntu-latest
     steps:
-      - uses: compucorp/release-pr-action@1.0
+      - uses: compucorp/release-pr-action@1.0.0
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION_NAME: "${{ github.event.inputs.version_to_be_released }}"
