@@ -4,7 +4,7 @@ use CRM_Civicase_Service_CaseCategoryCustomDataType as CaseCategoryCustomDataSer
 use CRM_Civicase_Test_Fabricator_CaseCategory as CaseCategoryFabricator;
 
 /**
- * Runs tests on CaseCategoryCustomData Service tests.
+ * Runs tests on CaseCategoryCustomDataType Service tests.
  *
  * @group headless
  */
@@ -117,7 +117,7 @@ WHERE g.id = v.option_group_id AND
    * @param string $caseCategoryName
    *   Case Category Name.
    *
-   * @return array
+   * @return array|null
    *   Custom data type option value.
    */
   private function getCustomDataOptionValue(string $caseCategoryName) {
