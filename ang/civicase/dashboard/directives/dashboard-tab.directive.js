@@ -5,7 +5,8 @@
     return {
       scope: {
         activityFilters: '=',
-        filters: '='
+        filters: '=',
+        linkToManageCase: '='
       },
       restrict: 'E',
       controller: 'dashboardTabController',
