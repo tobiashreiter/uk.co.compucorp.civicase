@@ -29,7 +29,14 @@
      * @returns {string} the form URL for activities that are sent emails.
      */
     function getEmailActivityFormUrl (activity) {
-      return getActivityFormUrl(activity, { action: 'view' });
+      var context = activity.case_id ? 'case' : 'activity';
+
+      return getCrmUrl('civicrm/activity', {
+        action: 'view',
+        id: activity.id,
+        reset: 1,
+        context: context
+      });
     }
   }
 })(CRM._, angular, CRM.url);
