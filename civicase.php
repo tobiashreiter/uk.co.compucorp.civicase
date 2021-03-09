@@ -434,6 +434,7 @@ function civicase_civicrm_postProcess($formName, &$form) {
     new CRM_Civicase_Hook_PostProcess_ActivityFormStatusWordReplacement(),
     new CRM_Civicase_Hook_PostProcess_RedirectToCaseDetails(),
     new CRM_Civicase_Hook_PostProcess_AttachEmailActivityToAllCases(),
+    new CRM_Civicase_Hook_PostProcess_HandleDraftActivity(),
   ];
 
   foreach ($hooks as $hook) {
@@ -443,27 +444,6 @@ function civicase_civicrm_postProcess($formName, &$form) {
   if (!empty($form->civicase_reload)) {
     $api = civicrm_api3('Case', 'getdetails', ['check_permissions' => 1] + $form->civicase_reload);
     $form->ajaxResponse['civicase_reload'] = $api['values'];
-  }
-  // When emailing/printing - delete draft.
-  $specialForms = ['CRM_Contact_Form_Task_PDF', 'CRM_Contact_Form_Task_Email'];
-  if (in_array($formName, $specialForms)) {
-    $urlParams = parse_url(htmlspecialchars_decode($form->controller->_entryURL), PHP_URL_QUERY);
-    parse_str($urlParams, $urlParams);
-
-    $ifDownloadDocumentButtonClicked = array_key_exists('_qf_PDF_upload', $form->getVar('_submitValues')['buttons']);
-    $ifSendEmailButtonIsClicked = array_key_exists('_qf_Email_upload', $form->getVar('_submitValues')['buttons']);
-
-    if ($ifDownloadDocumentButtonClicked && !empty($urlParams['draft_id'])) {
-      civicrm_api3('Activity', 'create', [
-        'id' => $urlParams['draft_id'],
-        'status_id' => 'Completed',
-      ]);
-    }
-    if ($ifSendEmailButtonIsClicked && !empty($urlParams['draft_id'])) {
-      civicrm_api3('Activity', 'delete', [
-        'id' => $urlParams['draft_id'],
-      ]);
-    }
   }
 }
 
