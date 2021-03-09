@@ -451,11 +451,17 @@ function civicase_civicrm_postProcess($formName, &$form) {
     parse_str($urlParams, $urlParams);
 
     $ifDownloadDocumentButtonClicked = array_key_exists('_qf_PDF_upload', $form->getVar('_submitValues')['buttons']);
+    $ifSendEmailButtonIsClicked = array_key_exists('_qf_Email_upload', $form->getVar('_submitValues')['buttons']);
 
     if ($ifDownloadDocumentButtonClicked && !empty($urlParams['draft_id'])) {
       civicrm_api3('Activity', 'create', [
         'id' => $urlParams['draft_id'],
         'status_id' => 'Completed',
+      ]);
+    }
+    if ($ifSendEmailButtonIsClicked && !empty($urlParams['draft_id'])) {
+      civicrm_api3('Activity', 'delete', [
+        'id' => $urlParams['draft_id'],
       ]);
     }
   }
