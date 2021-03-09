@@ -1,4 +1,4 @@
-(function (angular, getCrmUrl) {
+(function (angular) {
   var module = angular.module('civicase');
 
   module.service('UpdateActivityForm', UpdateActivityForm);
@@ -33,4 +33,4 @@
       return getActivityFormUrl(activity, { action: 'update' });
     }
   }
-})(angular, CRM.url);
+})(angular);

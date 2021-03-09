@@ -22,9 +22,10 @@
      * Contact Card directive's controller
      *
      * @param {object} $scope scope object reference.
+     * @param {Function} civicaseCrmUrl crm url service.
      */
-    function civicaseContactCardController ($scope) {
-      $scope.url = CRM.url;
+    function civicaseContactCardController ($scope, civicaseCrmUrl) {
+      $scope.url = civicaseCrmUrl;
       $scope.mainContact = null;
 
       (function init () {

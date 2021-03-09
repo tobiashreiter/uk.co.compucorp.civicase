@@ -1,4 +1,4 @@
-(function (_, angular, getCrmUrl) {
+(function (_, angular) {
   var module = angular.module('civicase');
 
   module.service('EmailActivityForm', EmailActivityForm);
@@ -8,9 +8,9 @@
    *
    * Sent emails can only be opened in view mode.
    *
-   * @param {Function} getActivityFormUrl The get activity form URL service.
+   * @param {Function} civicaseCrmUrl crm url service.
    */
-  function EmailActivityForm (getActivityFormUrl) {
+  function EmailActivityForm (civicaseCrmUrl) {
     this.canChangeStatus = true;
     this.canHandleActivity = isCompletedEmailActivity;
     this.getActivityFormUrl = getEmailActivityFormUrl;
@@ -31,7 +31,7 @@
     function getEmailActivityFormUrl (activity) {
       var context = activity.case_id ? 'case' : 'activity';
 
-      return getCrmUrl('civicrm/activity', {
+      return civicaseCrmUrl('civicrm/activity', {
         action: 'view',
         id: activity.id,
         reset: 1,
@@ -39,4 +39,4 @@
       });
     }
   }
-})(CRM._, angular, CRM.url);
+})(CRM._, angular);

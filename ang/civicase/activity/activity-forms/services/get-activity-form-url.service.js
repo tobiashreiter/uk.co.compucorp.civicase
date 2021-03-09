@@ -1,7 +1,7 @@
-(function (angular, getCrmUrl) {
+(function (angular) {
   var module = angular.module('civicase');
 
-  module.factory('getActivityFormUrl', function () {
+  module.factory('getActivityFormUrl', function (civicaseCrmUrl) {
     return getActivityFormUrl;
 
     /**
@@ -22,7 +22,7 @@
         urlParams.caseid = activity.case_id;
       }
 
-      return getCrmUrl(urlPath, urlParams);
+      return civicaseCrmUrl(urlPath, urlParams);
     }
   });
-})(angular, CRM.url);
+})(angular);
