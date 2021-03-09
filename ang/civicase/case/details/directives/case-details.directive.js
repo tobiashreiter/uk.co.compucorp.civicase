@@ -22,7 +22,7 @@
   /**
    * Case Details Controller
    *
-   * @param {object} $location $location service
+   * @param {Function} civicaseCrmUrl crm url service.
    * @param {object} $sce angular Strict Contextual Escaping service
    * @param {object} $rootScope $rootScope
    * @param {object} $scope $scope
@@ -47,7 +47,7 @@
    * @param {object} CaseDetailsSummaryBlocks case details summary blocks
    * @param {object} DetailsCaseTab case details case tab service reference
    */
-  function civicaseCaseDetailsController ($location, $sce, $rootScope, $scope,
+  function civicaseCaseDetailsController (civicaseCrmUrl, $sce, $rootScope, $scope,
     $document, allowLinkedCasesTab, BulkActions, CaseDetailsTabs, civicaseCrmApi,
     formatActivity, formatCase, getActivityFeedUrl, getCaseQueryParams, $route,
     $timeout, crmStatus, CasesUtils, PrintMergeCaseAction, ts, ActivityType,
@@ -146,7 +146,7 @@
       };
 
       CRM
-        .loadForm(CRM.url('civicrm/activity/email/add', createEmailURLParams))
+        .loadForm(civicaseCrmUrl('civicrm/activity/email/add', createEmailURLParams))
         .on('crmFormSuccess', function () {
           $rootScope.$broadcast('civicase::activity::updated');
         });
@@ -158,7 +158,7 @@
     function createPDFLetter () {
       PrintMergeCaseAction.doAction([$scope.item])
         .then(function (pdfLetter) {
-          CRM.loadForm(CRM.url(pdfLetter.path, pdfLetter.query));
+          CRM.loadForm(civicaseCrmUrl(pdfLetter.path, pdfLetter.query));
         });
     }
 
@@ -332,7 +332,7 @@
      * @returns {object} url to view the activity
      */
     function viewActivityUrl (id) {
-      return CRM.url('civicrm/case/activity', {
+      return civicaseCrmUrl('civicrm/case/activity', {
         action: 'update',
         reset: 1,
         cid: $scope.item.client[0].contact_id,
@@ -347,7 +347,7 @@
      * @returns {object} url to edit the activity
      */
     function getEditActivityUrl (id) {
-      return CRM.url('civicrm/case/activity', {
+      return civicaseCrmUrl('civicrm/case/activity', {
         action: 'update',
         reset: 1,
         caseid: $scope.item.id,
@@ -367,7 +367,7 @@
         return item.id;
       }).join(',');
 
-      return CRM.url('civicrm/case/customreport/print', {
+      return civicaseCrmUrl('civicrm/case/customreport/print', {
         all: 1,
         redact: 0,
         cid: $scope.item.client[0].contact_id,
