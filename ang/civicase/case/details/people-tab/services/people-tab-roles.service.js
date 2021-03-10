@@ -2,7 +2,7 @@
   var module = angular.module('civicase');
 
   module.service('civicasePeopleTabRoles', function (isTruthy, RelationshipType,
-    ts) {
+    ts, allowMultipleCaseClients) {
     var caseContacts = [];
     var caseRelationships = [];
     var roles = this;
@@ -262,7 +262,9 @@
      *   a given case.
      */
     function setCaseRelationships (newCaseRelationships) {
-      caseRelationships = getUniqueCaseRelationships(newCaseRelationships);
+      caseRelationships = !allowMultipleCaseClients
+        ? newCaseRelationships
+        : getUniqueCaseRelationships(newCaseRelationships);
     }
 
     /**

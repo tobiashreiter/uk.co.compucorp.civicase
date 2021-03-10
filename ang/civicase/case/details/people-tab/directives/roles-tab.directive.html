@@ -199,7 +199,9 @@
           >
             <i class="fa fa-user-plus"></i>
           </button>
-          <div ng-if="role.contact_id" class="btn-group btn-group-sm">
+          <div
+            ng-if="(role.is_active === '1' || role.role === ts('Client')) && role.contact_id"
+            class="btn-group btn-group-sm">
             <button
               type="button"
               class="btn btn-default dropdown-toggle"
