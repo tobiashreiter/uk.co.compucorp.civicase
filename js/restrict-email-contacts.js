@@ -21,7 +21,7 @@
       var $field = $(this);
       var isToField = $field.attr('name') === 'to';
       var contactSelect2Options = isToField
-        ? getContactOptions({ idFieldName: 'contact_id' })
+        ? getContactOptions({ idFieldName: 'value' })
         : getContactOptions({ idFieldName: 'email_id' });
 
       $field.crmSelect2({

@@ -31,6 +31,7 @@ class CRM_Civicase_Hook_BuildForm_LimitRecipientFieldsToOnlySelectedContacts {
       return [
         'email' => $contact['email'],
         'display_name' => $contact['display_name'],
+        'value' => $contact['contact_id'] . '::' . $contact['email'],
         'email_id' => $contact['email_id'],
         'contact_id' => $contact['contact_id'],
       ];
