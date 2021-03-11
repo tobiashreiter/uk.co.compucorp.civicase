@@ -149,7 +149,7 @@ class api_v3_CaseRoleCreationTest extends BaseHeadlessTest {
     $relationshipCreated->id = $relationshipCreatedId;
     $relationshipCreated->find();
 
-    $this->assertNotEquals($relationshipCreated->is_active, $relationshipUpdated['id']);
+    $this->assertNotEquals($relationshipCreated->id, $relationshipUpdated['id']);
     $this->assertEquals(1, $relationshipUpdated['is_active']);
     $this->assertEquals(0, $relationshipCreated->is_active);
   }
