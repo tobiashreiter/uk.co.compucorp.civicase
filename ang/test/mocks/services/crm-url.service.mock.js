@@ -2,6 +2,8 @@
   var module = angular.module('civicase-base');
 
   module.factory('civicaseCrmUrl', function () {
-    return CRM.url;
+    var mockURL = CRM.url;
+
+    return mockURL;
   });
 })(CRM);
