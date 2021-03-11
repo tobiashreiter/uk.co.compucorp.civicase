@@ -65,11 +65,19 @@ class CRM_Civicase_Hook_BuildForm_RestrictCaseEmailContacts {
     $caseDetails = CRM_Utils_Array::first($caseDetailsResponse['values']);
 
     $caseContacts = array_map(function ($caseContact) {
+      $contactResponse = civicrm_api3('Contact', 'get', [
+        'sequential' => 1,
+        'id' => $caseContact['contact_id'],
+        'options' => ['limit' => 1],
+      ]);
+
+      $emailID = CRM_Utils_Array::first($contactResponse['values'])['email_id'];
+
       return [
         'role' => $caseContact['role'],
         'email' => $caseContact['email'],
-        'value' => $caseContact['contact_id'] . '::' . $caseContact['email'],
         'display_name' => $caseContact['display_name'],
+        'email_id' => $emailID,
         'contact_id' => $caseContact['contact_id'],
       ];
     }, $caseDetails['contacts']);
