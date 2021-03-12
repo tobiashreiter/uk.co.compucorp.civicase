@@ -47,7 +47,7 @@ class CRM_Civicase_Service_CaseCategoryCustomDataTypeTest extends BaseHeadlessTe
   /**
    * Try to create twice the same Custom Data Type.
    */
-  public function testCreateTwiceSameCustomDataType() {
+  public function testCreateTwiceSameCustomDataTypeDoesNotCreateDuplicates() {
     $this->cleanCustomDataTypes();
 
     $caseCategory = CaseCategoryFabricator::fabricate();
