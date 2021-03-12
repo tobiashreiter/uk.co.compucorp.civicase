@@ -103,12 +103,11 @@ class CRM_Civicase_Service_CaseCategoryCustomDataTypeTest extends BaseHeadlessTe
    * Delete all existent custom data types.
    */
   private function cleanCustomDataTypes() {
-    $query = "DELETE v
-FROM civicrm_option_group g, civicrm_option_value v
-WHERE g.id = v.option_group_id AND
-      g.name = 'custom_data_type'";
-
-    CRM_Core_DAO::executeQuery($query);
+    CRM_Core_DAO::executeQuery("
+      DELETE v
+      FROM civicrm_option_group g, civicrm_option_value v
+      WHERE g.id = v.option_group_id AND g.name = 'custom_data_type'
+    ");
   }
 
   /**
