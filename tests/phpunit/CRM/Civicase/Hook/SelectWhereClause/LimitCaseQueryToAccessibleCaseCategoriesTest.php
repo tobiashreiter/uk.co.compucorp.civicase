@@ -75,19 +75,17 @@ class CRM_Civicase_Hook_SelectWhereClause_LimitCaseQueryToAccessibleCaseCategori
    * Clean the cases and types created.
    */
   public static function tearDownAfterClass() {
-    civicrm_api3('Case', 'delete', [
-      'id' => static::$cases[0]['id'],
-    ]);
-    civicrm_api3('Case', 'delete', [
-      'id' => static::$cases[1]['id'],
-    ]);
+    foreach (static::$cases as $case) {
+      civicrm_api3('Case', 'delete', [
+        'id' => $case['id'],
+      ]);
+    }
 
-    civicrm_api3('CaseType', 'delete', [
-      'id' => static::$caseTypes[0]['id'],
-    ]);
-    civicrm_api3('CaseType', 'delete', [
-      'id' => static::$caseTypes[1]['id'],
-    ]);
+    foreach (static::$caseTypes as $caseType) {
+      civicrm_api3('CaseType', 'delete', [
+        'id' => $caseType['id'],
+      ]);
+    }
   }
 
   /**
