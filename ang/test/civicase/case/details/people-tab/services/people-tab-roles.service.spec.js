@@ -1,5 +1,3 @@
-/* eslint-env jasmine */
-
 ((_) => {
   describe('PeopleTabRoles', () => {
     let caseItem, caseType, peopleTabRoles, relationships, relationshipTypes,

@@ -1,5 +1,3 @@
-/* eslint-env jasmine */
-
 (($, loadForm) => {
   describe('AddCaseService', () => {
     let $window, AddCase, CaseCategoryWebformSettings, civicaseCrmUrl;

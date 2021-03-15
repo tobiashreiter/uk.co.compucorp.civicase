@@ -1,5 +1,3 @@
-/* eslint-env jasmine */
-
 ((_) => {
   describe('CasesUtils', () => {
     var CasesData, ContactsCache, CasesUtils, mockTs;

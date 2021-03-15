@@ -1,5 +1,3 @@
-/* eslint-env jasmine */
-
 (function ($, _) {
   describe('civicaseActivityFilters', function () {
     var $compile, $rootScope, $scope, activityFilters, CaseTypeCategory,

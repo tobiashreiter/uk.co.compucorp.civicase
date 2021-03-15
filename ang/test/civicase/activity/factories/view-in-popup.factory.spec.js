@@ -1,5 +1,3 @@
-/* eslint-env jasmine */
-
 (($, _, loadCrmForm) => {
   describe('viewInPopup', () => {
     let viewInPopup, mockGetActivityFormService, mockGetActivityFormUrl;

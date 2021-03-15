@@ -1,5 +1,3 @@
-/* eslint-env jasmine */
-
 (function (_) {
   describe('AddActivityMenu', function () {
     describe('Add Activity Menu Controller', function () {
