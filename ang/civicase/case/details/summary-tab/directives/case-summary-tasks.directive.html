@@ -9,7 +9,7 @@
       {{item.category_count.task.overdue}} </span>
   </h3>
   <a class="pull-right"
-     ng-href="{{ getActivityFeedUrl({ caseId: item.id, category: 'task', statusType: 'completed' }) }}"
+     ng-href="{{ getActivityFeedUrl({ caseId: item.id, category: 'task' }) }}"
      ng-if="item.category_count.task.incomplete"
      title="{{ ts('View All') }}"
   >{{ ts('View All') }}</a>
