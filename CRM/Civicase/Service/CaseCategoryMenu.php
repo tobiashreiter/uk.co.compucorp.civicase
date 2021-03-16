@@ -16,8 +16,7 @@ class CRM_Civicase_Service_CaseCategoryMenu {
    *   Case Type category name.
    */
   public function createItems($caseTypeCategoryName) {
-    $caseTypeCategoryName = strtolower($caseTypeCategoryName);
-    $labelForMenu = ucfirst($caseTypeCategoryName);
+    $labelForMenu = ucfirst(strtolower($caseTypeCategoryName));
 
     $result = civicrm_api3('Navigation', 'get', ['name' => $caseTypeCategoryName]);
 
@@ -65,7 +64,7 @@ class CRM_Civicase_Service_CaseCategoryMenu {
    *   Menu ID.
    */
   protected function createCaseCategorySubmenus($caseTypeCategoryName, array $permissions, $caseCategoryMenuId) {
-    $labelForMenu = ucfirst($caseTypeCategoryName);
+    $labelForMenu = ucfirst(strtolower($caseTypeCategoryName));
 
     $submenus = [
       [
