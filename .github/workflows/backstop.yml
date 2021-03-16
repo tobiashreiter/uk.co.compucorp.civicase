@@ -81,6 +81,13 @@ jobs:
           drush en bootstrap -y
           drush vset theme_default bootstrap
 
+      - name: Generate CSS files for Reference Site
+        working-directory: ${{ env.REFERENCE_SITE_FOLDER }}/${{ env.CIVICRM_EXTENSIONS_DIR }}/org.civicrm.shoreditch
+        run: |
+          npm install
+          npx gulp sass
+          drush cc all && drush cc civicrm
+
       - name: Installing Shoreditch Companion Theme in Reference Site
         working-directory: ${{ env.REFERENCE_SITE_FOLDER }}/${{ env.DRUPAL_THEME_DIR }}
         run: |
@@ -118,6 +125,13 @@ jobs:
           drush en civicrmtheme -y
           drush en bootstrap -y
           drush vset theme_default bootstrap
+
+      - name: Generate CSS files for Test Site
+        working-directory: ${{ env.TEST_SITE_FOLDER }}/${{ env.CIVICRM_EXTENSIONS_DIR }}/org.civicrm.shoreditch
+        run: |
+          npm install
+          npx gulp sass
+          drush cc all && drush cc civicrm
 
       - name: Installing Shoreditch Companion Theme in Test Site
         working-directory: ${{ env.TEST_SITE_FOLDER }}/${{ env.DRUPAL_THEME_DIR }}
