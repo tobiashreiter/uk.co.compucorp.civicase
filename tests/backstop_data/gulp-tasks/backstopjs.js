@@ -29,17 +29,25 @@ var LOGGED_IN_USER_NAME = 'admin';
  *   b. Only the given group
  *
  * @param {string} group of scenarios
+ * @param {Array} subfolderPaths sub folder paths
  * @returns {Array} of the list of the scenarios
  */
-function buildScenariosList (group) {
-  const dirPath = 'scenarios';
+function buildScenariosList (group, subfolderPaths) {
+  var scenarioIndex = 1;
 
-  return _(fs.readdirSync(dirPath))
-    .filter(scenario => {
-      return (group === '_all_' ? true : scenario === `${group}.json`) && scenario.endsWith('.json');
-    })
-    .map(scenario => {
-      return JSON.parse(fs.readFileSync(path.join(dirPath, scenario))).scenarios;
+  return _.chain(subfolderPaths)
+    .map(function (subfolderPath) {
+      const dirPath = 'scenarios/' + subfolderPath;
+
+      return _(fs.readdirSync(dirPath))
+        .filter(scenario => {
+          return (group === '_all_' ? true : scenario === `${group}.json`) && scenario.endsWith('.json');
+        })
+        .map(scenario => {
+          return JSON.parse(fs.readFileSync(path.join(dirPath, scenario))).scenarios;
+        })
+        .flatten()
+        .value();
     })
     .flatten()
     .map((scenario, index, scenarios) => {
@@ -47,7 +55,7 @@ function buildScenariosList (group) {
 
       return _.assign({}, scenario, {
         cookiePath: path.join('cookies', 'admin.json'),
-        count: '(' + (index + 1) + ' of ' + scenarios.length + ')',
+        count: '(' + (scenarioIndex++) + ' of ' + scenarios.length + ')',
         url: url
       });
     })
@@ -73,7 +81,7 @@ function cleanUp () {
  */
 function createTempConfig () {
   var group = argv.group ? argv.group : '_all_';
-  var list = buildScenariosList(group);
+  var list = buildScenariosList(group, ['civicase', 'civiawards']);
   var content = JSON.parse(fs.readFileSync(CONFIGS.FILES.tpl));
 
   content.scenarios = list.map((item) => {
