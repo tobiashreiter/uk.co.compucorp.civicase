@@ -1,5 +1,3 @@
-/* eslint-env jasmine */
-
 (($, _) => {
   describe('linked cases tab', () => {
     let $controller, $scope, LinkCasesCaseAction, civicaseCrmUrl;

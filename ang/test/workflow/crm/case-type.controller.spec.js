@@ -1,5 +1,3 @@
-/* eslint-env jasmine */
-
 (() => {
   describe('workflow list', () => {
     let $q, $controller, $rootScope, $scope, $window, CaseTypesMockData,

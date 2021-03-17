@@ -1,7 +1,7 @@
 (function (angular, $, _, CRM) {
   var module = angular.module('civicase');
 
-  module.factory('formatCase', function (formatActivity, ContactsCache,
+  module.factory('formatCase', function (formatActivity, CasesUtils,
     CaseStatus, CaseType, isTruthy) {
     var caseStatuses = CaseStatus.getAll(true);
 
@@ -29,7 +29,7 @@
       });
 
       _.each(item.contacts, function (contact) {
-        if (!contact.relationship_type_id) {
+        if (CasesUtils.isClientRole(contact)) {
           item.client.push(contact);
         }
 

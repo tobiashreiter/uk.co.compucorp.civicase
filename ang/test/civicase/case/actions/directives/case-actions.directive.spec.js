@@ -1,5 +1,3 @@
-/* eslint-env jasmine */
-
 (function (_, $) {
   describe('case actions', function () {
     let $q, element, $provide, $compile, $rootScope, CaseActionsData,

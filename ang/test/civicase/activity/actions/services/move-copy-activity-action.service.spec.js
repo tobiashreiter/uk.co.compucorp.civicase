@@ -1,5 +1,3 @@
-/* eslint-env jasmine */
-
 ((_, $) => {
   describe('MoveCopyActivityAction', () => {
     let $q, $rootScope, MoveCopyActivityAction, activitiesMockData,

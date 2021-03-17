@@ -1,5 +1,3 @@
-/* eslint-env jasmine */
-
 (function ($) {
   describe('Popover', function () {
     var $compile, $rootScope, $scope, $sampleReference, $timeout, $toggleButton,

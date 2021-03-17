@@ -1,5 +1,3 @@
-/* eslint-env jasmine */
-
 (function (CRM) {
   var module = angular.module('civicase-base');
 

@@ -1,5 +1,3 @@
-/* eslint-env jasmine */
-
 (function (CRM) {
   CRM['civicase-base'] = {};
   CRM.civicase = {};

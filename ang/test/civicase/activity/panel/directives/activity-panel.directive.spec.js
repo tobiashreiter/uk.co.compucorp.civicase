@@ -1,5 +1,3 @@
-/* eslint-env jasmine */
-
 (function ($, _, loadCrmForm) {
   describe('civicaseActivityPanel', function () {
     var $compile, $rootScope, $scope, activityPanel, activitiesMockData,

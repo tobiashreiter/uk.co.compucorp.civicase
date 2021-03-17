@@ -1,4 +1,3 @@
-/* eslint-env jasmine */
 (function ($, _, moment) {
   describe('dashboardTabController', function () {
     var $controller, $rootScope, $scope, civicaseCrmApi, formatActivity, formatCase,

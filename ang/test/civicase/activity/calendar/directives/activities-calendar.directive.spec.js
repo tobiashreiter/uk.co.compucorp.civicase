@@ -1,5 +1,3 @@
-/* eslint-env jasmine */
-
 (function ($, _, moment) {
   describe('civicaseActivitiesCalendarController', function () {
     var $controller, $q, $scope, $rootScope, $route, civicaseCrmApi, formatActivity, dates,

@@ -200,7 +200,7 @@
             <i class="fa fa-user-plus"></i>
           </button>
           <div
-            ng-if="(role.is_active === '1' || role.role === ts('Client')) && role.contact_id"
+            ng-if="(role.is_active === '1' || role.is_client === '1') && role.contact_id"
             class="btn-group btn-group-sm">
             <button
               type="button"

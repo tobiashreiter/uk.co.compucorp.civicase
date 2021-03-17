@@ -1,4 +1,3 @@
-/* eslint-env jasmine */
 (function ($, _) {
   describe('civicaseCaseDetails', function () {
     var $httpBackend, element, controller, activitiesMockData, $controller, $compile,
