@@ -81,7 +81,7 @@ function cleanUp () {
  */
 function createTempConfig () {
   var group = argv.group ? argv.group : '_all_';
-  var list = buildScenariosList(group, ['civicase', 'civiawards']);
+  var list = buildScenariosList(group, ['civiawards']);
   var content = JSON.parse(fs.readFileSync(CONFIGS.FILES.tpl));
 
   content.scenarios = list.map((item) => {

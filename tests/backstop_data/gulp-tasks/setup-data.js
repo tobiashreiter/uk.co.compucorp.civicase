@@ -8,6 +8,7 @@ const customGroupService = require('./data-setup-steps/custom-group.service.js')
 const customFieldService = require('./data-setup-steps/custom-field.service.js');
 const tagService = require('./data-setup-steps/tag.service.js');
 const createSampleUploadFile = require('./data-setup-steps/create-sample-upload-file.service.js');
+const awardService = require('./data-setup-steps/award.service.js');
 
 module.exports = setupData;
 
@@ -28,6 +29,7 @@ async function setupData () {
   customGroupService.setupData();
   customFieldService.setupData();
   tagService.setupData();
+  awardService.setupData();
 
   return Promise.resolve();
 }

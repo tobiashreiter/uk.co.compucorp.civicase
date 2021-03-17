@@ -2,7 +2,8 @@ const createUniqueRecordFactory = require('../utils/create-unique-record-factory
 const casesService = require('./case.service.js');
 
 const service = {
-  setupData
+  setupData,
+  caseTagID: null
 };
 
 /**
@@ -14,11 +15,11 @@ function setupData () {
   var caseTag = 'Backstop Case Tag';
   var caseId = casesService.caseIds[0];
 
-  createUniqueTag({
+  service.caseTagID = createUniqueTag({
     is_selectable: 1,
     name: caseTag,
     used_for: 'Cases'
-  });
+  }).id;
 
   createUniqueEntityTag({
     entity_id: caseId,

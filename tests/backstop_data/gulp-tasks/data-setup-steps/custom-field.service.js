@@ -2,7 +2,9 @@ const createUniqueRecordFactory = require('../utils/create-unique-record-factory
 const customGroupService = require('./custom-group.service.js');
 
 const service = {
-  setupData
+  setupData,
+  awardReviewFieldID: null,
+  awardCustomFieldID: null
 };
 
 /**
@@ -11,6 +13,14 @@ const service = {
 function setupData () {
   createCustomField(customGroupService.inline.id, customGroupService.inline.fieldLabel);
   createCustomField(customGroupService.tab.id, customGroupService.tab.fieldLabel);
+  service.awardReviewFieldID = createCustomField(
+    customGroupService.awardReviewField.id,
+    customGroupService.awardReviewField.fieldLabel
+  ).id;
+  service.awardCustomFieldID = createCustomField(
+    customGroupService.awardCustomField.id,
+    customGroupService.awardCustomField.fieldLabel
+  ).id;
 
   console.log('Custom Fields data setup successful.');
 }
