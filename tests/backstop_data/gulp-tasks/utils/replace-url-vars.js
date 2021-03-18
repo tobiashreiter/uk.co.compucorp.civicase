@@ -3,6 +3,7 @@ var execSync = require('child_process').execSync;
 
 const CONFIGS = require('./configs.js');
 const getActiveCaseId = require('./get-active-case-id.js');
+const getActiveApplicationId = require('./get-active-application-id.js');
 const casesService = require('../data-setup-steps/case.service.js');
 
 var CACHE = {
@@ -24,6 +25,7 @@ function replaceUrlVars (url) {
 
   var URL_VAR_REPLACERS = [
     replaceCaseIdVar,
+    replaceApplicationIdVar,
     replaceEmptyCaseIdVar,
     replaceRootUrlVar,
     replaceContactIdVar
@@ -63,6 +65,19 @@ function getRecordIdFromCacheOrCallback (cacheKey, callback) {
 function replaceCaseIdVar (url, config) {
   return url.replace('{caseId}', function () {
     return getRecordIdFromCacheOrCallback('caseId', getActiveCaseId);
+  });
+}
+
+/**
+ * Replaces the `{applicationId}` var with the id of the first non deleted, open application.
+ *
+ * @param {string} url the scenario url.
+ * @param {object} config the site config options.
+ * @returns {string} replaced record id
+ */
+function replaceApplicationIdVar (url, config) {
+  return url.replace('{applicationId}', function () {
+    return getRecordIdFromCacheOrCallback('applicationId', getActiveApplicationId);
   });
 }
 

@@ -1,4 +1,3 @@
-// var _ = require('lodash');
 // const cvApi = require('../utils/cv-api.js');
 
 // const service = {
@@ -21,21 +20,15 @@
 //     sequential: true
 //   }).values[0];
 
-//   console.log(setting);
-//   // const civicaseComponent = "CiviCase";
-//   // var isCiviCaseComponentEnabled = _.indexOf(setting.enable_components, civicaseComponent) !== -1;
+//   setting.case_category_finance_management = {
+//     "2": "1"
+//   };
 
-//   // if (isCiviCaseComponentEnabled) {
-//   //   return;
-//   // }
+//   var enableFinanceManagement = cvApi('Setting', 'create', setting);
 
-//   // setting.enable_components.push(civicaseComponent)
-
-//   // var enableCivicaseComponent = cvApi('Setting', 'create', setting);
-
-//   // if (!enableCivicaseComponent.is_error) {
-//   //   console.log('CiviCase component enabled.');
-//   // }
+//   if (!enableFinanceManagement.is_error) {
+//     console.log('Finance Management enabled for awards.');
+//   }
 // }
 
 // module.exports = service;

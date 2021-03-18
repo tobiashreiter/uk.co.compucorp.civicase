@@ -88,6 +88,7 @@ function createAwardsActivities () {
     target_contact_id: 2,
     case_id: awardApplicationId,
     activity_type_id: 'Awards Payment',
+    status_id: 'Approved',
     ['custom_' + paymentTypeFieldID]: 1,
     ['custom_' + paymentCurrencyTypeFieldID]: 'GBP',
     ['custom_' + paymentAmountValueFieldID]: '5000'
