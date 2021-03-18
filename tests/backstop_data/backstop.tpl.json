@@ -7,6 +7,7 @@
   }],
   "onBeforeScript": "on-before.js",
   "onReadyScript": "on-ready.js",
+  "misMatchThreshold": "0",
   "paths": {
     "bitmaps_reference": "screenshots/reference",
     "bitmaps_test": "screenshots/test",
