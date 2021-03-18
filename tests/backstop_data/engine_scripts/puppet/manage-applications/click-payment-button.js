@@ -10,6 +10,6 @@ module.exports = async (page, scenario, vp) => {
   await page.setViewport(viewPortOverride);
 
   await page.click('.civicase__case-tab__actions button');
-  await page.waitFor(2000);
+  await page.waitForTimeout(2000);
   await utility.openAllAccordions();
 };

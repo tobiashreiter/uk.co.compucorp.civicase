@@ -10,8 +10,8 @@ module.exports = async (page, scenario, vp) => {
 
   await require('./activity-detail')(page, scenario, vp);
   await utility.waitForAndClick('.crm-submit-buttons.panel-footer > .edit.button');
-  await page.waitFor('.blockUI.blockOverlay', { hidden: true });
-  await page.waitFor(1000);
+  await page.waitForSelector('.blockUI.blockOverlay', { hidden: true });
+  await page.waitForTimeout(1000);
   await utility.openAllAccordions();
-  await page.waitFor(1000);
+  await page.waitForTimeout(1000);
 };

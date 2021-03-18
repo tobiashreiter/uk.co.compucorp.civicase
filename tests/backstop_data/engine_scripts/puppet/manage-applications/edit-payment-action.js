@@ -12,6 +12,6 @@ module.exports = async (page, scenario, vp) => {
 
   await page.click('[ng-repeat="payment in payments"]:nth-child(1) .dropdown-toggle');
   await utility.waitForAndClick('civicase-case-list-table +.dropdown-menu [ng-click="handleEditActivity(payment.id)"]');
-  await page.waitFor(2000);
+  await page.waitForTimeout(2000);
   await utility.openAllAccordions();
 };
