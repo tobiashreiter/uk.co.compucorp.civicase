@@ -1,34 +1,27 @@
-// const cvApi = require('../utils/cv-api.js');
+const cvApi = require('../utils/cv-api.js');
 
-// const service = {
-//   setupData
-// };
+const service = {
+  setupData
+};
 
-// /**
-//  * Enable Finance Management for Awards
-//  */
-// function setupData () {
-//   enableFinanceManagementFor();
-// }
+/**
+ * Enable Finance Management for Awards
+ */
+function setupData () {
+  enableFinanceManagementFor();
+}
 
-// /**
-//  * Enable Civicase Component
-//  * Required for scenarios in 'civicase.json'
-//  */
-// function enableFinanceManagementFor () {
-//   var setting = cvApi('Setting', 'get', {
-//     sequential: true
-//   }).values[0];
+/**
+ * Enable Civicase Component
+ * Required for scenarios in 'civicase.json'
+ */
+function enableFinanceManagementFor () {
+  cvApi('FinanceManagement', 'setsetting', {
+    case_type_category_id: 2,
+    value: 1
+  });
 
-//   setting.case_category_finance_management = {
-//     "2": "1"
-//   };
+  console.log('Finance Management enabled for awards.');
+}
 
-//   var enableFinanceManagement = cvApi('Setting', 'create', setting);
-
-//   if (!enableFinanceManagement.is_error) {
-//     console.log('Finance Management enabled for awards.');
-//   }
-// }
-
-// module.exports = service;
+module.exports = service;
