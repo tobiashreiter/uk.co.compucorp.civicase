@@ -1,12 +1,15 @@
 const createUniqueRecordFactory = require('../utils/create-unique-record-factory.js');
 const caseTypeService = require('./case-type.service.js');
+const awardService = require('./award.service.js');
 const contactService = require('./contact.service.js');
 
 const service = {
   setupData,
   caseSubject: 'Backstop Case',
+  awardApplicationSubject: 'Backstop Award Application',
   emptyCaseSubject: 'Backstop Empty Case',
-  caseIds: []
+  caseIds: [],
+  awardApplicationIds: []
 };
 
 /**
@@ -27,6 +30,15 @@ function setupData () {
       service.emptyCaseSubject,
       caseTypeService.caseType,
       contactService.emptyContact
+    )
+  );
+
+  service.awardApplicationIds = service.awardApplicationIds.concat(
+    createCases(
+      5,
+      service.awardApplicationSubject,
+      awardService.award,
+      contactService.activeContact
     )
   );
 

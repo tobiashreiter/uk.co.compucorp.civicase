@@ -1,0 +1,19 @@
+{
+  "scenarios": [
+    {
+      "label": "Manage Cases - Case Overview",
+      "url": "{url}/civicrm/case/a/?case_type_category=awards#/case/list?cf=%7B\"case_type_category\":\"awards\"%7D&caseId={applicationId}",
+      "waitForLoadingComplete": ".civicase__summary-tab",
+      "apiCalls": [
+        "setting.create civicaseAllowLinkedCasesTab=0"
+      ],
+      "viewports": [
+        {
+          "label": "Full Vertical Screen",
+          "width": 1680,
+          "height": 3000
+        }
+      ]
+    }
+  ]
+}

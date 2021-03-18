@@ -1,8 +1,10 @@
 const createUniqueRecordFactory = require('../utils/create-unique-record-factory.js');
+const cvApi = require('../utils/cv-api.js');
 const customGroupService = require('./custom-group.service.js');
 
 const service = {
   setupData,
+  getCustomFieldsFor,
   awardReviewFieldID: null,
   awardCustomFieldID: null
 };
@@ -40,6 +42,21 @@ function createCustomField (customGroupId, label) {
     label: label,
     data_type: 'String',
     html_type: 'Text'
+  });
+}
+
+/**
+ * Fetch custom fields.
+ *
+ * @param {string} customGroupId custom group id
+ * @param {string} customFieldName custom field name
+ * @returns {object} custom field
+ */
+function getCustomFieldsFor (customGroupId, customFieldName) {
+  return cvApi('CustomField', 'get', {
+    sequential: true,
+    custom_group_id: customGroupId,
+    name: customFieldName
   });
 }
 
