@@ -4,6 +4,7 @@ const createUniqueEmail = createUniqueRecordFactory('Email', ['email']);
 
 const service = {
   setupData,
+  adminUserID: '2',
   activeContact: {
     id: null,
     displayName: 'Arnold Backstop',

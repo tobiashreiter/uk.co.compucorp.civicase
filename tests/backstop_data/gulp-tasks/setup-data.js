@@ -29,11 +29,9 @@ async function setupData () {
 
   caseTypeService.setupData();
   tagService.setupData();
-  awardService.setupData();
-
-  awardFinanceManagement.setupData();
-
   contactService.setupData();
+  awardService.setupData();
+  awardFinanceManagement.setupData();
   caseService.setupData();
   activityService.setupData();
   await relationshipService.setupData();

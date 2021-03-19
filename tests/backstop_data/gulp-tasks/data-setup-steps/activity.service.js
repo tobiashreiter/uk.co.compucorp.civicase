@@ -35,7 +35,7 @@ function createActivities (numberOfActivities, params) {
   return _.range(numberOfActivities).map((i) => createUniqueActivity({
     ...defaultParams,
     subject: params.activity_type_id + ' ' + (i === 0 ? '' : (i + 1)),
-    params
+    ...params
   }).id);
 }
 
@@ -86,12 +86,12 @@ function createAwardsActivities () {
   ).id;
 
   createActivities(1, {
-    target_contact_id: 2,
+    target_contact_id: contactService.adminUserID,
     case_id: caseService.activeAwardApplicationId,
     activity_type_id: 'Awards Payment',
-    status_id: 'Approved',
+    status_id: 'approved_complete',
     ['custom_' + paymentTypeFieldID]: 1,
-    ['custom_' + paymentCurrencyTypeFieldID]: 'GBP',
+    ['custom_' + paymentCurrencyTypeFieldID]: 'USD',
     ['custom_' + paymentAmountValueFieldID]: '5000'
   });
 }

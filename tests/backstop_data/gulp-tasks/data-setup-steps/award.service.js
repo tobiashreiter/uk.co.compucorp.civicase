@@ -2,6 +2,7 @@ const createUniqueRecordFactory = require('../utils/create-unique-record-factory
 const tagService = require('./tag.service.js');
 const relationshipTypeService = require('./relationship-type.service.js');
 const customFieldService = require('./custom-field.service.js');
+const contactService = require('./contact.service.js');
 const createUniqueAward = createUniqueRecordFactory('CaseType', ['name']);
 const createUniqueAwardDetail = createUniqueRecordFactory('AwardDetail', ['case_type_id']);
 const createUniqueAwardReviewPanel = createUniqueRecordFactory('AwardReviewPanel', ['title']);
@@ -46,7 +47,7 @@ function setupData () {
   });
 
   createUniqueAwardDetail({
-    award_manager: ['2'],
+    award_manager: [contactService.adminUserID],
     case_type_id: service.award.id,
     start_date: '2021-03-01',
     end_date: '2021-03-31',
