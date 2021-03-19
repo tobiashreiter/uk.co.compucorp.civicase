@@ -3,7 +3,7 @@ const tagService = require('./tag.service.js');
 const relationshipTypeService = require('./relationship-type.service.js');
 const customFieldService = require('./custom-field.service.js');
 const createUniqueAward = createUniqueRecordFactory('CaseType', ['name']);
-const createUniqueAwardDetail = createUniqueRecordFactory('AwardDetail', ['start_date']);
+const createUniqueAwardDetail = createUniqueRecordFactory('AwardDetail', ['case_type_id']);
 const createUniqueAwardReviewPanel = createUniqueRecordFactory('AwardReviewPanel', ['title']);
 
 const service = {

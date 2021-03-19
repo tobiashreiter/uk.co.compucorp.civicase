@@ -27,14 +27,15 @@ function setupData () {
  * @returns {Array} list of activity ids
  */
 function createActivities (numberOfActivities, params) {
-  var finalParams = _.extend({
+  const defaultParams = {
     source_contact_id: contactService.activeContact.id,
     activity_date_time: moment().startOf('month').format('YYYY-MM-DD')
-  }, params);
+  };
 
   return _.range(numberOfActivities).map((i) => createUniqueActivity({
-    ...finalParams,
-    subject: params.activity_type_id + ' ' + (i === 0 ? '' : (i + 1))
+    ...defaultParams,
+    subject: params.activity_type_id + ' ' + (i === 0 ? '' : (i + 1)),
+    params
   }).id);
 }
 
