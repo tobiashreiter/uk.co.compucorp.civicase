@@ -1,5 +1,6 @@
 const createUniqueRecordFactory = require('../utils/create-unique-record-factory.js');
 const relationshipTypesService = require('./relationship-type.service.js');
+const createUniqueCaseType = createUniqueRecordFactory('CaseType', ['name']);
 
 const service = {
   setupData,
@@ -11,8 +12,6 @@ const service = {
  * Create Case Type
  */
 function setupData () {
-  var createUniqueCaseType = createUniqueRecordFactory('CaseType', ['name']);
-
   service.caseType = createUniqueCaseType({
     name: service.caseTypeName,
     case_type_category: 'Cases',

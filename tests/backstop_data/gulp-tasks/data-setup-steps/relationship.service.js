@@ -1,7 +1,11 @@
 const createUniqueRecordFactory = require('../utils/create-unique-record-factory.js');
-const casesService = require('./case.service.js');
-const contactsService = require('./contact.service.js');
+const caseService = require('./case.service.js');
+const contactService = require('./contact.service.js');
 const relationshipTypesService = require('./relationship-type.service.js');
+const createUniqueRelationship = createUniqueRecordFactory(
+  'Relationship',
+  ['contact_id_a', 'contact_id_b', 'relationship_type_id']
+);
 
 const service = {
   setupData
@@ -11,20 +15,18 @@ const service = {
  * Create Relationships
  */
 async function setupData () {
-  var caseId = casesService.caseIds[0];
-
   await createRelationship(
-    caseId,
-    contactsService.activeContact.id,
-    contactsService.emptyContact.id,
+    caseService.activeCaseID,
+    contactService.activeContact.id,
+    contactService.emptyContact.id,
     relationshipTypesService.benefitsSpecialistRelType.id,
     'Manager Role Assigned'
   );
 
   await createRelationship(
-    caseId,
-    contactsService.activeContact.id,
-    contactsService.emptyContact.id,
+    caseService.activeCaseID,
+    contactService.activeContact.id,
+    contactService.emptyContact.id,
     relationshipTypesService.homelessCoordinatorRelType.id,
     'Homeless Coordinator Assigned'
   );
@@ -43,8 +45,6 @@ async function setupData () {
  * @returns {object} relationship
  */
 async function createRelationship (caseID, contactIdA, contactIdB, relationshipTypeId, description) {
-  var createUniqueRelationship = createUniqueRecordFactory('Relationship', ['contact_id_a', 'contact_id_b', 'relationship_type_id']);
-
   createUniqueRelationship({
     contact_id_a: contactIdA,
     relationship_type_id: relationshipTypeId,
@@ -55,6 +55,9 @@ async function createRelationship (caseID, contactIdA, contactIdB, relationshipT
     description: description
   });
 
+  // This is needed, because otherwise activities for relationships
+  // creation of the case gets created in random manner. Which results in
+  // failure of backstop tests
   await sleep(500);
 }
 

@@ -14,7 +14,7 @@ module.exports = cvApi;
  * @returns {object} the result from the entity action call.
  */
 function cvApi (entityName, action, queryData) {
-  var queryResponse = cvApiBatch([[entityName, action, queryData]]);
+  const queryResponse = cvApiBatch([[entityName, action, queryData]]);
 
   return queryResponse[0];
 }
@@ -27,9 +27,9 @@ function cvApi (entityName, action, queryData) {
  * @returns {object} response from the cv api.
  */
 function cvApiBatch (queriesData) {
-  var config = CONFIGS.getSiteConfig();
-  var cmd = `echo '${JSON.stringify(queriesData)}' | cv api:batch -U ${LOGGED_IN_USER_NAME}`;
-  var responses = JSON.parse(execSync(jsonEscape(cmd), { cwd: config.root }));
+  const config = CONFIGS.getSiteConfig();
+  const cmd = `echo '${JSON.stringify(queriesData)}' | cv api:batch -U ${LOGGED_IN_USER_NAME}`;
+  const responses = JSON.parse(execSync(jsonEscape(cmd), { cwd: config.root }));
   checkAndThrowApiResponseErrors(responses);
 
   return responses;

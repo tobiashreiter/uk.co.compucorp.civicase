@@ -1,4 +1,5 @@
 const createUniqueRecordFactory = require('../utils/create-unique-record-factory.js');
+const createUniqueRelationshipType = createUniqueRecordFactory('RelationshipType', ['name_a_b']);
 
 const service = {
   setupData,
@@ -24,12 +25,10 @@ function setupData () {
 /**
  * Create Relationship Types
  *
- * @param {string} nameAB relationship name
- * @returns {Array} list of activity ids
+ * @param {string} nameAB relationship type name
+ * @returns {Array} list of relationship types
  */
 function createRelationshipTypes (nameAB) {
-  var createUniqueRelationshipType = createUniqueRecordFactory('RelationshipType', ['name_a_b']);
-
   return createUniqueRelationshipType({
     name_a_b: nameAB
   });

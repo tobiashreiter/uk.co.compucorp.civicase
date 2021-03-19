@@ -1,4 +1,5 @@
 const createUniqueRecordFactory = require('../utils/create-unique-record-factory.js');
+const createUniqueTag = createUniqueRecordFactory('Tag', ['name', 'used_for']);
 
 const service = {
   setupData,
@@ -9,8 +10,7 @@ const service = {
  * Create Tags
  */
 function setupData () {
-  var createUniqueTag = createUniqueRecordFactory('Tag', ['name', 'used_for']);
-  var caseTag = 'Backstop Case Tag';
+  const caseTag = 'Backstop Case Tag';
 
   service.caseTagID = createUniqueTag({
     is_selectable: 1,

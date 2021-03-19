@@ -2,6 +2,9 @@ const createUniqueRecordFactory = require('../utils/create-unique-record-factory
 const tagService = require('./tag.service.js');
 const relationshipTypeService = require('./relationship-type.service.js');
 const customFieldService = require('./custom-field.service.js');
+const createUniqueAward = createUniqueRecordFactory('CaseType', ['name']);
+const createUniqueAwardDetail = createUniqueRecordFactory('AwardDetail', ['start_date']);
+const createUniqueAwardReviewPanel = createUniqueRecordFactory('AwardReviewPanel', ['title']);
 
 const service = {
   setupData,
@@ -14,8 +17,6 @@ const service = {
  * Create Award
  */
 function setupData () {
-  var createUniqueAward = createUniqueRecordFactory('CaseType', ['name']);
-
   service.award = createUniqueAward({
     name: service.awardName,
     case_type_category: 'Awards',
@@ -44,8 +45,6 @@ function setupData () {
     }
   });
 
-  var createUniqueAwardDetail = createUniqueRecordFactory('AwardDetail', ['start_date']);
-
   createUniqueAwardDetail({
     award_manager: ['2'],
     case_type_id: service.award.id,
@@ -59,8 +58,6 @@ function setupData () {
     }],
     is_template: false
   });
-
-  var createUniqueAwardReviewPanel = createUniqueRecordFactory('AwardReviewPanel', ['title']);
 
   createUniqueAwardReviewPanel({
     title: 'Backstop Panel 1',

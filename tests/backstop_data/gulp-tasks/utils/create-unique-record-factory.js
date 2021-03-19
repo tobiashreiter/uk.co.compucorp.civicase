@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const cvApi = require('./cv-api.js');
 
 module.exports = createUniqueRecordFactory;
@@ -18,13 +19,13 @@ function createUniqueRecordFactory (entityName, matchingFields) {
    * @returns {object} the returned value from the API.
    */
   return function createUniqueRecord (recordData) {
-    var filter = { options: { limit: 1 }, sequential: 1 };
+    const filters = {
+      sequential: 1,
+      options: { limit: 1 },
+      ..._.pick(recordData, matchingFields)
+    };
 
-    matchingFields.forEach((matchingField) => {
-      filter[matchingField] = recordData[matchingField];
-    });
-
-    var record = cvApi(entityName, 'get', filter);
+    const record = cvApi(entityName, 'get', filters);
 
     if (record.count) {
       return record;

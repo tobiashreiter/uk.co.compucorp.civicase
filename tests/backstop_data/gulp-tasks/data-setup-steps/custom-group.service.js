@@ -1,4 +1,5 @@
 const createUniqueRecordFactory = require('../utils/create-unique-record-factory.js');
+const createUniqueCustomGroup = createUniqueRecordFactory('CustomGroup', ['title']);
 
 const service = {
   setupData,
@@ -46,8 +47,6 @@ function setupData () {
  * @returns {object} custom group
  */
 function createCustomGroup (style, title, extendsVal) {
-  var createUniqueCustomGroup = createUniqueRecordFactory('CustomGroup', ['title']);
-
   return createUniqueCustomGroup({
     extends: extendsVal,
     style: style,

@@ -1,5 +1,6 @@
 const createUniqueRecordFactory = require('../utils/create-unique-record-factory.js');
-const casesService = require('./case.service.js');
+const caseService = require('./case.service.js');
+const createUniqueEntityTag = createUniqueRecordFactory('EntityTag', ['entity_id', 'entity_table', 'tag_id']);
 
 const service = {
   setupData
@@ -9,13 +10,10 @@ const service = {
  * Create Entity Tags
  */
 function setupData () {
-  var createUniqueEntityTag = createUniqueRecordFactory('EntityTag', ['entity_id', 'entity_table', 'tag_id']);
-  var caseTag = 'Backstop Case Tag';
-
-  var caseId = casesService.caseIds[0];
+  const caseTag = 'Backstop Case Tag';
 
   createUniqueEntityTag({
-    entity_id: caseId,
+    entity_id: caseService.activeCaseID,
     entity_table: 'civicrm_case',
     tag_id: caseTag
   });

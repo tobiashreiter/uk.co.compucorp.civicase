@@ -1,4 +1,7 @@
 const createUniqueRecordFactory = require('../utils/create-unique-record-factory.js');
+const createUniqueContact = createUniqueRecordFactory('Contact', ['display_name']);
+const createUniqueEmail = createUniqueRecordFactory('Email', ['email']);
+
 const service = {
   setupData,
   activeContact: {
@@ -30,10 +33,7 @@ function setupData () {
  * @returns {object} contact object
  */
 function createContact (contact) {
-  var createUniqueContact = createUniqueRecordFactory('Contact', ['display_name']);
-  var createUniqueEmail = createUniqueRecordFactory('Email', ['email']);
-
-  var contactObj = createUniqueContact({
+  const contactObj = createUniqueContact({
     contact_type: 'Individual',
     display_name: contact.displayName
   });

@@ -1,6 +1,7 @@
 const createUniqueRecordFactory = require('../utils/create-unique-record-factory.js');
 const cvApi = require('../utils/cv-api.js');
 const customGroupService = require('./custom-group.service.js');
+const createUniqueCustomField = createUniqueRecordFactory('CustomField', ['label']);
 
 const service = {
   setupData,
@@ -35,8 +36,6 @@ function setupData () {
  * @returns {object} custom field
  */
 function createCustomField (customGroupId, label) {
-  var createUniqueCustomField = createUniqueRecordFactory('CustomField', ['label']);
-
   return createUniqueCustomField({
     custom_group_id: customGroupId,
     label: label,

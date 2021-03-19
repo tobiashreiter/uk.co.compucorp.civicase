@@ -1,5 +1,4 @@
 const cvApi = require('./cv-api.js');
-var execSync = require('child_process').execSync;
 
 const CONFIGS = require('./configs.js');
 const getActiveCaseId = require('./get-active-case-id.js');
@@ -23,7 +22,7 @@ var CACHE = {
 function replaceUrlVars (url) {
   const config = CONFIGS.getSiteConfig();
 
-  var URL_VAR_REPLACERS = [
+  const URL_VAR_REPLACERS = [
     replaceCaseIdVar,
     replaceApplicationIdVar,
     replaceEmptyCaseIdVar,
@@ -90,7 +89,7 @@ function replaceApplicationIdVar (url, config) {
 function replaceEmptyCaseIdVar (url) {
   return url.replace('{emptyCaseId}', function () {
     return getRecordIdFromCacheOrCallback('emptyCaseId', () => {
-      var caseRecord = cvApi('Case', 'get', {
+      const caseRecord = cvApi('Case', 'get', {
         subject: casesService.emptyCaseSubject
       });
 
@@ -111,9 +110,11 @@ function replaceContactIdVar (url, config) {
     var contactId = CACHE.contactIdsMap[contactName];
 
     if (!contactId) {
-      var cmd = `cv api contact.getsingle display_name=${contactName} option.limit=1`;
-      var contactInfo = JSON.parse(execSync(cmd, { cwd: config.root }));
-      contactId = contactInfo.id;
+      contactId = cvApi('Contact', 'getsingle', {
+        display_name: contactName,
+        options: { limit: 1 }
+      }).id;
+
       CACHE.contactIdsMap[contactName] = contactId;
     }
 

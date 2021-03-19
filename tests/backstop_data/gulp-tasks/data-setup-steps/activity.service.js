@@ -1,9 +1,11 @@
-var moment = require('moment');
-var _ = require('lodash');
+const moment = require('moment');
+const _ = require('lodash');
 const createUniqueRecordFactory = require('../utils/create-unique-record-factory.js');
-const casesService = require('./case.service.js');
-const contactsService = require('./contact.service.js');
+const caseService = require('./case.service.js');
+const contactService = require('./contact.service.js');
 const customFieldService = require('./custom-field.service.js');
+const createUniqueActivity = createUniqueRecordFactory('Activity', ['subject']);
+const createUniqueAttachment = createUniqueRecordFactory('Attachment', ['entity_id', 'entity_table']);
 
 const service = {
   setupData
@@ -22,32 +24,24 @@ function setupData () {
 /**
  * @param {number} numberOfActivities number of activities
  * @param {object} params params
- * @returns {Array} list of activities
+ * @returns {Array} list of activity ids
  */
 function createActivities (numberOfActivities, params) {
-  var createUniqueActivity = createUniqueRecordFactory('Activity', ['subject']);
+  var finalParams = _.extend({
+    source_contact_id: contactService.activeContact.id,
+    activity_date_time: moment().startOf('month').format('YYYY-MM-DD')
+  }, params);
 
-  var activityIds = [];
-
-  for (var i = 0; i < numberOfActivities; i++) {
-    var finalParams = _.extend({
-      source_contact_id: contactsService.activeContact.id,
-      subject: params.activity_type_id + ' ' + (i === 0 ? '' : (i + 1)),
-      activity_date_time: moment().startOf('month').format('YYYY-MM-DD')
-    }, params);
-
-    activityIds.push(createUniqueActivity(finalParams).id);
-  }
-
-  return activityIds;
+  return _.range(numberOfActivities).map((i) => createUniqueActivity({
+    ...finalParams,
+    subject: params.activity_type_id + ' ' + (i === 0 ? '' : (i + 1))
+  }).id);
 }
 
 /**
- * @param {*} activityID activity ID
+ * @param {string} activityID activity ID
  */
 function createAttachment (activityID) {
-  var createUniqueAttachment = createUniqueRecordFactory('Attachment', ['entity_id', 'entity_table']);
-
   createUniqueAttachment({
     content: '',
     entity_id: activityID,
@@ -61,16 +55,14 @@ function createAttachment (activityID) {
  * Create Case Activities
  */
 function createCaseActivities () {
-  var caseId = casesService.caseIds[0];
-
-  var fileUploadActivityID = createActivities(1, {
-    case_id: caseId,
+  const fileUploadActivityID = createActivities(1, {
+    case_id: caseService.activeCaseID,
     activity_type_id: 'File Upload'
   })[0];
   createAttachment(fileUploadActivityID);
 
   createActivities(30, {
-    case_id: caseId,
+    case_id: caseService.activeCaseID,
     activity_type_id: 'Follow up'
   });
 }
@@ -79,14 +71,22 @@ function createCaseActivities () {
  * Create Award Application Activities
  */
 function createAwardsActivities () {
-  var paymentTypeFieldID = customFieldService.getCustomFieldsFor('Awards_Payment_Information', 'Type').id;
-  var paymentCurrencyTypeFieldID = customFieldService.getCustomFieldsFor('Awards_Payment_Information', 'Payment_Amount_Currency_Type').id;
-  var paymentAmountValueFieldID = customFieldService.getCustomFieldsFor('Awards_Payment_Information', 'Payment_Amount_Value').id;
-  var awardApplicationId = casesService.awardApplicationIds[0];
+  const paymentTypeFieldID = customFieldService.getCustomFieldsFor(
+    'Awards_Payment_Information',
+    'Type'
+  ).id;
+  const paymentCurrencyTypeFieldID = customFieldService.getCustomFieldsFor(
+    'Awards_Payment_Information',
+    'Payment_Amount_Currency_Type'
+  ).id;
+  const paymentAmountValueFieldID = customFieldService.getCustomFieldsFor(
+    'Awards_Payment_Information',
+    'Payment_Amount_Value'
+  ).id;
 
   createActivities(1, {
     target_contact_id: 2,
-    case_id: awardApplicationId,
+    case_id: caseService.activeAwardApplicationId,
     activity_type_id: 'Awards Payment',
     status_id: 'Approved',
     ['custom_' + paymentTypeFieldID]: 1,
