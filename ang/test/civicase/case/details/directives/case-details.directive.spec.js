@@ -14,17 +14,11 @@
     }));
 
     beforeEach(inject(function ($q) {
-      var formatCaseMock = jasmine.createSpy('formatCase');
       civicaseCrmApiMock = jasmine.createSpy('civicaseCrmApi').and.returnValue($q.resolve());
       $route = { current: { params: {} } };
 
-      formatCaseMock.and.callFake(function (data) {
-        return data;
-      });
-
       $provide.value('$route', $route);
       $provide.value('civicaseCrmApi', civicaseCrmApiMock);
-      $provide.value('formatCase', formatCaseMock);
     }));
 
     beforeEach(inject(function (_$compile_, _$controller_, _$httpBackend_,
@@ -523,24 +517,6 @@
           };
         });
 
-        describe('when there are inline custom data blocks', () => {
-          beforeEach(() => {
-            customDataBlocks = [
-              generateCustomDataBlock({ style: 'Inline' }),
-              generateCustomDataBlock({ style: 'Inline' }),
-              generateCustomDataBlock({ style: 'Inline' })
-            ];
-            caseItem['api.CustomValue.getalltreevalues'] = {
-              values: customDataBlocks
-            };
-            initController(caseItem);
-          });
-
-          it('stores the custom data blocks in a container for inline blocks', () => {
-            expect($scope.item.customData.Inline).toEqual(customDataBlocks);
-          });
-        });
-
         describe('when there are tab custom data blocks', () => {
           beforeEach(() => {
             customDataBlocks = [
@@ -552,10 +528,6 @@
               values: customDataBlocks
             };
             initController(caseItem);
-          });
-
-          it('stores the custom data blocks in a container for tab blocks', () => {
-            expect($scope.item.customData.Tab).toEqual([customDataBlocks[1]]);
           });
 
           it('adds the Details tab to display custom tab blocks', () => {
