@@ -1,13 +1,15 @@
 (function (angular, $, _, CRM) {
   var module = angular.module('civicase');
 
-  module.factory('formatCase', function (formatActivity, CasesUtils,
+  module.factory('formatCase', function ($sce, formatActivity, CasesUtils,
     CaseStatus, CaseType, isTruthy) {
     var caseStatuses = CaseStatus.getAll(true);
 
     return function (item) {
       item.client = [];
-      item.subject = (typeof item.subject === 'undefined') ? '' : item.subject;
+      item.subject = (typeof item.subject === 'undefined')
+        ? ''
+        : $sce.trustAsHtml(item.subject);
       item.status = caseStatuses[item.status_id].label;
       item.color = caseStatuses[item.status_id].color;
       item.case_type = CaseType.getById(item.case_type_id).title;
