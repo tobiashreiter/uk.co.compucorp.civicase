@@ -28,7 +28,7 @@
             .html(
               textarea
                 ? nl2br(getHTMLToShow(scope, elem, attrs))
-                : _.escape(getHTMLToShow(scope, elem, attrs))
+                : getHTMLToShow(scope, elem, attrs)
             )
             .on('crmFormSuccess', function (e, value) {
               $timeout(function () {
@@ -39,11 +39,12 @@
               });
             })
             .crmEditable();
+
           scope.$watchCollection('model', function (model) {
             elem.html(
               textarea
                 ? nl2br(getHTMLToShow(scope, elem, attrs))
-                : _.escape(getHTMLToShow(scope, elem, attrs)));
+                : getHTMLToShow(scope, elem, attrs));
 
             applyLineLimitIfApplicableWithTimeout(scope, elem);
           });
@@ -64,7 +65,11 @@
 
     /**
      * Retuns the text to be shown as HTML,
-     * if the model value is null or empty string, retuns the placeholder
+     * if the model value is null or empty string, retuns the placeholder.
+     *
+     * We unescape and then escape the string because the value might already
+     * be escaped and if we try to scape it twice the string might break.
+     * Ex: `&amp;` will turn into `&amp;amp;`.
      *
      * @param {object} scope scope object
      * @param {object} elem element
@@ -76,7 +81,7 @@
       var placeholder = attrs.placeholder;
 
       return (scope.model[field] && scope.model[field] !== '')
-        ? scope.model[field]
+        ? _.escape(_.unescape(scope.model[field]))
         : placeholder;
     }
 
