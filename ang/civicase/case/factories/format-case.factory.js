@@ -63,6 +63,12 @@
       });
     }
 
+    /**
+     * Groups the the given case's custom data by its style field (Inline or Tab)
+     * and parses their wight field into numbers so they can be properly sorted.
+     *
+     * @param {object} item case
+     */
     function formatCaseCustomData (item) {
       if (!item['api.CustomValue.getalltreevalues']) {
         item.customData = {};
