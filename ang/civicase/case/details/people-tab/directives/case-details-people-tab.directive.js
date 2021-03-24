@@ -81,7 +81,7 @@
     $scope.rolesSelectionMode = '';
     $scope.rolesSelectedTask = '';
     $scope.relations = [];
-    $scope.relationsPage = 1;
+    $scope.relationsPageObj = { total: 0, size: 25, num: 1 };
     $scope.relationsAlphaFilter = '';
     $scope.relationsSelectionMode = '';
     $scope.relationsSelectedTask = '';
@@ -122,6 +122,9 @@
       }, true);
       $scope.$watch('rolesPage', function () {
         $scope.roles.goToPage($scope.rolesPage);
+      });
+      $scope.$watch('relationsPageObj.num', function () {
+        $scope.getRelations();
       });
       $scope.$watch('tab', function (tab) {
         if (tab === 'relations' && !$scope.relations.length) {
@@ -807,7 +810,6 @@
      */
     function getRelations () {
       var params = {
-        options: { limit: 25, offset: $scope.relationsPage - 1 },
         case_id: item.id,
         sequential: 1,
         return: ['display_name', 'phone', 'email']
@@ -815,13 +817,21 @@
       if ($scope.relationsAlphaFilter) {
         params.display_name = $scope.relationsAlphaFilter;
       }
-      civicaseCrmApi('Case', 'getrelations', params).then(function (contacts) {
-        $scope.relations = _.each(contacts.values, function (rel) {
+      civicaseCrmApi([
+        ['Case', 'getrelations', _.extend(params, {
+          options: {
+            limit: 25,
+            offset: $scope.relationsPageObj.size * ($scope.relationsPageObj.num - 1)
+          }
+        })],
+        ['Case', 'getrelationscount', params]
+      ]).then(function (results) {
+        $scope.relations = _.each(results[0].values, function (rel) {
           var relType = relTypes[rel.relationship_type_id];
           rel.relation = relType['label_' + rel.relationship_direction];
           rel.client = clients[rel.client_contact_id].display_name;
         });
-        $scope.relationsCount = contacts.count;
+        $scope.relationsPageObj.total = results[1].count;
         $scope.isRelationshipLoading = false;
       });
     }
