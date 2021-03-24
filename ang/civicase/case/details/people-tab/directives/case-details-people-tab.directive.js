@@ -81,7 +81,7 @@
     $scope.rolesSelectionMode = '';
     $scope.rolesSelectedTask = '';
     $scope.relations = [];
-    $scope.relationsPageObj = { total: 0, size: 25, num: 1 };
+    $scope.relationsPageObj = { total: 0, pageSize: 25, page: 1 };
     $scope.relationsAlphaFilter = '';
     $scope.relationsSelectionMode = '';
     $scope.relationsSelectedTask = '';
@@ -123,7 +123,7 @@
       $scope.$watch('rolesPage', function () {
         $scope.roles.goToPage($scope.rolesPage);
       });
-      $scope.$watch('relationsPageObj.num', function () {
+      $scope.$watch('relationsPageObj.page', function () {
         $scope.getRelations();
       });
       $scope.$watch('tab', function (tab) {
@@ -821,7 +821,7 @@
         ['Case', 'getrelations', _.extend(params, {
           options: {
             limit: 25,
-            offset: $scope.relationsPageObj.size * ($scope.relationsPageObj.num - 1)
+            offset: $scope.relationsPageObj.pageSize * ($scope.relationsPageObj.page - 1)
           }
         })],
         ['Case', 'getrelationscount', params]

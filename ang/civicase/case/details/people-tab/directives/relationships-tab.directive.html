@@ -54,19 +54,10 @@
     </div>
   </div>
   <div class="civicase__people-tab__filter">
-    <paging
-      class="center-block paging-top"
-      page="relationsPageObj.num"
-      page-size="relationsPageObj.size"
-      total="relationsPageObj.total"
-      ng-show="relationsPageObj.total > relationsPageObj.size"
-      show-prev-next="true"
-      show-first-last="true"
-      text-first="{{ ts('<< First') }}"
-      text-last="{{ ts('Last >>') }}"
-      text-next="{{ ts('Next >') }}"
-      text-prev="{{ ts('< Prev') }}"
-    ></paging>
+    <civicase-paging
+      class="paging-top"
+      paging-data="relationsPageObj"
+    ></civicase-paging>
     <div>
       <a ng-repeat="letter in letters" class="civicase__people-tab__filter-alpha-pager" ng-class="{active: letter === relationsAlphaFilter}" ng-click="setLetterFilter(letter, 'relations')">{{ letter }}</a>
       <a href class="all" ng-click="setLetterFilter('', 'relations')">All</a>
@@ -150,20 +141,13 @@
     </tbody>
   </table>
   <div class="civicase__people-tab-counter clearfix">
-    <div class="pull-right">{{ ts('Page %1 of %2', {1: relationsPageObj.num, 2: ceil(relationsPageObj.total / relationsPageObj.size)}) }}</div>
-    <paging
+    <div class="pull-right">
+      {{ ts('Page %1 of %2', {1: relationsPageObj.page, 2: ceil(relationsPageObj.total / relationsPageObj.pageSize)}) }}
+    </div>
+    <civicase-paging
       class="center-block"
-      page="relationsPageObj.num"
-      page-size="relationsPageObj.size"
-      total="relationsPageObj.total"
-      ng-show="relationsPageObj.total > relationsPageObj.size"
-      show-prev-next="true"
-      show-first-last="true"
-      text-first="{{ ts('<< First') }}"
-      text-last="{{ ts('Last >>') }}"
-      text-next="{{ ts('Next >') }}"
-      text-prev="{{ ts('< Prev') }}"
-    >
+      paging-data="relationsPageObj"
+    ></civicase-paging>
     </paging>
   </div>
 </div>
