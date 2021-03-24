@@ -38,14 +38,14 @@
         </li>
       </ul>
     </div>
-    <h3>{{ ts('%1 Contacts', {1: relations.length}) }}</h3>
+    <h3>{{ ts('%1 Contacts', {1: relationsPageObj.total}) }}</h3>
     <div class="civicase__people-tab__selection">
       <span> {{ ts('Select Records:') }} </span>
       <input
         type="radio" value="all" ng-model="relationsSelectionMode"
         id="relationsSelectionMode-all"/>
       <label for="relationsSelectionMode-all">
-        {{ ts('All %1 Contacts', {1: relations.length}) }}
+        {{ ts('All %1 Contacts', {1: relationsPageObj.total}) }}
       </label>
       <input
         type="radio" value="checked" ng-model="relationsSelectionMode"
@@ -73,6 +73,7 @@
     <civicase-paging
       class="paging-top"
       paging-data="relationsPageObj"
+      paging-action="goToPage($page)"
     ></civicase-paging>
     <div>
       <a
@@ -188,6 +189,7 @@
     <civicase-paging
       class="center-block"
       paging-data="relationsPageObj"
+      paging-action="goToPage($page)"
     ></civicase-paging>
     </paging>
   </div>

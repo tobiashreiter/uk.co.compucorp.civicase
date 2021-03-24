@@ -18,7 +18,6 @@
    */
   function civicaseOtherRelationshipsTabController ($scope, civicaseCrmApi,
     RelationshipType) {
-    // The ts() and hs() functions help load strings for this module.
     var clients = _.indexBy($scope.item.client, 'contact_id');
     var item = $scope.item;
     var relTypes = RelationshipType.getAll();
@@ -30,12 +29,20 @@
     $scope.relationsSelectedTask = '';
     $scope.isRelationshipLoading = true;
     $scope.getRelations = getRelations;
+    $scope.goToPage = goToPage;
 
     (function init () {
-      $scope.$watch('relationsPageObj.page', function () {
-        $scope.getRelations();
-      });
+      $scope.getRelations();
     }());
+
+    /**
+     * @param {string} pageNumber the page number to navigate to.
+     */
+    function goToPage (pageNumber) {
+      $scope.relationsPageObj.page = pageNumber;
+
+      getRelations();
+    }
 
     /**
      * Updates the case relationship list

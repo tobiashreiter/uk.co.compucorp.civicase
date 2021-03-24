@@ -56,20 +56,11 @@
     </div>
   </div>
   <div class="civicase__people-tab__filter">
-    <paging
+    <civicase-paging
       class="paging-top"
-      page="$parent.rolesPage"
-      page-size="roles.ROLES_PER_PAGE"
-      total="roles.totalCount"
-      ng-show="roles.totalCount > roles.ROLES_PER_PAGE"
-      show-prev-next="true"
-      show-first-last="true"
-      text-first="{{ ts('<< First') }}"
-      text-last="{{ ts('Last >>') }}"
-      text-next="{{ ts('Next >') }}"
-      text-prev="{{ ts('< Prev') }}"
-    >
-    </paging>
+      paging-data="roles.pageObj"
+      paging-action="roles.goToPage($page)"
+    ></civicase-paging>
     <div>
       <a
         ng-repeat="letter in letters"
@@ -254,21 +245,12 @@
   </table>
   <div class="civicase__people-tab-counter clearfix">
     <div class="pull-right">
-      {{ ts('Page %1 of %2', {1: rolesPage, 2: ceil(roles.totalCount / roles.ROLES_PER_PAGE)}) }}
+      {{ ts('Page %1 of %2', {1: roles.pageObj.page, 2: ceil(roles.pageObj.total / roles.pageObj.pageSize)}) }}
     </div>
-    <paging
+    <civicase-paging
       class="center-block"
-      page="$parent.rolesPage"
-      page-size="roles.ROLES_PER_PAGE"
-      total="roles.totalCount"
-      ng-show="roles.totalCount > roles.ROLES_PER_PAGE"
-      show-prev-next="true"
-      show-first-last="true"
-      text-first="{{ ts('<< First') }}"
-      text-last="{{ ts('Last >>') }}"
-      text-next="{{ ts('Next >') }}"
-      text-prev="{{ ts('< Prev') }}"
-    >
-    </paging>
+      paging-data="roles.pageObj"
+      paging-action="roles.goToPage($page)"
+    ></civicase-paging>
   </div>
 </div>

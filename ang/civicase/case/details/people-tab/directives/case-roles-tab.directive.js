@@ -63,7 +63,6 @@
     $scope.civicaseSingleCaseRolePerType = civicaseSingleCaseRolePerType;
     $scope.roles = civicasePeopleTabRoles;
     $scope.rolesFilter = '';
-    $scope.rolesPage = 1;
     $scope.rolesAlphaFilter = '';
     $scope.rolesSelectionMode = '';
     $scope.rolesSelectedTask = '';
@@ -88,10 +87,8 @@
         $scope.roles.updateRolesList({
           showInactiveRoles: $scope.showInactiveRoles
         });
+        $scope.roles.goToPage($scope.roles.pageObj.page);
       }, true);
-      $scope.$watch('rolesPage', function () {
-        $scope.roles.goToPage($scope.rolesPage);
-      });
     }());
 
     /**
