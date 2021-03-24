@@ -1,10 +1,11 @@
 ((_) => {
   describe('formatCase', () => {
-    let caseItem, customDataBlocks, formatCase;
+    let $sce, caseItem, customDataBlocks, formatCase;
 
     beforeEach(module('civicase', 'civicase.data'));
 
-    beforeEach(inject((CasesData, _formatCase_) => {
+    beforeEach(inject((_$sce_, CasesData, _formatCase_) => {
+      $sce = _$sce_;
       formatCase = _formatCase_;
 
       caseItem = _.extend({}, _.cloneDeep(CasesData.get().values[0]), {
@@ -75,6 +76,19 @@
             jasmine.objectContaining({ weight: 3 })
           ]);
         });
+      });
+    });
+
+    describe('when formatting the case fields', () => {
+      let formattedCase;
+
+      beforeEach(() => {
+        caseItem.subject = 'You &amp; Me';
+        formattedCase = formatCase(caseItem);
+      });
+
+      it('allows special HTML characters in the case subject', () => {
+        expect($sce.getTrustedHtml(formattedCase.subject)).toEqual('You &amp; Me');
       });
     });
 
