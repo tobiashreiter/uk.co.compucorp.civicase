@@ -92,6 +92,23 @@ function civicrm_api3_case_getrelations(array $params) {
 /**
  * Get parameters for Relationship.get api call.
  *
+ * <If (display_name) param is not passed>
+ *  Return Relationships, where either (Contact ID A) = (Client ID),
+ *  or (Contact ID B) = (Client ID).
+ * <Else = (display_name) param is passed>.
+ *  Fetch the Contacts where (ID) = (Client ID), and
+ *  (display_name) = (passed display_name)
+ *    <If the Number of Contacts > 0>
+ *      Return Relationships, where either (Contact ID A) = (Fetched Contacts),
+ *      OR (Contact ID B) = (Client ID)
+ *    <Else>
+ *      Fetch All the contacts where (display_name) = (passed display_name)
+ *        <If the Number of Contacts > 0>
+ *          Return Relationships, where (Contact ID A) = (Fetched Contacts),
+ *          AND (Contact ID B) = Client ID
+ *        <Else>
+ *          Return Empty Array, as no relationships are fine.
+ *
  * @param array $params
  *   Parameters.
  * @param array $clientIds
@@ -118,10 +135,7 @@ function _prepare_relationship_params(array $params, array $clientIds) {
     ],
   ];
 
-  // When Alphabetical filters are used.
   if ($isDisplayNameFilterPresent) {
-    // Fetch contacts that Starts with Sent DisplayName,
-    // and has ID same as Client ID.
     $contacts = civicrm_api3('Contact', 'get', [
       'sequential' => 0,
       'id' => ['IN' => $clientIds],
@@ -136,7 +150,6 @@ function _prepare_relationship_params(array $params, array $clientIds) {
       $relationshipParams["contact_id_a"] = ['IN' => $contactIds];
     }
     else {
-      // Fetch contacts that Starts with Sent DisplayName.
       $contacts = civicrm_api3('Contact', 'get', [
         'sequential' => 0,
         'display_name' => $params['display_name'],
@@ -145,16 +158,12 @@ function _prepare_relationship_params(array $params, array $clientIds) {
       $contactIds = array_column($contacts, 'id');
 
       if (count($contactIds) > 0) {
-        // Contact ID A can be any one of the Contacts fetched previously.
         $relationshipParams["contact_id_a"] = ['IN' => $contactIds];
+        $relationshipParams["options"] = $params['options'];
       }
       else {
-        // No relationships can be present, return directly.
         return FALSE;
       }
-
-      // Reset "OR" filter between contact_id_a and contact_id_b.
-      $relationshipParams["options"] = $params['options'];
     }
   }
 
