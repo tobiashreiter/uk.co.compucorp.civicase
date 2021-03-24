@@ -406,7 +406,7 @@
   describe('civicaseCaseDetailsController', function () {
     let $controller, $provide, $rootScope, $route, $scope, apiResponses,
       CasesData, civicaseCrmApiMock, controller, DetailsCaseTab,
-      loadFormBefore, civicaseCrmUrl;
+      civicaseCrmUrl, civicaseCrmLoadForm;
 
     beforeEach(module('civicase', 'civicase.data', function (_$provide_) {
       $provide = _$provide_;
@@ -417,13 +417,14 @@
     }));
 
     beforeEach(inject(function (_$controller_, $q, _$rootScope_, _$route_,
-      _CasesData_, _DetailsCaseTab_, _civicaseCrmUrl_) {
+      _CasesData_, _DetailsCaseTab_, _civicaseCrmUrl_, _civicaseCrmLoadForm_) {
       civicaseCrmUrl = _civicaseCrmUrl_;
       $controller = _$controller_;
       $rootScope = _$rootScope_;
       $route = _$route_;
       CasesData = _CasesData_;
       DetailsCaseTab = _DetailsCaseTab_;
+      civicaseCrmLoadForm = _civicaseCrmLoadForm_;
       apiResponses = {
         'Contact.get': { values: [] }
       };
@@ -646,19 +647,13 @@
       beforeEach(function () {
         initController();
         spyOn($rootScope, '$broadcast');
-        loadFormBefore = CRM.loadForm;
-        CRM.loadForm = jasmine.createSpy();
-        CRM.loadForm.and.returnValue({
+        civicaseCrmLoadForm.and.returnValue({
           on: function () {
             loadFormArguments = arguments;
           }
         });
 
         $scope.createEmail();
-      });
-
-      afterEach(function () {
-        CRM.loadForm = loadFormBefore;
       });
 
       it('open a popup to create emails', function () {
