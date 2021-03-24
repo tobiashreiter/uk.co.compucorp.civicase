@@ -1,4 +1,4 @@
-<div class="civicase__people-tab__sub-tab" ng-show="tab == 'roles'">
+<div class="civicase__people-tab__sub-tab">
   <div class="civicase__people-tab__search">
     <div class="btn-group btn-group-md pull-right">
       <button
@@ -137,7 +137,12 @@
       >
         <td class="civicase__people-tab__table-column civicase__people-tab__table-column--first">
           <span ng-if="role.contact_id" class="civicase__checkbox" >
-            <input id="select-role-{{ $index }}" class="civicase__people-tab__table-checkbox" type="checkbox" ng-model="role.checked" ng-click="setSelectionMode('checked', 'roles')" />
+            <input
+              id="select-role-{{ $index }}"
+              class="civicase__people-tab__table-checkbox"
+              type="checkbox"
+              ng-model="role.checked"
+              ng-click="setSelectionMode('checked', 'roles')" />
             <i ng-if="role.checked" class="civicase__checkbox--checked material-icons">check_box</i>
           </span>
           <label for="select-role-{{ $index }}">

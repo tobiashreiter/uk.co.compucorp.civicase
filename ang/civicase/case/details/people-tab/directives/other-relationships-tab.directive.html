@@ -1,4 +1,4 @@
-<div class="civicase__people-tab__sub-tab" ng-show="tab == 'relations'">
+<div class="civicase__people-tab__sub-tab">
   <div class="civicase__people-tab__search">
     <div class="btn-group btn-group-md pull-right">
       <a
@@ -41,14 +41,30 @@
     <h3>{{ ts('%1 Contacts', {1: relations.length}) }}</h3>
     <div class="civicase__people-tab__selection">
       <span> {{ ts('Select Records:') }} </span>
-      <input type="radio" value="all" ng-model="relationsSelectionMode" id="relationsSelectionMode-all"/>
-      <label for="relationsSelectionMode-all">{{ ts('All %1 Contacts', {1: relations.length}) }}</label>
-      <input type="radio" value="checked" ng-model="relationsSelectionMode" id="relationsSelectionMode-checked"/>
-      <label for="relationsSelectionMode-checked">{{ ts('%1 Selected', {1: getSelectedContacts('relations', true).length}) }}</label>
+      <input
+        type="radio" value="all" ng-model="relationsSelectionMode"
+        id="relationsSelectionMode-all"/>
+      <label for="relationsSelectionMode-all">
+        {{ ts('All %1 Contacts', {1: relations.length}) }}
+      </label>
+      <input
+        type="radio" value="checked" ng-model="relationsSelectionMode"
+        id="relationsSelectionMode-checked"/>
+      <label
+        for="relationsSelectionMode-checked">
+        {{ ts('%1 Selected', {1: getSelectedContacts('relations', true).length}) }}
+      </label>
       <div class="civicase__people-tab__select-box">
-        <select class="form-control " crm-ui-select ng-model="relationsSelectedTask" ng-change="doContactTask('relations')" ng-disabled="!getSelectedContacts('relations').length" >
+        <select
+          class="form-control"
+          crm-ui-select
+          ng-model="relationsSelectedTask"
+          ng-change="doContactTask('relations')"
+          ng-disabled="!getSelectedContacts('relations').length">
           <option value="">{{ ts('Actions') }}</option>
-          <option ng-repeat="(key, opt) in contactTasks" value="{{ key }}">{{ opt.title }}</option>
+          <option ng-repeat="(key, opt) in contactTasks" value="{{ key }}">
+            {{ opt.title }}
+          </option>
         </select>
       </div>
     </div>
@@ -59,7 +75,13 @@
       paging-data="relationsPageObj"
     ></civicase-paging>
     <div>
-      <a ng-repeat="letter in letters" class="civicase__people-tab__filter-alpha-pager" ng-class="{active: letter === relationsAlphaFilter}" ng-click="setLetterFilter(letter, 'relations')">{{ letter }}</a>
+      <a
+        ng-repeat="letter in letters"
+        class="civicase__people-tab__filter-alpha-pager"
+        ng-class="{active: letter === relationsAlphaFilter}"
+        ng-click="setLetterFilter(letter, 'relations')">
+        {{ letter }}
+      </a>
       <a href class="all" ng-click="setLetterFilter('', 'relations')">All</a>
     </div>
   </div>
@@ -79,12 +101,20 @@
       <tr ng-repeat="contact in relations" ng-if="!isRelationshipLoading">
         <td class="civicase__people-tab__table-column civicase__people-tab__table-column--first">
           <span class="civicase__checkbox">
-            <input type="checkbox" id="select-relation-{{ $index }}" class="civicase__people-tab__table-checkbox" ng-model="contact.checked" ng-click="setSelectionMode('checked', 'relations')" />
+            <input
+              type="checkbox"
+              id="select-relation-{{ $index }}"
+              class="civicase__people-tab__table-checkbox"
+              ng-model="contact.checked"
+              ng-click="setSelectionMode('checked', 'relations')" />
             <i ng-if="contact.checked" class="civicase__checkbox--checked material-icons">check_box</i>
             <label for="select-relation-{{ $index }}"></label>
           </span>
           <label for="select-role-{{ $index }}">
-            <a ng-href="{{ 'civicrm/contact/view' | civicaseCrmUrl:{ cid: contact.contact_id } }}">{{ contact.display_name }}</a>
+            <a
+              ng-href="{{ 'civicrm/contact/view' | civicaseCrmUrl:{ cid: contact.contact_id } }}">
+              {{ contact.display_name }}
+            </a>
           </label>
         </td>
         <td class="civicase__people-tab__table-column">{{ contact.relation }}</td>
@@ -94,8 +124,7 @@
         <td class="civicase__people-tab__table-column">
           <a
             class="crm-popup"
-            ng-href="{{ 'civicrm/activity/email/add' | civicaseCrmUrl:{ action: 'add', caseid: item.id, reset: 1, cid: contact.contact_id } }}"
-          >
+            ng-href="{{ 'civicrm/activity/email/add' | civicaseCrmUrl:{ action: 'add', caseid: item.id, reset: 1, cid: contact.contact_id } }}">
             {{ contact.email }}
           </a>
         </td>
@@ -113,14 +142,26 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-right" crm-popup-form-success="getRelations()">
               <li>
-                <a class="crm-popup" ng-href="{{ 'civicrm/contact/view/rel' | civicaseCrmUrl:{ action: 'update', reset: 1, id: contact.relationship_id, cid: contact.id, rtype: contact.relationship_direction } }}">{{ ts('Edit Relationship') }}</a>
+                <a
+                  class="crm-popup"
+                  ng-href="{{ 'civicrm/contact/view/rel' | civicaseCrmUrl:{ action: 'update', reset: 1, id: contact.relationship_id, cid: contact.id, rtype: contact.relationship_direction } }}">
+                  {{ ts('Edit Relationship') }}
+                </a>
               </li>
               <li role="separator" class="divider"></li>
               <li ng-if="contact.email">
-                <a class="crm-popup" ng-href="{{ 'civicrm/activity/email/add' | civicaseCrmUrl:{ action: 'add', caseid: item.id, reset: 1, cid: contact.id } }}">{{ ts('Send Email') }}</a>
+                <a
+                  class="crm-popup"
+                  ng-href="{{ 'civicrm/activity/email/add' | civicaseCrmUrl:{ action: 'add', caseid: item.id, reset: 1, cid: contact.id } }}">
+                  {{ ts('Send Email') }}
+                </a>
               </li>
               <li>
-                <a class="crm-popup" ng-href="{{ 'civicrm/activity/pdf/add' | civicaseCrmUrl:{ action: 'add', caseid: item.id, reset: 1, cid: contact.id, context: 'standalone' } }}">{{ ts('Print/Merge Document') }}</a>
+                <a
+                  class="crm-popup"
+                  ng-href="{{ 'civicrm/activity/pdf/add' | civicaseCrmUrl:{ action: 'add', caseid: item.id, reset: 1, cid: contact.id, context: 'standalone' } }}">
+                  {{ ts('Print/Merge Document') }}
+                </a>
               </li>
             </ul>
           </div>
