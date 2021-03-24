@@ -47,20 +47,12 @@ function civicrm_api3_case_getrelations(array $params) {
     'options' => ['limit' => 0],
   ]);
   $clientIds = CRM_Utils_Array::collect('contact_id', $caseContacts['values']);
-  $relationshipParams = [
-    'is_active' => 1,
-    'relationship_type_id.is_active' => 1,
-    'case_id' => ['IS NULL' => 1],
-    "contact_id_a" => ['IN' => $clientIds],
-    "contact_id_b" => ['IN' => $clientIds],
-    'options' => ['or' => [["contact_id_a", "contact_id_b"]]] + $params['options'],
-    'return' => [
-      'relationship_type_id',
-      'contact_id_a',
-      'contact_id_b',
-      'description',
-    ],
-  ];
+
+  $relationshipParams = _prepare_relationship_params($params, $clientIds);
+  if (!$relationshipParams) {
+    return civicrm_api3_create_success([], $params, 'Case', 'getrelations');
+  }
+
   $result = civicrm_api3('Relationship', 'get', $relationshipParams);
 
   foreach ($result['values'] as $relation) {
@@ -81,19 +73,90 @@ function civicrm_api3_case_getrelations(array $params) {
     return $result;
   }
 
-  unset($params['case_id'], $params['options']);
   $contacts = civicrm_api3('Contact', 'get', [
     'sequential' => 0,
     'id' => ['IN' => $contactIds],
-    'options' => ['limit' => 0],
-  ]);
+    'options' => $params['options']['limit'],
+  ])['values'];
 
   foreach ($relations as &$relation) {
-    $relation += $contacts['values'][$relation['id']];
+    $relation += $contacts[$relation['id']];
   }
 
   $out = civicrm_api3_create_success(array_filter($relations), $params, 'Case', 'getrelations');
   $out['count'] = $result['count'];
 
   return $out;
+}
+
+/**
+ * Get parameters for Relationship.get api call.
+ *
+ * @param array $params
+ *   Parameters.
+ * @param array $clientIds
+ *   Parameters.
+ *
+ * @return array|bool
+ *   Parameters.
+ */
+function _prepare_relationship_params(array $params, array $clientIds) {
+  $isDisplayNameFilterPresent = !empty($params['display_name']);
+  // Default params.
+  $relationshipParams = [
+    'is_active' => 1,
+    'relationship_type_id.is_active' => 1,
+    'case_id' => ['IS NULL' => 1],
+    "contact_id_a" => ['IN' => $clientIds],
+    "contact_id_b" => ['IN' => $clientIds],
+    'options' => ['or' => [["contact_id_a", "contact_id_b"]]] + $params['options'],
+    'return' => [
+      'relationship_type_id',
+      'contact_id_a',
+      'contact_id_b',
+      'description',
+    ],
+  ];
+
+  // When Alphabetical filters are used.
+  if ($isDisplayNameFilterPresent) {
+    // Fetch contacts that Starts with Sent DisplayName,
+    // and has ID same as Client ID.
+    $contacts = civicrm_api3('Contact', 'get', [
+      'sequential' => 0,
+      'id' => ['IN' => $clientIds],
+      'display_name' => $params['display_name'],
+      // ClientIDs wont be more than 25 usually, so wont be a performance issue.
+      'options' => ['limit' => 0],
+    ])['values'];
+
+    if (count($contacts) > 0) {
+      // Contact ID A can be any one of the Contacts fetched previously.
+      $contactIds = array_column($contacts, 'id');
+      $relationshipParams["contact_id_a"] = ['IN' => $contactIds];
+    }
+    else {
+      // Fetch contacts that Starts with Sent DisplayName.
+      $contacts = civicrm_api3('Contact', 'get', [
+        'sequential' => 0,
+        'display_name' => $params['display_name'],
+        'options' => ['limit' => 0],
+      ])['values'];
+      $contactIds = array_column($contacts, 'id');
+
+      if (count($contactIds) > 0) {
+        // Contact ID A can be any one of the Contacts fetched previously.
+        $relationshipParams["contact_id_a"] = ['IN' => $contactIds];
+      }
+      else {
+        // No relationships can be present, return directly.
+        return FALSE;
+      }
+
+      // Reset "OR" filter between contact_id_a and contact_id_b.
+      $relationshipParams["options"] = $params['options'];
+    }
+  }
+
+  return $relationshipParams;
 }
