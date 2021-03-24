@@ -2,7 +2,9 @@
   var module = angular.module('civicase');
 
   // Angular binding for CiviCRM's jQuery-based crm-editable
-  module.directive('crmEditable', function ($timeout) {
+  module.directive('crmEditable', function ($filter, $timeout) {
+    var escapeString = $filter('civicaseEscapeString');
+
     return {
       restrict: 'A',
       link: crmEditableLink,
@@ -67,10 +69,6 @@
      * Retuns the text to be shown as HTML,
      * if the model value is null or empty string, retuns the placeholder.
      *
-     * We unescape and then escape the string because the value might already
-     * be escaped and if we try to scape it twice the string might break.
-     * Ex: `&amp;` will turn into `&amp;amp;`.
-     *
      * @param {object} scope scope object
      * @param {object} elem element
      * @param {object} attrs attributes
@@ -81,7 +79,7 @@
       var placeholder = attrs.placeholder;
 
       return (scope.model[field] && scope.model[field] !== '')
-        ? _.escape(_.unescape(scope.model[field]))
+        ? escapeString(scope.model[field])
         : placeholder;
     }
 
