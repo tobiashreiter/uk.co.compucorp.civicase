@@ -58,7 +58,7 @@
   <div class="civicase__people-tab__filter">
     <paging
       class="paging-top"
-      page="rolesPage"
+      page="$parent.rolesPage"
       page-size="roles.ROLES_PER_PAGE"
       total="roles.totalCount"
       ng-show="roles.totalCount > roles.ROLES_PER_PAGE"
@@ -253,7 +253,7 @@
     </div>
     <paging
       class="center-block"
-      page="rolesPage"
+      page="$parent.rolesPage"
       page-size="roles.ROLES_PER_PAGE"
       total="roles.totalCount"
       ng-show="roles.totalCount > roles.ROLES_PER_PAGE"
