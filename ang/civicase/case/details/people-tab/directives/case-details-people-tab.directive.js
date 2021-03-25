@@ -16,7 +16,7 @@
   module.controller('civicaseViewPeopleController', civicaseViewPeopleController);
 
   /**
-   * civicaseViewPeopleController Controller
+   * civicaseViewPeople Controller
    *
    * @param {object} $scope $scope
    * @param {object} allowMultipleCaseClients allow multiple clients configuration value
@@ -31,15 +31,12 @@
     $scope.ts = ts;
     $scope.allowMultipleCaseClients = allowMultipleCaseClients;
     $scope.civicaseSingleCaseRolePerType = civicaseSingleCaseRolePerType;
-
-    $scope.letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
     $scope.contactTasks = CRM.civicase.contactTasks;
     $scope.ceil = Math.ceil;
 
     $scope.getSelectedContacts = getSelectedContacts;
     $scope.setSelectionMode = setSelectionMode;
     $scope.setTab = setTab;
-    $scope.setLetterFilter = setLetterFilter;
     $scope.doContactTask = doContactTask;
 
     (function init () {
@@ -88,26 +85,6 @@
     }
 
     /**
-     * Filters result on the basis of letter clicked
-     *
-     * @param {string} letter letter
-     * @param {string} tab tab
-     */
-    function setLetterFilter (letter, tab) {
-      if ($scope[tab + 'AlphaFilter'] === letter) {
-        $scope[tab + 'AlphaFilter'] = '';
-      } else {
-        $scope[tab + 'AlphaFilter'] = letter;
-      }
-
-      if (tab === 'roles') {
-        $scope.roles.filterRoles($scope.rolesAlphaFilter, $scope.rolesFilter);
-      } else {
-        $scope.getRelations();
-      }
-    }
-
-    /**
      * Update the contacts with the task
      *
      * @param {string} tab tab
@@ -115,7 +92,9 @@
     function doContactTask (tab) {
       var task = $scope.contactTasks[$scope[tab + 'SelectedTask']];
       $scope[tab + 'SelectedTask'] = '';
-      civicaseCrmLoadForm(civicaseCrmUrl(task.url, { cids: $scope.getSelectedContacts(tab).join(',') }))
+      civicaseCrmLoadForm(civicaseCrmUrl(
+        task.url, { cids: $scope.getSelectedContacts(tab).join(',') })
+      )
         .on('crmFormSuccess', $scope.refresh)
         .on('crmFormSuccess', function () {
           $scope.refresh();

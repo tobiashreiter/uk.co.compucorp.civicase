@@ -62,8 +62,7 @@
     $scope.allowMultipleCaseClients = allowMultipleCaseClients;
     $scope.civicaseSingleCaseRolePerType = civicaseSingleCaseRolePerType;
     $scope.roles = civicasePeopleTabRoles;
-    $scope.rolesFilter = '';
-    $scope.rolesAlphaFilter = '';
+    $scope.rolesFilter = { alpha: '', roles: '' };
     $scope.rolesSelectionMode = '';
     $scope.rolesSelectedTask = '';
     $scope.roleDatesUpdater = civicaseRoleDatesUpdater;

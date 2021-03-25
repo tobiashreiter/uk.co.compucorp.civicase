@@ -132,19 +132,23 @@
 }
 
 .civicase__people-tab__filter-alpha-pager {
-  color: $gray-darker;
-  margin: 0 3px;
-  padding: 2px;
+  margin-left: $basic-gutter*4;
 
-  &.all,
-  &.active {
-    color: $brand-primary;
-    text-decoration: none;
-  }
+  .civicase__people-tab__filter-alpha-pager__link {
+    color: $gray-darker;
+    margin: 0 3px;
+    padding: 2px;
 
-  &:first-child {
-    margin-left: 0;
-    padding-left: 0;
+    &.all,
+    &.active {
+      color: $brand-primary;
+      text-decoration: none;
+    }
+
+    &:first-child {
+      margin-left: 0;
+      padding-left: 0;
+    }
   }
 }
 

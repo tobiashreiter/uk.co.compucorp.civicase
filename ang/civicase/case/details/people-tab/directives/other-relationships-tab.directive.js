@@ -24,7 +24,7 @@
 
     $scope.relations = [];
     $scope.relationsPageObj = { total: 0, pageSize: 25, page: 1 };
-    $scope.relationsAlphaFilter = '';
+    $scope.relationsFilter = { alpha: '' };
     $scope.relationsSelectionMode = '';
     $scope.relationsSelectedTask = '';
     $scope.isRelationshipLoading = true;
@@ -32,7 +32,7 @@
     $scope.goToPage = goToPage;
 
     (function init () {
-      $scope.getRelations();
+      $scope.getRelations($scope.relationsFilter);
     }());
 
     /**
@@ -41,20 +41,22 @@
     function goToPage (pageNumber) {
       $scope.relationsPageObj.page = pageNumber;
 
-      getRelations();
+      getRelations($scope.relationsFilter);
     }
 
     /**
      * Updates the case relationship list
+     *
+     * @param {object} filter filter object
      */
-    function getRelations () {
+    function getRelations (filter) {
       var params = {
         case_id: item.id,
         sequential: 1,
         return: ['display_name', 'phone', 'email']
       };
-      if ($scope.relationsAlphaFilter) {
-        params.display_name = $scope.relationsAlphaFilter;
+      if (filter.alpha) {
+        params.display_name = filter.alpha;
       }
       civicaseCrmApi([
         ['Case', 'getrelations', _.extend(params, {

@@ -43,16 +43,15 @@
     /**
      * Filters the roles list by letter and by role type.
      *
-     * @param {string} alphaFilter the letter to filter roles by.
-     * @param {string} rolesFilter the type to filter roles by.
+     * @param {object} filter the type to filter roles by.
      */
-    function filterRoles (alphaFilter, rolesFilter) {
+    function filterRoles (filter) {
       roles.list = _.filter(roles.fullRolesList, function (role) {
-        var isFilteredByLetter = !alphaFilter ||
+        var isFilteredByLetter = !filter.alpha ||
           _.includes((role.display_name || '').toUpperCase(),
-            alphaFilter);
-        var isFilteredByRoleType = !rolesFilter ||
-          role.role === rolesFilter;
+            filter.alpha);
+        var isFilteredByRoleType = !filter.roles ||
+          role.role === filter.roles;
 
         return isFilteredByLetter && isFilteredByRoleType;
       });
