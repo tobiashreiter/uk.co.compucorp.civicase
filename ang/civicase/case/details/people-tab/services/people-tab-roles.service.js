@@ -295,6 +295,7 @@
       roles.pageObj.total = roles.fullRolesList.length;
 
       roles.pageObj.page = 1;
+      goToPage(roles.pageObj.page);
       assignCountOfRolesPerType();
     }
   });
