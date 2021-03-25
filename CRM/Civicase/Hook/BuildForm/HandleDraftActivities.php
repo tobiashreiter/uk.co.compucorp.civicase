@@ -80,6 +80,7 @@ class CRM_Civicase_Hook_BuildForm_HandleDraftActivities {
           'xbutton',
           $form->getButtonName('refresh'),
           ts('Save Draft'), [
+            'type' => 'submit',
             'crm-icon' => 'fa-pencil-square-o',
             'class' => 'crm-form-submit',
           ]
