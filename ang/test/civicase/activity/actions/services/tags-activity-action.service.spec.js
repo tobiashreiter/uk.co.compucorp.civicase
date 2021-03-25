@@ -1,5 +1,3 @@
-/* eslint-env jasmine */
-
 (function (_, $) {
   describe('TagsActivityAction', function () {
     var $q, $rootScope, TagsActivityAction, activitiesMockData, TagsMockData,

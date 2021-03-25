@@ -1,5 +1,3 @@
-/* eslint-env jasmine */
-
 ((_) => {
   describe('workflow duplicate controller', () => {
     let $controller, $rootScope, $q, $scope, dialogService, CaseTypesMockData,

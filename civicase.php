@@ -71,6 +71,12 @@ function civicase_civicrm_config(&$config) {
     ['CRM_Civicase_Event_Listener_CaseRoleCreation', 'onPrepare'],
     10
   );
+
+  Civi::dispatcher()->addListener(
+    'civi.api.prepare',
+    ['CRM_Civicase_Event_Listener_CaseCustomFields', 'loadOnDemand'],
+    10
+  );
 }
 
 /**

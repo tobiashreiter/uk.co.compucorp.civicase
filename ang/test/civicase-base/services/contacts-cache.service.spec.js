@@ -1,4 +1,3 @@
-/* eslint-env jasmine */
 (function (_) {
   describe('ContactsCache', function () {
     var $q, $rootScope, ContactsCache, ContactsData, civicaseCrmApi;

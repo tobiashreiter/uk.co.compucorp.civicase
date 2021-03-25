@@ -1,5 +1,3 @@
-/* eslint-env jasmine */
-
 ((_) => {
   describe('workflow edit controller', () => {
     let $controller, $rootScope, $scope, $window, civicaseCrmUrl,

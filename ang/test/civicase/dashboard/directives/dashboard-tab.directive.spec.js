@@ -1,4 +1,3 @@
-/* eslint-env jasmine */
 (function ($, _, moment) {
   describe('dashboardTabController', function () {
     var $controller, $rootScope, $scope, civicaseCrmApi, formatActivity, formatCase,
@@ -14,7 +13,12 @@
     }
 
     beforeEach(module('civicase.templates', 'civicase.data', 'civicase', 'crmUtil', function ($provide) {
+      const formatCase = jasmine.createSpy('formatCase')
+        .and.callFake(function (caseObj) {
+          return caseObj;
+        });
       $provide.value('civicaseCrmApi', jasmine.createSpy('civicaseCrmApi'));
+      $provide.value('formatCase', formatCase);
     }));
 
     beforeEach(inject(function (_$controller_, _$rootScope_, _civicaseCrmApi_,
