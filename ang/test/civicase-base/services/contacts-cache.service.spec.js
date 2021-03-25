@@ -15,7 +15,7 @@
       ContactsData = _.cloneDeep(_ContactsData_);
       civicaseCrmApi = _civicaseCrmApi_;
 
-      spyOn($rootScope, '$broadcast');
+      spyOn($rootScope, '$broadcast').and.callThrough();
     }));
 
     describe('basic tests', function () {

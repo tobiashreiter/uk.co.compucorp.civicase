@@ -13,7 +13,7 @@
       CaseTypeCategory = _CaseTypeCategory_;
 
       categoryWhereUserCanAccessActivities = _.sample(CaseTypeCategory.getAll(), 1);
-      spyOn($rootScope, '$broadcast');
+      spyOn($rootScope, '$broadcast').and.callThrough();
       spyOn(CaseTypeCategory, 'getCategoriesWithAccessToActivity')
         .and.returnValue([categoryWhereUserCanAccessActivities]);
 

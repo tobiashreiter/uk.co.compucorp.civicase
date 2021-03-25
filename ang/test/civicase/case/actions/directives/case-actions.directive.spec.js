@@ -42,7 +42,7 @@
       PrintCaseAction = _PrintCaseAction_;
       civicaseCrmLoadForm = _civicaseCrmLoadForm_;
 
-      spyOn($rootScope, '$broadcast');
+      spyOn($rootScope, '$broadcast').and.callThrough();
 
       originalTriggerFunction = $.fn.trigger;
       spyOn($.fn, 'trigger');

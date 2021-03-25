@@ -525,7 +525,7 @@
 
           describe('when it changes', function () {
             beforeEach(function () {
-              spyOn($rootScope, '$broadcast');
+              spyOn($rootScope, '$broadcast').and.callThrough();
 
               $scope.newMilestonesPanel.custom.involvementFilter = { '@involvingContact': '' };
               $scope.$digest();
@@ -780,7 +780,7 @@
 
           describe('when it changes', function () {
             beforeEach(function () {
-              spyOn($rootScope, '$broadcast');
+              spyOn($rootScope, '$broadcast').and.callThrough();
 
               $scope.activitiesPanel.custom.involvementFilter = { '@involvingContact': '' };
               $scope.$digest();

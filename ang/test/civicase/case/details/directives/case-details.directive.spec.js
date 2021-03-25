@@ -117,7 +117,7 @@
 
       describe('when case is unfocused and screen width is more than 1690px', function () {
         beforeEach(function () {
-          spyOn($rootScope, '$broadcast');
+          spyOn($rootScope, '$broadcast').and.callThrough();
           spyOn($document, 'width').and.returnValue(1700);
           compileDirective();
           element.isolateScope().isFocused = true;
@@ -125,7 +125,7 @@
         });
 
         it('does not fire the case details unfocused event', function () {
-          expect($rootScope.$broadcast).not.toHaveBeenCalled();
+          expect($rootScope.$broadcast).not.toHaveBeenCalledWith('civicase::case-details::unfocused');
         });
       });
     });
@@ -331,7 +331,7 @@
 
     describe('when clear all filters button is pressed', function () {
       beforeEach(function () {
-        spyOn($rootScope, '$broadcast');
+        spyOn($rootScope, '$broadcast').and.callThrough();
         compileDirective();
 
         element.isolateScope().clearAllFiltersToLoadSpecificCase();
@@ -618,7 +618,7 @@
 
       beforeEach(function () {
         initController();
-        spyOn($rootScope, '$broadcast');
+        spyOn($rootScope, '$broadcast').and.callThrough();
         civicaseCrmLoadForm.and.returnValue({
           on: function () {
             loadFormArguments = arguments;
