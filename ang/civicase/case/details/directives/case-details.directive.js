@@ -448,11 +448,6 @@
       item.nextActivityNotMilestone = _.each(_.cloneDeep(item['api.Activity.getAll.nextActivitiesWhichIsNotMileStone'].values), formatAct)[0];
       delete (item['api.Activity.getAll.nextActivitiesWhichIsNotMileStone']);
 
-      // Custom fields
-      var customData = item['api.CustomValue.getalltreevalues'].values || [];
-      item.customData = _.groupBy(customData, 'style');
-      delete (item['api.CustomValue.getalltreevalues']);
-
       return item;
     }
 
