@@ -1,5 +1,7 @@
 <?php
 
+use CRM_Civicase_ExtensionUtil as E;
+
 /**
  * Sets up Case Category Instance Support.
  */
@@ -38,7 +40,7 @@ class CRM_Civicase_Setup_CaseCategoryInstanceSupport {
     CRM_Core_BAO_OptionGroup::ensureOptionGroupExists(
       [
         'name' => self::INSTANCE_OPTION_GROUP,
-        'title' => ts('Case Category Instance Type'),
+        'title' => E::ts('Case Category Instance Type'),
         'is_reserved' => 1,
       ]
     );
