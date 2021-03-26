@@ -83,8 +83,15 @@ function civicrm_api3_case_getrelations(array $params) {
   if (isset($options['offset'])) {
     $relationships->setOffset($options['offset']);
   }
+  if ($options['is_count'] === 1) {
+    $relationships->selectRowCount();
+  }
 
   $result = $relationships->execute();
+
+  if ($options['is_count'] === 1) {
+    return ['count' => $result->rowCount];
+  }
 
   foreach ($result as $relation) {
     $a = in_array($relation['contact_id_a'], $clientIds) ? 'b' : 'a';

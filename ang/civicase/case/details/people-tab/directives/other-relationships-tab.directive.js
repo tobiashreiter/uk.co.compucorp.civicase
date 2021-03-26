@@ -30,6 +30,7 @@
     $scope.isRelationshipLoading = true;
     $scope.getRelations = getRelations;
     $scope.goToPage = goToPage;
+    $scope.setLetterFilter = setLetterFilter;
 
     (function init () {
       $scope.getRelations($scope.relationsFilter);
@@ -45,9 +46,20 @@
     }
 
     /**
+     * @param {object} filter filter object
+     */
+    function setLetterFilter (filter) {
+      getRelations(filter)
+        .then(function () {
+          goToPage(1);
+        });
+    }
+
+    /**
      * Updates the case relationship list
      *
      * @param {object} filter filter object
+     * @returns {Promise} Promise
      */
     function getRelations (filter) {
       var params = {
@@ -58,7 +70,7 @@
       if (filter.alpha) {
         params.display_name = filter.alpha;
       }
-      civicaseCrmApi([
+      return civicaseCrmApi([
         ['Case', 'getrelations', _.extend(params, {
           options: {
             limit: 25,
