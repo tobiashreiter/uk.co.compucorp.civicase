@@ -116,6 +116,9 @@ function _civicrm_api3_activity_GetActionLinks_processLinks(array $activityActio
       $urlPath = CRM_Utils_Array::value('url', $link, '#');
     }
 
+    // pec/civicrm#6 URLs are encoded, so & becomes '&amp', which breaks redirections in WordPress
+    $urlPath = html_entity_decode($urlPath);
+
     $activityActionLinks[$id]['url'] = $urlPath;
 
     // Add link classes.
