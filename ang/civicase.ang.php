@@ -189,19 +189,16 @@ function add_webforms_case_action(&$options) {
           continue;
         }
 
-        $client = NewCaseWebform::getCaseWebformClientId($webform['nid']);
-
         $items[] = [
           'title' => $webform['title'],
           'action' => 'GoToWebform',
           'path' => $webform['path'],
           'case_type_ids' => $webform['case_type_ids'],
-          'clientID' => $client,
         ];
       }
       $options['caseActions'][] = [
-        'title' => ts('Webforms'),
-        'action' => 'Webforms',
+        'title' => ts('Forms'),
+        'action' => 'Forms',
         'icon' => 'fa-file-text-o',
         'items' => $items,
       ];
