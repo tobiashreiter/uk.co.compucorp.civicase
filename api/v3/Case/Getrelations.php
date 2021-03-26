@@ -5,6 +5,8 @@
  * Case.getrelations file.
  */
 
+use Civi\Api4\Relationship as Relationship;
+
 require_once 'api/v3/Contact.php';
 
 /**
@@ -40,22 +42,51 @@ function _civicrm_api3_case_getrelations_spec(array &$spec) {
 function civicrm_api3_case_getrelations(array $params) {
   $relations = [];
   $params += ['options' => []];
-  $caseContacts = civicrm_api3('CaseContact', 'get', [
-    'case_id' => $params['case_id'],
-    'contact_id.is_deleted' => 0,
-    'return' => 'contact_id',
-    'options' => ['limit' => 0],
-  ]);
-  $clientIds = CRM_Utils_Array::collect('contact_id', $caseContacts['values']);
+  $clientIds = CRM_Utils_Array::collect('contact_id',
+    civicrm_api3('CaseContact', 'get', [
+      'case_id' => $params['case_id'],
+      'contact_id.is_deleted' => 0,
+      'return' => 'contact_id',
+      'options' => ['limit' => 0],
+    ])['values']
+  );
 
-  $relationshipParams = _prepare_relationship_params($params, $clientIds);
-  if (!$relationshipParams) {
-    return civicrm_api3_create_success([], $params, 'Case', 'getrelations');
+  $relationships = Relationship::get()
+    ->addSelect('relationship_type_id', 'contact_id_a', 'contact_id_b')
+    ->addWhere('relationship_type.is_active', '=', TRUE)
+    ->addWhere('is_active', '=', TRUE)
+    ->addWhere('case_id', 'IS NULL');
+
+  if ($params['display_name']) {
+    $contactsFilteredByDisplayName = _get_contact_ids_by_displayname($params['display_name'], $clientIds);
+
+    if (!$contactsFilteredByDisplayName) {
+      return civicrm_api3_create_success([], $params, 'Case', 'getrelations');
+    }
+    _add_relationship_clause_for_display_name(
+      $relationships,
+      $clientIds,
+      $contactsFilteredByDisplayName
+    );
+  }
+  else {
+    $relationships->addClause('OR',
+      ['contact_id_a', 'IN', $clientIds], ['contact_id_b', 'IN', $clientIds]
+    );
   }
 
-  $result = civicrm_api3('Relationship', 'get', $relationshipParams);
+  $options = _civicrm_api3_get_options_from_params($params);
 
-  foreach ($result['values'] as $relation) {
+  if (isset($options['limit'])) {
+    $relationships->setLimit($options['limit']);
+  }
+  if (isset($options['offset'])) {
+    $relationships->setOffset($options['offset']);
+  }
+
+  $result = $relationships->execute();
+
+  foreach ($result as $relation) {
     $a = in_array($relation['contact_id_a'], $clientIds) ? 'b' : 'a';
     $b = in_array($relation['contact_id_a'], $clientIds) ? 'a' : 'b';
     $contactIds[$relation["contact_id_$a"]] = $relation["contact_id_$a"];
@@ -73,99 +104,71 @@ function civicrm_api3_case_getrelations(array $params) {
     return $result;
   }
 
+  unset($params['case_id'], $params['options']);
   $contacts = civicrm_api3('Contact', 'get', [
     'sequential' => 0,
     'id' => ['IN' => $contactIds],
-    'options' => $params['options']['limit'],
-  ])['values'];
-
+  ]);
   foreach ($relations as &$relation) {
-    $relation += $contacts[$relation['id']];
+    if (isset($contacts['values'][$relation['id']])) {
+      $relation += $contacts['values'][$relation['id']];
+    }
   }
 
-  $out = civicrm_api3_create_success(array_filter($relations), $params, 'Case', 'getrelations');
-  $out['count'] = $result['count'];
-
-  return $out;
+  return civicrm_api3_create_success(array_filter($relations), $params, 'Case', 'getrelations');
 }
 
 /**
- * Get parameters for Relationship.get api call.
+ * Get contact ids by display name.
  *
- * <If (display_name) param is not passed>
- *  Return Relationships, where either (Contact ID A) = (Client ID),
- *  or (Contact ID B) = (Client ID).
- * <Else = (display_name) param is passed>.
- *  Fetch the Contacts where (ID) = (Client ID), and
- *  (display_name) = (passed display_name)
- *    <If the Number of Contacts > 0>
- *      Return Relationships, where either (Contact ID A) = (Fetched Contacts),
- *      OR (Contact ID B) = (Client ID)
- *    <Else>
- *      Fetch All the contacts where (display_name) = (passed display_name)
- *        <If the Number of Contacts > 0>
- *          Return Relationships, where (Contact ID A) = (Fetched Contacts),
- *          AND (Contact ID B) = Client ID
- *        <Else>
- *          Return Empty Array, as no relationships are fine.
- *
- * @param array $params
- *   Parameters.
+ * @param string $displayName
+ *   Display Name.
  * @param array $clientIds
- *   Parameters.
+ *   Client IDs.
  *
  * @return array|bool
- *   Parameters.
+ *   API result.
  */
-function _prepare_relationship_params(array $params, array $clientIds) {
-  $isDisplayNameFilterPresent = !empty($params['display_name']);
-  // Default params.
-  $relationshipParams = [
-    'is_active' => 1,
-    'relationship_type_id.is_active' => 1,
-    'case_id' => ['IS NULL' => 1],
-    "contact_id_a" => ['IN' => $clientIds],
-    "contact_id_b" => ['IN' => $clientIds],
-    'options' => ['or' => [["contact_id_a", "contact_id_b"]]] + $params['options'],
-    'return' => [
-      'relationship_type_id',
-      'contact_id_a',
-      'contact_id_b',
-      'description',
-    ],
-  ];
+function _get_contact_ids_by_displayname($displayName, array $clientIds) {
+  $contactsFilteredByDisplayName = civicrm_api3('Contact', 'get', [
+    'sequential' => 0,
+    'display_name' => $displayName,
+    'id' => ['NOT IN' => $clientIds],
+    'options' => ['limit' => 0],
+  ])['values'];
 
-  if ($isDisplayNameFilterPresent) {
-    $contacts = civicrm_api3('Contact', 'get', [
-      'sequential' => 0,
-      'id' => ['IN' => $clientIds],
-      'display_name' => $params['display_name'],
-      // ClientIDs wont be more than 25 usually, so wont be a performance issue.
-      'options' => ['limit' => 0],
-    ])['values'];
-
-    if (count($contacts) > 0) {
-      // Contact ID A can be any one of the Contacts fetched previously.
-      $contactIds = array_column($contacts, 'id');
-      $relationshipParams["contact_id_a"] = ['IN' => $contactIds];
-    }
-    else {
-      $contacts = civicrm_api3('Contact', 'get', [
-        'sequential' => 0,
-        'display_name' => $params['display_name'],
-        'options' => ['limit' => 0],
-      ])['values'];
-      $contactIds = array_column($contacts, 'id');
-
-      if (count($contactIds) > 0) {
-        $relationshipParams["contact_id_a"] = ['IN' => $contactIds];
-        $relationshipParams["options"] = $params['options'];
-      }
-      else {
-        return FALSE;
-      }
-    }
+  if (empty($contactsFilteredByDisplayName)) {
+    return FALSE;
   }
 
-  return $relationshipParams;
+  return array_column($contactsFilteredByDisplayName, 'id');
+}
+
+/**
+ * Add relationship clause for display name.
+ *
+ * @param object $relationships
+ *   Relationship API4 object.
+ * @param array $clientIds
+ *   Client IDs.
+ * @param array $contactsFilteredByDisplayName
+ *   Contacts filtered by display name.
+ */
+function _add_relationship_clause_for_display_name(&$relationships, array $clientIds, array $contactsFilteredByDisplayName) {
+  $relationships->addClause('OR',
+    [
+      'AND',
+      [
+        ['contact_id_a', 'IN', $clientIds],
+        ['contact_id_b', 'IN', $contactsFilteredByDisplayName],
+      ],
+    ],
+    [
+      'AND',
+      [
+        ['contact_id_a', 'IN', $contactsFilteredByDisplayName],
+        ['contact_id_b', 'IN', $clientIds],
+      ],
+    ]
+  );
 }
