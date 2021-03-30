@@ -62,8 +62,8 @@
       paging-action="roles.goToPage($page)"
     ></civicase-paging>
     <civicase-relationship-letter-filter
-      model="rolesFilter"
-      click-listener="roles.filterRoles(rolesFilter)">
+      ng-model="rolesFilter"
+      ng-change="roles.filterRoles(rolesFilter)">
     </civicase-relationship-letter-filter>
     <div class="civicase__people-tab__inactive-filter">
       <span

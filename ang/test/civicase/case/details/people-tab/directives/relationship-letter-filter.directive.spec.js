@@ -23,39 +23,31 @@ describe('Relationship Letter Filter', () => {
   });
 
   describe('when clicking on a letter filter', () => {
-    var clickListener;
-
     describe('when the letter is clicked for the first time', () => {
       beforeEach(() => {
-        clickListener = jasmine.createSpy('clickListener');
-        $scope.model = {};
-        $scope.clickListener = clickListener;
-
         initController({ $scope: $scope });
 
         $scope.setLetterFilter('Y');
       });
 
       it('filters with clicked letter', () => {
-        expect($scope.model.alpha).toBe('Y');
-        expect(clickListener).toHaveBeenCalledWith({ filter: { alpha: 'Y' } });
+        expect($scope.$ctrl.ngModel.alpha).toBe('Y');
+        expect($scope.$ctrl.ngModelCtrl.$setViewValue)
+          .toHaveBeenCalledWith({ alpha: 'Y' });
       });
     });
 
     describe('when the letter is clicked for the second time', () => {
       beforeEach(() => {
-        clickListener = jasmine.createSpy('clickListener');
-        $scope.model = { alpha: 'Y' };
-        $scope.clickListener = clickListener;
-
         initController({ $scope: $scope });
-
+        $scope.$ctrl.ngModel.alpha = 'Y';
         $scope.setLetterFilter('Y');
       });
 
       it('resets the filter', () => {
-        expect($scope.model.alpha).toBe('');
-        expect(clickListener).toHaveBeenCalledWith({ filter: { alpha: '' } });
+        expect($scope.$ctrl.ngModel.alpha).toBe('');
+        expect($scope.$ctrl.ngModelCtrl.$setViewValue)
+          .toHaveBeenCalledWith({ alpha: '' });
       });
     });
   });
@@ -66,6 +58,12 @@ describe('Relationship Letter Filter', () => {
    * @param {object} dependencies the list of dependencies to pass to the controller.
    */
   function initController (dependencies) {
-    $controller('civicaseRelationshipLetterFilterController', dependencies);
+    $controller('civicaseRelationshipLetterFilterController as $ctrl', dependencies);
+    $scope.$ctrl = {
+      ngModel: {},
+      ngModelCtrl: {
+        $setViewValue: jasmine.createSpy('$setViewValue')
+      }
+    };
   }
 });

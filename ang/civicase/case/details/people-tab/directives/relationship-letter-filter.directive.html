@@ -3,7 +3,7 @@
     href
     ng-repeat="letter in letters"
     class="civicase__people-tab__filter-alpha-pager__link"
-    ng-class="{active: letter === model.alpha}"
+    ng-class="{active: letter === $ctrl.ngModel.alpha}"
     ng-click="setLetterFilter(letter)">
     {{ letter }}
   </a>

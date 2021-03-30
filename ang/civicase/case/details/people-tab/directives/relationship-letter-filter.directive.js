@@ -6,9 +6,11 @@
       restrict: 'E',
       templateUrl: '~/civicase/case/details/people-tab/directives/relationship-letter-filter.directive.html',
       controller: civicaseRelationshipLetterFilterController,
+      require: { ngModelCtrl: 'ngModel' },
+      controllerAs: '$ctrl',
+      bindToController: true,
       scope: {
-        model: '=',
-        clickListener: '&'
+        ngModel: '<'
       }
     };
   });
@@ -33,9 +35,12 @@
      * @param {string} letter letter
      */
     function setLetterFilter (letter) {
-      $scope.model.alpha = $scope.model.alpha === letter ? '' : letter;
+      var letterValue = $scope.$ctrl.ngModel.alpha === letter ? '' : letter;
 
-      $scope.clickListener({ filter: $scope.model });
+      $scope.$ctrl.ngModel.alpha = letterValue;
+      // according to angular docs, making a copy is necessary for objects,
+      // otherwise changes wont be reflected
+      $scope.$ctrl.ngModelCtrl.$setViewValue(angular.copy($scope.$ctrl.ngModel));
     }
   }
 })(angular);
