@@ -187,7 +187,8 @@ class CRM_Civicase_Service_CaseCategoryMenuTest extends BaseHeadlessTest {
     $menuCreated = civicrm_api3('Navigation', 'getsingle', ['name' => $caseCategory['name']]);
 
     $this->assertEquals(ts($caseCategory['name']), $menuCreated['name']);
-    $this->assertEquals($caseCategory['label'], $menuCreated['label']);
+    $expectedCategoryLabel = ucfirst(strtolower($caseCategory['label']));
+    $this->assertEquals($expectedCategoryLabel, $menuCreated['label']);
     $this->assertEquals(1, $menuCreated['is_active']);
     $this->assertEquals($this->getPermissionForNavigationMenu($caseCategory['name']), $menuCreated['permission']);
     $this->assertEquals('OR', $menuCreated['permission_operator']);
