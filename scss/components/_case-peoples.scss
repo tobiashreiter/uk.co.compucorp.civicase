@@ -125,10 +125,14 @@
   padding: 10px 24px;
 }
 
-.civicase__people-tab__filter-role {
+.civicase__people-tab__filter--role {
   .form-control {
     width: 160px;
   }
+}
+
+.civicase__people-tab__filter--relations {
+  justify-content: unset;
 }
 
 .civicase__people-tab__filter-alpha-pager {
