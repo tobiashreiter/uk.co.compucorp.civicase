@@ -2,7 +2,6 @@
 
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 use CRM_Civicase_ExtensionUtil as ExtensionUtil;
-use CRM_Case_BAO_CaseType as CaseType;
 
 /**
  * Class CRM_Civicase_Service_CaseCategoryFromUrl.
@@ -99,9 +98,17 @@ class CRM_Civicase_Service_CaseCategoryFromUrl {
     $caseCategory = CRM_Utils_Request::retrieve($caseTypeCategoryParam, 'String');
     if ($caseCategory) {
       if (is_numeric($caseCategory)) {
-        $caseTypeCategories = CaseType::buildOptions($caseTypeCategoryParam, 'validate');
+        $caseCategoryName = civicrm_api3('OptionValue', 'get', [
+          'option_group_id' => 'case_type_categories',
+          'value' => $caseCategory,
+          'return' => ['name'],
+        ]);
 
-        return isset($caseTypeCategories[$caseCategory]) ? $caseTypeCategories[$caseCategory] : NULL;
+        if ($caseCategoryName['count'] === 0) {
+          return NULL;
+        }
+
+        return array_shift($caseCategoryName['values'])['name'];
       }
 
       return $caseCategory;
