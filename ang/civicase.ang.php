@@ -15,7 +15,16 @@ use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 use CRM_Civicase_Hook_Permissions_ExportCasesAndReports as ExportCasesAndReports;
 
 load_resources();
-$caseCategoryName = CRM_Utils_Request::retrieve('case_type_category', 'String');
+$caseCategoryId = CRM_Utils_Request::retrieve('case_type_category', 'Int');
+$caseCategoryName = '';
+if ($caseCategoryId > 0) {
+  $caseCategoryName = civicrm_api3('OptionValue', 'getsingle', [
+    'option_group_id' => 'case_type_categories',
+    'value' => $caseCategoryId,
+    'return' => ['name'],
+  ])['name'];
+}
+
 
 // Word replacements are already loaded for the contact tab ContactCaseTab.
 if (CRM_Utils_System::currentPath() !== 'civicrm/case/contact-case-tab') {
