@@ -27,19 +27,44 @@ class CRM_Civicase_Helper_CaseUrl {
         'status_id',
       ],
     ]);
-    $caseCategoryName = CaseCategoryHelper::getCaseCategoryNameFromOptionValue(
-      $case['case_type_id.case_type_category']
-    );
     $caseFilters = [
       'case_type_id' => [$case['case_type_id.name']],
       'status_id' => [$case['status_id']],
     ];
-    $caseDetailsUrlPath = 'civicrm/case/a/?case_type_category=' . $caseCategoryName
-      . '#/case/list?caseId=' . $caseId
-      . '&sf=id&sd=DESC&cf='
-      . urlencode(json_encode($caseFilters));
+    $caseDetailsUrlPath = sprintf(
+      'civicrm/case/a/?case_type_category=%d#/case/list?caseId=%d&sf=id&sd=DESC&cf=%s',
+      $case['case_type_id.case_type_category'],
+      $caseId,
+      urlencode(json_encode($caseFilters))
+    );
 
     return CRM_Utils_System::url($caseDetailsUrlPath, NULL, TRUE);
+  }
+
+  /**
+   * Get the URL of the route type specified, for Cases category.
+   *
+   * @return string
+   *   Url to be returned.
+   */
+  public static function getUrlByRouteType(string $routeType) {
+    $categoryId = civicrm_api3('OptionValue', 'getsingle', [
+      'option_group_id' => 'case_type_categories',
+      'name' => CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME,
+      'return' => ['value'],
+    ])['value'];
+
+    if ($routeType == 'dashboard') {
+      return "civicrm/case/a/?p=dd#/case?case_type_category={$categoryId}";
+    }
+    if ($routeType == 'all') {
+      return 'civicrm/case/a/?p=mg#/case/list?cf={"case_type_category":"' . $categoryId . '"}';
+    }
+    if ($routeType == 'manage_workflows') {
+      return 'civicrm/workflow/a?case_type_category=' . $categoryId . '&p=al#/list';
+    }
+
+    return NULL;
   }
 
 }

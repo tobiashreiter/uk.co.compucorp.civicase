@@ -5,13 +5,13 @@ use CRM_Civicase_Setup_CreateCasesOptionValue as CreateCasesOptionValue;
 use CRM_Civicase_Setup_AddCaseCategoryWordReplacementOptionGroup as AddCaseCategoryWordReplacementOptionGroup;
 use CRM_Civicase_Setup_MoveCaseTypesToCasesCategory as MoveCaseTypesToCasesCategory;
 use CRM_Civicase_Setup_CreateSafeFileExtensionOptionValue as CreateSafeFileExtensionOptionValue;
-use CRM_Civicase_Setup_UpdateMenuLinks as MenuLinksSetup;
 use CRM_Civicase_Uninstall_RemoveCustomGroupSupportForCaseCategory as RemoveCustomGroupSupportForCaseCategory;
 use CRM_Civicase_Setup_ProcessCaseCategoryForCustomGroupSupport as ProcessCaseCategoryForCustomGroupSupport;
 use CRM_Civicase_Setup_CaseCategoryInstanceSupport as CaseCategoryInstanceSupport;
 use CRM_Civicase_Setup_AddChangeCaseRoleDateActivityTypes as AddChangeCaseRoleDateActivityTypes;
 use CRM_Civicase_Setup_AddManageWorkflowMenu as AddManageWorkflowMenu;
 use CRM_Civicase_Service_CaseCategoryInstance as CaseCategoryInstance;
+use CRM_Civicase_Helper_CaseUrl as CaseUrlHelper;
 
 /**
  * Collection of upgrade steps.
@@ -152,7 +152,7 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
     $this->addNav([
       'label' => ts('Manage Cases', ['domain' => 'uk.co.compucorp.civicase']),
       'name' => 'Manage Cases',
-      'url' => MenuLinksSetup::MANAGE_CASE_URL,
+      'url' => CaseUrlHelper::getUrlByRouteType('all'),
       'permission' => 'access my cases and activities,access all cases and activities',
       'operator' => 'OR',
       'separator' => 0,

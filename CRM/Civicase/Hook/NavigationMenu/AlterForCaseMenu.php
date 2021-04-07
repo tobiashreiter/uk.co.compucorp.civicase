@@ -1,6 +1,7 @@
 <?php
 
 use CRM_Civicase_Service_CaseCategorySetting as CaseCategorySetting;
+use CRM_Civicase_Helper_CaseUrl as CaseUrlHelper;
 
 /**
  * Class CRM_Civicase_Hook_Navigation_AlterForCaseMenu.
@@ -39,8 +40,8 @@ class CRM_Civicase_Hook_NavigationMenu_AlterForCaseMenu {
   private function rewriteCaseUrls(array &$menu) {
     // Array(string $oldUrl => string $newUrl).
     $rewriteMap = [
-      'civicrm/case?reset=1' => 'civicrm/case/a/#/case?case_type_category=cases',
-      'civicrm/case/search?reset=1' => 'civicrm/case/a/#/case/list?sx=1',
+      'civicrm/case?reset=1' => CaseUrlHelper::getUrlByRouteType('dashboard'),
+      'civicrm/case/search?reset=1' => 'civicrm/case/a/#/case/list?sx=1&p=fn',
     ];
 
     $this->menuWalk($menu, function (&$item) use ($rewriteMap) {

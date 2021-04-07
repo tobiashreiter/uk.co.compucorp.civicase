@@ -349,6 +349,9 @@ class CRM_Civicase_Helper_CaseCategory {
 
   /**
    * Get the weight value of the Cases navigation menu.
+   *
+   * @return int
+   *   Weight of the menu.
    */
   public static function getWeightOfCasesMenu() {
     return CRM_Core_DAO::getFieldValue(
@@ -357,6 +360,52 @@ class CRM_Civicase_Helper_CaseCategory {
       'weight',
       'name'
     );
+  }
+
+  /**
+   * Gets case category option details by id.
+   *
+   * @param int $id
+   *   Category Id.
+   *
+   * @return array
+   *   Category details.
+   */
+  public static function getById($id) {
+    return self::getByParams(['id' => $id]);
+  }
+
+  /**
+   * Gets case category option details by name.
+   *
+   * @param string $name
+   *   Category name.
+   *
+   * @return array
+   *   Category details.
+   */
+  public static function getByName($name) {
+    return self::getByParams(['name' => $name]);
+  }
+
+  /**
+   * Gets case category option details by params.
+   *
+   * @param array $params
+   *   Catetgory params.
+   *
+   * @return array
+   *   Category details.
+   */
+  private static function getByParams(array $params) {
+    $apiParams = [
+      'sequential' => 1,
+      'option_group_id' => 'case_type_categories',
+    ];
+    $apiParams = array_merge($apiParams, $params);
+    $result = civicrm_api3('OptionValue', 'get', $apiParams);
+
+    return !empty($result['values'][0]) ? $result['values'][0] : [];
   }
 
 }
