@@ -128,8 +128,7 @@
      * @returns {object[]} list of case roles
      */
     function getCaseRoles () {
-      var caseTypeCategoryID = CaseTypeCategory.findByName(currentCaseCategory).value;
-      var allCaseRoles = _.map(CaseType.getAllRolesByCategoryID(caseTypeCategoryID), function (caseRole) {
+      var allCaseRoles = _.map(CaseType.getAllRolesByCategoryID(currentCaseCategory), function (caseRole) {
         return _.extend(caseRole, { text: caseRole.name });
       });
 
