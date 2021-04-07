@@ -62,8 +62,7 @@
 
         beforeEach(() => {
           const selectedCaseTypeCategory = _.find(caseTypeCategoriesMockData, (caseCategory) => {
-            return caseCategory.name.toLowerCase() === $scope.filters.case_type_category
-              .toLowerCase();
+            return caseCategory.value === $scope.filters.case_type_category;
           });
           expectedOptions = _.chain(CaseTypes)
             .filter((caseType) => {
@@ -217,8 +216,8 @@
         });
 
         it('shows the cases', () => {
-          const expectedURL = 'case_type_category=cases#/case/list?' +
-            'caseId=10&all_statuses=1&cf=%7B"case_type_category":"cases"%7D';
+          const expectedURL = 'case_type_category=1#/case/list?' +
+            'caseId=10&all_statuses=1&cf=%7B"case_type_category":"1"%7D';
 
           expect($window.location.href)
             .toBe(expectedURL);

@@ -2,7 +2,7 @@
   CRM['civicase-base'] = {};
   CRM.civicase = {};
   CRM.workflow = {};
-  CRM['civicase-base'].currentCaseCategory = 'cases';
+  CRM['civicase-base'].currentCaseCategory = '1';
   CRM.angular = { requires: {} };
   CRM.config = {};
   /**

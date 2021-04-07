@@ -173,7 +173,7 @@
      */
     function initController () {
       $scope = $rootScope.$new();
-      $scope.caseTypeCategory = 'Cases';
+      $scope.caseTypeCategory = '1';
 
       $controller('workflowListController', { $scope: $scope });
     }
