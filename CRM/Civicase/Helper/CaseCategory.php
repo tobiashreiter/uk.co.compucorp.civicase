@@ -347,4 +347,16 @@ class CRM_Civicase_Helper_CaseCategory {
     return $instances[$result['instance_id']];
   }
 
+  /**
+   * Get the weight value of the Cases navigation menu.
+   */
+  public static function getWeightOfCasesMenu() {
+    return CRM_Core_DAO::getFieldValue(
+      'CRM_Core_DAO_Navigation',
+      'Cases',
+      'weight',
+      'name'
+    );
+  }
+
 }
