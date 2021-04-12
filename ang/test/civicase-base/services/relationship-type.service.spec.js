@@ -17,7 +17,7 @@
       });
 
       it('returns all the case statuses', () => {
-        expect(returnedRelationshipType).toEqual(RelationshipTypeData.values);
+        expect(returnedRelationshipType).toEqual(RelationshipTypeData.get());
       });
     });
 

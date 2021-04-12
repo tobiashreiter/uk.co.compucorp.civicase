@@ -1,0 +1,16 @@
+<div class="civicase__people-tab__filter-alpha-pager">
+  <a
+    href
+    ng-repeat="letter in letters"
+    class="civicase__people-tab__filter-alpha-pager__link"
+    ng-class="{active: letter === $ctrl.ngModel.alpha}"
+    ng-click="setLetterFilter(letter)">
+    {{ letter }}
+  </a>
+  <a
+    href
+    class="civicase__people-tab__filter-alpha-pager__link all"
+    ng-click="setLetterFilter('')">
+    All
+  </a>
+</div>

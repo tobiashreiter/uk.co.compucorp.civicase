@@ -8,12 +8,11 @@
     var roles = this;
     var relTypes = RelationshipType.getAll();
 
-    roles.ROLES_PER_PAGE = 25;
+    roles.pageObj = { total: 0, pageSize: 25, page: 1 };
     roles.caseTypeRoles = [];
     roles.fullRolesList = [];
     roles.isLoading = true;
     roles.list = [];
-    roles.totalCount = 0;
 
     roles.filterRoles = filterRoles;
     roles.getCountOfAssignedRoles = getCountOfAssignedRoles;
@@ -44,16 +43,15 @@
     /**
      * Filters the roles list by letter and by role type.
      *
-     * @param {string} alphaFilter the letter to filter roles by.
-     * @param {string} rolesFilter the type to filter roles by.
+     * @param {object} filter the type to filter roles by.
      */
-    function filterRoles (alphaFilter, rolesFilter) {
+    function filterRoles (filter) {
       roles.list = _.filter(roles.fullRolesList, function (role) {
-        var isFilteredByLetter = !alphaFilter ||
+        var isFilteredByLetter = !filter.alpha ||
           _.includes((role.display_name || '').toUpperCase(),
-            alphaFilter);
-        var isFilteredByRoleType = !rolesFilter ||
-          role.role === rolesFilter;
+            filter.alpha);
+        var isFilteredByRoleType = !filter.roles ||
+          role.role === filter.roles;
 
         return isFilteredByLetter && isFilteredByRoleType;
       });
@@ -240,8 +238,8 @@
     function goToPage (pageNumber) {
       roles.list = _.slice(
         roles.fullRolesList,
-        (roles.ROLES_PER_PAGE * (pageNumber - 1)),
-        roles.ROLES_PER_PAGE * pageNumber
+        (roles.pageObj.pageSize * (pageNumber - 1)),
+        roles.pageObj.pageSize * pageNumber
       );
     }
 
@@ -294,9 +292,10 @@
         getCaseRoles(filters),
         getClientRoles()
       ).value();
-      roles.totalCount = roles.fullRolesList.length;
+      roles.pageObj.total = roles.fullRolesList.length;
 
-      goToPage(1);
+      roles.pageObj.page = 1;
+      goToPage(roles.pageObj.page);
       assignCountOfRolesPerType();
     }
   });
