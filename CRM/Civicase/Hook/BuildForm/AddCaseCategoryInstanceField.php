@@ -19,6 +19,7 @@ class CRM_Civicase_Hook_BuildForm_AddCaseCategoryInstanceField extends CRM_Civic
     }
 
     $this->addCategoryInstanceFormField($form);
+    $this->addSingularLabelFormField($form);
     $this->addCategoryInstanceTemplate();
   }
 
@@ -39,9 +40,8 @@ class CRM_Civicase_Hook_BuildForm_AddCaseCategoryInstanceField extends CRM_Civic
     );
 
     if ($form->getVar('_id')) {
-      $caseCategoryValues = $form->getVar('_values');
-      $defaultInstanceValue = $this->getDefaultValue($caseCategoryValues['value']);
-      $caseCategoryInstance->setValue($defaultInstanceValue);
+      $defaultInstanceValues = $this->getDefaultValue($form);
+      $caseCategoryInstance->setValue($defaultInstanceValues['instance_id']);
     }
   }
 
@@ -58,17 +58,38 @@ class CRM_Civicase_Hook_BuildForm_AddCaseCategoryInstanceField extends CRM_Civic
   }
 
   /**
-   * Returns the default value for the category instance field.
+   * Adds the Case Category Singular Label Form field.
    *
-   * @param int $categoryValue
-   *   Category value.
+   * @param CRM_Core_Form $form
+   *   Form Class object.
+   */
+  private function addSingularLabelFormField(CRM_Core_Form $form) {
+    $singularLabel = $form->add(
+      'text',
+      'case_category_singular_label',
+      ts('Singular Label')
+    );
+
+    if ($form->getVar('_id')) {
+      $defaultInstanceValues = $this->getDefaultValue($form);
+      $singularLabel->setValue($defaultInstanceValues['singular_label']);
+    }
+  }
+
+  /**
+   * Returns the default value for the category instance fields.
+   *
+   * @param CRM_Core_Form $form
+   *   Form Class object.
    *
    * @return mixed|null
    *   Default value.
    */
-  private function getDefaultValue($categoryValue) {
+  private function getDefaultValue(CRM_Core_Form $form) {
+    $caseCategoryValues = $form->getVar('_values');
+
     $result = civicrm_api3('CaseCategoryInstance', 'get', [
-      'category_id' => $categoryValue,
+      'category_id' => $caseCategoryValues['value'],
       'sequential' => 1,
     ]);
 
@@ -76,7 +97,7 @@ class CRM_Civicase_Hook_BuildForm_AddCaseCategoryInstanceField extends CRM_Civic
       return NULL;
     }
 
-    return $result['values'][0]['instance_id'];
+    return $result['values'][0];
   }
 
 }
