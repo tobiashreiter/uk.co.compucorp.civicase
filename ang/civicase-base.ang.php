@@ -22,7 +22,6 @@ $options = [
   'caseStatuses' => 'case_status',
   'priority' => 'priority',
   'activityCategories' => 'activity_category',
-  'caseTypeCategories' => 'case_type_categories',
   'caseCategoryInstanceType' => 'case_category_instance_type',
 ];
 
@@ -35,9 +34,30 @@ set_file_categories_to_js_vars($options);
 set_activity_status_types_to_js_vars($options);
 set_custom_fields_info_to_js_vars($options);
 set_tags_to_js_vars($options);
+add_case_type_categories_to_options($options);
 expose_settings($options, [
   'caseCategoryName' => $caseCategoryName,
 ]);
+
+/**
+ * Adds the case type categories and their labels to the given options.
+ *
+ * @param array $options
+ *   List of options to pass to the front-end.
+ */
+function add_case_type_categories_to_options(array &$options) {
+  $categories = civicrm_api3('OptionValue', 'get', [
+    'sequential' => '1',
+    'option_group_id' => 'case_type_categories',
+    'is_active' => '1',
+    'api.CaseCategoryInstance.get' => [
+      'sequential' => '1',
+      'category_id' => '$value.value',
+    ],
+  ]);
+
+  $options['caseTypeCategories'] = array_column($categories['values'], NULL, 'value');
+}
 
 /**
  * Sets the tags and tagsets to javascript global variable.

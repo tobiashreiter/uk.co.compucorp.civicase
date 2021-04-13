@@ -22,10 +22,11 @@
    * @param {object} CaseTypeCategory case type catgory service
    * @param {object[]} WorkflowListFilters list of workflow filters
    * @param {Function} getServiceForInstance get service for a specific instance
+   * @param {string} currentCaseCategory The current case type category name
    */
   function workflowListController ($scope, ts, WorkflowListColumns,
     WorkflowListActionItems, CaseTypeCategory, WorkflowListFilters,
-    getServiceForInstance) {
+    getServiceForInstance, currentCaseCategory) {
     $scope.ts = ts;
     $scope.isLoading = false;
     $scope.workflows = [];
@@ -35,6 +36,11 @@
     $scope.tableColumns = filterArrayForCurrentInstance(WorkflowListColumns);
     $scope.filters = filterArrayForCurrentInstance(WorkflowListFilters);
     $scope.selectedFilters = {};
+    $scope.currentCaseCategory = CaseTypeCategory.findByName(currentCaseCategory);
+    $scope.currentCaseCategory.singular_label = _.first(
+      $scope.currentCaseCategory['api.CaseCategoryInstance.get'].values
+    ).singular_label;
+
     $scope.refreshWorkflowsList = refreshWorkflowsList;
     $scope.redirectToWorkflowCreationScreen = redirectToWorkflowCreationScreen;
     $scope.setPageTo = setPageTo;
