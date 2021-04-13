@@ -48,18 +48,22 @@ class CRM_Civicase_Service_CaseTypeCategoryEventHandler {
    *
    * @param CRM_Civicase_Service_CaseCategoryInstanceUtils $caseCategoryInstance
    *   Case category instance utilities class.
-   * @param string $caseCategoryName
-   *   Case type category name.
+   * @param array $caseTypeCategory
+   *   Case type category data.
    */
-  public function onCreate(CaseCategoryInstance $caseCategoryInstance, $caseCategoryName) {
-    if (!$caseCategoryName) {
+  public function onCreate(CaseCategoryInstance $caseCategoryInstance, array $caseTypeCategory) {
+    if (empty($caseTypeCategory['name'])) {
       return;
     }
 
     $menu = $caseCategoryInstance->getMenuObject();
-    $menu->createItems($caseCategoryName);
-    $this->customFieldExtends->create($caseCategoryName, "Case ({$caseCategoryName})", $caseCategoryInstance->getCustomGroupEntityTypesFunction());
-    $this->customData->create($caseCategoryName);
+    $menu->createItems($caseTypeCategory);
+    $this->customFieldExtends->create(
+      $caseTypeCategory['name'],
+      "Case ({$caseTypeCategory['label']})",
+      $caseCategoryInstance->getCustomGroupEntityTypesFunction()
+    );
+    $this->customData->create($caseTypeCategory['name']);
   }
 
   /**
@@ -67,24 +71,20 @@ class CRM_Civicase_Service_CaseTypeCategoryEventHandler {
    *
    * @param CRM_Civicase_Service_CaseCategoryInstanceUtils $caseCategoryInstance
    *   Case category instance utilities class.
-   * @param int $caseCategoryId
-   *   Case type category id.
-   * @param bool $caseCategoryStatus
-   *   (Optional) Case type category status (enabled / disabled).
-   * @param string $caseCategoryIcon
-   *   (Optional) Case type category icon.
+   * @param array $caseTypeCategory
+   *   Case type category data.
    */
-  public function onUpdate(CaseCategoryInstance $caseCategoryInstance, $caseCategoryId, $caseCategoryStatus = NULL, $caseCategoryIcon = NULL) {
-    if (!$caseCategoryId) {
+  public function onUpdate(CaseCategoryInstance $caseCategoryInstance, array $caseTypeCategory) {
+    if (empty($caseTypeCategory['id'])) {
       return;
     }
 
     $updateParams = [];
-    if (isset($caseCategoryStatus)) {
-      $updateParams['is_active'] = !empty($caseCategoryStatus) ? 1 : 0;
+    if (isset($caseTypeCategory['is_active'])) {
+      $updateParams['is_active'] = !empty($caseTypeCategory['is_active']) ? 1 : 0;
     }
-    if (isset($caseCategoryIcon)) {
-      $updateParams['icon'] = 'crm-i ' . $caseCategoryIcon;
+    if (isset($caseTypeCategory['icon'])) {
+      $updateParams['icon'] = 'crm-i ' . $caseTypeCategory['icon'];
     }
 
     if (empty($updateParams)) {
@@ -92,7 +92,7 @@ class CRM_Civicase_Service_CaseTypeCategoryEventHandler {
     }
 
     $menu = $caseCategoryInstance->getMenuObject();
-    $menu->updateItems($caseCategoryId, $updateParams);
+    $menu->updateItems($caseTypeCategory['id'], $updateParams);
   }
 
   /**
@@ -100,17 +100,17 @@ class CRM_Civicase_Service_CaseTypeCategoryEventHandler {
    *
    * @param CRM_Civicase_Service_CaseCategoryInstanceUtils $caseCategoryInstance
    *   Case category instance utilities class.
-   * @param string $caseCategoryName
-   *   Case type category name.
+   * @param array $caseTypeCategory
+   *   Case type category data.
    */
-  public function onDelete(CaseCategoryInstance $caseCategoryInstance, $caseCategoryName) {
-    if (!$caseCategoryName) {
+  public function onDelete(CaseCategoryInstance $caseCategoryInstance, array $caseTypeCategory) {
+    if (empty($caseTypeCategory['name'])) {
       return;
     }
     $menu = $caseCategoryInstance->getMenuObject();
-    $menu->deleteItems($caseCategoryName);
-    $this->customFieldExtends->delete($caseCategoryName);
-    $this->customData->delete($caseCategoryName);
+    $menu->deleteItems($caseTypeCategory['name']);
+    $this->customFieldExtends->delete($caseTypeCategory['name']);
+    $this->customData->delete($caseTypeCategory['name']);
     $this->deleteCategoryInstanceRelationship($caseCategoryInstance);
   }
 
