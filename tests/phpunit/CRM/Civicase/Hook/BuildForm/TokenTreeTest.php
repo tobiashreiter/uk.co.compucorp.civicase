@@ -51,76 +51,76 @@ class CRM_Civicase_Hook_BuildForm_TokenTreeTest extends BaseHeadlessTest {
    */
   private function getTokens() {
     return [
-        [
-          'text' => 'Case Roles',
-          'children' => [
-            [
-              'id' => '{case_roles.benefits_specialist_id}',
-              'text' => 'Benefits Specialist - Contact ID',
-            ],
-            [
-              'id' => '{case_roles.benefits_specialist_custom_' . $this->contactCustomField['id'] . '}',
-              'text' => 'Benefits Specialist - ' . $this->contactCustomField['name'],
-            ],
-            [
-              'id' => '{case_roles.health_services_coordinator_contact_sub_type}',
-              'text' => 'Health Services Coordinator - Contact Subtype',
-            ],
-            [
-              'id' => '{case_roles.health_services_coordinator_custom_' . $this->contactCustomField['id'] . '}',
-              'text' => 'Health Services Coordinator - ' . $this->contactCustomField['name'],
-            ],
+      [
+        'text' => 'Case Roles',
+        'children' => [
+          [
+            'id' => '{case_roles.benefits_specialist_id}',
+            'text' => 'Benefits Specialist - Contact ID',
+          ],
+          [
+            'id' => '{case_roles.benefits_specialist_custom_' . $this->contactCustomField['id'] . '}',
+            'text' => 'Benefits Specialist - ' . $this->contactCustomField['name'],
+          ],
+          [
+            'id' => '{case_roles.health_services_coordinator_contact_sub_type}',
+            'text' => 'Health Services Coordinator - Contact Subtype',
+          ],
+          [
+            'id' => '{case_roles.health_services_coordinator_custom_' . $this->contactCustomField['id'] . '}',
+            'text' => 'Health Services Coordinator - ' . $this->contactCustomField['name'],
           ],
         ],
-        [
-          'text' => 'Current User',
-          'children' => [
-            [
-              'id' => '{current_user.contact_city}',
-              'text' => 'Current User City',
-            ],
-            [
-              'id' => '{current_user.contact_custom_' . $this->contactCustomField['id'] . '}',
-              'text' => 'Current User ' . $this->contactCustomField['name'],
-            ],
+      ],
+      [
+        'text' => 'Current User',
+        'children' => [
+          [
+            'id' => '{current_user.contact_city}',
+            'text' => 'Current User City',
+          ],
+          [
+            'id' => '{current_user.contact_custom_' . $this->contactCustomField['id'] . '}',
+            'text' => 'Current User ' . $this->contactCustomField['name'],
           ],
         ],
-        [
-          'text' => 'Case',
-          'children' => [
-            [
-              'id' => '{case.id}',
-              'text' => 'Case Id',
-            ],
+      ],
+      [
+        'text' => $this->caseCustomField['name'],
+        'children' => [
+          [
+            'id' => '{case.custom_' . $this->caseCustomField['id'] . '}',
+            'text' => $this->caseCustomField['name'],
           ],
         ],
-        [
-          'text' => 'Contact',
-          'children' => [
-            [
-              'id' => '{contact.addressee_id}',
-              'text' => 'Addressee ID',
-            ],
+      ],
+      [
+        'text' => 'Case',
+        'children' => [
+          [
+            'id' => '{case.id}',
+            'text' => 'Case Id',
           ],
         ],
-        [
-          'text' => $this->contactCustomField['name'],
-          'children' => [
-            [
-              'id' => '{contact.custom_' . $this->contactCustomField['id'] . '}',
-              'text' => $this->contactCustomField['name'],
-            ],
+      ],
+      [
+        'text' => $this->contactCustomField['name'],
+        'children' => [
+          [
+            'id' => '{contact.custom_' . $this->contactCustomField['id'] . '}',
+            'text' => $this->contactCustomField['name'],
           ],
         ],
-        [
-          'text' => $this->caseCustomField['name'],
-          'children' => [
-            [
-              'id' => '{case.custom_' . $this->caseCustomField['id'] . '}',
-              'text' => $this->caseCustomField['name'],
-            ],
+      ],
+      [
+        'text' => 'Contact',
+        'children' => [
+          [
+            'id' => '{contact.addressee_id}',
+            'text' => 'Addressee ID',
           ],
         ],
+      ],
     ];
   }
 
