@@ -4,7 +4,7 @@
   "description": "Backstop visual regression testing for The CiviCase extension.",
   "main": "index.js",
   "engines": {
-    "node": ">=10.15.3"
+    "node": ">=14.16.0"
   },
   "author": "Compucorp <info@compucorp.co.uk>",
   "license": "GNU Affero Public License 3.0",
