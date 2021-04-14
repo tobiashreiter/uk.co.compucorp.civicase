@@ -77,8 +77,9 @@ class CRM_Civicase_Api_Wrapper_CaseGetList implements API_Wrapper {
    * @return bool
    *   If request can be handled.
    */
-  private function canHandleTheRequest(array $apiRequest) {
-    return $apiRequest['entity'] == 'Case' && $apiRequest['action'] == 'getlist';
+  private function canHandleTheRequest($apiRequest) {
+    // [ML] SYMBIOTIC Api4 passes an $apiRequest object instead of array.
+    return is_array($apiRequest) && $apiRequest['entity'] == 'Case' && $apiRequest['action'] == 'getlist';
   }
 
   /**
