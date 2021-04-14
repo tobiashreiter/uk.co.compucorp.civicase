@@ -2,18 +2,17 @@
   var module = angular.module('civicase');
 
   module.service('civicasePeopleTabRoles', function (isTruthy, RelationshipType,
-    ts) {
+    ts, allowMultipleCaseClients, CasesUtils) {
     var caseContacts = [];
     var caseRelationships = [];
     var roles = this;
     var relTypes = RelationshipType.getAll();
 
-    roles.ROLES_PER_PAGE = 25;
+    roles.pageObj = { total: 0, pageSize: 25, page: 1 };
     roles.caseTypeRoles = [];
     roles.fullRolesList = [];
     roles.isLoading = true;
     roles.list = [];
-    roles.totalCount = 0;
 
     roles.filterRoles = filterRoles;
     roles.getCountOfAssignedRoles = getCountOfAssignedRoles;
@@ -33,7 +32,7 @@
         caseTypeRole.count = _.filter(roles.list, function (role) {
           var roleIsAssigned = !!role.display_name;
           var roleBelongsToType = role.role === caseTypeRole.role;
-          var isClientRole = role.role === ts('Client');
+          var isClientRole = role.is_client === '1';
 
           return roleIsAssigned && roleBelongsToType &&
             (isClientRole || role.is_active === '1');
@@ -44,16 +43,15 @@
     /**
      * Filters the roles list by letter and by role type.
      *
-     * @param {string} alphaFilter the letter to filter roles by.
-     * @param {string} rolesFilter the type to filter roles by.
+     * @param {object} filter the type to filter roles by.
      */
-    function filterRoles (alphaFilter, rolesFilter) {
+    function filterRoles (filter) {
       roles.list = _.filter(roles.fullRolesList, function (role) {
-        var isFilteredByLetter = !alphaFilter ||
+        var isFilteredByLetter = !filter.alpha ||
           _.includes((role.display_name || '').toUpperCase(),
-            alphaFilter);
-        var isFilteredByRoleType = !rolesFilter ||
-          role.role === rolesFilter;
+            filter.alpha);
+        var isFilteredByRoleType = !filter.roles ||
+          role.role === filter.roles;
 
         return isFilteredByLetter && isFilteredByRoleType;
       });
@@ -136,14 +134,12 @@
               description: caseTypeRole.description,
               desc: caseRelation.description,
               display_name: contact.display_name,
-              end_date: caseRelation.end_date,
               email: contact.email,
               is_active: caseRelation.is_active,
               phone: contact.phone,
               relationship_type_id: caseTypeRole.relationship_type_id,
               role: caseTypeRole.role,
               relationship: caseRelation,
-              start_date: caseRelation.start_date,
               previousValues: {
                 end_date: caseRelation.end_date,
                 start_date: caseRelation.start_date
@@ -168,8 +164,8 @@
      *   contacts list.
      */
     function getClientRoles () {
-      return _.filter(caseContacts, {
-        role: ts('Client')
+      return _.filter(caseContacts, function (role) {
+        return CasesUtils.isClientRole(role);
       })
         .map(function (contact) {
           return {
@@ -180,7 +176,8 @@
             end_date: null,
             email: contact.email,
             phone: contact.phone,
-            role: contact.role,
+            role: ts('Client'),
+            is_client: '1',
             start_date: null
           };
         });
@@ -241,8 +238,8 @@
     function goToPage (pageNumber) {
       roles.list = _.slice(
         roles.fullRolesList,
-        (roles.ROLES_PER_PAGE * (pageNumber - 1)),
-        roles.ROLES_PER_PAGE * pageNumber
+        (roles.pageObj.pageSize * (pageNumber - 1)),
+        roles.pageObj.pageSize * pageNumber
       );
     }
 
@@ -264,7 +261,9 @@
      *   a given case.
      */
     function setCaseRelationships (newCaseRelationships) {
-      caseRelationships = getUniqueCaseRelationships(newCaseRelationships);
+      caseRelationships = !allowMultipleCaseClients
+        ? newCaseRelationships
+        : getUniqueCaseRelationships(newCaseRelationships);
     }
 
     /**
@@ -293,9 +292,10 @@
         getCaseRoles(filters),
         getClientRoles()
       ).value();
-      roles.totalCount = roles.fullRolesList.length;
+      roles.pageObj.total = roles.fullRolesList.length;
 
-      goToPage(1);
+      roles.pageObj.page = 1;
+      goToPage(roles.pageObj.page);
       assignCountOfRolesPerType();
     }
   });

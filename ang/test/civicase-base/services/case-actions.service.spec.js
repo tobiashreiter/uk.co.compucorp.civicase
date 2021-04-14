@@ -1,5 +1,3 @@
-/* eslint-env jasmine */
-
 (() => {
   describe('Case Actions', () => {
     let CaseActions, CaseActionsData;
@@ -32,7 +30,8 @@
           title: 'Print Case',
           action: 'Print',
           number: 1,
-          icon: 'fa-print'
+          icon: 'fa-print',
+          is_write_action: false
         };
       });
 

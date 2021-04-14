@@ -31,7 +31,7 @@ class CRM_Civicase_Page_ActivityFiles {
    * throws a 404 status code.
    */
   private static function getActivityFromRequest() {
-    $activityIds = CRM_Utils_Array::value('activity_ids', $_GET);
+    $activityIds = (array) CRM_Utils_Array::value('activity_ids', $_GET);
     $searchParams = CRM_Utils_Array::value('searchParams', $_GET);
 
     if (!empty($activityIds)) {

@@ -9,10 +9,8 @@
    * @param {object} $rootScope rootscope object
    * @param {object} civicaseCrmApi service to use civicrm api
    * @param {object} dialogService service to open dialog box
-   * @param {Function} getSelect2Value service to get select 2 values
    */
-  function TagsActivityAction ($rootScope, civicaseCrmApi, dialogService,
-    getSelect2Value) {
+  function TagsActivityAction ($rootScope, civicaseCrmApi, dialogService) {
     /**
      * Check if the Action is enabled
      *

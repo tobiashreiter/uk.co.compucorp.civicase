@@ -1,5 +1,3 @@
-/* eslint-env jasmine */
-
 (function ($, _, moment) {
   describe('civicaseActivitiesCalendarController', function () {
     var $controller, $q, $scope, $rootScope, $route, civicaseCrmApi, formatActivity, dates,
@@ -15,6 +13,7 @@
       $route = { current: { params: {} } };
 
       $provide.value('$route', $route);
+      $provide.value('civicaseCrmApi', jasmine.createSpy('civicaseCrmApi'));
     }));
 
     afterEach(function () {
@@ -390,7 +389,7 @@
         });
 
         it('makes an api request', function () {
-          expect(civicaseCrmApi).toHaveBeenCalledWith('Activity', 'get', jasmine.any(Object));
+          expect(civicaseCrmApi).toHaveBeenCalledWith('Activity', 'getAll', jasmine.any(Object));
         });
 
         describe('api request params', function () {
@@ -587,11 +586,7 @@
         initController(null);
 
         url = $scope.seeAllLinkUrl(dates.yesterday);
-        queryParams = CRM.testUtils.extractQueryStringParams(url.$$unwrapTrustedValue());
-      });
-
-      it('is a trusted url', function () {
-        expect(url.$$unwrapTrustedValue).toBeDefined();
+        queryParams = CRM.testUtils.extractQueryStringParams(url);
       });
 
       it('displays the activities from the dashboard by default', function () {
@@ -697,6 +692,7 @@
 
       $uibPosition.positionElements.and.returnValue({ top: 0, left: 0 });
       $provide.value('$uibPosition', $uibPosition);
+      $provide.value('civicaseCrmApi', jasmine.createSpy('civicaseCrmApi'));
       $provide.decorator('uibDatepickerDirective', function ($delegate) {
         return [{
           restrict: 'A',

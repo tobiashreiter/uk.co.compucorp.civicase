@@ -19,7 +19,7 @@
    * Controller Function for civicase-search directive
    */
   module.controller('civicaseSearchController', function ($scope, $rootScope, $window,
-    $timeout, civicaseCrmApi, getSelect2Value, ts, CaseStatus, CaseTypeCategory,
+    $timeout, civicaseCrmApi, Select2Utils, ts, CaseStatus, CaseTypeCategory,
     CaseType, currentCaseCategory, CustomSearchField, includeActivitiesForInvolvedContact) {
     var caseTypes = CaseType.getAll();
     var caseStatuses = CaseStatus.getAll();
@@ -34,9 +34,9 @@
       tag_id: { label: ts('Tags') }
     };
     var caseRelationshipConfig = [
-      { text: ts('All Cases'), id: 'all' },
       { text: ts('My Cases'), id: 'is_case_manager' },
-      { text: ts('Cases I am involved in'), id: 'is_involved' }
+      { text: ts('Cases I am involved in'), id: 'is_involved' },
+      { text: ts('All Cases'), id: 'all' }
     ];
     var DEFAULT_CASE_FILTERS = {
       case_type_category: currentCaseCategory
@@ -65,7 +65,6 @@
     $scope.doSearchIfNotExpanded = doSearchIfNotExpanded;
     $scope.handleSearchSubmit = handleSearchSubmit;
     $scope.isEnabled = isEnabled;
-    $scope.toggleIsDeleted = toggleIsDeleted;
 
     (function init () {
       bindRouteParamsToScope();
@@ -192,8 +191,8 @@
      */
     function caseRoleWatcher () {
       var filters = $scope.filters;
-      var selectedContacts = getSelect2Value($scope.contactRoleFilter.selectedContacts);
-      var selectedContactRoles = getSelect2Value($scope.contactRoleFilter.selectedContactRoles);
+      var selectedContacts = Select2Utils.getSelect2Value($scope.contactRoleFilter.selectedContacts);
+      var selectedContactRoles = Select2Utils.getSelect2Value($scope.contactRoleFilter.selectedContactRoles);
       var hasAllCaseRolesSelected = selectedContactRoles.indexOf('all-case-roles') >= 0;
       var hasClientSelected = selectedContactRoles.indexOf('client') >= 0;
       var caseRoleIds = _.filter(selectedContactRoles, function (roleId) {
@@ -499,21 +498,6 @@
         $scope.relationshipType = ['is_case_manager'];
       } else if (isFilterEqualToLoggedInUser('contact_involved')) {
         $scope.relationshipType = ['is_involved'];
-      }
-    }
-
-    /**
-     * Check/Uncheck `Show deleted` filters
-     *
-     * @param {object} $event - event object of Event API
-     */
-    function toggleIsDeleted ($event) {
-      var pressedSpaceOrEnter =
-        $event.type === 'keydown' && ($event.keyCode === 32 || $event.keyCode === 13);
-
-      if ($event.type === 'click' || pressedSpaceOrEnter) {
-        $scope.filters.is_deleted = !$scope.filters.is_deleted;
-        $event.preventDefault();
       }
     }
   });

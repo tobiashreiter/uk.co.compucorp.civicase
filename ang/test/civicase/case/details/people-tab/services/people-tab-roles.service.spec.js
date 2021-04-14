@@ -1,17 +1,19 @@
-/* eslint-env jasmine */
-
 ((_) => {
   describe('PeopleTabRoles', () => {
-    let caseItem, caseType, peopleTabRoles, relationships, relationshipTypes;
+    let caseItem, caseType, peopleTabRoles, relationships, relationshipTypes,
+      CasesUtils;
 
-    beforeEach(module('civicase', 'civicase.data'));
+    beforeEach(module('civicase', 'civicase.data', ($provide) => {
+      $provide.constant('allowMultipleCaseClients', false);
+    }));
 
     beforeEach(inject((_CasesData_, _CaseTypesMockData_,
-      _civicasePeopleTabRoles_, _RelationshipTypeData_) => {
+      _civicasePeopleTabRoles_, _RelationshipTypeData_, _CasesUtils_) => {
       peopleTabRoles = _civicasePeopleTabRoles_;
+      CasesUtils = _CasesUtils_;
       caseItem = _.first(_CasesData_.get().values);
       caseType = _CaseTypesMockData_.get()['1'];
-      relationshipTypes = _RelationshipTypeData_.values;
+      relationshipTypes = _RelationshipTypeData_.getSequential();
     }));
 
     beforeEach(() => {
@@ -41,12 +43,8 @@
         expect(peopleTabRoles.list).toEqual([]);
       });
 
-      it('defines the records per page as 25', () => {
-        expect(peopleTabRoles.ROLES_PER_PAGE).toBe(25);
-      });
-
-      it('defines the total amount of records as 0', () => {
-        expect(peopleTabRoles.totalCount).toBe(0);
+      it('initialises the pagination', () => {
+        expect(peopleTabRoles.pageObj).toEqual({ total: 0, pageSize: 25, page: 1 });
       });
 
       it('defines the loading state as true', () => {
@@ -59,7 +57,9 @@
         let caseClient;
 
         beforeEach(() => {
-          caseClient = _.find(caseItem.contacts, { role: 'Client' });
+          caseClient = _.find(caseItem.contacts, function (role) {
+            return CasesUtils.isClientRole(role);
+          });
 
           peopleTabRoles.updateRolesList();
         });
@@ -73,7 +73,7 @@
             end_date: null,
             email: caseClient.email,
             phone: caseClient.phone,
-            role: 'Client',
+            role: ts('Client'),
             start_date: null
           }));
         });
@@ -102,13 +102,11 @@
             description: `Case Manager. ${caseTypeRole.name}`,
             desc: caseRelation.description,
             display_name: caseManager.display_name,
-            end_date: caseRelation.end_date,
             email: caseManager.email,
             is_active: caseRelation.is_active,
             phone: caseManager.phone,
             relationship_type_id: caseRelation.relationship_type_id,
             role: caseTypeRole.name,
-            start_date: caseRelation.start_date,
             relationship: jasmine.objectContaining(caseRelation),
             previousValues: {
               end_date: caseRelation.end_date,
@@ -183,6 +181,34 @@
           }));
         });
       });
+
+      describe('when showing inactive roles', () => {
+        describe('when the same contact holds multiple inactive roles', () => {
+          var displaysAllTheInactiveRoles;
+
+          beforeEach(() => {
+            peopleTabRoles.list = [];
+            peopleTabRoles.fullRolesList = [];
+            const inactiveRelationships = [
+              _.extend({}, relationships[0], { is_active: '0' }),
+              _.extend({}, relationships[0], { is_active: '0' }),
+              _.extend({}, relationships[0], { is_active: '0' }),
+              _.extend({}, relationships[0], { is_active: '0' })
+            ];
+
+            peopleTabRoles.setCaseRelationships(inactiveRelationships);
+            peopleTabRoles.updateRolesList({ showInactiveRoles: true });
+
+            displaysAllTheInactiveRoles = _.filter(peopleTabRoles.list, function (a) {
+              return a.relationship_type_id === relationships[0].relationship_type_id;
+            }).length === 4;
+          });
+
+          it('includes all the contact relations', () => {
+            expect(displaysAllTheInactiveRoles).toBe(true);
+          });
+        });
+      });
     });
 
     describe('role types and counts', () => {
@@ -241,12 +267,12 @@
       describe('when filtering roles by type', () => {
         beforeEach(() => {
           peopleTabRoles.updateRolesList();
-          peopleTabRoles.filterRoles('', 'Client');
+          peopleTabRoles.filterRoles({ alpha: '', roles: 'Client' });
         });
 
         it('only contains the roles for that type', () => {
           expect(peopleTabRoles.list).toEqual([jasmine.objectContaining({
-            role: 'Client'
+            role: ts('Client')
           })]);
         });
       });
@@ -255,10 +281,12 @@
         let caseClient;
 
         beforeEach(() => {
-          caseClient = _.find(caseItem.contacts, { role: 'Client' });
+          caseClient = _.find(caseItem.contacts, function (role) {
+            return CasesUtils.isClientRole(role);
+          });
 
           peopleTabRoles.updateRolesList();
-          peopleTabRoles.filterRoles(caseClient.display_name[0], '');
+          peopleTabRoles.filterRoles({ alpha: caseClient.display_name[0], roles: '' });
         });
 
         it('only contains the roles that match the given letter', () => {
@@ -272,17 +300,30 @@
         let caseClient;
 
         beforeEach(() => {
-          caseClient = _.find(caseItem.contacts, { role: 'Client' });
+          caseClient = _.find(caseItem.contacts, function (role) {
+            return CasesUtils.isClientRole(role);
+          });
 
           peopleTabRoles.updateRolesList();
-          peopleTabRoles.filterRoles(caseClient.display_name[0], 'Client');
+          peopleTabRoles.filterRoles({ alpha: caseClient.display_name[0], roles: 'Client' });
         });
 
         it('only contains the roles that match the given letter', () => {
           expect(peopleTabRoles.list).toEqual([jasmine.objectContaining({
             display_name: caseClient.display_name,
-            role: 'Client'
+            role: ts('Client')
           })]);
+        });
+      });
+
+      describe('when filtering by a non-existent role', () => {
+        beforeEach(() => {
+          peopleTabRoles.updateRolesList();
+          peopleTabRoles.filterRoles({ alpha: '', roles: 'Applicant' });
+        });
+
+        it('does not return any roles', () => {
+          expect(peopleTabRoles.list).toEqual([]);
         });
       });
     });
@@ -291,7 +332,7 @@
       let contacts, expectedRoles;
 
       beforeEach(() => {
-        contacts = _.range(1, peopleTabRoles.ROLES_PER_PAGE * 2)
+        contacts = _.range(1, peopleTabRoles.pageObj.pageSize * 2)
           .map((index) => ({
             contact_id: index,
             role: 'Client'
@@ -311,7 +352,7 @@
 
       describe('when requesting the first page', () => {
         beforeEach(() => {
-          expectedRoles = _.range(1, peopleTabRoles.ROLES_PER_PAGE)
+          expectedRoles = _.range(1, peopleTabRoles.pageObj.pageSize)
             .map((index) => jasmine.objectContaining({
               contact_id: index
             }));
@@ -329,8 +370,8 @@
       describe('when requesting the second page', () => {
         beforeEach(() => {
           expectedRoles = _.range(
-            peopleTabRoles.ROLES_PER_PAGE + 1,
-            peopleTabRoles.ROLES_PER_PAGE * 2
+            peopleTabRoles.pageObj.pageSize + 1,
+            peopleTabRoles.pageObj.pageSize * 2
           )
             .map((index) => jasmine.objectContaining({
               contact_id: index

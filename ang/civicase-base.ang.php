@@ -82,9 +82,16 @@ function expose_settings(array &$options, array $defaults) {
  *   list of js files
  */
 function get_base_js_files() {
-  return array_merge([
-    'ang/civicase-base.js',
-  ], GlobRecursive::get(dirname(__FILE__) . '/civicase-base/*.js'));
+  return array_merge(
+    [
+      'assetBuilder://visual-bundle.js',
+      'ang/civicase-base.js',
+    ],
+    GlobRecursive::getRelativeToExtension(
+      'uk.co.compucorp.civicase',
+      'ang/civicase-base/*.js'
+    )
+  );
 }
 
 /**
@@ -93,10 +100,15 @@ function get_base_js_files() {
 function set_case_types_to_js_vars(&$options) {
   $caseTypes = civicrm_api3('CaseType', 'get', [
     'return' => [
-      'id', 'name', 'title', 'description', 'definition', 'case_type_category',
+      'id',
+      'name',
+      'title',
+      'description',
+      'definition',
+      'case_type_category',
+      'is_active',
     ],
     'options' => ['limit' => 0, 'sort' => 'weight'],
-    'is_active' => 1,
   ]);
   foreach ($caseTypes['values'] as &$item) {
     CRM_Utils_Array::remove($item, 'is_forkable', 'is_forked');
@@ -191,7 +203,7 @@ function set_custom_fields_info_to_js_vars(&$options) {
 return [
   'js' => get_base_js_files(),
   'settings' => $options,
-  'requires' => ['crmUtil'],
+  'requires' => ['crmUtil', 'bw.paging'],
   'partials' => [
     'ang/civicase-base',
   ],

@@ -1,9 +1,8 @@
-/* eslint-env jasmine */
-(function (_) {
+(function ($, _) {
   describe('civicaseCaseDetails', function () {
     var $httpBackend, element, controller, activitiesMockData, $controller, $compile,
       $document, $rootScope, $scope, $provide, civicaseCrmApi, civicaseCrmApiMock, $q,
-      formatCase, CasesData, CasesUtils, $route;
+      formatCase, CasesData, CasesUtils, $route, civicaseCrmUrl;
 
     beforeEach(module('civicase.templates', 'civicase', 'civicase.data', function (_$provide_) {
       $provide = _$provide_;
@@ -15,23 +14,18 @@
     }));
 
     beforeEach(inject(function ($q) {
-      var formatCaseMock = jasmine.createSpy('formatCase');
       civicaseCrmApiMock = jasmine.createSpy('civicaseCrmApi').and.returnValue($q.resolve());
       $route = { current: { params: {} } };
 
-      formatCaseMock.and.callFake(function (data) {
-        return data;
-      });
-
       $provide.value('$route', $route);
       $provide.value('civicaseCrmApi', civicaseCrmApiMock);
-      $provide.value('formatCase', formatCaseMock);
     }));
 
     beforeEach(inject(function (_$compile_, _$controller_, _$httpBackend_,
       _$rootScope_, _$document_, _activitiesMockData_, _CasesData_, _civicaseCrmApi_,
-      _$q_, _formatCase_, _CasesUtils_) {
+      _$q_, _formatCase_, _CasesUtils_, _civicaseCrmUrl_) {
       $compile = _$compile_;
+      civicaseCrmUrl = _civicaseCrmUrl_;
       $document = _$document_;
       $controller = _$controller_;
       $rootScope = _$rootScope_;
@@ -123,7 +117,7 @@
 
       describe('when case is unfocused and screen width is more than 1690px', function () {
         beforeEach(function () {
-          spyOn($rootScope, '$broadcast');
+          spyOn($rootScope, '$broadcast').and.callThrough();
           spyOn($document, 'width').and.returnValue(1700);
           compileDirective();
           element.isolateScope().isFocused = true;
@@ -131,7 +125,7 @@
         });
 
         it('does not fire the case details unfocused event', function () {
-          expect($rootScope.$broadcast).not.toHaveBeenCalled();
+          expect($rootScope.$broadcast).not.toHaveBeenCalledWith('civicase::case-details::unfocused');
         });
       });
     });
@@ -298,7 +292,7 @@
       });
 
       it('retuns the url to print the activities', function () {
-        expect(CRM.url).toHaveBeenCalledWith('civicrm/case/customreport/print', {
+        expect(civicaseCrmUrl).toHaveBeenCalledWith('civicrm/case/customreport/print', {
           all: 1,
           redact: 0,
           cid: $scope.item.client[0].contact_id,
@@ -337,7 +331,7 @@
 
     describe('when clear all filters button is pressed', function () {
       beforeEach(function () {
-        spyOn($rootScope, '$broadcast');
+        spyOn($rootScope, '$broadcast').and.callThrough();
         compileDirective();
 
         element.isolateScope().clearAllFiltersToLoadSpecificCase();
@@ -405,8 +399,8 @@
 
   describe('civicaseCaseDetailsController', function () {
     let $controller, $provide, $rootScope, $route, $scope, apiResponses,
-      CasesData, CasesUtils, civicaseCrmApiMock, controller, DetailsCaseTab,
-      loadFormBefore;
+      CasesData, civicaseCrmApiMock, controller, DetailsCaseTab,
+      civicaseCrmUrl, civicaseCrmLoadForm;
 
     beforeEach(module('civicase', 'civicase.data', function (_$provide_) {
       $provide = _$provide_;
@@ -417,13 +411,14 @@
     }));
 
     beforeEach(inject(function (_$controller_, $q, _$rootScope_, _$route_,
-      _CasesData_, _CasesUtils_, _DetailsCaseTab_) {
+      _CasesData_, _DetailsCaseTab_, _civicaseCrmUrl_, _civicaseCrmLoadForm_) {
+      civicaseCrmUrl = _civicaseCrmUrl_;
       $controller = _$controller_;
       $rootScope = _$rootScope_;
       $route = _$route_;
       CasesData = _CasesData_;
-      CasesUtils = _CasesUtils_;
       DetailsCaseTab = _DetailsCaseTab_;
+      civicaseCrmLoadForm = _civicaseCrmLoadForm_;
       apiResponses = {
         'Contact.get': { values: [] }
       };
@@ -523,24 +518,6 @@
           };
         });
 
-        describe('when there are inline custom data blocks', () => {
-          beforeEach(() => {
-            customDataBlocks = [
-              generateCustomDataBlock({ style: 'Inline' }),
-              generateCustomDataBlock({ style: 'Inline' }),
-              generateCustomDataBlock({ style: 'Inline' })
-            ];
-            caseItem['api.CustomValue.getalltreevalues'] = {
-              values: customDataBlocks
-            };
-            initController(caseItem);
-          });
-
-          it('stores the custom data blocks in a container for inline blocks', () => {
-            expect($scope.item.customData.Inline).toEqual(customDataBlocks);
-          });
-        });
-
         describe('when there are tab custom data blocks', () => {
           beforeEach(() => {
             customDataBlocks = [
@@ -552,10 +529,6 @@
               values: customDataBlocks
             };
             initController(caseItem);
-          });
-
-          it('stores the custom data blocks in a container for tab blocks', () => {
-            expect($scope.item.customData.Tab).toEqual([customDataBlocks[1]]);
           });
 
           it('adds the Details tab to display custom tab blocks', () => {
@@ -606,9 +579,9 @@
             // refresh case details:
             caseItem['api.Case.getcaselist.relatedCasesByContact'] = { values: [] };
             caseItem['api.Case.getcaselist.linkedCases'] = { values: [] };
-            caseItem['api.Activity.get.recentCommunication'] = { values: [] };
-            caseItem['api.Activity.get.tasks'] = { values: [] };
-            caseItem['api.Activity.get.nextActivitiesWhichIsNotMileStone'] = { values: [] };
+            caseItem['api.Activity.getAll.recentCommunication'] = { values: [] };
+            caseItem['api.Activity.getAll.tasks'] = { values: [] };
+            caseItem['api.Activity.getAll.nextActivitiesWhichIsNotMileStone'] = { values: [] };
             caseItem['api.CustomValue.getalltreevalues'] = {
               values: customDataBlocks
             };
@@ -645,10 +618,8 @@
 
       beforeEach(function () {
         initController();
-        spyOn($rootScope, '$broadcast');
-        loadFormBefore = CRM.loadForm;
-        CRM.loadForm = jasmine.createSpy();
-        CRM.loadForm.and.returnValue({
+        spyOn($rootScope, '$broadcast').and.callThrough();
+        civicaseCrmLoadForm.and.returnValue({
           on: function () {
             loadFormArguments = arguments;
           }
@@ -657,17 +628,13 @@
         $scope.createEmail();
       });
 
-      afterEach(function () {
-        CRM.loadForm = loadFormBefore;
-      });
-
       it('open a popup to create emails', function () {
-        expect(CRM.url).toHaveBeenCalledWith('civicrm/activity/email/add', {
+        expect(civicaseCrmUrl).toHaveBeenCalledWith('civicrm/activity/email/add', {
           action: 'add',
           caseid: $scope.item.id,
           atype: '3',
           reset: 1,
-          cid: CasesUtils.getAllCaseClientContactIds($scope.item.contacts).join(',')
+          cid: '170'
         });
       });
 
@@ -682,6 +649,70 @@
 
         it('refreshes the activity feed', function () {
           expect($rootScope.$broadcast).toHaveBeenCalledWith('civicase::activity::updated');
+        });
+      });
+    });
+
+    describe('going to other cases', () => {
+      let caseItem, clickEvent;
+
+      beforeEach(() => {
+        spyOn($route, 'updateParams');
+        initController();
+
+        clickEvent = $.Event('click');
+        clickEvent.target = document.createElement('span');
+        caseItem = {
+          id: _.uniqueId(),
+          case_type_id: '1',
+          status_id: '1',
+          'case_type_id.is_active': '0'
+        };
+      });
+
+      describe('when clicking on a non button element', () => {
+        beforeEach(() => {
+          $route.current = {
+            params: {
+              customParam: 'custom-value'
+            }
+          };
+
+          $scope.gotoCase(caseItem, clickEvent);
+        });
+
+        it('goes to the other case', () => {
+          expect($route.updateParams).toHaveBeenCalledWith(jasmine.objectContaining({
+            caseId: caseItem.id
+          }));
+        });
+
+        it('retains existing route filters', () => {
+          expect($route.updateParams).toHaveBeenCalledWith(jasmine.objectContaining({
+            customParam: 'custom-value'
+          }));
+        });
+
+        it('adds filters for the case\'s case type, status, and active status', () => {
+          expect($route.updateParams).toHaveBeenCalledWith(jasmine.objectContaining({
+            cf: JSON.stringify({
+              case_type_id: ['housing_support'],
+              status_id: ['Open'],
+              'case_type_id.is_active': '0'
+            })
+          }));
+        });
+      });
+
+      describe('when a button element is clicked', () => {
+        beforeEach(() => {
+          clickEvent.target = document.createElement('a');
+
+          $scope.gotoCase(caseItem, clickEvent);
+        });
+
+        it('does not go to the other case', () => {
+          expect($route.updateParams).not.toHaveBeenCalled();
         });
       });
     });
@@ -703,4 +734,4 @@
       $scope.$digest();
     }
   });
-})(CRM._);
+})(CRM.$, CRM._);

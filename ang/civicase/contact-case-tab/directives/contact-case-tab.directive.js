@@ -192,7 +192,7 @@
         'contacts', 'start_date', 'end_date', 'is_deleted', 'activity_summary',
         'activity_count', 'category_count', 'tag_id.name', 'tag_id.color',
         'tag_id.description', 'tag_id.parent_id', 'related_case_ids',
-        'case_type_id.case_type_category'
+        'case_type_id.case_type_category', 'case_type_id.is_active'
       ];
       var returnCaseParams = {
         sequential: 1,
@@ -203,11 +203,10 @@
           offset: page.size * (page.num - 1)
         }
       };
-      var params = { 'case_type_id.is_active': 1 };
 
       return {
-        cases: ['Case', 'getcaselist', $.extend(true, returnCaseParams, filter, params)],
-        count: ['Case', 'getdetailscount', $.extend(true, returnCaseParams, filter, params)]
+        cases: ['Case', 'getcaselist', $.extend(true, returnCaseParams, filter)],
+        count: ['Case', 'getdetailscount', $.extend(true, returnCaseParams, filter)]
       };
     }
 

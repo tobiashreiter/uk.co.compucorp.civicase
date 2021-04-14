@@ -1,8 +1,7 @@
-/* eslint-env jasmine */
 (function ($, _, moment) {
   describe('dashboardTabController', function () {
     var $controller, $rootScope, $scope, civicaseCrmApi, formatActivity, formatCase,
-      mockedCases, ActivityStatusType;
+      mockedCases, ActivityStatusType, CaseTypesData;
 
     /**
      * Generate Mocked Cases
@@ -13,9 +12,17 @@
       });
     }
 
-    beforeEach(module('civicase.templates', 'civicase', 'crmUtil'));
+    beforeEach(module('civicase.templates', 'civicase.data', 'civicase', 'crmUtil', function ($provide) {
+      const formatCase = jasmine.createSpy('formatCase')
+        .and.callFake(function (caseObj) {
+          return caseObj;
+        });
+      $provide.value('civicaseCrmApi', jasmine.createSpy('civicaseCrmApi'));
+      $provide.value('formatCase', formatCase);
+    }));
+
     beforeEach(inject(function (_$controller_, _$rootScope_, _civicaseCrmApi_,
-      _formatActivity_, _formatCase_, _ActivityStatusType_) {
+      _formatActivity_, _formatCase_, _ActivityStatusType_, _CaseTypesMockData_) {
       $controller = _$controller_;
       $rootScope = _$rootScope_;
       civicaseCrmApi = _civicaseCrmApi_;
@@ -23,6 +30,7 @@
       formatCase = _formatCase_;
       ActivityStatusType = _ActivityStatusType_;
       $scope = $rootScope.$new();
+      CaseTypesData = _CaseTypesMockData_.get();
 
       $scope.filters = { caseRelationshipType: 'all' };
       $scope.activityFilters = {
@@ -218,14 +226,19 @@
           });
 
           describe('when invoked', function () {
-            var $location, mockCase;
+            let $location, mockCase, caseType;
 
             beforeEach(inject(function (_$location_) {
+              const caseTypeId = _.chain(CaseTypesData).keys().sample().value();
+              caseType = CaseTypesData[caseTypeId];
               $location = _$location_;
-              mockCase = { id: _.random(1, 10) };
+              mockCase = {
+                id: _.random(1, 10),
+                case_type_id: caseTypeId
+              };
 
               spyOn($location, 'path').and.callThrough();
-              spyOn($location, 'search');
+              spyOn($location, 'search').and.callThrough();
 
               $scope.newCasesPanel.custom.caseClick(mockCase);
             }));
@@ -233,6 +246,12 @@
             it('redirects to the individual case details page', function () {
               expect($location.path).toHaveBeenCalledWith('case/list');
               expect($location.search).toHaveBeenCalledWith('caseId', mockCase.id);
+            });
+
+            it('passes the case type active status to the manage case page', () => {
+              expect($location.search).toHaveBeenCalledWith('cf', JSON.stringify({
+                'case_type_id.is_active': caseType.is_active
+              }));
             });
           });
         });
@@ -463,7 +482,7 @@
               it('filters by `activity_date_time` between today and end of the current week', function () {
                 expect($scope.newMilestonesPanel.query.params.activity_date_time).toBeDefined();
                 expect($scope.newMilestonesPanel.query.params.activity_date_time).toEqual({
-                  BETWEEN: getStartEndOfRange('week', 'YYYY-MM-DD HH:mm:ss', true)
+                  BETWEEN: getStartEndOfRange('week', 'YYYY-MM-DD HH:mm:ss')
                 });
               });
             });
@@ -476,7 +495,7 @@
               it('filters by `activity_date_time` between today and end of the current month', function () {
                 expect($scope.newMilestonesPanel.query.params.activity_date_time).toBeDefined();
                 expect($scope.newMilestonesPanel.query.params.activity_date_time).toEqual({
-                  BETWEEN: getStartEndOfRange('month', 'YYYY-MM-DD HH:mm:ss', true)
+                  BETWEEN: getStartEndOfRange('month', 'YYYY-MM-DD HH:mm:ss')
                 });
               });
             });
@@ -506,7 +525,7 @@
 
           describe('when it changes', function () {
             beforeEach(function () {
-              spyOn($rootScope, '$broadcast');
+              spyOn($rootScope, '$broadcast').and.callThrough();
 
               $scope.newMilestonesPanel.custom.involvementFilter = { '@involvingContact': '' };
               $scope.$digest();
@@ -761,7 +780,7 @@
 
           describe('when it changes', function () {
             beforeEach(function () {
-              spyOn($rootScope, '$broadcast');
+              spyOn($rootScope, '$broadcast').and.callThrough();
 
               $scope.activitiesPanel.custom.involvementFilter = { '@involvingContact': '' };
               $scope.$digest();
@@ -908,12 +927,11 @@
      *
      * @param {string} range range
      * @param {string} format format
-     * @param {string} useNowAsStart use now as start
      * @returns {Array} stand and end date
      */
-    function getStartEndOfRange (range, format, useNowAsStart) {
+    function getStartEndOfRange (range, format) {
       var now = moment();
-      var start = (useNowAsStart ? now : now.startOf(range)).format(format);
+      var start = now.startOf(range).format(format);
       var end = now.endOf(range).format(format);
 
       return [start, end];

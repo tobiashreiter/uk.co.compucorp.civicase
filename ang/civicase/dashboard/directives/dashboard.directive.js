@@ -15,24 +15,25 @@
    * Civicase Dashboard Controller.
    *
    * @param {object} $scope controller's scope.
-   * @param {Function} civicaseCrmApi CRM API service reference.
    * @param {string} currentCaseCategory current case type category setting value.
    * @param {object[]} DashboardActionItems Dashboard action items list.
-   * @param {Function} formatActivity Format Activity service reference.
    * @param {Function} includeActivitiesForInvolvedContact Include Activities For Involved Cases civicase setting.
-   * @param {Function} $timeout timeout service reference.
    * @param {Function} ts translate service reference.
+   * @param {Function} getServiceForInstance get service for a specific instance
+   * @param {object} CaseTypeCategory the case type category service reference.
+   * @param {Function} civicaseCrmUrl crm url service.
    */
-  function civicaseDashboardController ($scope, civicaseCrmApi,
-    currentCaseCategory, DashboardActionItems, formatActivity,
-    includeActivitiesForInvolvedContact, $timeout, ts) {
+  function civicaseDashboardController ($scope, currentCaseCategory,
+    DashboardActionItems, includeActivitiesForInvolvedContact, ts,
+    getServiceForInstance, CaseTypeCategory, civicaseCrmUrl) {
+    var categoryObject = CaseTypeCategory.findByName(currentCaseCategory);
+    var instanceName = CaseTypeCategory.getCaseTypeCategoryInstance(categoryObject.value).name;
+
     $scope.checkPerm = CRM.checkPerm;
     $scope.actionBarItems = DashboardActionItems;
-    $scope.url = CRM.url;
+    $scope.url = civicaseCrmUrl;
     $scope.filters = {};
-    $scope.activityFilters = {
-      case_filter: { 'case_type_id.is_active': 1, contact_is_deleted: 0 }
-    };
+    $scope.activityFilters = getServiceForInstance(instanceName).getActivityFilters();
 
     (function init () {
       bindRouteParamsToScope();
@@ -122,7 +123,6 @@
      * Initialise watchers
      */
     function initWatchers () {
-      $scope.$on('civicase::dashboard-filters::updated', updateFilterParams);
       $scope.$watch('filters.caseRelationshipType', caseRelationshipTypeWatcher);
     }
 
@@ -140,16 +140,6 @@
       }
 
       $scope.caseRelationshipOptions = options;
-    }
-
-    /**
-     * Update Filter Parameters
-     *
-     * @param {object} event event
-     * @param {object} data data sent from the broadcaster
-     */
-    function updateFilterParams (event, data) {
-      _.extend($scope.activityFilters.case_filter, data);
     }
   }
 })(angular, CRM.$, CRM._);

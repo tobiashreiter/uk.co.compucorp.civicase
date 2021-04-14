@@ -17,10 +17,10 @@
 
   /**
    * @param {object} $scope the controller's scope
-   * @param {Function} getSelect2Value function to get select 2 values
+   * @param {object} Select2Utils select 2 utility service
    * @param {Function} isTruthy service to check if value is truthy
    */
-  function civicaseTagsSelectorController ($scope, getSelect2Value, isTruthy) {
+  function civicaseTagsSelectorController ($scope, Select2Utils, isTruthy) {
     $scope.formatTags = formatTags;
     $scope.tags = {
       genericTags: '',
@@ -183,10 +183,10 @@
      * @returns {Array} list of tag ids
      */
     function prepareTagsForSave (tags) {
-      var tagIds = getSelect2Value(tags.genericTags);
+      var tagIds = Select2Utils.getSelect2Value(tags.genericTags);
 
       _.each(tags.tagSets, function (tagSet) {
-        tagIds = tagIds.concat(getSelect2Value(tagSet));
+        tagIds = tagIds.concat(Select2Utils.getSelect2Value(tagSet));
       });
 
       return tagIds;

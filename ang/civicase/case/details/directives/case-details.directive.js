@@ -22,7 +22,7 @@
   /**
    * Case Details Controller
    *
-   * @param {object} $location $location service
+   * @param {Function} civicaseCrmUrl crm url service.
    * @param {object} $sce angular Strict Contextual Escaping service
    * @param {object} $rootScope $rootScope
    * @param {object} $scope $scope
@@ -46,19 +46,20 @@
    * @param {object} CaseType case type service
    * @param {object} CaseDetailsSummaryBlocks case details summary blocks
    * @param {object} DetailsCaseTab case details case tab service reference
+   * @param {Function} civicaseCrmLoadForm service to load civicrm forms
    */
-  function civicaseCaseDetailsController ($location, $sce, $rootScope, $scope,
+  function civicaseCaseDetailsController (civicaseCrmUrl, $sce, $rootScope, $scope,
     $document, allowLinkedCasesTab, BulkActions, CaseDetailsTabs, civicaseCrmApi,
     formatActivity, formatCase, getActivityFeedUrl, getCaseQueryParams, $route,
     $timeout, crmStatus, CasesUtils, PrintMergeCaseAction, ts, ActivityType,
-    CaseStatus, CaseType, CaseDetailsSummaryBlocks, DetailsCaseTab) {
+    CaseStatus, CaseType, CaseDetailsSummaryBlocks, DetailsCaseTab,
+    civicaseCrmLoadForm) {
     // Makes the scope available to child directives when they require this parent directive:
     this.$scope = $scope;
 
     // The ts() and hs() functions help load strings for this module.
     // TODO: Move the common logic into a common controller (based on the usage of ContactCaseTabCaseDetails)
     $scope.ts = ts;
-    var caseTypes = CaseType.getAll();
     var caseStatuses = $scope.caseStatuses = CaseStatus.getAll();
     var activityTypes = $scope.activityTypes = ActivityType.getAll(true);
     var panelLimit = 5;
@@ -69,7 +70,7 @@
     $scope.getActivityFeedUrl = getActivityFeedUrl;
     $scope.bulkAllowed = BulkActions.isAllowed();
     $scope.caseDetailsSummaryBlocks = CaseDetailsSummaryBlocks;
-    $scope.caseTypesLength = _.size(caseTypes);
+    $scope.caseTypesLength = _.size(CaseType.getAll());
     $scope.CRM = CRM;
     $scope.tabs = _.cloneDeep(CaseDetailsTabs);
     $scope.trustAsHtml = $sce.trustAsHtml;
@@ -141,11 +142,12 @@
         caseid: $scope.item.id,
         atype: '3',
         reset: 1,
-        cid: CasesUtils.getAllCaseClientContactIds($scope.item.contacts).join(',')
+        cid: $scope.item.client.map(function (client) {
+          return client.contact_id;
+        }).join(',')
       };
 
-      CRM
-        .loadForm(CRM.url('civicrm/activity/email/add', createEmailURLParams))
+      civicaseCrmLoadForm(civicaseCrmUrl('civicrm/activity/email/add', createEmailURLParams))
         .on('crmFormSuccess', function () {
           $rootScope.$broadcast('civicase::activity::updated');
         });
@@ -155,9 +157,10 @@
      * Opens the popup for Creating PDF letter
      */
     function createPDFLetter () {
-      var pdfLetter = PrintMergeCaseAction.doAction([$scope.item]);
-
-      CRM.loadForm(CRM.url(pdfLetter.path, pdfLetter.query));
+      PrintMergeCaseAction.doAction([$scope.item])
+        .then(function (pdfLetter) {
+          civicaseCrmLoadForm(civicaseCrmUrl(pdfLetter.path, pdfLetter.query));
+        });
     }
 
     /**
@@ -201,8 +204,9 @@
         return;
       }
       var cf = {
-        case_type_id: [caseTypes[item.case_type_id].name],
-        status_id: [caseStatuses[item.status_id].name]
+        case_type_id: [CaseType.getById(item.case_type_id).name],
+        status_id: [caseStatuses[item.status_id].name],
+        'case_type_id.is_active': item['case_type_id.is_active']
       };
       var p = angular.extend({}, $route.current.params, { caseId: item.id, cf: JSON.stringify(cf) });
       $route.updateParams(p);
@@ -329,7 +333,7 @@
      * @returns {object} url to view the activity
      */
     function viewActivityUrl (id) {
-      return CRM.url('civicrm/case/activity', {
+      return civicaseCrmUrl('civicrm/case/activity', {
         action: 'update',
         reset: 1,
         cid: $scope.item.client[0].contact_id,
@@ -344,7 +348,7 @@
      * @returns {object} url to edit the activity
      */
     function getEditActivityUrl (id) {
-      return CRM.url('civicrm/case/activity', {
+      return civicaseCrmUrl('civicrm/case/activity', {
         action: 'update',
         reset: 1,
         caseid: $scope.item.id,
@@ -364,7 +368,7 @@
         return item.id;
       }).join(',');
 
-      return CRM.url('civicrm/case/customreport/print', {
+      return civicaseCrmUrl('civicrm/case/customreport/print', {
         all: 1,
         redact: 0,
         cid: $scope.item.client[0].contact_id,
@@ -424,7 +428,7 @@
      */
     function formatCaseDetails (item) {
       formatCase(item);
-      item.definition = caseTypes[item.case_type_id].definition;
+      item.definition = CaseType.getById(item.case_type_id).definition;
 
       prepareRelatedCases(item);
 
@@ -435,19 +439,14 @@
       delete (item['api.Activity.getcount.scheduled']);
       delete (item['api.Activity.getcount.scheduled_overdue']);
       // Recent communications
-      item.recentCommunication = _.each(_.cloneDeep(item['api.Activity.get.recentCommunication'].values), formatAct);
-      delete (item['api.Activity.get.recentCommunication']);
+      item.recentCommunication = _.each(_.cloneDeep(item['api.Activity.getAll.recentCommunication'].values), formatAct);
+      delete (item['api.Activity.getAll.recentCommunication']);
       // Tasks
-      item.tasks = _.each(_.cloneDeep(item['api.Activity.get.tasks'].values), formatAct);
-      delete (item['api.Activity.get.tasks']);
+      item.tasks = _.each(_.cloneDeep(item['api.Activity.getAll.tasks'].values), formatAct);
+      delete (item['api.Activity.getAll.tasks']);
       // nextActivitiesWhichIsNotMileStoneList
-      item.nextActivityNotMilestone = _.each(_.cloneDeep(item['api.Activity.get.nextActivitiesWhichIsNotMileStone'].values), formatAct)[0];
-      delete (item['api.Activity.get.nextActivitiesWhichIsNotMileStone']);
-
-      // Custom fields
-      var customData = item['api.CustomValue.getalltreevalues'].values || [];
-      item.customData = _.groupBy(customData, 'style');
-      delete (item['api.CustomValue.getalltreevalues']);
+      item.nextActivityNotMilestone = _.each(_.cloneDeep(item['api.Activity.getAll.nextActivitiesWhichIsNotMileStone'].values), formatAct)[0];
+      delete (item['api.Activity.getAll.nextActivitiesWhichIsNotMileStone']);
 
       return item;
     }

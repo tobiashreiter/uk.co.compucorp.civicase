@@ -1,4 +1,3 @@
-/* eslint-env jasmine */
 (($, _, crmCheckPerm) => {
   describe('civicaseSearch', () => {
     let $controller, $rootScope, $scope, $window, $timeout, CaseFilters,
@@ -100,9 +99,9 @@
       describe('case relationship options', () => {
         it('contains a list of case relationship options', () => {
           expect($scope.caseRelationshipOptions).toEqual([
-            { text: ts('All Cases'), id: 'all' },
             { text: ts('My Cases'), id: 'is_case_manager' },
-            { text: ts('Cases I am involved in'), id: 'is_involved' }
+            { text: ts('Cases I am involved in'), id: 'is_involved' },
+            { text: ts('All Cases'), id: 'all' }
           ]);
         });
       });

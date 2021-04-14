@@ -1,11 +1,10 @@
 (function (angular, $, _, CRM) {
   var module = angular.module('civicase');
 
-  module.factory('formatActivity', function (ContactsCache, ActivityStatusType,
+  module.factory('formatActivity', function (CasesUtils, ActivityStatusType,
     ActivityStatus, ActivityType, CaseStatus, CaseType, isTruthy) {
     var activityTypes = ActivityType.getAll(true);
     var activityStatuses = ActivityStatus.getAll();
-    var caseTypes = CaseType.getAll();
     var caseStatuses = CaseStatus.getAll();
 
     return function (act, caseId) {
@@ -46,10 +45,10 @@
 
         act.case.client = [];
         act.case.status = caseStatuses[act.case.status_id];
-        act.case.type = caseTypes[act.case.case_type_id];
+        act.case.type = CaseType.getById(act.case.case_type_id);
 
         _.each(act.case.contacts, function (contact) {
-          if (!contact.relationship_type_id) {
+          if (CasesUtils.isClientRole(contact)) {
             act.case.client.push(contact);
           }
           if (isTruthy(contact.manager)) {

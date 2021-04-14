@@ -35,6 +35,8 @@
           onChangeMonthYear: removeDatePickerHrefs,
           onClose: handleDatePickerClose
         });
+
+        watchMinMaxDateRangeLimits();
       })();
 
       /**
@@ -109,6 +111,39 @@
         } catch (exception) {
           return false;
         }
+      }
+
+      /**
+       * Updates either the minium or maximum date values for the datepicker.
+       *
+       * @param {string} dateRangeFieldName the name of the range to update.
+       * It should be either "minDate" or "maxDate".
+       */
+      function updateDatepickerRangeLimit (dateRangeFieldName) {
+        var fieldDateValue = attributes[dateRangeFieldName];
+
+        if (!fieldDateValue) {
+          return;
+        }
+
+        var dateObject = moment(fieldDateValue).toDate();
+
+        element.datepicker('option', dateRangeFieldName, dateObject);
+      }
+
+      /**
+       * Watches for changes to the min and max date range values and updates
+       * the inline datepicker so it uses these limits.
+       */
+      function watchMinMaxDateRangeLimits () {
+        attributes.$observe(
+          'minDate',
+          updateDatepickerRangeLimit.bind(this, 'minDate')
+        );
+        attributes.$observe(
+          'maxDate',
+          updateDatepickerRangeLimit.bind(this, 'maxDate')
+        );
       }
     }
   });

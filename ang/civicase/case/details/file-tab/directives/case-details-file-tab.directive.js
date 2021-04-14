@@ -44,6 +44,7 @@
       loadActivities();
 
       $scope.$on('civicase::bulk-actions::bulk-selections', bulkSelectionsListener);
+      $scope.$on('civicase::activity::updated', refresh);
     }());
 
     /**
@@ -88,7 +89,7 @@
      */
     function loadActivities () {
       $scope.isLoading = true;
-
+      $scope.activities = [];
       civicaseCrmApi('Case', 'getfiles', $scope.fileFilterParams)
         .then(function (result) {
           $scope.activities = result.xref

@@ -1,7 +1,7 @@
 (function (angular, $, _) {
   var module = angular.module('civicase');
 
-  module.directive('civicaseCaseListTable', function ($document, $timeout) {
+  module.directive('civicaseCaseListTable', function () {
     return {
       controller: 'CivicaseCaseListTableController',
       link: civicaseCaseListTableLink,
@@ -50,10 +50,10 @@
     }
   });
 
-  module.controller('CivicaseCaseListTableController', function ($q, $rootScope,
-    $route, $scope, $window, BulkActions, civicaseCrmApi, crmStatus, crmUiHelp,
-    crmThrottle, currentCaseCategory, $timeout, formatCase, ContactsCache,
-    CasesUtils, ts, ActivityCategory, ActivityType, CaseStatus) {
+  module.controller('CivicaseCaseListTableController', function ($q, $route,
+    $scope, $window, BulkActions, civicaseCrmApi, currentCaseCategory,
+    crmThrottle, formatCase, CasesUtils, ts, ActivityCategory, ActivityType,
+    CaseStatus) {
     var firstLoad = true;
     var allCases = [];
 
@@ -137,7 +137,13 @@
       backgroundLoading = backgroundLoading || false;
       $scope.isLoading = true && !backgroundLoading;
       apiCalls = apiCalls || [];
-      apiCalls = apiCalls.concat(getCaseApiParams(angular.extend({}, $scope.filters, $scope.hiddenFilters), $scope.sort, $scope.page));
+      apiCalls = apiCalls.concat(
+        getCaseApiParams(
+          angular.extend({}, $scope.filters, $scope.hiddenFilters),
+          $scope.sort,
+          $scope.page
+        )
+      );
 
       civicaseCrmApi(apiCalls, true)
         .then(function (result) {
@@ -331,7 +337,8 @@
         return: [
           'subject', 'case_type_id', 'status_id', 'is_deleted', 'start_date',
           'modified_date', 'contacts', 'activity_summary', 'category_count',
-          'tag_id.name', 'tag_id.color', 'tag_id.description'
+          'tag_id.name', 'tag_id.color', 'tag_id.description',
+          'case_type_id.case_type_category', 'case_type_id.is_active'
         ],
         options: {
           sort: sort.field + ' ' + sort.dir,
@@ -355,6 +362,8 @@
         if (val || typeof val === 'boolean') {
           if (filter === 'case_type_category') {
             params['case_type_id.case_type_category'] = val;
+          } else if (filter === 'case_type_id.is_active') {
+            params[filter] = val;
           } else if (typeof val === 'number' || typeof val === 'boolean') {
             params[filter] = val;
           } else if (typeof val === 'object' && !$.isArray(val)) {

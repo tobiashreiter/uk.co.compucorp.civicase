@@ -1,11 +1,10 @@
-/* eslint-env jasmine */
-
 (function (_, $) {
   describe('CivicaseCaseListTable Directive', function () {
     var $compile, $rootScope, $scope, originaljQueryHeightFn;
 
-    beforeEach(module('civicase', 'civicase.templates', function ($controllerProvider) {
+    beforeEach(module('civicase', 'civicase.templates', function ($controllerProvider, $provide) {
       $controllerProvider.register('CivicaseCaseListTableController', function () {});
+      $provide.value('civicaseCrmApi', jasmine.createSpy('civicaseCrmApi'));
     }));
 
     beforeEach(inject(function (_$compile_, _$rootScope_) {
@@ -124,6 +123,7 @@
       });
 
       $provide.value('crmThrottle', crmThrottleMock);
+      $provide.value('civicaseCrmApi', jasmine.createSpy('civicaseCrmApi'));
     }));
 
     beforeEach(inject(function (_$controller_, _$q_, _$route_, $rootScope,
@@ -160,7 +160,8 @@
             return: [
               'subject', 'case_type_id', 'status_id', 'is_deleted', 'start_date',
               'modified_date', 'contacts', 'activity_summary', 'category_count',
-              'tag_id.name', 'tag_id.color', 'tag_id.description'
+              'tag_id.name', 'tag_id.color', 'tag_id.description',
+              'case_type_id.case_type_category', 'case_type_id.is_active'
             ],
             options: jasmine.any(Object),
             'case_type_id.is_active': 1,

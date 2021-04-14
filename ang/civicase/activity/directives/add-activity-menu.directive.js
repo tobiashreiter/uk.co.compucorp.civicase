@@ -17,7 +17,8 @@
 
   module.controller('civicaseAddActivityMenuController', function ($scope,
     getCaseQueryParams, CaseType, ActivityType, ActivityForms, isTruthy) {
-    var definition = CaseType.getAll()[$scope.case.case_type_id].definition;
+    var caseType = CaseType.getById($scope.case.case_type_id);
+    var definition = caseType.definition;
 
     (function init () {
       if (_.isEmpty($scope.case.activity_count)) {
@@ -94,6 +95,7 @@
      * @returns {string} url
      */
     $scope.newActivityUrl = function (actType) {
+      var caseClientId = _.first($scope.case.client).contact_id;
       var caseType = CaseType.getById($scope.case.case_type_id);
       var caseQueryParams = JSON.stringify(getCaseQueryParams({
         caseId: $scope.case.id,
@@ -106,7 +108,8 @@
       };
       var options = {
         action: 'add',
-        civicase_reload: caseQueryParams
+        civicase_reload: caseQueryParams,
+        cid: caseClientId
       };
       var activityForm = ActivityForms.getActivityFormService(newActivity, options);
 

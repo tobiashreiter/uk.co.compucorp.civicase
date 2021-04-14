@@ -36,6 +36,7 @@ class CRM_Civicase_Service_ContactCustomFieldsProvider {
         'custom_group_id.extends' => [
           'IN' => ['Contact', 'Individual', 'Household', 'Organization'],
         ],
+        'options' => ['limit' => 0],
       ]);
     }
     catch (Throwable $ex) {

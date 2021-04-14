@@ -1,5 +1,3 @@
-/* eslint-env jasmine */
-
 ((_) => {
   describe('CasesUtils', () => {
     var CasesData, ContactsCache, CasesUtils, mockTs;
@@ -41,38 +39,30 @@
       });
     });
 
-    describe('getAllCaseClientContactIds()', () => {
-      let cases;
+    describe('when checking if a role is client', () => {
+      let role;
 
-      beforeEach(() => {
-        cases = CasesData.get().values[0];
-      });
-
-      it('fetches all client contact ids of the case', () => {
-        expect(CasesUtils.getAllCaseClientContactIds(cases.contacts)).toEqual(['170']);
-      });
-
-      describe('when the client word has been translated to a different one', () => {
+      describe('and the role is client', () => {
         beforeEach(() => {
-          cases.contacts = cases.contacts
-            .map((contact) => ({
-              ...contact,
-              role: contact.role === 'Client'
-                ? 'Member'
-                : contact.role
-            }));
+          role = CasesData.get().values[0].contacts[0];
 
-          mockTs.and.callFake((string) => {
-            if (string === 'Client') {
-              return 'Member';
-            }
-
-            return string;
-          });
+          role.relationship_type_id = false;
         });
 
-        it('returns clients even when their roles have been translated', () => {
-          expect(CasesUtils.getAllCaseClientContactIds(cases.contacts)).toEqual(['170']);
+        it('returns true', () => {
+          expect(CasesUtils.isClientRole(role)).toEqual(true);
+        });
+      });
+
+      describe('and the role is not client', () => {
+        beforeEach(() => {
+          role = CasesData.get().values[0].contacts[0];
+
+          role.relationship_type_id = '11';
+        });
+
+        it('returns false', () => {
+          expect(CasesUtils.isClientRole(role)).toEqual(false);
         });
       });
     });

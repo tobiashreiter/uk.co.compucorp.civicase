@@ -1,8 +1,8 @@
 (function (angular, $, _) {
   var module = angular.module('civicase');
 
-  module.directive('civicaseCaseActions', function ($rootScope,
-    $injector, allowCaseLocks, CaseActions) {
+  module.directive('civicaseCaseActions', function ($q, $rootScope,
+    $injector, allowCaseLocks, CaseActions, civicaseCrmLoadForm, civicaseCrmUrl) {
     return {
       restrict: 'A',
       templateUrl: '~/civicase/case/actions/directives/case-actions.directive.html',
@@ -48,10 +48,23 @@
       /**
        * Check if the sent action is enabled.
        *
+       * An action is disabled when:
+       * - They can modify the target cases and the cases have been disabled.
+       * - The right number of cases have not been selected.
+       *
        * @param {object} action action object
        * @returns {boolean} if the sent action is enabled.
        */
       function isActionEnabled (action) {
+        var hasADisabledCaseType = _.some(
+          $scope.cases,
+          _.matches({ 'case_type_id.is_active': '0' })
+        );
+
+        if (action.is_write_action !== false && hasADisabledCaseType) {
+          return false;
+        }
+
         return (!action.number || $scope.cases.length === +action.number);
       }
 
@@ -63,7 +76,7 @@
        */
       function isActionAllowed (action) {
         var isActionAllowed = true;
-        var isLockCaseAction = _.startsWith(action.action, 'lockCases');
+        var isLockCaseAction = _.startsWith(action.action, 'LockCases');
         var isCaseLockAllowed = allowCaseLocks;
         var caseActionService = getCaseActionService(action.action);
 
@@ -72,7 +85,10 @@
         }
 
         return isActionAllowed && ((isLockCaseAction && isCaseLockAllowed) ||
-          (!isLockCaseAction && (!action.number || ((isBulkMode && action.number > 1) || (!isBulkMode && action.number === 1)))));
+          (!isLockCaseAction && (
+            !action.number ||
+            ((isBulkMode && action.number > 1) || (!isBulkMode && action.number === 1))
+          )));
       }
 
       /**
@@ -87,40 +103,42 @@
           return;
         }
 
-        var result = caseActionService.doAction($scope.cases, action, $scope.refresh);
-        // Open popup if callback returns a path & query
-        // TODO Move the following code into a service, and the Serivces which
-        // returns an URL, should call this newly created service directly.
-        if (result) {
-          var url = '';
-          if (angular.isObject(result)) {
-            // Add refresh data
-            if ($scope.popupParams) {
-              result.query.civicase_reload = $scope.popupParams();
-            }
+        $q.when(caseActionService.doAction($scope.cases, action, $scope.refresh))
+          .then(function (result) {
+            // Open popup if callback returns a path & query
+            // TODO Move the following code into a service, and the Serivces which
+            // returns an URL, should call this newly created service directly.
+            if (result) {
+              var url = '';
+              if (angular.isObject(result)) {
+                // Add refresh data
+                if ($scope.popupParams) {
+                  result.query.civicase_reload = $scope.popupParams();
+                }
 
-            url = CRM.url(result.path, result.query);
-          } else {
-            url = result;
-          }
-
-          // Mimic the behavior of CRM.popup()
-          var formData = false;
-          var dialog = CRM.loadForm(url)
-            // Listen for success events and buffer them so we only trigger once
-            .on('crmFormSuccess crmPopupFormSuccess', function (e, data) {
-              formData = data;
-              $rootScope.$broadcast('updateCaseData');
-              refreshDataForActions();
-            })
-            .on('dialogclose.crmPopup', function (e, data) {
-              if (formData) {
-                element.trigger('crmPopupFormSuccess', [dialog, formData]);
+                url = civicaseCrmUrl(result.path, result.query);
+              } else {
+                url = result;
               }
 
-              element.trigger('crmPopupClose', [dialog, data]);
-            });
-        }
+              // Mimic the behavior of CRM.popup()
+              var formData = false;
+              var dialog = civicaseCrmLoadForm(url)
+                // Listen for success events and buffer them so we only trigger once
+                .on('crmFormSuccess crmPopupFormSuccess', function (e, data) {
+                  formData = data;
+                  $rootScope.$broadcast('updateCaseData');
+                  refreshDataForActions();
+                })
+                .on('dialogclose.crmPopup', function (e, data) {
+                  if (formData) {
+                    element.trigger('crmPopupFormSuccess', [dialog, formData]);
+                  }
+
+                  element.trigger('crmPopupClose', [dialog, data]);
+                });
+            }
+          });
       }
 
       /**

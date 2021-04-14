@@ -36,7 +36,6 @@
             {{ activity.subject || civicaseTs(activity.type) }}
           </span>
         </civicase-tooltip>
-        </span>
         <!-- End - Title - Type/Subject -->
         <span class="civicase__activity__right-container" ng-if="activity.category.indexOf('alert') === -1">
           <!-- Tags -->
@@ -65,7 +64,7 @@
               <li ng-if="activity.attachments.length" role="separator" class="divider"></li>
               <li ng-if="activity.attachments.length">
                 <a class="civicase__activity-attachment__file-name"
-                  ng-href="{{ 'civicrm/case/activity/download-all-files' | civicaseCrmUrl:{ activity_id: activity.id } }}">
+                  ng-href="{{ 'civicrm/case/activity/download-all-files' | civicaseCrmUrl:{ activity_ids: activity.id } }}">
                   <i class="civicase__activity-attachment__file-icon crm-i fa-download"></i> &nbsp;Download all
                 </a>
               </li>
@@ -98,6 +97,7 @@
           <!-- Avatar -->
           <span
             ng-if="activity.assignee_contact_name"
+            total-contacts="activity.total_assignee_contacts"
             civicase-contact-card
             avatar="true"
             case-id="activity.case_id"
@@ -121,6 +121,7 @@
           <span
             ng-if="activity.target_contact_name"
             civicase-contact-card
+            total-contacts="activity.total_target_contacts"
             contacts="activity.target_contact_name"
             case-id="activity.case_id"
           ></span>

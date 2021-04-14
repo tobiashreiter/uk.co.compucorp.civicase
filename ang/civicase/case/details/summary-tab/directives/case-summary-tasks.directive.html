@@ -9,7 +9,7 @@
       {{item.category_count.task.overdue}} </span>
   </h3>
   <a class="pull-right"
-     ng-href="{{ getActivityFeedUrl({ caseId: item.id, category: 'task', statusType: 'completed' }) }}"
+     ng-href="{{ getActivityFeedUrl({ caseId: item.id, category: 'task' }) }}"
      ng-if="item.category_count.task.incomplete"
      title="{{ ts('View All') }}"
   >{{ ts('View All') }}</a>
@@ -19,6 +19,7 @@
     ng-repeat="activity in item.tasks"
     ng-if="item.tasks.length"
     case-activity-card="activity"
+    is-read-only="item['case_type_id.is_active'] === '0'"
     crm-popup-form-success="pushCaseData($data.civicase_reload[0])"
     refresh-callback="refresh"
     bulk-allowed="bulkAllowed"
@@ -30,10 +31,15 @@
     <div class="civicase__activity-card--big--empty-title"> No new tasks </div>
     <div class="civicase__activity-card--big--empty-description"> {{ ts('Click on the button below to add a task to this case') }} </div>
     <span civicase-dropdown>
-      <div class="civicase__activity-card--big--empty-button btn"
-        civicase-dropdown-toggle>
-        <i class="material-icons">add_circle</i>Create new tasks <i class="fa fa-caret-down"></i>
-      </div>
+      <button
+        class="civicase__activity-card--big--empty-button btn btn-default"
+        civicase-dropdown-toggle
+        ng-disabled="item['case_type_id.is_active'] === '0'"
+      >
+        <i class="material-icons">add_circle</i>
+        {{ ts('Create new tasks') }}
+        <i class="fa fa-caret-down"></i>
+      </button>
       <civicase-add-activity-menu
         case="item"
         filter-activities-by="task"

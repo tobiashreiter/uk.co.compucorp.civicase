@@ -1,9 +1,10 @@
-/* eslint-env jasmine */
 (function ($) {
   describe('contactCard', function () {
     var element, civicaseCrmApi, $q, $compile, $rootScope, $scope, ContactsData, ContactsCache;
 
-    beforeEach(module('civicase.templates', 'civicase', 'civicase.data'));
+    beforeEach(module('civicase.templates', 'civicase', 'civicase.data', function ($provide) {
+      $provide.value('civicaseCrmApi', jasmine.createSpy('civicaseCrmApi'));
+    }));
 
     beforeEach(inject(function (_$compile_, _$rootScope_, _$q_, _civicaseCrmApi_,
       _ContactsData_, _ContactsCache_) {
@@ -42,7 +43,11 @@
       describe('when the display name is a name', function () {
         beforeEach(function () {
           spyOn(ContactsCache, 'add').and.returnValue($q.resolve(ContactsData.values[0]));
-          spyOn(ContactsCache, 'getCachedContact').and.returnValue({ display_name: 'John Doe' });
+          spyOn(ContactsCache, 'getCachedContact').and.returnValue({
+            display_name: 'John Doe',
+            first_name: 'John',
+            last_name: 'Doe'
+          });
           compileDirective(true, ContactsData.values[0].id);
         });
 
@@ -60,6 +65,37 @@
 
         it('sets the first letter of the email address as the avatar', function () {
           expect(element.isolateScope().contacts[0].avatar).toBe('E');
+        });
+      });
+
+      describe('when first name or last name does not exist, and display name is not an email id either', function () {
+        beforeEach(function () {
+          spyOn(ContactsCache, 'add').and.returnValue($q.resolve(ContactsData.values[0]));
+          spyOn(ContactsCache, 'getCachedContact').and.returnValue({
+            display_name: 'John Doe'
+          });
+          compileDirective(true, ContactsData.values[0].id);
+        });
+
+        it('sets the initial of the name as the avatar', function () {
+          expect(element.isolateScope().contacts[0].avatar).toBe('JD');
+        });
+      });
+
+      describe('when the display name contains both prefix and suffix honorific', function () {
+        beforeEach(function () {
+          spyOn(ContactsCache, 'add').and.returnValue($q.resolve(ContactsData.values[0]));
+          spyOn(ContactsCache, 'getCachedContact').and.returnValue({
+            display_name: 'Mr. John Doe Jr.',
+            first_name: 'John',
+            last_name: 'Doe'
+          });
+
+          compileDirective(true, ContactsData.values[0].id);
+        });
+
+        it('ignores the honorific while creating the avatar', function () {
+          expect(element.isolateScope().contacts[0].avatar).toBe('JD');
         });
       });
 

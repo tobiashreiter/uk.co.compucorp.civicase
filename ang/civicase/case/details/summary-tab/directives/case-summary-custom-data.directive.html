@@ -1,7 +1,7 @@
 <div class="clearfix civicase__summary-tab-tile-container civicase__case-custom-fields__container">
   <civicase-masonry-grid>
     <civicase-masonry-grid-item
-      ng-repeat="(index, customGroup) in customData"
+      ng-repeat="(index, customGroup) in customData | orderBy: 'weight'"
       ng-if="!customGroup.isHidden">
       <div class="panel panel-default civicase__panel-transparent-header">
         <div class="panel-heading">
