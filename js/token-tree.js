@@ -148,9 +148,9 @@ CRM['civicase-base'].tokentree = {};
     if (item.children) {
       hasChildrenIdentifier = 'has-children ';
       if (isOpen) {
-        icon = '<i class="fa fa-minus-square" style="margin-right: 5px;"></i>';
+        icon = '<i class="fa fa-minus-square-o" style="margin-right: 5px;"></i>';
       } else {
-        icon = '<i class="fa fa-plus-square" style="margin-right: 5px;"></i>';
+        icon = '<i class="fa fa-plus-square-o" style="margin-right: 5px;"></i>';
       }
     }
 
