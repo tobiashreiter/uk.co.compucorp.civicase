@@ -1,5 +1,7 @@
 <?php
 
+use CRM_Civicase_Service_CaseCategoryCustomFieldsSetting as CaseCategoryCustomFieldsSetting;
+
 /**
  * Adds singular labels to case type categories.
  */
@@ -12,21 +14,9 @@ class CRM_Civicase_Upgrader_Steps_Step0015 {
    *   True when the upgrader runs successfully.
    */
   public function apply() {
-    $this->addSingularLabelColumn();
     $this->addSingularLabelToCaseCategories();
 
     return TRUE;
-  }
-
-  /**
-   * Adds the singular label column to the case category instance table.
-   */
-  private function addSingularLabelColumn() {
-    CRM_Core_DAO::executeQuery("
-      ALTER TABLE civicrm_case_category_instance
-      ADD COLUMN singular_label varchar(255) character set utf8mb4 COLLATE utf8mb4_unicode_ci
-        DEFAULT NULL
-    ");
   }
 
   /**
@@ -46,12 +36,8 @@ class CRM_Civicase_Upgrader_Steps_Step0015 {
         ? substr($caseTypeCategory['label'], -1)
         : $caseTypeCategory['label'];
 
-      civicrm_api3('CaseCategoryInstance', 'get', [
-        'category_id' => $caseTypeCategory['id'],
-        'api.CaseCategoryInstance.create' => [
-          'id' => '$value.id',
-          'singular_label' => $singularLabel,
-        ],
+      CaseCategoryCustomFieldsSetting::save($caseTypeCategory['value'], [
+        'singular_label' => $singularLabel,
       ]);
     }
   }
