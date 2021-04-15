@@ -66,50 +66,51 @@ class CRM_Civicase_Service_CaseCategoryMenu {
   protected function createCaseCategorySubmenus(array $caseTypeCategory, array $permissions, $caseCategoryMenuId) {
     $labelForMenu = ucfirst(strtolower($caseTypeCategory['label']));
     $singularLabelForMenu = ucfirst(strtolower($caseTypeCategory['singular_label']));
+    $caseTypeCategoryName = $caseTypeCategory['name'];
 
     $submenus = [
       [
         'label' => ts('Dashboard'),
-        'name' => "{$caseTypeCategory['name']}_dashboard",
-        'url' => "civicrm/case/a/?case_type_category={$caseTypeCategory['name']}#/case?case_type_category={$caseTypeCategory['name']}",
+        'name' => "{$caseTypeCategoryName}_dashboard",
+        'url' => "civicrm/case/a/?case_type_category={$caseTypeCategoryName}#/case?case_type_category={$caseTypeCategoryName}",
         'permission' => "{$permissions['ACCESS_MY_CASE_CATEGORY_AND_ACTIVITIES']['name']},{$permissions['ACCESS_CASE_CATEGORY_AND_ACTIVITIES']['name']}",
         'permission_operator' => 'OR',
         'has_separator' => 1,
       ],
       [
         'label' => ts('New %1', ['1' => $singularLabelForMenu]),
-        'name' => "new_{$caseTypeCategory['name']}",
-        'url' => "civicrm/case/add?case_type_category={$caseTypeCategory['name']}&action=add&reset=1&context=standalone",
+        'name' => "new_{$caseTypeCategoryName}",
+        'url' => "civicrm/case/add?case_type_category={$caseTypeCategoryName}&action=add&reset=1&context=standalone",
         'permission' => "{$permissions['ADD_CASE_CATEGORY']['name']},{$permissions['ACCESS_CASE_CATEGORY_AND_ACTIVITIES']['name']}",
         'permission_operator' => 'OR',
       ],
       [
         'label' => ts('My %1', ['1' => $labelForMenu]),
-        'name' => "my_{$caseTypeCategory['name']}",
-        'url' => '/civicrm/case/a/?case_type_category=' . $caseTypeCategory['name'] . '#/case/list?cf={"case_type_category":"' . $caseTypeCategory['name'] . '","case_manager":"user_contact_id"}',
+        'name' => "my_{$caseTypeCategoryName}",
+        'url' => '/civicrm/case/a/?case_type_category=' . $caseTypeCategoryName . '#/case/list?cf={"case_type_category":"' . $caseTypeCategoryName . '","case_manager":"user_contact_id"}',
         'permission' => "{$permissions['ACCESS_MY_CASE_CATEGORY_AND_ACTIVITIES']['name']},{$permissions['ACCESS_CASE_CATEGORY_AND_ACTIVITIES']['name']}",
         'permission_operator' => 'OR',
       ],
       [
         'label' => ts('My %1 activities', ['1' => $labelForMenu]),
-        'name' => "my_activities_{$caseTypeCategory['name']}",
-        'url' => '/civicrm/case/a/?case_type_category=' . $caseTypeCategory['name'] . '#/case?case_type_category=' . $caseTypeCategory['name'] . '&dtab=1&af={"case_filter":{"case_type_id.is_active":1,"contact_is_deleted":0,"case_type_id.case_type_category":"' . $caseTypeCategory['name'] . '"},' .
+        'name' => "my_activities_{$caseTypeCategoryName}",
+        'url' => '/civicrm/case/a/?case_type_category=' . $caseTypeCategoryName . '#/case?case_type_category=' . $caseTypeCategoryName . '&dtab=1&af={"case_filter":{"case_type_id.is_active":1,"contact_is_deleted":0,"case_type_id.case_type_category":"' . $caseTypeCategoryName . '"},' .
         '"@involvingContact":"myActivities"}&drel=all',
         'permission' => 'access CiviCRM',
         'has_separator' => 1,
       ],
       [
         'label' => ts('All %1', ['1' => $labelForMenu]),
-        'name' => "all_{$caseTypeCategory['name']}",
-        'url' => 'civicrm/case/a/?case_type_category=' . $caseTypeCategory['name'] . '#/case/list?cf={"case_type_category":"' . $caseTypeCategory['name'] . '"}',
+        'name' => "all_{$caseTypeCategoryName}",
+        'url' => 'civicrm/case/a/?case_type_category=' . $caseTypeCategoryName . '#/case/list?cf={"case_type_category":"' . $caseTypeCategoryName . '"}',
         'permission' => "{$permissions['ACCESS_MY_CASE_CATEGORY_AND_ACTIVITIES']['name']},{$permissions['ACCESS_CASE_CATEGORY_AND_ACTIVITIES']['name']}",
         'permission_operator' => 'OR',
         'has_separator' => 1,
       ],
       [
         'label' => ts('Manage %1 Types', ['1' => $singularLabelForMenu]),
-        'name' => "manage_{$caseTypeCategory['name']}_workflows",
-        'url' => 'civicrm/workflow/a?case_type_category=' . $caseTypeCategory['name'] . '#/list',
+        'name' => "manage_{$caseTypeCategoryName}_workflows",
+        'url' => 'civicrm/workflow/a?case_type_category=' . $caseTypeCategoryName . '#/list',
         'permission' => "{$permissions['ADMINISTER_CASE_CATEGORY']['name']}, administer CiviCRM",
         'permission_operator' => 'OR',
       ],
