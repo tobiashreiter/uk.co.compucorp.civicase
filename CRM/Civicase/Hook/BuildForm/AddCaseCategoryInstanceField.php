@@ -19,7 +19,6 @@ class CRM_Civicase_Hook_BuildForm_AddCaseCategoryInstanceField extends CRM_Civic
     }
 
     $this->addCategoryInstanceFormField($form);
-    $this->addSingularLabelFormField($form);
     $this->addCategoryInstanceTemplate();
   }
 
@@ -55,25 +54,6 @@ class CRM_Civicase_Hook_BuildForm_AddCaseCategoryInstanceField extends CRM_Civic
         'template' => "{$templatePath}/CRM/Civicase/Form/CaseCategoryInstance.tpl",
       ]
     );
-  }
-
-  /**
-   * Adds the Case Category Singular Label Form field.
-   *
-   * @param CRM_Core_Form $form
-   *   Form Class object.
-   */
-  private function addSingularLabelFormField(CRM_Core_Form $form) {
-    $singularLabel = $form->add(
-      'text',
-      'case_category_singular_label',
-      ts('Singular Label')
-    );
-
-    if ($form->getVar('_id')) {
-      $defaultInstanceValues = $this->getDefaultValue($form);
-      $singularLabel->setValue($defaultInstanceValues['singular_label']);
-    }
   }
 
   /**
