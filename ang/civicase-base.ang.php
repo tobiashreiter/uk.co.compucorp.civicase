@@ -12,6 +12,7 @@ use Civi\CCase\Utils as Utils;
 use CRM_Civicase_Helper_OptionValues as OptionValuesHelper;
 use CRM_Civicase_Helper_GlobRecursive as GlobRecursive;
 use CRM_Civicase_Helper_NewCaseWebform as NewCaseWebform;
+use CRM_Civicase_Service_CaseCategoryCustomFieldsSetting as CaseCategoryCustomFieldsSetting;
 
 $caseCategoryName = CRM_Utils_Request::retrieve('case_type_category', 'String');
 $caseCategorySetting = new CRM_Civicase_Service_CaseCategorySetting();
@@ -46,17 +47,19 @@ expose_settings($options, [
  *   List of options to pass to the front-end.
  */
 function add_case_type_categories_to_options(array &$options) {
-  $categories = civicrm_api3('OptionValue', 'get', [
-    'sequential' => '1',
+  $caseCategories = civicrm_api3('OptionValue', 'get', [
+    'is_sequential' => '1',
     'option_group_id' => 'case_type_categories',
-    'is_active' => '1',
-    'api.CaseCategoryInstance.get' => [
-      'sequential' => '1',
-      'category_id' => '$value.value',
-    ],
+    'options' => ['limit' => 0],
   ]);
 
-  $options['caseTypeCategories'] = array_column($categories['values'], NULL, 'value');
+  foreach ($caseCategories['values'] as &$caseCategory) {
+    $caseCategory['custom_fields'] = CaseCategoryCustomFieldsSetting::get(
+      $caseCategory['value']
+    );
+  }
+
+  $options['caseTypeCategories'] = array_column($caseCategories['values'], NULL, 'value');
 }
 
 /**

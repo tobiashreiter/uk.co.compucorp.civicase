@@ -37,9 +37,6 @@
     $scope.filters = filterArrayForCurrentInstance(WorkflowListFilters);
     $scope.selectedFilters = {};
     $scope.currentCaseCategory = CaseTypeCategory.findByName(currentCaseCategory);
-    $scope.currentCaseCategory.singular_label = _.first(
-      $scope.currentCaseCategory['api.CaseCategoryInstance.get'].values
-    ).singular_label;
 
     $scope.refreshWorkflowsList = refreshWorkflowsList;
     $scope.redirectToWorkflowCreationScreen = redirectToWorkflowCreationScreen;

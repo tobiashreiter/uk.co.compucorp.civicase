@@ -9,15 +9,8 @@
       label: 'Cases',
       name: 'Cases',
       is_active: '1',
-      'api.CaseCategoryInstance.get': {
-        values: [
-          {
-            id: '1',
-            category_id: '1',
-            instance_id: '1',
-            singular_label: 'Case'
-          }
-        ]
+      custom_fields: {
+        singular_label: 'Case'
       }
     },
     2: {
@@ -25,15 +18,8 @@
       label: 'Prospecting',
       name: 'Prospecting',
       is_active: '1',
-      'api.CaseCategoryInstance.get': {
-        values: [
-          {
-            id: '2',
-            category_id: '2',
-            instance_id: '1',
-            singular_label: 'Prospecting'
-          }
-        ]
+      custom_fields: {
+        singular_label: 'Prospecting'
       }
     },
     3: {
@@ -41,15 +27,8 @@
       label: 'Awards',
       name: 'awards',
       is_active: '1',
-      'api.CaseCategoryInstance.get': {
-        values: [
-          {
-            id: '3',
-            category_id: '3',
-            instance_id: '2',
-            singular_label: 'Award'
-          }
-        ]
+      custom_fields: {
+        singular_label: 'Award'
       }
     }
   };

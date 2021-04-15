@@ -39,10 +39,6 @@
         expect($scope.currentCaseCategory.name).toBe('Cases');
       });
 
-      it('stores the singular label for the case category', () => {
-        expect($scope.currentCaseCategory.singular_label).toBe('Case');
-      });
-
       it('hides the empty message before case types are loaded', () => {
         expect($scope.isLoading).toBe(true);
       });
