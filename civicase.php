@@ -339,6 +339,7 @@ function civicase_civicrm_postProcess($formName, &$form) {
     new CRM_Civicase_Hook_PostProcess_RedirectToCaseDetails(),
     new CRM_Civicase_Hook_PostProcess_AttachEmailActivityToAllCases(),
     new CRM_Civicase_Hook_PostProcess_HandleDraftActivity(),
+    new CRM_Civicase_Hook_PostProcess_SaveCaseCategoryCustomFields(),
   ];
 
   foreach ($hooks as $hook) {

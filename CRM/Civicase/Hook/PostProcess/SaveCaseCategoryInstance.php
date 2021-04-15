@@ -25,7 +25,6 @@ class CRM_Civicase_Hook_PostProcess_SaveCaseCategoryInstance extends CRM_Civicas
     $this->saveCaseCategoryInstance([
       'category_id' => $caseCategoryValue,
       'instance_id' => $instanceTypeValue,
-      'singular_label' => $caseCategoryValues['case_category_singular_label'],
     ]);
   }
 

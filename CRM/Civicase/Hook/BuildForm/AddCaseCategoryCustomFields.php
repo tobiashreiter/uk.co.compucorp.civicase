@@ -1,5 +1,7 @@
 <?php
 
+use CRM_Civicase_Service_CaseCategoryCustomFieldsSetting as CaseCategoryCustomFieldsSetting;
+
 /**
  * AddCaseCategoryCustomFields BuildForm Hook Class.
  */
@@ -49,6 +51,28 @@ class CRM_Civicase_Hook_BuildForm_AddCaseCategoryCustomFields extends CRM_Civica
         'size' => 45,
       ],
     );
+
+    if ($form->getVar('_id')) {
+      $customFields = $this->getCustomFieldValues($form);
+
+      $singularLabel->setValue($customFields['singular_label']);
+    }
+  }
+
+  /**
+   * Returns case category custom field values for the given form.
+   *
+   * @param CRM_Core_Form $form
+   *   Form Class object.
+   *
+   * @return array
+   *   Case Category custom field values.
+   */
+  private function getCustomFieldValues(CRM_Core_Form $form) {
+    $formValues = $form->getVar('_values');
+    $caseCategoryId = $formValues['value'];
+
+    return CaseCategoryCustomFieldsSetting::get($caseCategoryId);
   }
 
 }
