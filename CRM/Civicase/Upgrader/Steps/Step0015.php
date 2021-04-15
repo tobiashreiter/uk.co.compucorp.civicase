@@ -33,7 +33,7 @@ class CRM_Civicase_Upgrader_Steps_Step0015 {
     foreach ($caseTypeCategories['values'] as $caseTypeCategory) {
       $isLabelLastCharacterS = substr(strtolower($caseTypeCategory['label']), -1) === 's';
       $singularLabel = $isLabelLastCharacterS
-        ? substr($caseTypeCategory['label'], -1)
+        ? substr($caseTypeCategory['label'], 0, -1)
         : $caseTypeCategory['label'];
 
       CaseCategoryCustomFieldsSetting::save($caseTypeCategory['value'], [
