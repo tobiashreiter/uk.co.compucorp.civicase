@@ -18,10 +18,7 @@ class CRM_Civicase_Setup_ProcessCaseCategoryForCustomGroupSupport {
     $caseCategoryCustomData = new CaseCategoryCustomDataType();
     $caseCategoryCustomFieldExtends = new CaseCategoryCustomFieldExtends();
     $caseCategoryCustomFieldExtends->create(CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME, self::CASE_CATEGORY_LABEL);
-    $caseCategoryCustomData->create([
-      'name' => CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME,
-      'label' => CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME,
-    ]);
+    $caseCategoryCustomData->create(CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME);
   }
 
 }
