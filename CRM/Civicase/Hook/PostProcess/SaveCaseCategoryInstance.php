@@ -3,7 +3,7 @@
 /**
  * CaseCategoryInstance Post Process Hook class.
  */
-class CRM_Civicase_Hook_PostProcess_SaveCaseCategoryInstance extends CRM_Civicase_Hook_CaseCategoryInstanceBase {
+class CRM_Civicase_Hook_PostProcess_SaveCaseCategoryInstance extends CRM_Civicase_Hook_CaseCategoryFormHookBase {
 
   /**
    * Saves the case category instance type relationship.

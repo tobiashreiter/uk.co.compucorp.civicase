@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Base class for the CaseCategoryInstance hook classes.
+ * Base class for the Case Category Form hook classes.
  *
  * This is implemented by hook classes responding to changes
  * on the case category form page. It defines common functions
  * that can be shared by the hook classes.
  */
-class CRM_Civicase_Hook_CaseCategoryInstanceBase {
+class CRM_Civicase_Hook_CaseCategoryFormHookBase {
 
   /**
    * Instance field name.

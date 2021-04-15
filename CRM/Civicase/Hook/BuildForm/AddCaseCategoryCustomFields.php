@@ -3,7 +3,7 @@
 /**
  * AddCaseCategoryCustomFields BuildForm Hook Class.
  */
-class CRM_Civicase_Hook_BuildForm_AddCaseCategoryCustomFields extends CRM_Civicase_Hook_CaseCategoryInstanceBase {
+class CRM_Civicase_Hook_BuildForm_AddCaseCategoryCustomFields extends CRM_Civicase_Hook_CaseCategoryFormHookBase {
 
   /**
    * Adds the Case Category Custom Form fields.
