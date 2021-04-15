@@ -66,7 +66,9 @@ function add_case_type_categories_to_options(array &$options) {
  * Sets the tags and tagsets to javascript global variable.
  */
 function set_case_category_instance_to_js_vars(&$options) {
-  $result = civicrm_api3('CaseCategoryInstance', 'get')['values'];
+  $result = civicrm_api3('CaseCategoryInstance', 'get', [
+    'options' => ['limit' => 0],
+  ])['values'];
   $options['caseCategoryInstanceMapping'] = $result;
 }
 
