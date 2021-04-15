@@ -94,7 +94,7 @@ class CRM_Civicase_Service_CaseCategoryMenu {
         'label' => ts('My %1 activities', ['1' => $labelForMenu]),
         'name' => "my_activities_{$caseTypeCategory['name']}",
         'url' => '/civicrm/case/a/?case_type_category=' . $caseTypeCategory['name'] . '#/case?case_type_category=' . $caseTypeCategory['name'] . '&dtab=1&af={"case_filter":{"case_type_id.is_active":1,"contact_is_deleted":0,"case_type_id.case_type_category":"' . $caseTypeCategory['name'] . '"},' .
-          '"@involvingContact":"myActivities"}&drel=all',
+        '"@involvingContact":"myActivities"}&drel=all',
         'permission' => 'access CiviCRM',
         'has_separator' => 1,
       ],

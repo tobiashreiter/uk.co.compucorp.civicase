@@ -24,7 +24,7 @@ class CRM_Civicase_Upgrader_Steps_Step0015 {
    *
    * If the case category ends in an S, it will remove it.
    */
-  private function addSingularLabelToCaseCategories () {
+  private function addSingularLabelToCaseCategories() {
     $caseTypeCategories = civicrm_api3('OptionValue', 'get', [
       'sequential' => '1',
       'option_group_id' => 'case_type_categories',

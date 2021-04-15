@@ -35,7 +35,7 @@ class CRM_Civicase_Service_CaseCategoryCustomDataTypeTest extends BaseHeadlessTe
     $caseCategory = CaseCategoryFabricator::fabricate();
     $this->assertNull($this->getCustomDataOptionValue($caseCategory['name']));
 
-    $this->caseCategoryCustomDataService->create($caseCategory['name']);
+    $this->caseCategoryCustomDataService->create($caseCategory);
     $optionValueCreated = $this->getCustomDataOptionValue($caseCategory['name']);
 
     $this->assertNotNull($optionValueCreated);
@@ -54,9 +54,9 @@ class CRM_Civicase_Service_CaseCategoryCustomDataTypeTest extends BaseHeadlessTe
     $this->assertNull($this->getCustomDataOptionValue($caseCategory['name']));
 
     // First call.
-    $this->caseCategoryCustomDataService->create($caseCategory['name']);
+    $this->caseCategoryCustomDataService->create($caseCategory);
     // Second call.
-    $this->caseCategoryCustomDataService->create($caseCategory['name']);
+    $this->caseCategoryCustomDataService->create($caseCategory);
     $optionValueCreated = civicrm_api3('OptionValue', 'get', [
       'sequential' => 1,
       'name' => $caseCategory['name'],
@@ -77,10 +77,10 @@ class CRM_Civicase_Service_CaseCategoryCustomDataTypeTest extends BaseHeadlessTe
     $this->cleanCustomDataTypes();
 
     $caseCategory = CaseCategoryFabricator::fabricate();
-    $this->caseCategoryCustomDataService->create($caseCategory['name']);
+    $this->caseCategoryCustomDataService->create($caseCategory);
     $this->assertNotNull($this->getCustomDataOptionValue($caseCategory['name']));
 
-    $this->caseCategoryCustomDataService->delete($caseCategory['name']);
+    $this->caseCategoryCustomDataService->delete($caseCategory);
 
     $this->assertNull($this->getCustomDataOptionValue($caseCategory['name']));
   }
@@ -94,7 +94,7 @@ class CRM_Civicase_Service_CaseCategoryCustomDataTypeTest extends BaseHeadlessTe
     $caseCategory = CaseCategoryFabricator::fabricate();
     $this->assertNull($this->getCustomDataOptionValue($caseCategory['name']));
 
-    $this->caseCategoryCustomDataService->delete($caseCategory['name']);
+    $this->caseCategoryCustomDataService->delete($caseCategory);
 
     $this->assertNull($this->getCustomDataOptionValue($caseCategory['name']));
   }

@@ -63,7 +63,7 @@ class CRM_Civicase_Service_CaseTypeCategoryEventHandler {
       "Case ({$caseTypeCategory['label']})",
       $caseCategoryInstance->getCustomGroupEntityTypesFunction()
     );
-    $this->customData->create($caseTypeCategory['name']);
+    $this->customData->create($caseTypeCategory);
   }
 
   /**
@@ -110,7 +110,7 @@ class CRM_Civicase_Service_CaseTypeCategoryEventHandler {
     $menu = $caseCategoryInstance->getMenuObject();
     $menu->deleteItems($caseTypeCategory['name']);
     $this->customFieldExtends->delete($caseTypeCategory['name']);
-    $this->customData->delete($caseTypeCategory['name']);
+    $this->customData->delete($caseTypeCategory);
     $this->deleteCategoryInstanceRelationship($caseCategoryInstance);
   }
 
