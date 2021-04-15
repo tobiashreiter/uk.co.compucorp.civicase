@@ -47,9 +47,8 @@ class CRM_Civicase_Hook_BuildForm_AddCaseCategoryCustomFields extends CRM_Civica
       'text',
       'case_category_singular_label',
       ts('Singular Label'),
-      [
-        'size' => 45,
-      ],
+      ['size' => 45],
+      TRUE
     );
 
     if ($form->getVar('_id')) {
