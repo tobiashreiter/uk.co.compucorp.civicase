@@ -3,8 +3,6 @@
 use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
 use CRM_Civicase_Service_CaseCategoryMenu as CaseCategoryMenuService;
 use CRM_Civicase_Test_Fabricator_CaseCategory as CaseCategoryFabricator;
-use CRM_Civicase_Test_Fabricator_CaseCategoryInstance as CaseCategoryInstanceFabricator;
-use CRM_Civicase_Test_Fabricator_CaseCategoryInstanceType as CaseCategoryInstanceTypeFabricator;
 
 /**
  * Test class for the CRM_Civicase_Service_CaseCategoryMenu.
@@ -130,54 +128,42 @@ class CRM_Civicase_Service_CaseCategoryMenuTest extends BaseHeadlessTest {
   }
 
   /**
-   * Test createManageWorkflowMenu method creates expected submenu.
+   * Test that updateCaseCategorySubmenus method update the URLs as expected.
    *
-   * @param bool $showCategoryNameOnMenuLabel
-   *   Value for the second parameter of tested method.
-   *
-   * @dataProvider getDataForCreateManageWorkflowMenu
+   * This code is not actually asserting that the menu content was modified,
+   * but it is enough to check that final URLs are as expected.
    */
-  public function testCreateManageWorkflowMenuCreatesExpectedSubitem(bool $showCategoryNameOnMenuLabel) {
+  public function testMenusLinksAreCorrectlyUpdated() {
     $caseCategory = CaseCategoryFabricator::fabricate();
-    $caseCategoryInstanceType = CaseCategoryInstanceTypeFabricator::fabricate();
-    CaseCategoryInstanceFabricator::fabricate([
-      'category_id' => $caseCategory['value'],
-      'instance_id' => $caseCategoryInstanceType['value'],
-    ]);
-    $menuCreated = $this->createMainMenuWithFirstSubItem($caseCategory['name']);
+    $submenus = $this->caseCategoryMenu->getSubmenus($caseCategory['name']);
 
-    $this->caseCategoryMenu->createManageWorkflowMenu($caseCategoryInstanceType['name'], $showCategoryNameOnMenuLabel);
+    // Create the menus but with different URL.
+    foreach ($submenus as $submenu) {
+      $submenu['url'] = 'Random string ' . rand();
+      civicrm_api3('Navigation', 'create', $submenu);
+    }
 
-    $subMenuCreated = civicrm_api3('Navigation', 'getsingle', [
-      'name' => 'manage_' . $caseCategory['name'] . '_workflows',
-    ]);
-    $menuLabel = $showCategoryNameOnMenuLabel
-      ? 'Manage ' . $caseCategory['name']
-      : 'Manage Workflows';
-    $this->assertEquals($menuLabel, $subMenuCreated['label']);
-    $parentMenu = civicrm_api3('Navigation', 'getsingle', ['id' => $subMenuCreated['parent_id']]);
-    $this->assertEquals($menuCreated['id'], $parentMenu['id']);
-  }
+    // Assert that the URL are different to the expected.
+    foreach ($submenus as $submenu) {
+      $newUrl = civicrm_api3('Navigation', 'getsingle', [
+        'name' => $submenu['name'],
+        'return' => ['url'],
+      ])['url'];
+      $this->assertNotEquals($submenu['url'], $newUrl);
+    }
 
-  /**
-   * Creates the expected menus for a given category name.
-   *
-   * It creates the main menu, and a first submenu assigned to it. This is
-   * required for correctly testing createManageWorkflowMenu method.
-   *
-   * @param string $caseCategoryName
-   *   Case Type Category name.
-   */
-  public function createMainMenuWithFirstSubItem(string $caseCategoryName) {
-    $menuCreated = civicrm_api3('Navigation', 'create', ['label' => $caseCategoryName]);
-    civicrm_api3('Navigation', 'create',
-      [
-        'parent_id' => $menuCreated['id'],
-        'label' => 'First subitem',
-      ]
-    );
+    // Perform the update.
+    $this->caseCategoryMenu->updateCaseCategorySubmenus($caseCategory['name']);
+    civicrm_api3('Navigation', 'getfields', ['cache_clear' => 1]);
 
-    return $menuCreated;
+    // Assert that the URL are as expected.
+    foreach ($submenus as $submenu) {
+      $newUrl = civicrm_api3('Navigation', 'getsingle', [
+        'name' => $submenu['name'],
+        'return' => ['url'],
+      ])['url'];
+      $this->assertEquals($submenu['url'], $newUrl);
+    }
   }
 
   /**
@@ -221,18 +207,6 @@ class CRM_Civicase_Service_CaseCategoryMenuTest extends BaseHeadlessTest {
         'weight',
         'name'
       ) + 1;
-  }
-
-  /**
-   * Data provider for returning options for createManageWorkflowMenu method.
-   *
-   * Returns the two possible options for the boolean flag.
-   */
-  public function getDataForCreateManageWorkflowMenu() {
-    return [
-      [TRUE],
-      [FALSE],
-    ];
   }
 
 }
