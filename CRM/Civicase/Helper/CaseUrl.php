@@ -63,4 +63,27 @@ class CRM_Civicase_Helper_CaseUrl {
     return NULL;
   }
 
+  /**
+   * Read and return the category Id and Name from URL.
+   *
+   * @return array
+   *   Array with category ID as first element, and category Name as second.
+   */
+  public static function getCategoryParamsFromUrl() {
+    $categoryId = CRM_Utils_Request::retrieve('case_type_category', 'Int');
+    if ($categoryId > 0) {
+      $categoryName = civicrm_api3('OptionValue', 'getsingle', [
+        'option_group_id' => 'case_type_categories',
+        'value' => $categoryId,
+        'return' => ['name'],
+      ])['name'];
+    }
+    else {
+      $categoryName = CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME;
+      $categoryId = CaseCategoryHelper::getOptionValue();
+    }
+
+    return [$categoryId, $categoryName];
+  }
+
 }

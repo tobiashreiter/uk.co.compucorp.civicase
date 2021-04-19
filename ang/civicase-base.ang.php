@@ -12,21 +12,9 @@ use Civi\CCase\Utils as Utils;
 use CRM_Civicase_Helper_OptionValues as OptionValuesHelper;
 use CRM_Civicase_Helper_GlobRecursive as GlobRecursive;
 use CRM_Civicase_Helper_NewCaseWebform as NewCaseWebform;
-use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
+use CRM_Civicase_Helper_CaseUrl as CaseUrlHelper;
 
-$caseCategoryId = CRM_Utils_Request::retrieve('case_type_category', 'Int');
-if ($caseCategoryId > 0) {
-  $caseCategoryName = civicrm_api3('OptionValue', 'getsingle', [
-    'option_group_id' => 'case_type_categories',
-    'value' => $caseCategoryId,
-    'return' => ['name'],
-  ])['name'];
-}
-else {
-  $caseCategoryName = CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME;
-  $caseCategoryId = CaseCategoryHelper::getOptionValue();
-}
-
+[$caseCategoryId, $caseCategoryName] = CaseUrlHelper::getCategoryParamsFromUrl();
 
 $caseCategorySetting = new CRM_Civicase_Service_CaseCategorySetting();
 

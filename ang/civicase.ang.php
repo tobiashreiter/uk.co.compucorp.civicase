@@ -13,17 +13,11 @@ use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
 use CRM_Civicase_Helper_NewCaseWebform as NewCaseWebform;
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 use CRM_Civicase_Hook_Permissions_ExportCasesAndReports as ExportCasesAndReports;
+use CRM_Civicase_Helper_CaseUrl as CaseUrlHelper;
 
 load_resources();
-$caseCategoryId = CRM_Utils_Request::retrieve('case_type_category', 'Int');
-$caseCategoryName = '';
-if ($caseCategoryId > 0) {
-  $caseCategoryName = civicrm_api3('OptionValue', 'getsingle', [
-    'option_group_id' => 'case_type_categories',
-    'value' => $caseCategoryId,
-    'return' => ['name'],
-  ])['name'];
-}
+[$caseCategoryId, $caseCategoryName] = CaseUrlHelper::getCategoryParamsFromUrl();
+
 
 
 // Word replacements are already loaded for the contact tab ContactCaseTab.
