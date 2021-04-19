@@ -1,6 +1,7 @@
 <?php
 
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
+use CRM_Civicase_Service_CaseCategoryMenu as CaseCategoryMenu;
 
 /**
  * Case URL Helper.
@@ -48,16 +49,18 @@ class CRM_Civicase_Helper_CaseUrl {
    *   Url to be returned.
    */
   public static function getUrlByRouteType(string $routeType) {
-    $categoryId = CaseCategoryHelper::getOptionValue();
+    $categoryName = CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME;
+    $submenus = CaseCategoryMenu::getSubmenus($categoryName);
+    $submenus = array_column($submenus, 'url', 'name');
 
     if ($routeType == 'dashboard') {
-      return "civicrm/case/a/?p=dd#/case?case_type_category={$categoryId}";
+      return $submenus["{$categoryName}_dashboard"];
     }
     if ($routeType == 'all') {
-      return 'civicrm/case/a/?p=mg#/case/list?cf={"case_type_category":"' . $categoryId . '"}';
+      return $submenus["all_{$categoryName}"];
     }
     if ($routeType == 'manage_workflows') {
-      return 'civicrm/workflow/a?case_type_category=' . $categoryId . '&p=al#/list';
+      return $submenus["manage_{$categoryName}_workflows"];
     }
 
     return NULL;
