@@ -48,11 +48,7 @@ class CRM_Civicase_Helper_CaseUrl {
    *   Url to be returned.
    */
   public static function getUrlByRouteType(string $routeType) {
-    $categoryId = civicrm_api3('OptionValue', 'getsingle', [
-      'option_group_id' => 'case_type_categories',
-      'name' => CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME,
-      'return' => ['value'],
-    ])['value'];
+    $categoryId = CaseCategoryHelper::getOptionValue();
 
     if ($routeType == 'dashboard') {
       return "civicrm/case/a/?p=dd#/case?case_type_category={$categoryId}";

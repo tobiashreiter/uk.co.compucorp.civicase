@@ -24,11 +24,7 @@ if ($caseCategoryId > 0) {
 }
 else {
   $caseCategoryName = CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME;
-  $caseCategoryId = civicrm_api3('OptionValue', 'getsingle', [
-    'option_group_id' => 'case_type_categories',
-    'name' => CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME,
-    'return' => ['value'],
-  ])['value'];
+  $caseCategoryId = CaseCategoryHelper::getOptionValue();
 }
 
 

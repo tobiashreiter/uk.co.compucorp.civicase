@@ -408,4 +408,25 @@ class CRM_Civicase_Helper_CaseCategory {
     return !empty($result['values'][0]) ? $result['values'][0] : [];
   }
 
+  /**
+   * Returns the option value of Cases category.
+   *
+   * @return int|NULL
+   *   Case category value.
+   */
+  public static function getOptionValue() {
+    $result = civicrm_api3('OptionValue', 'get', [
+      'sequential' => 1,
+      'option_group_id' => 'case_type_categories',
+      'name' => self::CASE_TYPE_CATEGORY_NAME,
+      'return' => ['value'],
+    ]);
+
+    if ($result['count'] === 0) {
+      return NULL;
+    }
+
+    return $result['values'][0]['value'];
+  }
+
 }
