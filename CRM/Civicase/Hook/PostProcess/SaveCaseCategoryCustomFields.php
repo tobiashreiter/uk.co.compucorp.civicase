@@ -20,9 +20,10 @@ class CRM_Civicase_Hook_PostProcess_SaveCaseCategoryCustomFields extends CRM_Civ
       return;
     }
 
+    $caseCategoryCustomFields = new CaseCategoryCustomFieldsSetting();
     $caseCategoryValues = $form->getVar('_submitValues');
 
-    CaseCategoryCustomFieldsSetting::save($caseCategoryValues['value'], [
+    $caseCategoryCustomFields->save($caseCategoryValues['value'], [
       'singular_label' => $caseCategoryValues['singular_label'],
     ]);
   }

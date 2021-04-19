@@ -25,6 +25,7 @@ class CRM_Civicase_Upgrader_Steps_Step0015 {
    * If the case category ends in an S, it will remove it.
    */
   private function addSingularLabelToCaseCategories() {
+    $caseCategoryCustomFields = new CaseCategoryCustomFieldsSetting();
     $caseTypeCategories = civicrm_api3('OptionValue', 'get', [
       'sequential' => '1',
       'option_group_id' => 'case_type_categories',
@@ -36,7 +37,7 @@ class CRM_Civicase_Upgrader_Steps_Step0015 {
         ? substr($caseTypeCategory['label'], 0, -1)
         : $caseTypeCategory['label'];
 
-      CaseCategoryCustomFieldsSetting::save($caseTypeCategory['value'], [
+      $caseCategoryCustomFields->save($caseTypeCategory['value'], [
         'singular_label' => $singularLabel,
       ]);
     }

@@ -68,10 +68,11 @@ class CRM_Civicase_Hook_BuildForm_AddCaseCategoryCustomFields extends CRM_Civica
    *   Case Category custom field values.
    */
   private function getCustomFieldValues(CRM_Core_Form $form) {
+    $caseCategoryCustomFields = new CaseCategoryCustomFieldsSetting();
     $formValues = $form->getVar('_values');
     $caseCategoryId = $formValues['value'];
 
-    return CaseCategoryCustomFieldsSetting::get($caseCategoryId);
+    return $caseCategoryCustomFields->get($caseCategoryId);
   }
 
 }

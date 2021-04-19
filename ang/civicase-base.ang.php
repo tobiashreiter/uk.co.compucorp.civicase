@@ -47,6 +47,7 @@ expose_settings($options, [
  *   List of options to pass to the front-end.
  */
 function add_case_type_categories_to_options(array &$options) {
+  $caseCategoryCustomFields = new CaseCategoryCustomFieldsSetting();
   $caseCategories = civicrm_api3('OptionValue', 'get', [
     'is_sequential' => '1',
     'option_group_id' => 'case_type_categories',
@@ -54,7 +55,7 @@ function add_case_type_categories_to_options(array &$options) {
   ]);
 
   foreach ($caseCategories['values'] as &$caseCategory) {
-    $caseCategory['custom_fields'] = CaseCategoryCustomFieldsSetting::get(
+    $caseCategory['custom_fields'] = $caseCategoryCustomFields->get(
       $caseCategory['value']
     );
   }

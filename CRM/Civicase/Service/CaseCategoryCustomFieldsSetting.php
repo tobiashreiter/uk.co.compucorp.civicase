@@ -4,7 +4,7 @@
  * Case Category Custom Fields Setting class.
  */
 class CRM_Civicase_Service_CaseCategoryCustomFieldsSetting {
-  const CASE_CATEGORY_CUSTOM_FIELDS_SETTING_NAME = 'case_category_custom_fields';
+  const SETTING_NAME = 'case_category_custom_fields';
 
   /**
    * Deletes the custom field values for the given case category ID.
@@ -12,7 +12,7 @@ class CRM_Civicase_Service_CaseCategoryCustomFieldsSetting {
    * @param string $caseCategoryId
    *   Case Category ID value.
    */
-  public static function delete($caseCategoryId) {
+  public function delete($caseCategoryId) {
     $allCustomFields = self::getAll();
 
     if (empty($allCustomFields) || !isset($allCustomFields[$caseCategoryId])) {
@@ -21,7 +21,7 @@ class CRM_Civicase_Service_CaseCategoryCustomFieldsSetting {
 
     unset($allCustomFields[$caseCategoryId]);
     Civi::settings()->set(
-      self::CASE_CATEGORY_CUSTOM_FIELDS_SETTING_NAME,
+      self::SETTING_NAME,
       $allCustomFields
     );
   }
@@ -35,7 +35,7 @@ class CRM_Civicase_Service_CaseCategoryCustomFieldsSetting {
    * @return array
    *   Case Category custom field values.
    */
-  public static function get($caseCategoryId) {
+  public function get($caseCategoryId) {
     $allCustomFields = self::getAll();
 
     return !empty($allCustomFields[$caseCategoryId])
@@ -51,11 +51,11 @@ class CRM_Civicase_Service_CaseCategoryCustomFieldsSetting {
    * @param array $customFields
    *   Case Category custom field values.
    */
-  public static function save($caseCategoryId, array $customFields) {
+  public function save($caseCategoryId, array $customFields) {
     $allCustomFields = self::getAll();
     $allCustomFields[$caseCategoryId] = $customFields;
 
-    Civi::settings()->set(self::CASE_CATEGORY_CUSTOM_FIELDS_SETTING_NAME, $allCustomFields);
+    Civi::settings()->set(self::SETTING_NAME, $allCustomFields);
   }
 
   /**
@@ -64,8 +64,8 @@ class CRM_Civicase_Service_CaseCategoryCustomFieldsSetting {
    * @return array
    *   All Case Category custom field values.
    */
-  private static function getAll() {
-    $allCustomFields = Civi::settings()->get(self::CASE_CATEGORY_CUSTOM_FIELDS_SETTING_NAME);
+  private function getAll() {
+    $allCustomFields = Civi::settings()->get(self::SETTING_NAME);
 
     return !empty($allCustomFields)
       ? $allCustomFields
