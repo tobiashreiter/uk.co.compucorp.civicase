@@ -18,8 +18,6 @@ use CRM_Civicase_Helper_CaseUrl as CaseUrlHelper;
 load_resources();
 [$caseCategoryId, $caseCategoryName] = CaseUrlHelper::getCategoryParamsFromUrl();
 
-
-
 // Word replacements are already loaded for the contact tab ContactCaseTab.
 if (CRM_Utils_System::currentPath() !== 'civicrm/case/contact-case-tab') {
   CRM_Civicase_Hook_Helper_CaseTypeCategory::addWordReplacements($caseCategoryName);

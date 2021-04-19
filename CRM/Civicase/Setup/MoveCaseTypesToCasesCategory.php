@@ -4,7 +4,7 @@ use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 use CRM_Case_BAO_CaseType as CaseType;
 
 /**
- * Class CRM_Civicase_Setup_MoveCaseTypesToCasesCategory.
+ * Class MoveCaseTypesToCasesCategory setup.
  */
 class CRM_Civicase_Setup_MoveCaseTypesToCasesCategory {
 

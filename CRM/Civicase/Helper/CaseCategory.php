@@ -411,7 +411,7 @@ class CRM_Civicase_Helper_CaseCategory {
   /**
    * Returns the option value of Cases category.
    *
-   * @return int|NULL
+   * @return int|null
    *   Case category value.
    */
   public static function getOptionValue() {
