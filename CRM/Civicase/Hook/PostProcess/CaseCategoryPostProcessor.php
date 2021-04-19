@@ -31,7 +31,7 @@ class CRM_Civicase_Hook_PostProcess_CaseCategoryPostProcessor {
       'id' => $form->getVar('_id'),
       'name' => $formValues['label'],
       'label' => $formValues['label'],
-      'singular_label' => $formValues['case_category_singular_label'],
+      'singular_label' => $formValues['singular_label'],
       'is_active' => $formValues['is_active'],
       'icon' => $formValues['icon'],
     ];

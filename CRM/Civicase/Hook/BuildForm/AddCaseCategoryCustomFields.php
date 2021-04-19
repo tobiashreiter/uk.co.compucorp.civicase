@@ -45,7 +45,7 @@ class CRM_Civicase_Hook_BuildForm_AddCaseCategoryCustomFields extends CRM_Civica
   private function addSingularLabelFormField(CRM_Core_Form $form) {
     $singularLabel = $form->add(
       'text',
-      'case_category_singular_label',
+      'singular_label',
       ts('Singular Label'),
       ['size' => 45],
       TRUE
