@@ -68,12 +68,12 @@ class CRM_Civicase_Service_CaseCategoryMenu {
   }
 
   /**
-   * Update the submenus of the given category.
+   * Reset the submenus of the given category.
    *
    * @param string $caseTypeCategoryName
    *   Case type category name.
    */
-  public function updateCaseCategorySubmenus(string $caseTypeCategoryName) {
+  public function resetCaseCategorySubmenus(string $caseTypeCategoryName) {
     $submenus = $this->getSubmenus($caseTypeCategoryName);
 
     foreach ($submenus as $item) {

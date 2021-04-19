@@ -128,7 +128,7 @@ class CRM_Civicase_Service_CaseCategoryMenuTest extends BaseHeadlessTest {
   }
 
   /**
-   * Test that updateCaseCategorySubmenus method update the URLs as expected.
+   * Test that resetCaseCategorySubmenus method update the URLs as expected.
    *
    * This code is not actually asserting that the menu content was modified,
    * but it is enough to check that final URLs are as expected.
@@ -153,7 +153,7 @@ class CRM_Civicase_Service_CaseCategoryMenuTest extends BaseHeadlessTest {
     }
 
     // Perform the update.
-    $this->caseCategoryMenu->updateCaseCategorySubmenus($caseCategory['name']);
+    $this->caseCategoryMenu->resetCaseCategorySubmenus($caseCategory['name']);
     civicrm_api3('Navigation', 'getfields', ['cache_clear' => 1]);
 
     // Assert that the URL are as expected.
