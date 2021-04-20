@@ -73,7 +73,7 @@ class CRM_Civicase_Service_CaseCategoryMenu {
    * @param string $caseTypeCategoryName
    *   Case type category name.
    */
-  public function resetCaseCategorySubmenus(string $caseTypeCategoryName) {
+  public function resetCaseCategorySubmenusUrl(string $caseTypeCategoryName) {
     $submenus = $this->getSubmenus($caseTypeCategoryName);
 
     foreach ($submenus as $item) {

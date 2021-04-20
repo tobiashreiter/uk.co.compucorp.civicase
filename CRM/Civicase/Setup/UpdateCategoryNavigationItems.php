@@ -20,7 +20,7 @@ class CRM_Civicase_Setup_UpdateCategoryNavigationItems {
     foreach ($categories as $category) {
       $categoryInstance = CaseCategoryHelper::getInstanceObject($category['value']);
       $categoryMenu = $categoryInstance->getMenuObject();
-      $categoryMenu->resetCaseCategorySubmenus($category['name']);
+      $categoryMenu->resetCaseCategorySubmenusUrl($category['name']);
     }
 
     CRM_Core_BAO_Navigation::resetNavigation();
