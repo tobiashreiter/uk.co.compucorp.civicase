@@ -50,7 +50,7 @@ class CRM_Civicase_Helper_CaseUrl {
    */
   public static function getUrlByRouteType(string $routeType) {
     $categoryName = CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME;
-    $submenus = CaseCategoryMenu::getSubmenus($categoryName);
+    $submenus = (new CaseCategoryMenu())->getSubmenus($categoryName);
     $submenus = array_column($submenus, 'url', 'name');
 
     if ($routeType == 'dashboard') {
