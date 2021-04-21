@@ -2,6 +2,9 @@
     {literal}
     CRM.$(function($) {
       CRM.$('#singular_label').insertAfter(CRM.$('.crm-admin-options-form-block-label'));
+      CRM.$('.crm-admin-options-form-block-label .description').text(
+        ts('Plural form. The primary label that is displayed to users.')
+      );
     });
     {/literal}
 </script>
@@ -13,7 +16,7 @@
       {$form.singular_label.html}
       <br />
       <span class="description">
-        {ts}A singular noun for the case category.{/ts}
+        {ts}Singular form. The singular form of the primary label that is displayed to users.{/ts}
       </span>
     </td>
   </tr>

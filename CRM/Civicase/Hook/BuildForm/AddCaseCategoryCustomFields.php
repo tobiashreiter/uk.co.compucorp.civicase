@@ -20,6 +20,7 @@ class CRM_Civicase_Hook_BuildForm_AddCaseCategoryCustomFields extends CRM_Civica
       return;
     }
 
+    $this->updatePrimaryLabelText($form);
     $this->addSingularLabelFormField($form);
     $this->addCaseCategoryCustomFieldsTemplate();
   }
@@ -46,7 +47,7 @@ class CRM_Civicase_Hook_BuildForm_AddCaseCategoryCustomFields extends CRM_Civica
     $singularLabel = $form->add(
       'text',
       'singular_label',
-      ts('Singular Label'),
+      ts('Secondary Label'),
       ['size' => 45],
       TRUE
     );
@@ -73,6 +74,17 @@ class CRM_Civicase_Hook_BuildForm_AddCaseCategoryCustomFields extends CRM_Civica
     $caseCategoryId = $formValues['value'];
 
     return $caseCategoryCustomFields->get($caseCategoryId);
+  }
+
+  /**
+   * Updates the label text for the primary label field.
+   *
+   * @param CRM_Core_Form $form
+   *   Form Class object.
+   */
+  private function updatePrimaryLabelText(CRM_Core_Form $form) {
+    $labelField = $form->getElement('label');
+    $labelField->setLabel('Primary Label');
   }
 
 }
