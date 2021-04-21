@@ -3,6 +3,7 @@
 use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
 use CRM_Civicase_Service_CaseCategoryInstance as CaseCategoryInstance;
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
+use CRM_Civicase_Helper_CaseUrl as CaseUrlHelper;
 
 /**
  * Create/Delete Case Type Category Menu items.
@@ -80,7 +81,7 @@ class CRM_Civicase_Service_ManageWorkflowMenu {
     if (!$menuExists) {
       civicrm_api3('Navigation', 'create', [
         'parent_id' => $parentId,
-        'url' => '/civicrm/workflow/a?case_type_category=' . $caseTypeCategoryName . '#/list',
+        'url' => CaseUrlHelper::getUrlByRouteType('manage_workflows'),
         'label' => $menuLabel,
         'name' => 'manage_' . $caseTypeCategoryName . '_workflows',
         'is_active' => TRUE,
