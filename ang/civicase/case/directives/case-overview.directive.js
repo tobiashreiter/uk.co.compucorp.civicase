@@ -98,9 +98,10 @@
       getCaseTypes()
         .then(function () {
           caseStatusNames = getCaseStatusNamesBelongingToCaseTypes($scope.caseTypes);
-          $scope.caseStatuses = getStatusesByName(caseStatusNames)
-            .sortBy('weight')
-            .value();
+          $scope.caseStatuses = _.sortBy(
+            getStatusesByName(caseStatusNames),
+            'weight'
+          );
           $scope.showBreakdown = $scope.caseTypes.length <=
             MAXIMUM_CASE_TYPES_TO_DISPLAY_BREAKDOWN;
           loadStatsData(caseFilters);
@@ -160,18 +161,13 @@
     /**
      * Returns the case statuses belonging to the given list of status names.
      *
-     * The statuses are returned in a lodash wrapped object. This can help
-     * with further manipulations and filterings before extracting the final
-     * value.
-     *
      * @param {string[]} caseStatusNames a list of case status names.
-     * @returns {object} A lodash object reference.
+     * @returns {object[]} A list of case status objects.
      */
     function getStatusesByName (caseStatusNames) {
-      return _.chain(caseStatusNames)
-        .map(function (caseStatusName) {
-          return caseStatusesIndexedByName[caseStatusName];
-        });
+      return _.map(caseStatusNames, function (caseStatusName) {
+        return caseStatusesIndexedByName[caseStatusName];
+      });
     }
 
     /**
