@@ -13,7 +13,7 @@ class CRM_Civicase_Service_CaseCategoryCustomFieldsSetting {
    *   Case Category ID value.
    */
   public function delete($caseCategoryId) {
-    $allCustomFields = self::getAll();
+    $allCustomFields = $this->getAll();
 
     if (empty($allCustomFields) || !isset($allCustomFields[$caseCategoryId])) {
       return;
@@ -36,7 +36,7 @@ class CRM_Civicase_Service_CaseCategoryCustomFieldsSetting {
    *   Case Category custom field values.
    */
   public function get($caseCategoryId) {
-    $allCustomFields = self::getAll();
+    $allCustomFields = $this->getAll();
 
     return !empty($allCustomFields[$caseCategoryId])
       ? $allCustomFields[$caseCategoryId]
@@ -52,7 +52,7 @@ class CRM_Civicase_Service_CaseCategoryCustomFieldsSetting {
    *   Case Category custom field values.
    */
   public function save($caseCategoryId, array $customFields) {
-    $allCustomFields = self::getAll();
+    $allCustomFields = $this->getAll();
     $allCustomFields[$caseCategoryId] = $customFields;
 
     Civi::settings()->set(self::SETTING_NAME, $allCustomFields);
