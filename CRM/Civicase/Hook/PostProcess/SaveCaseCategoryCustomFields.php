@@ -21,11 +21,35 @@ class CRM_Civicase_Hook_PostProcess_SaveCaseCategoryCustomFields extends CRM_Civ
     }
 
     $caseCategoryCustomFields = new CaseCategoryCustomFieldsSetting();
-    $caseCategoryValues = $form->getVar('_submitValues');
+    $formAction = $form->getVar('_action');
 
-    $caseCategoryCustomFields->save($caseCategoryValues['value'], [
-      'singular_label' => $caseCategoryValues['singular_label'],
-    ]);
+    if ($formAction === CRM_Core_Action::DELETE) {
+      $caseCategoryValues = $form->getVar('_values');
+      $caseCategoryCustomFields->delete($caseCategoryValues['value']);
+    }
+    else {
+      $caseCategoryValues = $form->getVar('_submitValues');
+      $caseCategoryCustomFields->save($caseCategoryValues['value'], [
+        'singular_label' => $caseCategoryValues['singular_label'],
+      ]);
+    }
+  }
+
+  /**
+   * Determines if the form should run.
+   *
+   * Runs only for case type categories forms.
+   *
+   * @param CRM_Core_Form $form
+   *   The Form instance.
+   * @param string $formName
+   *   The Form class name.
+   *
+   * @return bool
+   *   True if the form is right.
+   */
+  protected function shouldRun(CRM_Core_Form $form, $formName) {
+    return $this->isCaseTypeCategoriesForm($form, $formName);
   }
 
 }
