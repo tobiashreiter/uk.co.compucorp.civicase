@@ -19,6 +19,15 @@
       is_active: '1',
       weight: '2',
       filter: '0'
+    },
+    3: {
+      value: '3',
+      label: 'Prospect Management',
+      name: 'sales_opportunity_tracking',
+      grouping: 'CRM_Prospect_Service_SalesOpportunityTrackingUtils',
+      is_active: '1',
+      weight: '2',
+      filter: '0'
     }
   };
 
