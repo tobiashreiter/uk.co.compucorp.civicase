@@ -14,6 +14,7 @@
     roles.isLoading = true;
     roles.list = [];
 
+    roles.getActiveNonClientContacts = getActiveNonClientContacts;
     roles.filterRoles = filterRoles;
     roles.getCountOfAssignedRoles = getCountOfAssignedRoles;
     roles.goToPage = goToPage;
@@ -21,6 +22,20 @@
     roles.setCaseRelationships = setCaseRelationships;
     roles.setCaseTypeRoles = setCaseTypeRoles;
     roles.updateRolesList = updateRolesList;
+
+    /**
+     * @returns {Array} contact ids for active non client roles
+     */
+    function getActiveNonClientContacts () {
+      return _.chain(roles.fullRolesList)
+        .filter(function (role) {
+          return !!role.relationship_type_id && isTruthy(role.is_active);
+        })
+        .map(function (role) {
+          return role.contact_id;
+        })
+        .value();
+    }
 
     /**
      * Assign number of roles present per type of relationship.

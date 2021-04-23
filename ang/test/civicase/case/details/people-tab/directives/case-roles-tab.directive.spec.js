@@ -348,75 +348,107 @@ describe('Case Roles Tab', () => {
     });
 
     describe('when replacing the case client', () => {
-      beforeEach(() => {
-        previousContact = CRM._.sample(ContactsData.values);
+      describe('and not selecting a contact already assigned to another role', () => {
+        beforeEach(() => {
+          previousContact = CRM._.sample(ContactsData.values);
 
-        $scope.replaceRoleOrClient({
-          contact_id: previousContact.contact_id,
-          display_name: previousContact.display_name,
-          role: 'Client'
-        }, true);
-        selectDialogContact(contact);
-        submitDialog();
-        $rootScope.$digest();
-      });
-
-      it('does not show the reassignment datepicker', () => {
-        expect(dialogServiceMock.open).toHaveBeenCalledWith(
-          'PromptForContactDialog',
-          '~/civicase/case/details/people-tab/directives/contact-prompt-dialog.html',
-          jasmine.objectContaining({
-            reassignmentDate: {
-              value: undefined,
-              show: false,
-              maxDate: undefined
-            }
-          }),
-          jasmine.any(Object)
-        );
-      });
-
-      it('replaces the old client with the new selected contact', () => {
-        expect($scope.refresh).toHaveBeenCalledWith(jasmine.arrayContaining([
-          ['CaseContact', 'get', {
-            case_id: $scope.item.id,
+          $scope.replaceRoleOrClient({
             contact_id: previousContact.contact_id,
-            'api.CaseContact.create': {
+            display_name: previousContact.display_name,
+            role: 'Client'
+          }, true);
+          selectDialogContact(contact);
+          submitDialog();
+          $rootScope.$digest();
+        });
+
+        it('does not show the reassignment datepicker', () => {
+          expect(dialogServiceMock.open).toHaveBeenCalledWith(
+            'PromptForContactDialog',
+            '~/civicase/case/details/people-tab/directives/contact-prompt-dialog.html',
+            jasmine.objectContaining({
+              reassignmentDate: {
+                value: undefined,
+                show: false,
+                maxDate: undefined
+              }
+            }),
+            jasmine.any(Object)
+          );
+        });
+
+        it('replaces the old client with the new selected contact', () => {
+          expect($scope.refresh).toHaveBeenCalledWith(jasmine.arrayContaining([
+            ['CaseContact', 'get', {
               case_id: $scope.item.id,
-              contact_id: parseInt(contact.contact_id)
-            }
-          }]
-        ]));
+              contact_id: previousContact.contact_id,
+              'api.CaseContact.create': {
+                case_id: $scope.item.id,
+                contact_id: parseInt(contact.contact_id)
+              }
+            }]
+          ]));
+        });
+
+        it('updates all existing relationships for the old contact with the new client', () => {
+          expect($scope.refresh).toHaveBeenCalledWith(jasmine.arrayContaining([
+            ['Relationship', 'get', {
+              case_id: $scope.item.id,
+              is_active: true,
+              contact_id_a: previousContact.contact_id,
+              'api.Relationship.update': { contact_id_a: contact.contact_id }
+            }]
+          ]));
+        });
+
+        it('creates a new completed activity to record the case being reassigned to another client', () => {
+          expect($scope.refresh).toHaveBeenCalledWith(jasmine.arrayContaining([
+            ['Activity', 'create', {
+              case_id: $scope.item.id,
+              target_contact_id: jasmine.arrayContaining([
+                previousContact.contact_id,
+                contact.contact_id
+              ]),
+              status_id: 'Completed',
+              activity_type_id: 'Reassigned Case',
+              subject: `${contact.display_name} replaced ${previousContact.display_name} as Client`
+            }]
+          ]));
+        });
+
+        it('closes the contact selection dialog', () => {
+          expect(dialogServiceMock.close).toHaveBeenCalled();
+        });
       });
 
-      it('updates all existing relationships for the old contact with the new client', () => {
-        expect($scope.refresh).toHaveBeenCalledWith(jasmine.arrayContaining([
-          ['Relationship', 'get', {
-            case_id: $scope.item.id,
-            is_active: true,
-            contact_id_a: previousContact.contact_id,
-            'api.Relationship.update': { contact_id_a: contact.contact_id }
-          }]
-        ]));
-      });
+      describe('and selecting a contact already assigned to another role', () => {
+        beforeEach(() => {
+          previousContact = CRM._.sample(ContactsData.values);
+          spyOn($scope.roles, 'getActiveNonClientContacts')
+            .and.returnValue([previousContact.contact_id]);
 
-      it('creates a new completed activity to record the case being reassigned to another client', () => {
-        expect($scope.refresh).toHaveBeenCalledWith(jasmine.arrayContaining([
-          ['Activity', 'create', {
-            case_id: $scope.item.id,
-            target_contact_id: jasmine.arrayContaining([
-              previousContact.contact_id,
-              contact.contact_id
-            ]),
-            status_id: 'Completed',
-            activity_type_id: 'Reassigned Case',
-            subject: `${contact.display_name} replaced ${previousContact.display_name} as Client`
-          }]
-        ]));
-      });
+          $scope.replaceRoleOrClient({
+            contact_id: previousContact.contact_id,
+            display_name: previousContact.display_name,
+            role: 'Client'
+          }, true);
+          selectDialogContact(previousContact);
+          submitDialog();
+          $rootScope.$digest();
+        });
 
-      it('closes the contact selection dialog', () => {
-        expect(dialogServiceMock.close).toHaveBeenCalled();
+        it('shows an error message', () => {
+          expect(getDialogModel().errorMessage.contactSelection)
+            .toBe(PeoplesTabMessageConstants.CLIENT_CANT_BE_SAME_AS_CLIENT);
+        });
+
+        it('does not close the contact selection dialog', () => {
+          expect(dialogServiceMock.close).not.toHaveBeenCalled();
+        });
+
+        it('does not replace the client', () => {
+          expect($scope.refresh).not.toHaveBeenCalledWith();
+        });
       });
     });
 

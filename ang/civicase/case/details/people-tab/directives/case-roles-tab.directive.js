@@ -624,6 +624,13 @@
           );
 
           isError = true;
+        } else if (contactPromptResult.role.role === 'Client' &&
+          $scope.roles.getActiveNonClientContacts().indexOf(contactPromptResult.contact.id) !== -1) {
+          contactPromptResult.showErrorMessageFor(
+            'contactSelection',
+            PeoplesTabMessageConstants.CLIENT_CANT_BE_SAME_AS_CLIENT
+          );
+          isError = true;
         }
 
         if (
