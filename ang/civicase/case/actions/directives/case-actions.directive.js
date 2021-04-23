@@ -128,7 +128,6 @@
                 .on('crmFormSuccess crmPopupFormSuccess', function (e, data) {
                   formData = data;
                   $rootScope.$broadcast('updateCaseData');
-                  refreshDataForActions();
                 })
                 .on('dialogclose.crmPopup', function (e, data) {
                   if (formData) {
@@ -160,7 +159,6 @@
             _.remove($scope.caseActions, { action: 'changeStatus(cases)' });
           }
         }
-        refreshDataForActions();
       }
 
       /**
@@ -175,19 +173,6 @@
         } catch (e) {
           return null;
         }
-      }
-
-      /**
-       * Refreshes the case data for each one of the defined actions.
-       */
-      function refreshDataForActions () {
-        _.each($scope.caseActions, function (action) {
-          var caseActionService = getCaseActionService(action.action);
-
-          if (caseActionService && caseActionService.refreshData) {
-            caseActionService.refreshData($scope.cases);
-          }
-        });
       }
     }
   });
