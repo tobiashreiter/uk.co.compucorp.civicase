@@ -42,6 +42,7 @@
   /**
    * civicaseCaseRolesTabController Controller
    *
+   * @param {object} ts translation service
    * @param {object} $scope $scope
    * @param {object} allowMultipleCaseClients allow multiple clients configuration value
    * @param {object} civicasePeopleTabRoles People's tab roles list service
@@ -51,7 +52,7 @@
    * @param {object} dialogService A reference to the dialog service
    * @param {Function} removeDatePickerHrefs Removes date picker href attributes
    */
-  function civicaseCaseRolesTabController ($scope,
+  function civicaseCaseRolesTabController (ts, $scope,
     allowMultipleCaseClients, civicasePeopleTabRoles,
     PeoplesTabMessageConstants,
     civicaseRoleDatesUpdater, civicaseSingleCaseRolePerType, dialogService,
@@ -624,7 +625,7 @@
           );
 
           isError = true;
-        } else if (contactPromptResult.role.role === 'Client' &&
+        } else if (contactPromptResult.role.role === ts('Client') &&
           $scope.roles.getActiveNonClientContacts().indexOf(contactPromptResult.contact.id) !== -1) {
           contactPromptResult.showErrorMessageFor(
             'contactSelection',
