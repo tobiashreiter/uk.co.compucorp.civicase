@@ -79,7 +79,7 @@
         it('opens the new case form', () => {
           expect(civicaseCrmUrl).toHaveBeenCalledWith('civicrm/case/add', {
             action: 'add',
-            case_type_category: 'Cases',
+            case_type_category: '1',
             civicase_cid: '5',
             context: 'standalone',
             reset: 1
