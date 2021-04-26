@@ -3,7 +3,7 @@
 use CRM_Civicase_Hook_Helper_CaseTypeCategory as CaseTypeCategoryHelper;
 
 /**
- * CRM_Civicase_Hook_BuildForm_CaseCategoryCustomFieldsProcessing class.
+ * Case Category Post Processing.
  */
 class CRM_Civicase_Hook_BuildForm_CaseCategoryCustomFieldsProcessing {
 
@@ -18,17 +18,17 @@ class CRM_Civicase_Hook_BuildForm_CaseCategoryCustomFieldsProcessing {
    *   Form Name.
    */
   public function run(CRM_Core_Form &$form, $formName) {
-    $caseCategoryName = $this->getCaseCategoryName($form);
+    $caseCategoryId = $this->getCaseCategoryId($form);
 
-    if (!$this->shouldRun($formName, $caseCategoryName)) {
+    if (!$this->shouldRun($formName, $caseCategoryId)) {
       return;
     }
 
-    if (!CaseTypeCategoryHelper::isValidCategory($caseCategoryName)) {
+    if (!CaseTypeCategoryHelper::isValidCategory($caseCategoryId)) {
       return;
     }
 
-    $this->filterCaseTypeOptionValues($form, $caseCategoryName);
+    $this->filterCaseTypeOptionValues($form, $caseCategoryId);
   }
 
   /**
@@ -36,11 +36,11 @@ class CRM_Civicase_Hook_BuildForm_CaseCategoryCustomFieldsProcessing {
    *
    * @param CRM_Core_Form $form
    *   Form class object.
-   * @param string $caseCategoryName
-   *   Case category name.
+   * @param int $caseCategoryId
+   *   Case category Id.
    */
-  private function filterCaseTypeOptionValues(CRM_Core_Form $form, $caseCategoryName) {
-    $caseTypesInCategory = CaseTypeCategoryHelper::getCaseTypesForCategory($caseCategoryName);
+  private function filterCaseTypeOptionValues(CRM_Core_Form $form, $caseCategoryId) {
+    $caseTypesInCategory = CaseTypeCategoryHelper::getCaseTypesForCategory($caseCategoryId);
 
     if (!$caseTypesInCategory) {
       $caseTypesInCategory = [];
@@ -65,36 +65,36 @@ class CRM_Civicase_Hook_BuildForm_CaseCategoryCustomFieldsProcessing {
    *
    * @param string $formName
    *   Form name.
-   * @param string $caseCategoryName
+   * @param int $caseCategoryId
    *   Case category name.
    *
    * @return bool
    *   returns a boolean to determine if hook will run or not.
    */
-  private function shouldRun($formName, $caseCategoryName) {
-    if (!$caseCategoryName) {
+  private function shouldRun($formName, $caseCategoryId) {
+    if (!$caseCategoryId) {
       return FALSE;
     }
 
     $isCaseForm = $formName == CRM_Case_Form_Case::class;
 
-    return $isCaseForm && $caseCategoryName;
+    return $isCaseForm && $caseCategoryId;
   }
 
   /**
-   * Gets the Category Name for the case.
+   * Gets the Category Id for the case.
    *
    * @param CRM_Core_Form $form
    *   Form name.
    *
-   * @return string|null
-   *   case category name.
+   * @return int
+   *   Case category id.
    */
-  private function getCaseCategoryName(CRM_Core_Form $form) {
+  private function getCaseCategoryId(CRM_Core_Form $form) {
     $urlParams = parse_url(htmlspecialchars_decode($form->controller->_entryURL), PHP_URL_QUERY);
     parse_str($urlParams, $urlParams);
 
-    return !empty($urlParams['case_type_category']) ? $urlParams['case_type_category'] : 'cases';
+    return !empty($urlParams['case_type_category']) ? $urlParams['case_type_category'] : CRM_Civicase_Helper_CaseCategory::getOptionValue();
   }
 
 }
