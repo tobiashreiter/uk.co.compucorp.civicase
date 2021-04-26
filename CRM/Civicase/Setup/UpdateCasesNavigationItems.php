@@ -1,12 +1,9 @@
 <?php
 
-use CRM_Civicase_Helper_CaseUrl as CaseUrlHelper;
+use CRM_Civicase_Helper_CaseCategory as CaseCategory;
 
 /**
  * Class for updating menus corresponding to Cases.
- *
- * This is the base Case category, and the menus that require update are
- * Manage Cases ('all' route) and Manage Workflows ('manage_workflows' route)
  */
 class CRM_Civicase_Setup_UpdateCasesNavigationItems {
 
@@ -14,19 +11,24 @@ class CRM_Civicase_Setup_UpdateCasesNavigationItems {
    * Update Cases items.
    */
   public function apply() {
-    $itemData = [
-      'Manage Cases' => 'all',
-      'manage_Cases_workflows' => 'manage_workflows',
-    ];
+    $casesId = CaseCategory::getOptionValue();
 
-    foreach ($itemData as $itemName => $itemRoute) {
+    $casesNavigationId = civicrm_api3('Navigation', 'getsingle', [
+      'name' => CaseCategory::CASE_TYPE_CATEGORY_NAME,
+      'return' => 'id',
+    ])['id'];
+
+    $navigationItems = civicrm_api3('Navigation', 'get', [
+      'parent_id' => $casesNavigationId,
+      'options' => ['limit' => 0],
+    ])['values'];
+
+    foreach ($navigationItems as $item) {
       civicrm_api3('Navigation', 'get', [
-        'parent_id' => CRM_Civicase_Helper_CaseCategory::CASE_TYPE_CATEGORY_NAME,
-        'name' => $itemName,
-        'options' => ['limit' => 1],
+        'id' => $item['id'],
         'api.Navigation.create' => [
           'id' => '$value.id',
-          'url' => CaseUrlHelper::getUrlByRouteType($itemRoute),
+          'url' => str_ireplace(CaseCategory::CASE_TYPE_CATEGORY_NAME, $casesId, $item['url']),
         ],
       ]);
     }
