@@ -1,7 +1,7 @@
 (($, _) => {
   describe('ActivityCard', () => {
     let $compile, $filter, $rootScope, $scope, viewInPopup, activityCard,
-      activitiesMockData, CaseType, CaseTypeCategory,
+      activitiesMockData, CaseType, CaseTypeCategory, civicaseCrmUrl,
       viewInPopupMockReturn, crmFormSuccessCallback;
 
     beforeEach(module('civicase', 'civicase.templates', 'civicase.data', ($provide) => {
@@ -15,8 +15,9 @@
       $provide.value('viewInPopup', viewInPopupMock);
     }));
 
-    beforeEach(inject(function (_$compile_, _$filter_, _$rootScope_, _activitiesMockData_,
-      _CaseType_, _CaseTypeCategory_, _viewInPopup_) {
+    beforeEach(inject(function (_$compile_, _$filter_, _$rootScope_,
+      _activitiesMockData_, _CaseType_, _CaseTypeCategory_, _viewInPopup_,
+      _civicaseCrmUrl_) {
       $compile = _$compile_;
       $filter = _$filter_;
       $rootScope = _$rootScope_;
@@ -24,6 +25,11 @@
       CaseType = _CaseType_;
       CaseTypeCategory = _CaseTypeCategory_;
       viewInPopup = _viewInPopup_;
+      civicaseCrmUrl = _civicaseCrmUrl_;
+
+      civicaseCrmUrl.and.callFake(function (val) {
+        return val;
+      });
 
       $scope = $rootScope.$new();
       $scope.activity = {
@@ -73,7 +79,7 @@
 
           expectedCaseDetailsUrl = getExpectedCaseDetailsUrl(
             $scope.activity.case_id,
-            caseTypeCategory.name,
+            caseTypeCategory.value,
             caseType.is_active
           );
 
@@ -86,13 +92,13 @@
 
         /**
          * @param {number} caseId the case id.
-         * @param {number} caseTypeCategoryName the category the case belongs to.
+         * @param {number} caseTypeCategoryID the category the case belongs to.
          * @param {boolean} isCaseTypeActive the active status of the case type.
          * @returns {string} the expected URL to the case details for the given case.
          */
-        function getExpectedCaseDetailsUrl (caseId, caseTypeCategoryName, isCaseTypeActive) {
+        function getExpectedCaseDetailsUrl (caseId, caseTypeCategoryID, isCaseTypeActive) {
           const caseDetailUrl = 'civicrm/case/a/?' +
-            $.param({ case_type_category: caseTypeCategoryName }) +
+            $.param({ case_type_category: caseTypeCategoryID }) +
             '#/case/list';
           const angularParams = $.param({
             caseId,
