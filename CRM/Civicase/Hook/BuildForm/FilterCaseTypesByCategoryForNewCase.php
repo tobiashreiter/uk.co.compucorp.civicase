@@ -3,9 +3,9 @@
 use CRM_Civicase_Hook_Helper_CaseTypeCategory as CaseTypeCategoryHelper;
 
 /**
- * Case Category Post Processing.
+ * Filter case types select field based on case category.
  */
-class CRM_Civicase_Hook_BuildForm_CaseCategoryCustomFieldsProcessing {
+class CRM_Civicase_Hook_BuildForm_FilterCaseTypesByCategoryForNewCase {
 
   /**
    * Filters the options for the case type select element based on the category.
