@@ -629,7 +629,7 @@
           $scope.roles.getActiveNonClientContacts().indexOf(contactPromptResult.contact.id) !== -1) {
           contactPromptResult.showErrorMessageFor(
             'contactSelection',
-            PeoplesTabMessageConstants.CLIENT_CANT_BE_SAME_AS_CLIENT
+            PeoplesTabMessageConstants.ROLES_CANT_BE_ASSIGNED_AS_CLIENTS
           );
           isError = true;
         }

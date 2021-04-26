@@ -439,7 +439,7 @@ describe('Case Roles Tab', () => {
 
         it('shows an error message', () => {
           expect(getDialogModel().errorMessage.contactSelection)
-            .toBe(PeoplesTabMessageConstants.CLIENT_CANT_BE_SAME_AS_CLIENT);
+            .toBe(PeoplesTabMessageConstants.ROLES_CANT_BE_ASSIGNED_AS_CLIENTS);
         });
 
         it('does not close the contact selection dialog', () => {
