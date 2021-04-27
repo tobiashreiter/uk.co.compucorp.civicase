@@ -1,13 +1,13 @@
 (function (angular, $, _, CRM) {
   var module = angular.module('civicase');
 
-  module.factory('formatCase', function (formatActivity, CasesUtils,
+  module.factory('formatCase', function ($sce, formatActivity, CasesUtils,
     CaseStatus, CaseType, isTruthy) {
     var caseStatuses = CaseStatus.getAll(true);
 
     return function (item) {
       item.client = [];
-      item.subject = (typeof item.subject === 'undefined') ? '' : item.subject;
+      item.subject = getFormattedCaseSubject(item.subject);
       item.status = caseStatuses[item.status_id].label;
       item.color = caseStatuses[item.status_id].color;
       item.case_type = CaseType.getById(item.case_type_id).title;
@@ -41,6 +41,27 @@
 
       return item;
     };
+
+    /**
+     * Returns a formatted subject for the case.
+     *
+     * If the subject is not defined will return an empty string. Otherwise it
+     * will return an escaped subject string free of HTML entities.
+     *
+     * We unwrap (valueOf) and then wrap (trustAsHtml) the subject as a trusted
+     * HTML value because the value could have already been wrapped and trying
+     * to wrap the value again would throw an error.
+     *
+     * @param {string} subject the case subject before being formatted.
+     * @returns {string} The formatted subject.
+     */
+    function getFormattedCaseSubject (subject) {
+      if (typeof subject === 'undefined') {
+        return '';
+      }
+
+      return $sce.trustAsHtml($sce.valueOf(subject));
+    }
 
     /**
      * Accumulates non communication and task counts as

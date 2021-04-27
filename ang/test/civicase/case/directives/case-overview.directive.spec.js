@@ -113,7 +113,6 @@
 
           expectedCaseStatuses = _.chain(sampleCaseStatuses)
             .sortBy('weight')
-            .indexBy('value')
             .value();
 
           CaseManagementWorkflow.getWorkflowsListForCaseOverview.and.returnValue($q.resolve({
@@ -140,7 +139,6 @@
 
           expectedCaseStatuses = _.chain(allCaseStatuses)
             .sortBy('weight')
-            .indexBy('value')
             .value();
 
           CaseManagementWorkflow.getWorkflowsListForCaseOverview.and.returnValue($q.resolve({
