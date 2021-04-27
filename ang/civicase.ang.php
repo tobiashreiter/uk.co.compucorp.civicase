@@ -29,7 +29,7 @@ $caseCategoryPermissions = $permissionService->get($caseCategoryName);
 // The following changes are only relevant to the full-page app.
 if (CRM_Utils_System::getUrlPath() == 'civicrm/case/a') {
   adds_shoreditch_css();
-  CaseCategoryHelper::updateBreadcrumbs($caseCategoryName);
+  CaseCategoryHelper::updateBreadcrumbs($caseCategoryId);
 }
 
 $options = [];

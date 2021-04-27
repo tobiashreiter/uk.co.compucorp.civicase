@@ -16,17 +16,17 @@ class CRM_Civicase_Hook_BuildForm_CaseCategoryFormLabelTranslationForNewCase {
    *   Form Name.
    */
   public function run(CRM_Core_Form &$form, $formName) {
-    $caseCategoryName = $this->getCaseCategoryName($form);
+    $caseCategoryId = $this->getCaseCategoryId($form);
 
-    if (!$this->shouldRun($formName, $caseCategoryName)) {
+    if (!$this->shouldRun($formName, $caseCategoryId)) {
       return;
     }
 
-    if (!CaseTypeCategoryHelper::isValidCategory($caseCategoryName)) {
+    if (!CaseTypeCategoryHelper::isValidCategory($caseCategoryId)) {
       return;
     }
 
-    $this->translateFormLabels($form, $caseCategoryName);
+    $this->translateFormLabels($form);
   }
 
   /**
@@ -37,10 +37,8 @@ class CRM_Civicase_Hook_BuildForm_CaseCategoryFormLabelTranslationForNewCase {
    *
    * @param CRM_Core_Form $form
    *   Page class.
-   * @param string $caseCategoryName
-   *   Case category name.
    */
-  private function translateFormLabels(CRM_Core_Form $form, $caseCategoryName) {
+  private function translateFormLabels(CRM_Core_Form $form) {
     $caseTypeIdElement = &$form->getElement('case_type_id');
     $caseStatusElement = &$form->getElement('status_id');
     $this->translateLabel([$caseTypeIdElement, $caseStatusElement]);
@@ -65,10 +63,10 @@ class CRM_Civicase_Hook_BuildForm_CaseCategoryFormLabelTranslationForNewCase {
    * @param CRM_Core_Form $form
    *   Form name.
    *
-   * @return string|null
-   *   case category name.
+   * @return int|null
+   *   case category Id.
    */
-  private function getCaseCategoryName(CRM_Core_Form $form) {
+  private function getCaseCategoryId(CRM_Core_Form $form) {
     $urlParams = parse_url(htmlspecialchars_decode($form->controller->_entryURL), PHP_URL_QUERY);
     parse_str($urlParams, $urlParams);
 
@@ -80,21 +78,21 @@ class CRM_Civicase_Hook_BuildForm_CaseCategoryFormLabelTranslationForNewCase {
    *
    * @param string $formName
    *   Form name.
-   * @param string $caseCategoryName
-   *   Case category name.
+   * @param string $caseCategoryId
+   *   Case category Id.
    *
    * @return bool
    *   returns a boolean to determine if hook will run or not.
    */
-  private function shouldRun($formName, $caseCategoryName) {
-    if (!$caseCategoryName) {
+  private function shouldRun($formName, $caseCategoryId) {
+    if (!$caseCategoryId) {
       return FALSE;
     }
 
     $isCaseForm = $formName == CRM_Case_Form_Case::class;
-    $caseCategoryNameNotCase = $caseCategoryName != 'cases';
+    $caseCategoryIdNotCase = $caseCategoryId != CRM_Civicase_Helper_CaseCategory::getOptionValue();
 
-    return $isCaseForm && $caseCategoryName && $caseCategoryNameNotCase;
+    return $isCaseForm && $caseCategoryId && $caseCategoryIdNotCase;
   }
 
 }

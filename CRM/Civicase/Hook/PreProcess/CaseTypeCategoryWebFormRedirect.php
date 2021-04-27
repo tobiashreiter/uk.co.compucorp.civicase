@@ -62,7 +62,9 @@ class CRM_Civicase_Hook_PreProcess_CaseTypeCategoryWebFormRedirect {
    *   Form object.
    */
   private function redirectToWebForm(CRM_Core_Form $form) {
-    $caseTypeCategoryName = CRM_Utils_Array::value('case_type_category', $_GET, 'Cases');
+    $caseCategoryId = CRM_Utils_Array::value('case_type_category', $_GET, CRM_Civicase_Helper_CaseCategory::getOptionValue());
+    $caseTypeCategoryName = CRM_Civicase_Helper_CaseCategory::getCaseCategoryNameFromOptionValue($caseCategoryId);
+
     $webFormUrl = CaseTypeCategoryHelper::getNewCaseCategoryWebformUrl($caseTypeCategoryName, $this->caseCategorySetting);
     if (!$webFormUrl) {
       return;

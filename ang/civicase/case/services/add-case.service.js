@@ -51,11 +51,9 @@
      * @param {addCaseConfig} params parameters
      */
     function openNewCaseForm (params) {
-      var caseTypeCategoryName = CaseTypeCategory.findById(params.caseTypeCategoryId).name;
-
       var formParams = {
         action: 'add',
-        case_type_category: caseTypeCategoryName,
+        case_type_category: params.caseTypeCategoryId,
         context: 'standalone',
         reset: 1
       };

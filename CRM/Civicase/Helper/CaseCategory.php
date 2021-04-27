@@ -272,10 +272,10 @@ class CRM_Civicase_Helper_CaseCategory {
    * also so that the dashboard leads to the case category dashboard page
    * depending on the case category.
    *
-   * @param string $caseCategoryName
-   *   Case category name.
+   * @param string $caseCategoryId
+   *   Case category Id.
    */
-  public static function updateBreadcrumbs($caseCategoryName) {
+  public static function updateBreadcrumbs($caseCategoryId) {
     CRM_Utils_System::resetBreadCrumb();
     $breadcrumb = [
       [
@@ -288,8 +288,8 @@ class CRM_Civicase_Helper_CaseCategory {
       ],
       [
         'title' => ts('Case Dashboard'),
-        'url' => CRM_Utils_System::url('civicrm/case/a/', ['case_type_category' => $caseCategoryName], TRUE,
-          "/case?case_type_category={$caseCategoryName}"),
+        'url' => CRM_Utils_System::url('civicrm/case/a/', ['case_type_category' => $caseCategoryId], TRUE,
+          "/case?case_type_category={$caseCategoryId}"),
       ],
     ];
 
