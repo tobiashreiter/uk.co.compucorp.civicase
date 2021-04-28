@@ -303,8 +303,16 @@
           title: ts('Add Client'),
           showDescriptionField: false,
           role: role
-        },
-        handleAssignClient
+        }, function (contactPromptResult) {
+          var isError = !validateContact(contactPromptResult);
+
+          if (isError) {
+            return;
+          }
+
+          handleAssignClient(contactPromptResult);
+        }
+
       );
     }
 
@@ -602,6 +610,52 @@
     }
 
     /**
+     * @param {ContactPromptResult} contactPromptResult the contact returned by the confirm dialog
+     * @returns {boolean} if contact is validated
+     */
+    function validateContact (contactPromptResult) {
+      var isValidated = true;
+
+      if (!contactPromptResult.contact) {
+        contactPromptResult.showErrorMessageFor(
+          'contactSelection',
+          PeoplesTabMessageConstants.CONTACT_NOT_SELECTED_MESSAGE
+        );
+        isValidated = false;
+      } else if (checkContactIsClient(contactPromptResult.contact.id)) {
+        contactPromptResult.showErrorMessageFor(
+          'contactSelection',
+          PeoplesTabMessageConstants.CONTACT_CANT_HAVE_ROLE_MESSAGE
+        );
+
+        isValidated = false;
+      } else if (contactPromptResult.role.role === ts('Client') &&
+        $scope.roles.getActiveNonClientContacts().indexOf(contactPromptResult.contact.id) !== -1) {
+        contactPromptResult.showErrorMessageFor(
+          'contactSelection',
+          PeoplesTabMessageConstants.ROLES_CANT_BE_ASSIGNED_AS_CLIENTS
+        );
+        isValidated = false;
+      }
+
+      if (
+        contactPromptResult.reassignmentDate &&
+        !isSameOrAfter(
+          contactPromptResult.reassignmentDate,
+          contactPromptResult.role.relationship.start_date
+        )
+      ) {
+        contactPromptResult.showErrorMessageFor(
+          'reassignmentDate',
+          PeoplesTabMessageConstants.RELATIONSHIP_REASSIGNMENT_DATE_MESSAGE
+        );
+        isValidated = false;
+      }
+
+      return isValidated;
+    }
+
+    /**
      * Prompts the user to select a contact, but rejects it if the selected contact is already a case client
      * and displays an error message. Otherwise it executes the confirmation handler as normal.
      *
@@ -610,43 +664,7 @@
      */
     function promptForContactThatIsNotCaseClient (promptOptions, contactSelectedHandler) {
       promptForContact(promptOptions, function (contactPromptResult) {
-        var isError = false;
-
-        if (!contactPromptResult.contact) {
-          contactPromptResult.showErrorMessageFor(
-            'contactSelection',
-            PeoplesTabMessageConstants.CONTACT_NOT_SELECTED_MESSAGE
-          );
-          isError = true;
-        } else if (checkContactIsClient(contactPromptResult.contact.id)) {
-          contactPromptResult.showErrorMessageFor(
-            'contactSelection',
-            PeoplesTabMessageConstants.CONTACT_CANT_HAVE_ROLE_MESSAGE
-          );
-
-          isError = true;
-        } else if (contactPromptResult.role.role === ts('Client') &&
-          $scope.roles.getActiveNonClientContacts().indexOf(contactPromptResult.contact.id) !== -1) {
-          contactPromptResult.showErrorMessageFor(
-            'contactSelection',
-            PeoplesTabMessageConstants.ROLES_CANT_BE_ASSIGNED_AS_CLIENTS
-          );
-          isError = true;
-        }
-
-        if (
-          contactPromptResult.reassignmentDate &&
-          !isSameOrAfter(
-            contactPromptResult.reassignmentDate,
-            contactPromptResult.role.relationship.start_date
-          )
-        ) {
-          contactPromptResult.showErrorMessageFor(
-            'reassignmentDate',
-            PeoplesTabMessageConstants.RELATIONSHIP_REASSIGNMENT_DATE_MESSAGE
-          );
-          isError = true;
-        }
+        var isError = !validateContact(contactPromptResult);
 
         if (isError) {
           return;
