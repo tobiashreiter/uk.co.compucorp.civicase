@@ -43,7 +43,7 @@
 
     beforeEach(() => {
       listenForCaseOverviewRecalculate();
-      compileDirective({ caseTypeCategory: 'Cases' });
+      compileDirective({ caseTypeCategory: '1' });
     });
 
     describe('compile directive', () => {
@@ -57,13 +57,13 @@
 
       beforeEach(() => {
         expectedFilters = {
-          'case_type_id.case_type_category': 'Cases'
+          'case_type_id.case_type_category': '1'
         };
         expectedCaseTypes = CaseTypesMockData.getSequential();
 
         civicaseCrmApi.and.returnValue($q.resolve([CasesOverviewStats]));
         compileDirective({
-          caseTypeCategory: 'Cases'
+          caseTypeCategory: '1'
         });
 
         $rootScope.$digest();
@@ -87,14 +87,14 @@
       beforeEach(() => {
         civicaseCrmApi.and.returnValue($q.resolve([CasesOverviewStats]));
         compileDirective({
-          caseTypeCategory: 'Cases',
+          caseTypeCategory: '1',
           status_id: '1'
         });
       });
 
       it('fetches the case statistics, but shows all case statuses', () => {
         expect(civicaseCrmApi).toHaveBeenCalledWith([['Case', 'getstats', {
-          'case_type_id.case_type_category': 'Cases'
+          'case_type_id.case_type_category': '1'
         }]]);
       });
     });
@@ -120,7 +120,7 @@
             count: sampleCaseTypes.length
           }));
 
-          compileDirective({ caseTypeCategory: 'Cases' });
+          compileDirective({ caseTypeCategory: '1' });
 
           $rootScope.$digest();
         });
@@ -146,7 +146,7 @@
             count: 1
           }));
 
-          compileDirective({ caseTypeCategory: 'Cases' });
+          compileDirective({ caseTypeCategory: '1' });
 
           $rootScope.$digest();
         });

@@ -78,7 +78,7 @@
      * Apply default value to filters
      */
     function redirectToWorkflowCreationScreen () {
-      var categoryObject = CaseTypeCategory.findByName($scope.caseTypeCategory);
+      var categoryObject = CaseTypeCategory.findById($scope.caseTypeCategory);
       var instanceName = CaseTypeCategory.getCaseTypeCategoryInstance(categoryObject.value).name;
 
       getServiceForInstance(instanceName)
@@ -130,7 +130,7 @@
      * @returns {Promise} list of workflows
      */
     function getWorkflows (caseTypeCategory) {
-      var categoryObject = CaseTypeCategory.findByName(caseTypeCategory);
+      var categoryObject = CaseTypeCategory.findById(caseTypeCategory);
       var instanceName = CaseTypeCategory.getCaseTypeCategoryInstance(categoryObject.value).name;
 
       var filters = _.cloneDeep($scope.selectedFilters);

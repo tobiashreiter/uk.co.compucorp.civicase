@@ -23,7 +23,6 @@
     CaseType, currentCaseCategory, CustomSearchField, includeActivitiesForInvolvedContact) {
     var caseTypes = CaseType.getAll();
     var caseStatuses = CaseStatus.getAll();
-    var caseTypeCategories = CaseTypeCategory.getAll();
     var allSearchFields = {
       id: { label: ts('Case ID'), html_type: 'Number' },
       has_role: { label: ts('Contact Search') },
@@ -38,6 +37,7 @@
       { text: ts('Cases I am involved in'), id: 'is_involved' },
       { text: ts('All Cases'), id: 'all' }
     ];
+
     var DEFAULT_CASE_FILTERS = {
       case_type_category: currentCaseCategory
     };
@@ -295,13 +295,11 @@
     /**
      * Returns case types filtered by given category
      *
-     * @param {string} categoryName category name
+     * @param {string} category category id or name
      * @returns {Array} case types
      */
-    function getCaseTypesFilteredByCategory (categoryName) {
-      var caseTypeCategory = _.find(caseTypeCategories, function (category) {
-        return category.name.toLowerCase() === categoryName.toLowerCase();
-      });
+    function getCaseTypesFilteredByCategory (category) {
+      var caseTypeCategory = CaseTypeCategory.findById(category);
 
       if (!caseTypeCategory) {
         return [];

@@ -61,7 +61,7 @@
           });
 
           it('redirects the user the workflow list page', () => {
-            expect($window.location.href).toBe('/civicrm/workflow/a?case_type_category=Prospecting#/list');
+            expect($window.location.href).toBe('/civicrm/workflow/a?case_type_category=2#/list');
           });
         });
 
@@ -97,7 +97,7 @@
           });
 
           it('redirects to the core case type list screen', () => {
-            expect($window.location.href).toBe('/civicrm/workflow/a?case_type_category=Cases#/list');
+            expect($window.location.href).toBe('/civicrm/workflow/a?case_type_category=1#/list');
           });
         });
       });

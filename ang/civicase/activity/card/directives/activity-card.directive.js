@@ -192,7 +192,7 @@
       var caseType = CaseType.getById(caseTypeId);
       var caseTypeCategory = caseTypeCategories[caseType.case_type_category];
       var caseDetailUrl = 'civicrm/case/a/?' +
-        $.param({ case_type_category: caseTypeCategory.name }) +
+        $.param({ case_type_category: caseTypeCategory.value }) +
         '#/case/list';
       var angularParams = $.param({
         caseId: $scope.activity.case_id,

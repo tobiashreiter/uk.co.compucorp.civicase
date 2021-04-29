@@ -30,7 +30,7 @@
 
       it('returns the case details page url for the given case', () => {
         expect(civicaseCrmUrl).toHaveBeenCalledWith('civicrm/case/a/',
-          `case_type_category=${caseTypeCategory.name}` +
+          `case_type_category=${caseTypeCategory.value}` +
           `#/case/list?caseId=${mockCase.id}&focus=1&all_statuses=1`);
       });
     });

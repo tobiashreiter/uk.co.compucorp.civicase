@@ -32,7 +32,7 @@
 
       it('creates a new case', () => {
         expect(AddCase.clickHandler).toHaveBeenCalledWith(jasmine.objectContaining({
-          caseTypeCategoryName: currentCaseCategory
+          caseTypeCategoryId: currentCaseCategory
         }));
       });
     });

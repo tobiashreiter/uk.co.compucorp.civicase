@@ -10,9 +10,10 @@
    * @param {string} CaseCategoryWebformSettings service to fetch case category webform settings
    * @param {Function} civicaseCrmUrl crm url service.
    * @param {Function} civicaseCrmLoadForm service to load civicrm forms
+   * @param {object} CaseTypeCategory case type category service
    */
   function AddCaseService ($window, CaseCategoryWebformSettings, civicaseCrmUrl,
-    civicaseCrmLoadForm) {
+    civicaseCrmLoadForm, CaseTypeCategory) {
     this.clickHandler = clickHandler;
     this.isVisible = isVisible;
 
@@ -23,7 +24,8 @@
      * @param {addCaseConfig} params parameters
      */
     function clickHandler (params) {
-      var webformSettings = CaseCategoryWebformSettings.getSettingsFor(params.caseTypeCategoryName);
+      var caseTypeCategoryName = CaseTypeCategory.findById(params.caseTypeCategoryId).name;
+      var webformSettings = CaseCategoryWebformSettings.getSettingsFor(caseTypeCategoryName);
       var hasCustomNewCaseWebformUrl = !!webformSettings.newCaseWebformUrl;
 
       hasCustomNewCaseWebformUrl
@@ -51,7 +53,7 @@
     function openNewCaseForm (params) {
       var formParams = {
         action: 'add',
-        case_type_category: params.caseTypeCategoryName,
+        case_type_category: params.caseTypeCategoryId,
         context: 'standalone',
         reset: 1
       };

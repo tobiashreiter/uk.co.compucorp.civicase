@@ -89,9 +89,7 @@
      * @returns {string} url
      */
     function getUrlToManageWorkflowPage (caseTypeCategoryId) {
-      var caseTypeCategoryName = CaseTypeCategory.findById(caseTypeCategoryId).name;
-
-      return '/civicrm/workflow/a?case_type_category=' + caseTypeCategoryName + '#/list';
+      return '/civicrm/workflow/a?case_type_category=' + caseTypeCategoryId + '#/list';
     }
   }
 })(CRM.$, CRM._, angular);

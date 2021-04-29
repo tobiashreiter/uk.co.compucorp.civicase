@@ -38,9 +38,8 @@
      */
     function getCaseDetailsUrl (caseItem) {
       var caseTypeCategoryId = caseItem['case_type_id.case_type_category'];
-      var caseTypeCategoryName = CaseTypeCategory.getAll()[caseTypeCategoryId].name;
 
-      return civicaseCrmUrl('civicrm/case/a/', 'case_type_category=' + caseTypeCategoryName +
+      return civicaseCrmUrl('civicrm/case/a/', 'case_type_category=' + caseTypeCategoryId +
         '#/case/list?caseId=' + caseItem.id + '&focus=1&all_statuses=1');
     }
   }

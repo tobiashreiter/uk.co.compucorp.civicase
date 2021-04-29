@@ -25,7 +25,7 @@
     function clickHandler () {
       AddCase.clickHandler({
         callbackFn: redirectToUserContext,
-        caseTypeCategoryName: currentCaseCategory
+        caseTypeCategoryId: currentCaseCategory
       });
     }
 

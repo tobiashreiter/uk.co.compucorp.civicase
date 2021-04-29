@@ -115,7 +115,7 @@
      * @returns {Promise} promise
      */
     function getCaseTypes () {
-      var categoryObject = CaseTypeCategory.findByName(currentCaseCategory);
+      var categoryObject = CaseTypeCategory.findById(currentCaseCategory);
       var instanceName = CaseTypeCategory.getCaseTypeCategoryInstance(categoryObject.value).name;
       var params = {};
 

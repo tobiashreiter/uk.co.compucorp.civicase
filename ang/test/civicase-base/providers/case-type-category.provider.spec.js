@@ -73,7 +73,7 @@
       });
 
       it('returns true if the case type category belongs to the sent instance', () => {
-        expect(CaseTypeCategory.isInstance('Cases', 'case_management')).toBe(true);
+        expect(CaseTypeCategory.isInstance('1', 'case_management')).toBe(true);
       });
     });
 
