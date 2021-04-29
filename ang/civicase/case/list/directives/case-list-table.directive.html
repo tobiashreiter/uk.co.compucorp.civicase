@@ -13,7 +13,7 @@
     class="panel panel-default civicase__case-list-panel"
     ng-class="{'civicase__case-list-panel--summary': viewingCase, 'civicase__case-list-panel--focused': caseIsFocused}">
     <div class="civicase__case-list-table-container" civicase-sticky-table-header>
-      <table ng-show="!caseIsFocused" class="table civicase__case-list-table" >
+      <table ng-show="!caseIsFocused" class="table civicase__case-list-table">
         <thead class="civicase__case-list-table__header">
         <tr>
           <th
@@ -24,6 +24,7 @@
           <th
             ng-if="!viewingCase"
             ng-repeat="header in headers"
+            class="civicase__case-list-table__column civicase__case-list-table__column--{{header.display_type}}"
             civicase-case-list-sort-header="{{ header.sort }}">{{ ts(header.label) }}
           </th>
         </tr>
@@ -36,6 +37,7 @@
           <td
             ng-if="!viewingCase"
             ng-repeat="header in headers"
+            class="civicase__case-list-table__column civicase__case-list-table__column--{{header.display_type}}"
             ng-class="{'case-activity-card-wrapper': header.display_type == 'activity_card'}">
 
             <span ng-switch on="header.display_type">
@@ -49,7 +51,10 @@
                 >
                 </div>
               </span>
-              <span ng-switch-when="status_badge" class="crm_notification-badge" style="background-color: {{ item.color }};">
+              <span
+                ng-switch-when="status_badge" class="crm_notification-badge"
+                title="{{item.status}}"
+                style="background-color: {{ item.color }};">
                 {{ item.status }}
               </span>
               <span ng-switch-when="contact_reference">{{ item[header.name].display_name }}</span>
