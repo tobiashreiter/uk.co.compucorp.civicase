@@ -17,8 +17,10 @@ class CRM_Civicase_Service_ManageWorkflowMenu {
    *   Case category instance type name..
    * @param bool $showCategoryNameOnMenuLabel
    *   Flag for using the case type category name on the menu label.
+   * @param string $parentMenuLabel
+   *   Name of the existing parent menu label.
    */
-  public function create(string $instanceTypeName, bool $showCategoryNameOnMenuLabel) {
+  public function create(string $instanceTypeName, bool $showCategoryNameOnMenuLabel, string $parentMenuLabel = NULL) {
     $caseTypeCategories = CaseCategoryHelper::getCaseCategories();
 
     $instanceObj = new CaseCategoryInstance();
@@ -40,7 +42,7 @@ class CRM_Civicase_Service_ManageWorkflowMenu {
 
       $parentMenuForCaseCategory = civicrm_api3('Navigation', 'get', [
         'sequential' => 1,
-        'label' => $caseTypeCategory['name'],
+        'label' => $parentMenuLabel ? $parentMenuLabel : $caseTypeCategory['name'],
       ])['values'][0];
 
       $menuLabel = $showCategoryNameOnMenuLabel
