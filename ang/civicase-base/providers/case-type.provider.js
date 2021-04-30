@@ -99,7 +99,7 @@
      */
     function getByCategory (categoryValue) {
       return _.filter(caseTypes, function (caseType) {
-        return caseType.case_type_category === categoryValue;
+        return parseInt(caseType.case_type_category) === parseInt(categoryValue);
       });
     }
 
