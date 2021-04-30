@@ -208,7 +208,7 @@ function civicase_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
 function civicase_civicrm_buildForm($formName, &$form) {
   $hooks = [
     new CRM_Civicase_Hook_BuildForm_CaseClientPopulator(),
-    new CRM_Civicase_Hook_BuildForm_CaseCategoryCustomFieldsProcessing(),
+    new CRM_Civicase_Hook_BuildForm_FilterCaseTypesByCategoryForNewCase(),
     new CRM_Civicase_Hook_BuildForm_FilterByCaseCategoryOnChangeCaseType(),
     new CRM_Civicase_Hook_BuildForm_CaseCategoryFormLabelTranslationForNewCase(),
     new CRM_Civicase_Hook_BuildForm_CaseCategoryFormLabelTranslationForChangeCase(),

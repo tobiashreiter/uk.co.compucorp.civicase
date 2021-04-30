@@ -26,7 +26,7 @@
   function civicaseDashboardController ($scope, currentCaseCategory,
     DashboardActionItems, includeActivitiesForInvolvedContact, ts,
     getServiceForInstance, CaseTypeCategory, civicaseCrmUrl) {
-    var categoryObject = CaseTypeCategory.findByName(currentCaseCategory);
+    var categoryObject = CaseTypeCategory.findById(currentCaseCategory);
     var instanceName = CaseTypeCategory.getCaseTypeCategoryInstance(categoryObject.value).name;
 
     $scope.checkPerm = CRM.checkPerm;
@@ -52,7 +52,7 @@
      * @returns {string} link to the filtered list of cases
      */
     $scope.linkToManageCase = function (type, status) {
-      var cf = { case_type_category: $scope.caseTypeCategoryName };
+      var cf = { case_type_category: $scope.currentCaseCategory };
       var userContactId = [CRM.config.user_contact_id];
 
       if (type) {

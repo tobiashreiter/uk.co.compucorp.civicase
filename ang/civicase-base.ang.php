@@ -13,8 +13,10 @@ use CRM_Civicase_Helper_OptionValues as OptionValuesHelper;
 use CRM_Civicase_Helper_GlobRecursive as GlobRecursive;
 use CRM_Civicase_Helper_NewCaseWebform as NewCaseWebform;
 use CRM_Civicase_Service_CaseCategoryCustomFieldsSetting as CaseCategoryCustomFieldsSetting;
+use CRM_Civicase_Helper_CaseUrl as CaseUrlHelper;
 
-$caseCategoryName = CRM_Utils_Request::retrieve('case_type_category', 'String');
+[$caseCategoryId, $caseCategoryName] = CaseUrlHelper::getCategoryParamsFromUrl();
+
 $caseCategorySetting = new CRM_Civicase_Service_CaseCategorySetting();
 
 $options = [
@@ -37,7 +39,7 @@ set_custom_fields_info_to_js_vars($options);
 set_tags_to_js_vars($options);
 add_case_type_categories_to_options($options);
 expose_settings($options, [
-  'caseCategoryName' => $caseCategoryName,
+  'caseCategoryId' => $caseCategoryId,
 ]);
 
 /**
@@ -96,9 +98,7 @@ function expose_settings(array &$options, array $defaults) {
   $options['civicaseSingleCaseRolePerType'] = (bool) Civi::settings()->get('civicaseSingleCaseRolePerType');
   $options['caseTypeCategoriesWhereUserCanAccessActivities'] =
     CRM_Civicase_Helper_CaseCategory::getWhereUserCanAccessActivities();
-  $options['currentCaseCategory'] = $defaults['caseCategoryName']
-    ? strtolower($defaults['caseCategoryName'])
-    : strtolower(CRM_Civicase_Helper_CaseCategory::CASE_TYPE_CATEGORY_NAME);
+  $options['currentCaseCategory'] = $defaults['caseCategoryId'] ?: NULL;
 }
 
 /**

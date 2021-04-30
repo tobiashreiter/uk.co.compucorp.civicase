@@ -190,7 +190,14 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
     try {
       $customFields = civicrm_api3('CustomField', 'get', [
         'custom_group_id.extends' => [
-          'IN' => ['Contact', 'Individual', 'Household', 'Organization', 'Case'],
+          'IN' => [
+            'Contact',
+            'Individual',
+            'Household',
+            'Organization',
+            'Case',
+            'Address',
+          ],
         ],
         'options' => ['limit' => 0, 'sort' => "custom_group_id.weight ASC"],
         'sequential' => 1,
@@ -299,17 +306,26 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
    *   Restructured token tree.
    */
   private function addCaseTokens(array $caseTokens, array &$newTokenTree) {
-    $newTokenTree[self::CASE_TOKEN_TEXT] = [
-      'id' => self::CASE_TOKEN_TEXT,
-      'text' => self::CASE_TOKEN_TEXT,
-      'children' => [
-        [
-          'id' => 'CoreFields' . uniqid(),
-          'text' => self::CORE_FIELDS_TEXT,
-          'children' => $caseTokens,
+    if (empty($newTokenTree[self::CASE_TOKEN_TEXT]['children'][0])) {
+      if (!empty($newTokenTree[self::CASE_TOKEN_TEXT]['children'][1])) {
+        $customTokens = $newTokenTree[self::CASE_TOKEN_TEXT]['children'][1];
+      }
+      $newTokenTree[self::CASE_TOKEN_TEXT] = [
+        'id' => self::CASE_TOKEN_TEXT,
+        'text' => self::CASE_TOKEN_TEXT,
+        'children' => [
+          [
+            'id' => 'CoreFields' . uniqid(),
+            'text' => self::CORE_FIELDS_TEXT,
+            'children' => $caseTokens,
+          ],
         ],
-      ],
-    ];
+      ];
+      if (!empty($customTokens)) {
+        $newTokenTree[self::CASE_TOKEN_TEXT]['children'][1] = $customTokens;
+      }
+    }
+
   }
 
   /**
@@ -321,7 +337,10 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
    *   Restructured token tree.
    */
   private function addClientTokens(array $clientTokens, array &$newTokenTree) {
-    if (empty($newTokenTree[self::RECIPIENT_TOKEN_TEXT])) {
+    if (empty($newTokenTree[self::RECIPIENT_TOKEN_TEXT]['children'][0])) {
+      if (!empty($newTokenTree[self::RECIPIENT_TOKEN_TEXT]['children'][1])) {
+        $customTokens = $newTokenTree[self::RECIPIENT_TOKEN_TEXT]['children'][1];
+      }
       $newTokenTree[self::RECIPIENT_TOKEN_TEXT] = [
         'id' => $this->clean(self::RECIPIENT_TOKEN_TEXT) . uniqid(),
         'text' => self::RECIPIENT_TOKEN_TEXT,
@@ -333,6 +352,9 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
           ],
         ],
       ];
+      if (!empty($customTokens)) {
+        $newTokenTree[self::RECIPIENT_TOKEN_TEXT]['children'][1] = $customTokens;
+      }
     }
     else {
       $newTokenTree[self::RECIPIENT_TOKEN_TEXT]['children'][0]['children'] =

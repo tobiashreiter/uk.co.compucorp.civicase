@@ -51,76 +51,94 @@ class CRM_Civicase_Hook_BuildForm_TokenTreeTest extends BaseHeadlessTest {
    */
   private function getTokens() {
     return [
-        [
-          'text' => 'Case Roles',
-          'children' => [
-            [
-              'id' => '{case_roles.benefits_specialist_id}',
-              'text' => 'Benefits Specialist - Contact ID',
-            ],
-            [
-              'id' => '{case_roles.benefits_specialist_custom_' . $this->contactCustomField['id'] . '}',
-              'text' => 'Benefits Specialist - ' . $this->contactCustomField['name'],
-            ],
-            [
-              'id' => '{case_roles.health_services_coordinator_contact_sub_type}',
-              'text' => 'Health Services Coordinator - Contact Subtype',
-            ],
-            [
-              'id' => '{case_roles.health_services_coordinator_custom_' . $this->contactCustomField['id'] . '}',
-              'text' => 'Health Services Coordinator - ' . $this->contactCustomField['name'],
-            ],
+      [
+        'text' => 'Case Roles',
+        'children' => [
+          [
+            'id' => '{case_roles.benefits_specialist_id}',
+            'text' => 'Benefits Specialist - Contact ID',
+          ],
+          [
+            'id' => '{case_roles.benefits_specialist_custom_' . $this->contactCustomField[0]['id'] . '}',
+            'text' => 'Benefits Specialist - ' . $this->contactCustomField[0]['name'],
+          ],
+          [
+            'id' => '{case_roles.health_services_coordinator_contact_sub_type}',
+            'text' => 'Health Services Coordinator - Contact Subtype',
+          ],
+          [
+            'id' => '{case_roles.health_services_coordinator_custom_' . $this->contactCustomField[0]['id'] . '}',
+            'text' => 'Health Services Coordinator - ' . $this->contactCustomField[0]['name'],
           ],
         ],
-        [
-          'text' => 'Current User',
-          'children' => [
-            [
-              'id' => '{current_user.contact_city}',
-              'text' => 'Current User City',
-            ],
-            [
-              'id' => '{current_user.contact_custom_' . $this->contactCustomField['id'] . '}',
-              'text' => 'Current User ' . $this->contactCustomField['name'],
-            ],
+      ],
+      [
+        'text' => 'Current User',
+        'children' => [
+          [
+            'id' => '{current_user.contact_city}',
+            'text' => 'Current User City',
+          ],
+          [
+            'id' => '{current_user.contact_custom_' . $this->contactCustomField[0]['id'] . '}',
+            'text' => 'Current User ' . $this->contactCustomField[0]['name'],
           ],
         ],
-        [
-          'text' => 'Case',
-          'children' => [
-            [
-              'id' => '{case.id}',
-              'text' => 'Case Id',
-            ],
+      ],
+      [
+        'text' => $this->caseCustomField[0]['name'],
+        'children' => [
+          [
+            'id' => '{case.custom_' . $this->caseCustomField[0]['id'] . '}',
+            'text' => $this->caseCustomField[0]['name'],
           ],
         ],
-        [
-          'text' => 'Contact',
-          'children' => [
-            [
-              'id' => '{contact.addressee_id}',
-              'text' => 'Addressee ID',
-            ],
+      ],
+      [
+        'text' => 'Case',
+        'children' => [
+          [
+            'id' => '{case.id}',
+            'text' => 'Case Id',
           ],
         ],
-        [
-          'text' => $this->contactCustomField['name'],
-          'children' => [
-            [
-              'id' => '{contact.custom_' . $this->contactCustomField['id'] . '}',
-              'text' => $this->contactCustomField['name'],
-            ],
+      ],
+      [
+        'text' => $this->caseCustomField[1]['name'],
+        'children' => [
+          [
+            'id' => '{case.custom_' . $this->caseCustomField[1]['id'] . '}',
+            'text' => $this->caseCustomField[1]['name'],
           ],
         ],
-        [
-          'text' => $this->caseCustomField['name'],
-          'children' => [
-            [
-              'id' => '{case.custom_' . $this->caseCustomField['id'] . '}',
-              'text' => $this->caseCustomField['name'],
-            ],
+      ],
+      [
+        'text' => $this->contactCustomField[0]['name'],
+        'children' => [
+          [
+            'id' => '{contact.custom_' . $this->contactCustomField[0]['id'] . '}',
+            'text' => $this->contactCustomField[0]['name'],
           ],
         ],
+      ],
+      [
+        'text' => 'Contact',
+        'children' => [
+          [
+            'id' => '{contact.addressee_id}',
+            'text' => 'Addressee ID',
+          ],
+        ],
+      ],
+      [
+        'text' => $this->contactCustomField[1]['name'],
+        'children' => [
+          [
+            'id' => '{contact.custom_' . $this->contactCustomField[1]['id'] . '}',
+            'text' => $this->contactCustomField[1]['name'],
+          ],
+        ],
+      ],
     ];
   }
 
@@ -159,11 +177,11 @@ class CRM_Civicase_Hook_BuildForm_TokenTreeTest extends BaseHeadlessTest {
       $newTokenTree[TokenTree::CURRENT_USER_TOKEN_TEXT]['children'][0]['children'][0]['text']
     );
     $this->assertEquals(
-      '{current_user.contact_custom_' . $this->contactCustomField['id'] . '}',
+      '{current_user.contact_custom_' . $this->contactCustomField[0]['id'] . '}',
       $newTokenTree[TokenTree::CURRENT_USER_TOKEN_TEXT]['children'][1]['children'][0]['children'][0]['id']
     );
     $this->assertEquals(
-      'Current User ' . $this->contactCustomField['name'],
+      'Current User ' . $this->contactCustomField[0]['name'],
       $newTokenTree[TokenTree::CURRENT_USER_TOKEN_TEXT]['children'][1]['children'][0]['children'][0]['text']
     );
   }
@@ -185,11 +203,11 @@ class CRM_Civicase_Hook_BuildForm_TokenTreeTest extends BaseHeadlessTest {
       $newTokenTree['Benefits Specialist']['children'][0]['children'][0]['text']
     );
     $this->assertEquals(
-      '{case_roles.benefits_specialist_custom_' . $this->contactCustomField['id'] . '}',
+      '{case_roles.benefits_specialist_custom_' . $this->contactCustomField[0]['id'] . '}',
       $newTokenTree['Benefits Specialist']['children'][1]['children'][0]['children'][0]['id']
     );
     $this->assertEquals(
-      'Benefits Specialist - ' . $this->contactCustomField['name'],
+      'Benefits Specialist - ' . $this->contactCustomField[0]['name'],
       $newTokenTree['Benefits Specialist']['children'][1]['children'][0]['children'][0]['text']
     );
     $this->assertNotEmpty($newTokenTree['Health Services Coordinator']);
@@ -202,11 +220,11 @@ class CRM_Civicase_Hook_BuildForm_TokenTreeTest extends BaseHeadlessTest {
       $newTokenTree['Health Services Coordinator']['children'][0]['children'][0]['text']
     );
     $this->assertEquals(
-      '{case_roles.health_services_coordinator_custom_' . $this->contactCustomField['id'] . '}',
+      '{case_roles.health_services_coordinator_custom_' . $this->contactCustomField[0]['id'] . '}',
       $newTokenTree['Health Services Coordinator']['children'][1]['children'][0]['children'][0]['id']
     );
     $this->assertEquals(
-      'Health Services Coordinator - ' . $this->contactCustomField['name'],
+      'Health Services Coordinator - ' . $this->contactCustomField[0]['name'],
       $newTokenTree['Health Services Coordinator']['children'][1]['children'][0]['children'][0]['text']
     );
   }
@@ -228,12 +246,20 @@ class CRM_Civicase_Hook_BuildForm_TokenTreeTest extends BaseHeadlessTest {
       $newTokenTree[TokenTree::RECIPIENT_TOKEN_TEXT]['children'][0]['children'][0]['text']
     );
     $this->assertEquals(
-      '{contact.custom_' . $this->contactCustomField['id'] . '}',
+      '{contact.custom_' . $this->contactCustomField[0]['id'] . '}',
       $newTokenTree[TokenTree::RECIPIENT_TOKEN_TEXT]['children'][1]['children'][0]['children'][0]['id']
     );
     $this->assertEquals(
-      $this->contactCustomField['name'],
+      $this->contactCustomField[0]['name'],
       $newTokenTree[TokenTree::RECIPIENT_TOKEN_TEXT]['children'][1]['children'][0]['children'][0]['text']
+    );
+    $this->assertEquals(
+      '{contact.custom_' . $this->contactCustomField[1]['id'] . '}',
+      $newTokenTree[TokenTree::RECIPIENT_TOKEN_TEXT]['children'][1]['children'][0]['children'][1]['id']
+    );
+    $this->assertEquals(
+      $this->contactCustomField[1]['name'],
+      $newTokenTree[TokenTree::RECIPIENT_TOKEN_TEXT]['children'][1]['children'][0]['children'][1]['text']
     );
   }
 
@@ -254,12 +280,20 @@ class CRM_Civicase_Hook_BuildForm_TokenTreeTest extends BaseHeadlessTest {
       $newTokenTree[TokenTree::CASE_TOKEN_TEXT]['children'][0]['children'][0]['text']
     );
     $this->assertEquals(
-      '{case.custom_' . $this->caseCustomField['id'] . '}',
+      '{case.custom_' . $this->caseCustomField[0]['id'] . '}',
       $newTokenTree[TokenTree::CASE_TOKEN_TEXT]['children'][1]['children'][0]['children'][0]['id']
     );
     $this->assertEquals(
-      $this->caseCustomField['name'],
+      $this->caseCustomField[0]['name'],
       $newTokenTree[TokenTree::CASE_TOKEN_TEXT]['children'][1]['children'][0]['children'][0]['text']
+    );
+    $this->assertEquals(
+      '{case.custom_' . $this->caseCustomField[1]['id'] . '}',
+      $newTokenTree[TokenTree::CASE_TOKEN_TEXT]['children'][1]['children'][0]['children'][1]['id']
+    );
+    $this->assertEquals(
+      $this->caseCustomField[1]['name'],
+      $newTokenTree[TokenTree::CASE_TOKEN_TEXT]['children'][1]['children'][0]['children'][1]['text']
     );
   }
 
@@ -280,10 +314,14 @@ class CRM_Civicase_Hook_BuildForm_TokenTreeTest extends BaseHeadlessTest {
     if (empty($contactCustomGroup['id'])) {
       return;
     }
-    $contactCustomField = $this->createCustomField($contactCustomGroup['id']);
-    if (!empty($contactCustomField['id'])) {
-      $this->contactCustomField['id'] = $contactCustomField['id'];
-      $this->contactCustomField['name'] = $contactCustomField['name'];
+    $contactCustomFields = [];
+    $contactCustomFields[] = $this->createCustomField($contactCustomGroup['id']);
+    $contactCustomFields[] = $this->createCustomField($contactCustomGroup['id']);
+    $i = 0;
+    foreach ($contactCustomFields as $contactCustomField) {
+      $this->contactCustomField[$i]['id'] = $contactCustomField['id'];
+      $this->contactCustomField[$i]['name'] = $contactCustomField['name'];
+      $i++;
     }
   }
 
@@ -304,10 +342,15 @@ class CRM_Civicase_Hook_BuildForm_TokenTreeTest extends BaseHeadlessTest {
     if (empty($caseCustomGroup['id'])) {
       return;
     }
-    $caseCustomField = $this->createCustomField($caseCustomGroup['id']);
-    if (!empty($caseCustomField['id'])) {
-      $this->caseCustomField['id'] = $caseCustomField['id'];
-      $this->caseCustomField['name'] = $caseCustomField['name'];
+
+    $caseCustomFields = [];
+    $caseCustomFields[] = $this->createCustomField($caseCustomGroup['id']);
+    $caseCustomFields[] = $this->createCustomField($caseCustomGroup['id']);
+    $i = 0;
+    foreach ($caseCustomFields as $caseCustomField) {
+      $this->caseCustomField[$i]['id'] = $caseCustomField['id'];
+      $this->caseCustomField[$i]['name'] = $caseCustomField['name'];
+      $i++;
     }
   }
 

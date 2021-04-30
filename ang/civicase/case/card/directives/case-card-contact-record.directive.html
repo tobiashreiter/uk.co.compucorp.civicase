@@ -7,7 +7,7 @@
   }">
   <div class="panel-body">
     <div class="civicase__case-card__row civicase__case-card__row--primary clearfix">
-      <div class="pull-left civicase__case-card-subject">{{ data.subject }}</div>
+      <div class="pull-left civicase__case-card-subject" ng-bind-html="data.subject"></div>
       <div class="pull-right">
         <span> {{ ts('Case ID :') }} </span>
         <strong> {{ data.id }} </strong>

@@ -36,7 +36,7 @@
     $scope.tableColumns = filterArrayForCurrentInstance(WorkflowListColumns);
     $scope.filters = filterArrayForCurrentInstance(WorkflowListFilters);
     $scope.selectedFilters = {};
-    $scope.currentCaseCategory = CaseTypeCategory.findByName(currentCaseCategory);
+    $scope.currentCaseCategory = CaseTypeCategory.findById(currentCaseCategory);
 
     $scope.refreshWorkflowsList = refreshWorkflowsList;
     $scope.redirectToWorkflowCreationScreen = redirectToWorkflowCreationScreen;
@@ -81,7 +81,7 @@
      * Apply default value to filters
      */
     function redirectToWorkflowCreationScreen () {
-      var categoryObject = CaseTypeCategory.findByName($scope.caseTypeCategory);
+      var categoryObject = CaseTypeCategory.findById($scope.caseTypeCategory);
       var instanceName = CaseTypeCategory.getCaseTypeCategoryInstance(categoryObject.value).name;
 
       getServiceForInstance(instanceName)
@@ -133,7 +133,7 @@
      * @returns {Promise} list of workflows
      */
     function getWorkflows (caseTypeCategory) {
-      var categoryObject = CaseTypeCategory.findByName(caseTypeCategory);
+      var categoryObject = CaseTypeCategory.findById(caseTypeCategory);
       var instanceName = CaseTypeCategory.getCaseTypeCategoryInstance(categoryObject.value).name;
 
       var filters = _.cloneDeep($scope.selectedFilters);

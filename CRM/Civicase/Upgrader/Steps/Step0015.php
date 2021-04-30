@@ -1,9 +1,10 @@
 <?php
 
-use CRM_Civicase_Service_CaseCategoryCustomFieldsSetting as CaseCategoryCustomFieldsSetting;
+use CRM_Civicase_Setup_UpdateCasesNavigationItems as UpdateCasesItems;
+use CRM_Civicase_Setup_UpdateCategoryNavigationItems as UpdateCategoryItems;
 
 /**
- * Adds singular labels to case type categories.
+ * Update menus with new URL.
  */
 class CRM_Civicase_Upgrader_Steps_Step0015 {
 
@@ -11,36 +12,13 @@ class CRM_Civicase_Upgrader_Steps_Step0015 {
    * Runs the upgrader changes.
    *
    * @return bool
-   *   True when the upgrader runs successfully.
+   *   Return value in boolean.
    */
   public function apply() {
-    $this->addSingularLabelToCaseCategories();
+    (new UpdateCasesItems())->apply();
+    (new UpdateCategoryItems())->apply();
 
     return TRUE;
-  }
-
-  /**
-   * Adds the singular label value for each case category.
-   *
-   * If the case category ends in an S, it will remove it.
-   */
-  private function addSingularLabelToCaseCategories() {
-    $caseCategoryCustomFields = new CaseCategoryCustomFieldsSetting();
-    $caseTypeCategories = civicrm_api3('OptionValue', 'get', [
-      'sequential' => '1',
-      'option_group_id' => 'case_type_categories',
-    ]);
-
-    foreach ($caseTypeCategories['values'] as $caseTypeCategory) {
-      $isLabelLastCharacterS = substr(strtolower($caseTypeCategory['label']), -1) === 's';
-      $singularLabel = $isLabelLastCharacterS
-        ? substr($caseTypeCategory['label'], 0, -1)
-        : $caseTypeCategory['label'];
-
-      $caseCategoryCustomFields->save($caseTypeCategory['value'], [
-        'singular_label' => $singularLabel,
-      ]);
-    }
   }
 
 }

@@ -84,7 +84,7 @@ class CRM_Civicase_Service_CaseCategoryFromUrlTest extends BaseHeadlessTest {
     $category = CaseCategoryFabricator::fabricate();
     $requestedUrl = $this->getUrlByType(CategoryFromUrlService::CASE_CATEGORY_TYPE_URL);
     $param = $this->getParamByUrl($requestedUrl);
-    $_GET[$param] = $_REQUEST[$param] = $category['value'];
+    $_GET[$param] = $_REQUEST[$param] = (int) $category['value'];
 
     $categoryName = (new CategoryFromUrlService())->get($requestedUrl);
 

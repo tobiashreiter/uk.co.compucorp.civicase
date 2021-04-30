@@ -11,22 +11,16 @@ class CRM_Civicase_Hook_Helper_CaseTypeCategory {
   /**
    * Checks if the case type category is valid or not.
    *
-   * @param string $caseCategoryName
+   * @param int $caseCategoryId
    *   Category Name.
    *
    * @return bool
    *   return value.
    */
-  public static function isValidCategory($caseCategoryName) {
-    $caseCategoryName = strtolower($caseCategoryName);
-    if ($caseCategoryName == 'cases') {
-      return TRUE;
-    }
-
+  public static function isValidCategory($caseCategoryId) {
     $caseCategoryOptions = CRM_Case_BAO_CaseType::buildOptions('case_type_category', 'validate');
-    $caseCategoryOptions = array_map('strtolower', $caseCategoryOptions);
 
-    if (!in_array($caseCategoryName, $caseCategoryOptions)) {
+    if (!in_array($caseCategoryId, array_flip($caseCategoryOptions))) {
       return FALSE;
     }
 
