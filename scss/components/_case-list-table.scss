@@ -82,6 +82,17 @@
   }
 }
 
+.civicase__case-list-table__column--status_badge {
+  max-width: 200px;
+  min-width: 200px !important;
+
+  .crm_notification-badge {
+    display: block;
+    max-width: fit-content;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
 
 .civicase__case-list-table__header {
   &.affix {
