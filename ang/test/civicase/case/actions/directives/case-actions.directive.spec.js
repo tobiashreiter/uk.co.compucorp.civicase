@@ -10,7 +10,6 @@
 
       $provide.service('PrintCaseAction', function () {
         this.doAction = jasmine.createSpy('doAction');
-        this.refreshData = jasmine.createSpy('refreshData');
         this.isActionAllowed = jasmine.createSpy('isActionAllowed');
         this.isActionAllowed.and.returnValue(true);
       });
@@ -376,12 +375,6 @@
           describe('when form is submitted succesfully', () => {
             beforeEach(() => {
               crmFormSuccessFunction(jasmine.any(Object), 'somedata');
-            });
-
-            it('refreshes the case information', () => {
-              expect($rootScope.$broadcast)
-                .toHaveBeenCalledWith('updateCaseData');
-              expect(PrintCaseAction.refreshData).toHaveBeenCalled();
             });
           });
 
