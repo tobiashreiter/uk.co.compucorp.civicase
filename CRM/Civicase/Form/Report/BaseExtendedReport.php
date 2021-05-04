@@ -595,7 +595,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * @return string
    *   Report query.
    */
-  public function buildQuery($applyLimit = TRUE) {
+  public function buildQuery($applyLimit = FALSE) {
     if (empty($this->_params)) {
       $this->_params = $this->controller->exportValues($this->_name);
     }
