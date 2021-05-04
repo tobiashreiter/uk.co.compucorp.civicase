@@ -7,6 +7,7 @@
 
     $provide.constant('PeoplesTabMessageConstants', {
       CONTACT_CANT_HAVE_ROLE_MESSAGE: ts('Case clients cannot be selected for a case role. Please select another contact.'),
+      ROLES_CANT_BE_ASSIGNED_AS_CLIENTS: ts('Case clients cannot be same as other case roles. Please select another contact.'),
       CONTACT_NOT_SELECTED_MESSAGE: ts('Please select a contact.'),
       RELATIONSHIP_END_DATE_MESSAGE: ts('End date cannot be before start date of the relationship.'),
       RELATIONSHIP_REASSIGNMENT_DATE_MESSAGE: ts('Reassignment date cannot be before start date of the relationship.')
