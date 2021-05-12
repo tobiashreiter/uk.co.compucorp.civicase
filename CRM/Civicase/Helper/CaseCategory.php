@@ -145,10 +145,10 @@ class CRM_Civicase_Helper_CaseCategory {
       $category = CRM_Civicase_Helper_Category::get($caseTypeCategoryName);
 
       return [
-        'Case' => ucfirst($category['singular_label']),
         'Cases' => ucfirst($category['label']),
-        'case' => strtolower($category['singular_label']),
+        'Case' => ucfirst($category['singular_label']),
         'cases' => strtolower($category['label']),
+        'case' => strtolower($category['singular_label']),
       ];
     }
 
