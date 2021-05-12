@@ -20,7 +20,10 @@ load_resources();
 
 // Word replacements are already loaded for the contact tab ContactCaseTab.
 if (CRM_Utils_System::currentPath() !== 'civicrm/case/contact-case-tab') {
-  CRM_Civicase_Hook_Helper_CaseTypeCategory::addWordReplacements($caseCategoryName);
+  $notTranslationPath = $caseCategoryName == CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME && CRM_Utils_System::currentPath() != 'civicrm/case/a';
+  if (!$notTranslationPath) {
+    CRM_Civicase_Hook_Helper_CaseTypeCategory::addWordReplacements($caseCategoryName);
+  }
 }
 
 $permissionService = new CaseCategoryPermission();
