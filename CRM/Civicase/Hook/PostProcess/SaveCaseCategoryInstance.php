@@ -3,7 +3,7 @@
 /**
  * CaseCategoryInstance Post Process Hook class.
  */
-class CRM_Civicase_Hook_PostProcess_SaveCaseCategoryInstance extends CRM_Civicase_Hook_CaseCategoryInstanceBase {
+class CRM_Civicase_Hook_PostProcess_SaveCaseCategoryInstance extends CRM_Civicase_Hook_CaseCategoryFormHookBase {
 
   /**
    * Saves the case category instance type relationship.
@@ -21,25 +21,22 @@ class CRM_Civicase_Hook_PostProcess_SaveCaseCategoryInstance extends CRM_Civicas
     $caseCategoryValues = $form->getVar('_submitValues');
     $instanceTypeValue = $caseCategoryValues[self::INSTANCE_TYPE_FIELD_NAME];
     $caseCategoryValue = $caseCategoryValues['value'];
-    $this->saveCaseCategoryInstance($caseCategoryValue, $instanceTypeValue);
+
+    $this->saveCaseCategoryInstance([
+      'category_id' => $caseCategoryValue,
+      'instance_id' => $instanceTypeValue,
+    ]);
   }
 
   /**
-   * Saves the case category instance type relationship.
+   * Saves the case category instance values.
    *
-   * @param int $caseCategoryValue
-   *   Case category value.
-   * @param int $instanceTypeValue
-   *   Instance Type Value.
+   * @param array $params
+   *   Case category field values.
    */
-  private function saveCaseCategoryInstance($caseCategoryValue, $instanceTypeValue) {
-    $params = [
-      'category_id' => $caseCategoryValue,
-      'instance_id' => $instanceTypeValue,
-    ];
-
+  private function saveCaseCategoryInstance(array $params) {
     $result = civicrm_api3('CaseCategoryInstance', 'get', [
-      'category_id' => $caseCategoryValue,
+      'category_id' => $params['category_id'],
     ]);
 
     if ($result['count'] == 1) {

@@ -3,6 +3,7 @@
 use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
 use CRM_Civicase_Service_CaseCategoryMenu as CaseCategoryMenuService;
 use CRM_Civicase_Test_Fabricator_CaseCategory as CaseCategoryFabricator;
+use CRM_Civicase_Helper_Category as CategoryHelper;
 
 /**
  * Test class for the CRM_Civicase_Service_CaseCategoryMenu.
@@ -33,7 +34,11 @@ class CRM_Civicase_Service_CaseCategoryMenuTest extends BaseHeadlessTest {
   public function testCreateNewItemsAddsExpectedMenus() {
     $caseCategory = CaseCategoryFabricator::fabricate();
 
-    $this->caseCategoryMenu->createItems($caseCategory['name']);
+    $this->caseCategoryMenu->createItems([
+      'name' => $caseCategory['name'],
+      'label' => $caseCategory['label'],
+      'singular_label' => $caseCategory['label'],
+    ]);
 
     $this->assertMenuCreatedForCaseCategory($caseCategory);
   }
@@ -45,9 +50,17 @@ class CRM_Civicase_Service_CaseCategoryMenuTest extends BaseHeadlessTest {
     $caseCategory = CaseCategoryFabricator::fabricate();
 
     // First call.
-    $this->caseCategoryMenu->createItems($caseCategory['name']);
+    $this->caseCategoryMenu->createItems([
+      'name' => $caseCategory['name'],
+      'label' => $caseCategory['label'],
+      'singular_label' => $caseCategory['label'],
+    ]);
     // Second call.
-    $this->caseCategoryMenu->createItems($caseCategory['name']);
+    $this->caseCategoryMenu->createItems([
+      'name' => $caseCategory['name'],
+      'label' => $caseCategory['label'],
+      'singular_label' => $caseCategory['label'],
+    ]);
 
     $menuCreatedCount = civicrm_api3('Navigation', 'getcount', ['name' => $caseCategory['name']]);
     $this->assertEquals(1, $menuCreatedCount);
@@ -61,10 +74,18 @@ class CRM_Civicase_Service_CaseCategoryMenuTest extends BaseHeadlessTest {
     $caseCategoryTwo = CaseCategoryFabricator::fabricate();
     $expectWeightForMenu = $this->getExpectedWeightForCategoryMenu();
 
-    $this->caseCategoryMenu->createItems($caseCategoryOne['name']);
+    $this->caseCategoryMenu->createItems([
+      'name' => $caseCategoryOne['name'],
+      'label' => $caseCategoryOne['label'],
+      'singular_label' => $caseCategoryOne['label'],
+    ]);
     // This clears the cache.
     civicrm_api3('Navigation', 'getfields', ['cache_clear' => 1]);
-    $this->caseCategoryMenu->createItems($caseCategoryTwo['name']);
+    $this->caseCategoryMenu->createItems([
+      'name' => $caseCategoryTwo['name'],
+      'label' => $caseCategoryTwo['label'],
+      'singular_label' => $caseCategoryTwo['label'],
+    ]);
 
     $menuOneWeight = civicrm_api3('Navigation', 'getsingle',
       [
@@ -88,7 +109,11 @@ class CRM_Civicase_Service_CaseCategoryMenuTest extends BaseHeadlessTest {
   public function testDeleteItemsRemovesMenusAndSubMenus() {
     $caseCategory = CaseCategoryFabricator::fabricate();
 
-    $this->caseCategoryMenu->createItems($caseCategory['name']);
+    $this->caseCategoryMenu->createItems([
+      'name' => $caseCategory['name'],
+      'label' => $caseCategory['label'],
+      'singular_label' => $caseCategory['label'],
+    ]);
     $menuCreatedId = civicrm_api3('Navigation', 'getsingle',
       [
         'name' => $caseCategory['name'],
@@ -114,7 +139,11 @@ class CRM_Civicase_Service_CaseCategoryMenuTest extends BaseHeadlessTest {
       'is_active' => 0,
     ];
 
-    $this->caseCategoryMenu->createItems($caseCategory['name']);
+    $this->caseCategoryMenu->createItems([
+      'name' => $caseCategory['name'],
+      'label' => $caseCategory['label'],
+      'singular_label' => $caseCategory['label'],
+    ]);
     $menuCreated = civicrm_api3('Navigation', 'getsingle', ['name' => $caseCategory['name']]);
     foreach ($newValues as $key => $value) {
       $this->assertNotEquals($value, $menuCreated[$key]);
@@ -135,7 +164,9 @@ class CRM_Civicase_Service_CaseCategoryMenuTest extends BaseHeadlessTest {
    */
   public function testMenusLinksAreCorrectlyUpdated() {
     $caseCategory = CaseCategoryFabricator::fabricate();
-    $submenus = $this->caseCategoryMenu->getSubmenus($caseCategory['name']);
+    $submenus = $this->caseCategoryMenu->getSubmenus(
+      CategoryHelper::get($caseCategory['name'])
+    );
 
     // Create the menus but with different URL.
     foreach ($submenus as $submenu) {
@@ -153,7 +184,9 @@ class CRM_Civicase_Service_CaseCategoryMenuTest extends BaseHeadlessTest {
     }
 
     // Perform the update.
-    $this->caseCategoryMenu->resetCaseCategorySubmenusUrl($caseCategory['name']);
+    $this->caseCategoryMenu->resetCaseCategorySubmenusUrl(
+      CategoryHelper::get($caseCategory['name'])
+    );
     civicrm_api3('Navigation', 'getfields', ['cache_clear' => 1]);
 
     // Assert that the URL are as expected.

@@ -4,6 +4,7 @@ use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
 use CRM_Civicase_Service_CaseCategoryInstance as CaseCategoryInstance;
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 use CRM_Civicase_Service_CaseCategoryMenu as CaseCategoryMenu;
+use CRM_Civicase_Helper_Category as CategoryHelper;
 
 /**
  * Create/Delete Case Type Category Menu items.
@@ -103,7 +104,9 @@ class CRM_Civicase_Service_ManageWorkflowMenu {
    *   Url of the workflow item.
    */
   private function getUrlForCategory(string $categoryName) {
-    $submenus = (new CaseCategoryMenu())->getSubmenus($categoryName);
+    $submenus = (new CaseCategoryMenu())->getSubmenus(
+      CategoryHelper::get($categoryName)
+    );
     $submenus = array_column($submenus, 'url', 'name');
 
     return $submenus["manage_{$categoryName}_workflows"];

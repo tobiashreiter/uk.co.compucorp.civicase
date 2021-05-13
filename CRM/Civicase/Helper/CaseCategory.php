@@ -11,7 +11,22 @@ use CRM_Civicase_BAO_CaseCategoryInstance as CaseCategoryInstance;
 class CRM_Civicase_Helper_CaseCategory {
 
   const CASE_TYPE_CATEGORY_GROUP_NAME = 'case_type_categories';
+
+
+  /**
+   * Case category name.
+   */
   const CASE_TYPE_CATEGORY_NAME = 'Cases';
+
+  /**
+   * Case category label.
+   */
+  const CASE_TYPE_CATEGORY_LABEL = 'Cases';
+
+  /**
+   * Case category singular label.
+   */
+  const CASE_TYPE_CATEGORY_SINGULAR_LABEL = 'Case';
 
   /**
    * Returns the full list of case type categories.
@@ -127,11 +142,17 @@ class CRM_Civicase_Helper_CaseCategory {
         return [];
       }
 
+      $category = CRM_Civicase_Helper_Category::get($caseTypeCategoryName);
+
       return [
-        'Case' => ucfirst($caseTypeCategoryName),
-        'Cases' => ucfirst($caseTypeCategoryName) . 's',
-        'case' => strtolower($caseTypeCategoryName),
-        'cases' => strtolower($caseTypeCategoryName) . 's',
+        'Cases' => '_PLURAL_WILDCARD_',
+        'Case' => '_SINGULAR_WILDCARD_',
+        '_PLURAL_WILDCARD_' => ucfirst($category['label']),
+        '_SINGULAR_WILDCARD_' => ucfirst($category['singular_label']),
+        'cases' => '_plural_wildcard_',
+        'case' => '_singular_wildcard_',
+        '_plural_wildcard_' => strtolower($category['label']),
+        '_singular_wildcard_' => strtolower($category['singular_label']),
       ];
     }
 
@@ -427,6 +448,20 @@ class CRM_Civicase_Helper_CaseCategory {
     }
 
     return $result['values'][0]['value'];
+  }
+
+  /**
+   * Get data for creating the menu.
+   *
+   * @return string[]
+   *   Category data.
+   */
+  public static function getDataForMenu() {
+    return [
+      'name' => self::CASE_TYPE_CATEGORY_NAME,
+      'label' => self::CASE_TYPE_CATEGORY_LABEL,
+      'singular_label' => self::CASE_TYPE_CATEGORY_SINGULAR_LABEL,
+    ];
   }
 
 }

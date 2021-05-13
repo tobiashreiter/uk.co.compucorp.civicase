@@ -35,6 +35,10 @@
         initController();
       });
 
+      it('stores the data for the current case category', () => {
+        expect($scope.currentCaseCategory.name).toBe('Cases');
+      });
+
       it('hides the empty message before case types are loaded', () => {
         expect($scope.isLoading).toBe(true);
       });
@@ -150,6 +154,7 @@
       module('workflow.mock', 'workflow', 'civicase.data', 'civicase.spy', ($provide) => {
         civicaseCrmApiMock = jasmine.createSpy('civicaseCrmApi');
 
+        $provide.value('currentCaseCategory', 'cases');
         $provide.value('civicaseCrmApi', civicaseCrmApiMock);
       });
 

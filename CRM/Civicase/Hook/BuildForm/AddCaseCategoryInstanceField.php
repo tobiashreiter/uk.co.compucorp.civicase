@@ -3,7 +3,7 @@
 /**
  * AddCaseCategoryInstanceField BuildForm Hook Class.
  */
-class CRM_Civicase_Hook_BuildForm_AddCaseCategoryInstanceField extends CRM_Civicase_Hook_CaseCategoryInstanceBase {
+class CRM_Civicase_Hook_BuildForm_AddCaseCategoryInstanceField extends CRM_Civicase_Hook_CaseCategoryFormHookBase {
 
   /**
    * Adds the Case Category Instance Form field.
@@ -39,9 +39,8 @@ class CRM_Civicase_Hook_BuildForm_AddCaseCategoryInstanceField extends CRM_Civic
     );
 
     if ($form->getVar('_id')) {
-      $caseCategoryValues = $form->getVar('_values');
-      $defaultInstanceValue = $this->getDefaultValue($caseCategoryValues['value']);
-      $caseCategoryInstance->setValue($defaultInstanceValue);
+      $defaultInstanceValues = $this->getDefaultValue($form);
+      $caseCategoryInstance->setValue($defaultInstanceValues['instance_id']);
     }
   }
 
@@ -58,17 +57,19 @@ class CRM_Civicase_Hook_BuildForm_AddCaseCategoryInstanceField extends CRM_Civic
   }
 
   /**
-   * Returns the default value for the category instance field.
+   * Returns the default value for the category instance fields.
    *
-   * @param int $categoryValue
-   *   Category value.
+   * @param CRM_Core_Form $form
+   *   Form Class object.
    *
    * @return mixed|null
    *   Default value.
    */
-  private function getDefaultValue($categoryValue) {
+  private function getDefaultValue(CRM_Core_Form $form) {
+    $caseCategoryValues = $form->getVar('_values');
+
     $result = civicrm_api3('CaseCategoryInstance', 'get', [
-      'category_id' => $categoryValue,
+      'category_id' => $caseCategoryValues['value'],
       'sequential' => 1,
     ]);
 
@@ -76,7 +77,7 @@ class CRM_Civicase_Hook_BuildForm_AddCaseCategoryInstanceField extends CRM_Civic
       return NULL;
     }
 
-    return $result['values'][0]['instance_id'];
+    return $result['values'][0];
   }
 
 }

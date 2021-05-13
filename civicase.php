@@ -225,6 +225,7 @@ function civicase_civicrm_buildForm($formName, &$form) {
     new CRM_Civicase_Hook_BuildForm_TokenTree(),
     new CRM_Civicase_Hook_BuildForm_LinkCaseActivityDefaultStatus(),
     new CRM_Civicase_Hook_BuildForm_HandleDraftActivities(),
+    new CRM_Civicase_Hook_BuildForm_AddCaseCategoryCustomFields(),
   ];
 
   foreach ($hooks as $hook) {
@@ -338,6 +339,7 @@ function civicase_civicrm_postProcess($formName, &$form) {
     new CRM_Civicase_Hook_PostProcess_RedirectToCaseDetails(),
     new CRM_Civicase_Hook_PostProcess_AttachEmailActivityToAllCases(),
     new CRM_Civicase_Hook_PostProcess_HandleDraftActivity(),
+    new CRM_Civicase_Hook_PostProcess_SaveCaseCategoryCustomFields(),
   ];
 
   foreach ($hooks as $hook) {

@@ -1,6 +1,7 @@
 <?php
 
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
+use CRM_Civicase_Helper_Category as CategoryHelper;
 
 /**
  * Class for updating menus of Case Categories dynamically created.
@@ -20,7 +21,9 @@ class CRM_Civicase_Setup_UpdateCategoryNavigationItems {
     foreach ($categories as $category) {
       $categoryInstance = CaseCategoryHelper::getInstanceObject($category['value']);
       $categoryMenu = $categoryInstance->getMenuObject();
-      $categoryMenu->resetCaseCategorySubmenusUrl($category['name']);
+      $categoryMenu->resetCaseCategorySubmenusUrl(
+        CategoryHelper::get($category['name']),
+      );
     }
 
     CRM_Core_BAO_Navigation::resetNavigation();
