@@ -2,8 +2,8 @@
   var module = angular.module('civicase');
 
   module.directive('civicaseActivityFilters', function ($rootScope, $timeout, ts,
-    crmUiHelp, ActivityCategory, ActivityStatus, ActivityType,
-    CustomActivityField, CaseTypeCategory) {
+    ActivityCategory, ActivityStatus, ActivityType, CustomActivityField,
+    CaseTypeCategory) {
     return {
       restrict: 'A',
       scope: {
@@ -138,7 +138,7 @@
             name: 'activity_type_id',
             label: ts('Activity type'),
             html_type: 'Select',
-            options: _.map(CRM.civicase.activityTypes, mapSelectOptions)
+            options: _.map(ActivityType.getAll(), mapSelectOptions)
           },
           {
             name: 'status_id',
