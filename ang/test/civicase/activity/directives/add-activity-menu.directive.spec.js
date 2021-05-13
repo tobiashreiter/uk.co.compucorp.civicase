@@ -2,7 +2,7 @@
   describe('AddActivityMenu', function () {
     describe('Add Activity Menu Controller', function () {
       var $controller, $rootScope, $scope, ActivityForms, activityForm, CaseType,
-        mockCase;
+        mockCase, CasesData;
 
       beforeEach(module('civicase', 'civicase.data', ($provide) => {
         ActivityForms = jasmine.createSpyObj('ActivityForms', ['getActivityFormService']);
@@ -14,10 +14,11 @@
         $provide.value('ActivityForms', ActivityForms);
       }));
 
-      beforeEach(inject(function (_$controller_, _$rootScope_, _CaseType_) {
+      beforeEach(inject(function (_$controller_, _$rootScope_, _CaseType_, _CasesData_) {
         $controller = _$controller_;
         $rootScope = _$rootScope_;
         CaseType = _CaseType_;
+        CasesData = _CasesData_;
       }));
 
       describe('activity menu', function () {
@@ -28,11 +29,8 @@
           activityTypeWithMaxInstance = activityTypes.find(function (activity) {
             return activity.max_instances;
           });
-          mockCase = {
-            case_type_id: 1
-          };
 
-          initController(mockCase);
+          initController(CasesData.get().values[0]);
 
           activityTypeExceedingMaxInstanceIsHidden = !_.find($scope.availableActivityTypes, function (activityType) {
             return activityType.name === activityTypeWithMaxInstance.name;
