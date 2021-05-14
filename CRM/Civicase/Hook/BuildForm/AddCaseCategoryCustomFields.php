@@ -85,6 +85,7 @@ class CRM_Civicase_Hook_BuildForm_AddCaseCategoryCustomFields extends CRM_Civica
   private function updatePrimaryLabelText(CRM_Core_Form $form) {
     $labelField = $form->getElement('label');
     $labelField->setLabel('Primary Label');
+    $labelField->setAttribute('maxlength', 45);
   }
 
 }
