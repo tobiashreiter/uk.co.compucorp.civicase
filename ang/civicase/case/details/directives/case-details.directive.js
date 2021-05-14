@@ -159,7 +159,10 @@
     function createPDFLetter () {
       PrintMergeCaseAction.doAction([$scope.item])
         .then(function (pdfLetter) {
-          civicaseCrmLoadForm(civicaseCrmUrl(pdfLetter.path, pdfLetter.query));
+          civicaseCrmLoadForm(civicaseCrmUrl(pdfLetter.path, pdfLetter.query))
+            .on('crmPopupFormSuccess', function () {
+              $rootScope.$broadcast('civicase::activity::updated');
+            });
         });
     }
 
