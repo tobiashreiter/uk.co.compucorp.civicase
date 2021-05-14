@@ -189,6 +189,7 @@
             13: '1',
             15: '4',
             16: '1',
+            72: '1',
             53: '1'
           },
           'api.Case.getcaselist.relatedCasesByContact': { values: [] },
