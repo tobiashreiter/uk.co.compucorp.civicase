@@ -676,6 +676,7 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
   private function getCaseTags() {
     $result = civicrm_api3('Tag', 'get', [
       'used_for' => 'Cases',
+      'options' => ['limit' => 0],
     ]);
 
     if (empty($result['values'])) {
