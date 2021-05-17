@@ -23,8 +23,10 @@
 
     $('body')
       .off('submit', $form)
-      .on('submit', $form, function () {
-        CRM['civicase-base'].closePDFPopup();
+      .on('submit', $form, function (event) {
+        if (event.originalEvent.submitter.id === '_qf_PDF_upload-bottom') {
+          CRM['civicase-base'].closePDFPopup();
+        }
       });
   });
 })(CRM.$, CRM['civicase-base']);
