@@ -39,10 +39,7 @@
      * @param {object} $scope scope object
      */
     this.doAction = function ($scope) {
-      viewInPopup(null, $scope.selectedActivities[0])
-        .on('crmFormSuccess', function () {
-          $rootScope.$broadcast('civicase::activity::updated');
-        });
+      viewInPopup(null, $scope.selectedActivities[0]);
     };
   }
 })(angular);
