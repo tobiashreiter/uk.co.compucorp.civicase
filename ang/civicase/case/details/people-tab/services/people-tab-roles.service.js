@@ -155,6 +155,7 @@
               relationship_type_id: caseTypeRole.relationship_type_id,
               role: caseTypeRole.role,
               relationship: caseRelation,
+              relationship_is_active: relTypes[caseTypeRole.relationship_type_id].is_active,
               previousValues: {
                 end_date: caseRelation.end_date,
                 start_date: caseRelation.start_date
@@ -166,7 +167,8 @@
           caseRoles.push({
             description: caseTypeRole.description,
             relationship_type_id: caseTypeRole.relationship_type_id,
-            role: caseTypeRole.role
+            role: caseTypeRole.role,
+            relationship_is_active: relTypes[caseTypeRole.relationship_type_id].is_active
           });
         }
       });
