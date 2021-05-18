@@ -40,7 +40,7 @@
      */
     this.doAction = function ($scope) {
       viewInPopup(null, $scope.selectedActivities[0])
-        .on('crmFormSuccess', function () {
+        .on('crmFormSuccess crmPopupFormSuccess', function () {
           $rootScope.$broadcast('civicase::activity::updated');
         });
     };
