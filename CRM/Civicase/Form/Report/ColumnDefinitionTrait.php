@@ -1,29 +1,24 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: emcnaughton
- * Date: 9/1/18
- * Time: 1:05 AM
- */
 
 /**
- * Trait CRM_Extendedreport_Form_Report_ColumnDefinitionTrait
+ * Trait CRM_Extendedreport_Form_Report_ColumnDefinitionTrait.
  *
- * This trait serves to organise the long getColumns functions into one function.
- *
- * It is for code organisation & may or may not make the most sense long term.
+ * This trait serves to organise the long getColumns functions into
+ * one function. It is for code organisation & may or may not make
+ * the most sense long term.
  */
 trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
-  /*
- * Function to get Activity Columns
- * @param array $options column options
- */
+
   /**
+   * Get activity colums.
+   *
    * @param array $options
+   *   Options for generating the columns.
    *
    * @return array
+   *   Activity columns.
    */
-  function getActivityColumns($options = []) {
+  public function getActivityColumns(array $options = []) {
     $defaultOptions = [
       'prefix' => '',
       'prefix_label' => '',
@@ -136,7 +131,7 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
         'operatorType' => CRM_Report_Form::OP_SELECT,
         'title' => ts("Current Revision"),
         'name' => 'is_current_revision',
-        'options' => ['' => '- select -', '1' => 'Yes', '0' => 'No',],
+        'options' => ['' => '- select -', '1' => 'Yes', '0' => 'No'],
         'is_filters' => TRUE,
       ],
       'is_deleted' => [
@@ -144,7 +139,7 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
         'operatorType' => CRM_Report_Form::OP_SELECT,
         'title' => ts("Is activity deleted"),
         'name' => 'is_deleted',
-        'options' => ['' => '- select -', '0' => 'No', '1' => 'Yes',],
+        'options' => ['' => '- select -', '0' => 'No', '1' => 'Yes'],
         'is_filters' => TRUE,
       ],
 
@@ -155,11 +150,13 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
   /**
    * Get columns for Case.
    *
-   * @param $options
+   * @param array $options
+   *   Options for generating the columns.
    *
    * @return array
+   *   Case columns.
    */
-  function getCaseColumns($options) {
+  public function getCaseColumns(array $options) {
     $config = CRM_Core_Config::singleton();
     if (!in_array('CiviCase', $config->enableComponents)) {
       return ['civicrm_case' => ['fields' => [], 'metadata' => []]];
@@ -246,16 +243,21 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
       ],
 
     ];
-    // Case is a special word in mysql so pass an alias to prevent it from using case.
+    // Case is a special word in mysql so pass an alias to
+    // prevent it from using case.
     return $this->buildColumns($spec['civicrm_case']['fields'], $options['prefix'] . 'civicrm_case', 'CRM_Case_DAO_Case', 'case_civireport');
   }
 
   /**
+   * Get contact columns.
+   *
    * @param array $options
+   *   Options for generating the columns.
    *
    * @return array
+   *   Contact columns
    */
-  function getContactColumns($options = []) {
+  public function getContactColumns(array $options = []) {
     $defaultOptions = [
       'prefix' => '',
       'prefix_label' => '',
@@ -399,9 +401,9 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
         'label' => ts('Do Not Email'),
         'type' => CRM_Utils_Type::T_BOOLEAN,
         'operatorType' => CRM_Report_Form::OP_SELECT,
-        'options' => ['' => '- select -', '1' => 'Yes', '0' => 'No',],
+        'options' => ['' => '- select -', '1' => 'Yes', '0' => 'No'],
         'is_fields' => TRUE,
-        'is_filters' => TRUE
+        'is_filters' => TRUE,
       ],
       $options['prefix'] . 'do_not_phone' => [
         'name' => 'do_not_phone',
@@ -409,7 +411,7 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
         'label' => ts('Do Not Phone'),
         'type' => CRM_Utils_Type::T_BOOLEAN,
         'operatorType' => CRM_Report_Form::OP_SELECT,
-        'options' => ['' => '- select -', '1' => 'Yes', '0' => 'No',],
+        'options' => ['' => '- select -', '1' => 'Yes', '0' => 'No'],
         'is_fields' => TRUE,
         'is_filters' => TRUE,
       ],
@@ -419,7 +421,7 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
         'label' => ts('Do Not Mail'),
         'type' => CRM_Utils_Type::T_BOOLEAN,
         'operatorType' => CRM_Report_Form::OP_SELECT,
-        'options' => ['' => '- select -', '1' => 'Yes', '0' => 'No',],
+        'options' => ['' => '- select -', '1' => 'Yes', '0' => 'No'],
         'is_fields' => TRUE,
         'is_filters' => TRUE,
       ],
@@ -429,7 +431,7 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
         'label' => ts('Do Not SMS'),
         'type' => CRM_Utils_Type::T_BOOLEAN,
         'operatorType' => CRM_Report_Form::OP_SELECT,
-        'options' => ['' => '- select -', '1' => 'Yes', '0' => 'No',],
+        'options' => ['' => '- select -', '1' => 'Yes', '0' => 'No'],
         'is_fields' => TRUE,
         'is_filters' => TRUE,
       ],
@@ -439,7 +441,7 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
         'label' => ts('Do Not Trade'),
         'type' => CRM_Utils_Type::T_BOOLEAN,
         'operatorType' => CRM_Report_Form::OP_SELECT,
-        'options' => ['' => '- select -', '1' => 'Yes', '0' => 'No',],
+        'options' => ['' => '- select -', '1' => 'Yes', '0' => 'No'],
         'is_fields' => TRUE,
         'is_filters' => TRUE,
       ],
@@ -449,7 +451,7 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
         'label' => ts('No Bulk Emails (User Opt Out)'),
         'type' => CRM_Utils_Type::T_BOOLEAN,
         'operatorType' => CRM_Report_Form::OP_SELECT,
-        'options' => ['' => '- select -', '1' => 'Yes', '0' => 'No',],
+        'options' => ['' => '- select -', '1' => 'Yes', '0' => 'No'],
         'is_fields' => TRUE,
         'is_filters' => TRUE,
       ],
@@ -525,7 +527,7 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
         'label' => ts('Deceased'),
         'type' => CRM_Utils_Type::T_BOOLEAN,
         'operatorType' => CRM_Report_Form::OP_SELECT,
-        'options' => ['' => '- select -', '1' => 'Yes', '0' => 'No',],
+        'options' => ['' => '- select -', '1' => 'Yes', '0' => 'No'],
         'is_fields' => TRUE,
         'is_filters' => TRUE,
       ],
@@ -551,7 +553,7 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
         'label' => ts('Contact is in Trash'),
         'type' => CRM_Utils_Type::T_BOOLEAN,
         'operatorType' => CRM_Report_Form::OP_SELECT,
-        'options' => ['' => '- select -', '0' => 'No', '1' => 'Yes',],
+        'options' => ['' => '- select -', '0' => 'No', '1' => 'Yes'],
         'is_fields' => TRUE,
         'is_filters' => TRUE,
       ],
@@ -595,11 +597,13 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
   /**
    * Function to get Activity Columns.
    *
-   * @param array $options column options
+   * @param array $options
+   *   Options for generating the columns.
    *
    * @return array
+   *   Latest activity columns.
    */
-  function getLatestActivityColumns($options) {
+  public function getLatestActivityColumns(array $options) {
     $defaultOptions = [
       'prefix' => '',
       'prefix_label' => '',
@@ -666,12 +670,13 @@ trait CRM_Civicase_Form_Report_ColumnDefinitionTrait {
   /**
    * Returns tags applicable for cases.
    *
-   * @return
+   * @return array
    *   The case tags.
    */
   private function getCaseTags() {
     $result = civicrm_api3('Tag', 'get', [
       'used_for' => 'Cases',
+      'options' => ['limit' => 0],
     ]);
 
     if (empty($result['values'])) {
