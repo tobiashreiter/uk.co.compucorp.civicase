@@ -409,6 +409,7 @@ function civicase_civicrm_tokens(&$tokens) {
   $contactCustomFieldsService = new CRM_Civicase_Service_ContactCustomFieldsProvider();
   $hooks = [
     new CRM_Civicase_Hook_Tokens_AddContactTokens($contactFieldsService, $contactCustomFieldsService),
+    new CRM_Civicase_Hook_Tokens_AddCaseTokenCategory(),
   ];
   foreach ($hooks as &$hook) {
     $hook->run($tokens);
@@ -421,8 +422,10 @@ function civicase_civicrm_tokens(&$tokens) {
 function civicase_civicrm_tokenValues(&$values, $cids, $job = NULL, $tokens = [], $context = NULL) {
   $contactFieldsService = new CRM_Civicase_Service_ContactFieldsProvider();
   $contactCustomFieldsService = new CRM_Civicase_Service_ContactCustomFieldsProvider();
+  $caseTokenValuesHelper = new CRM_Civicase_Hook_Tokens_Helper_CaseTokenValues();
   $hooks = [
     new CRM_Civicase_Hook_Tokens_AddContactTokensValues($contactFieldsService, $contactCustomFieldsService),
+    new CRM_Civicase_Hook_Tokens_AddCaseCustomFieldsTokenValues($caseTokenValuesHelper),
   ];
   foreach ($hooks as &$hook) {
     $hook->run($values, $cids, $job, $tokens, $context);
