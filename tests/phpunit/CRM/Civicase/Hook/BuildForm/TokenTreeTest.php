@@ -280,7 +280,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTreeTest extends BaseHeadlessTest {
       $newTokenTree[TokenTree::CASE_TOKEN_TEXT]['children'][0]['children'][0]['text']
     );
     $this->assertEquals(
-      '{case.custom_' . $this->caseCustomField[0]['id'] . '}',
+      '{case_cf.custom_' . $this->caseCustomField[0]['id'] . '}',
       $newTokenTree[TokenTree::CASE_TOKEN_TEXT]['children'][1]['children'][0]['children'][0]['id']
     );
     $this->assertEquals(
@@ -288,7 +288,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTreeTest extends BaseHeadlessTest {
       $newTokenTree[TokenTree::CASE_TOKEN_TEXT]['children'][1]['children'][0]['children'][0]['text']
     );
     $this->assertEquals(
-      '{case.custom_' . $this->caseCustomField[1]['id'] . '}',
+      '{case_cf.custom_' . $this->caseCustomField[1]['id'] . '}',
       $newTokenTree[TokenTree::CASE_TOKEN_TEXT]['children'][1]['children'][0]['children'][1]['id']
     );
     $this->assertEquals(
