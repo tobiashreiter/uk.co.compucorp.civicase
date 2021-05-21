@@ -147,7 +147,6 @@ function set_case_types_to_js_vars(&$options) {
  */
 function set_relationship_types_to_js_vars(&$options) {
   $result = civicrm_api3('RelationshipType', 'get', [
-    'is_active' => 1,
     'options' => ['limit' => 0],
   ]);
   $options['relationshipTypes'] = $result['values'];
