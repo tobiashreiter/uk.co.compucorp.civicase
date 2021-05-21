@@ -78,10 +78,29 @@ class CRM_Civicase_Hook_Tokens_AddCaseCustomFieldsTokenValuesTest extends BaseHe
    */
   private function getCaseTokenValuesHelperHelperMock(array $customFieldValues, $caseId) {
     $caseCustomFieldValuesHelper = $this->getMockBuilder(CaseTokenValuesHelper::class)
-      ->setMethods(['getCustomFieldValues', 'getCaseId'])
+      ->setMethods(
+        [
+          'getCustomFieldValues',
+          'getCaseId',
+          'getTokenReplacementValue',
+        ]
+      )
       ->getMock();
     $caseCustomFieldValuesHelper->method('getCustomFieldValues')->willReturn($customFieldValues);
     $caseCustomFieldValuesHelper->method('getCaseId')->willReturn($caseId);
+    $returnValueMap = [];
+
+    foreach ($customFieldValues as $customField => $customFieldValue) {
+      $returnValueMap[] = [
+        $customField,
+        $customFieldValues,
+        $customFieldValues[$customField],
+      ];
+    }
+
+    $caseCustomFieldValuesHelper->method('getTokenReplacementValue')->will(
+      $this->returnValueMap($returnValueMap)
+    );
 
     return $caseCustomFieldValuesHelper;
   }

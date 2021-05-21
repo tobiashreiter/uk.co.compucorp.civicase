@@ -89,7 +89,7 @@ class CRM_Civicase_Hook_Tokens_AddCaseCustomFieldsTokenValues {
     // so it can be evaluated for the case_cf category when token is replaced.
     $customValuesNew = [];
     foreach ($customValues as $key => $customValue) {
-      $customValuesNew['case_cf.' . $key] = $customValue;
+      $customValuesNew['case_cf.' . $key] = $this->caseTokenValuesHelper->getTokenReplacementValue($key, $customValues);
     }
 
     foreach ($cids as $cid) {

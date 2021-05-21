@@ -24,6 +24,25 @@ class CRM_Civicase_Hook_Tokens_Helper_CaseTokenValues {
   }
 
   /**
+   * Returns the value for the custom field token.
+   *
+   * We are using the civicrm replacement function here because
+   * it takes care of complex replacement such as values for checkboxes,
+   * multi-selects and radio fields.
+   *
+   * @param string $token
+   *   Token to get replacement value for.
+   * @param array $customFieldValues
+   *   Array of custom field keys and values.
+   *
+   * @return string
+   *   Token replacement value.
+   */
+  public function getTokenReplacementValue($token, array $customFieldValues) {
+    return CRM_Utils_Token::getApiTokenReplacement('case', $token, $customFieldValues);
+  }
+
+  /**
    * Returns the case Id.
    *
    * Returns NULL if no case id is found. Means it is not a case related
