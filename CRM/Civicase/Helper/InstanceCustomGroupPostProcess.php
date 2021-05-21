@@ -19,6 +19,7 @@ class CRM_Civicase_Helper_InstanceCustomGroupPostProcess {
       'sequential' => 1,
       'return' => ['id'],
       'case_type_category' => $caseTypeCategoryId,
+      'options' => ['limit' => 0],
     ]);
 
     return array_column($result['values'], 'id');
