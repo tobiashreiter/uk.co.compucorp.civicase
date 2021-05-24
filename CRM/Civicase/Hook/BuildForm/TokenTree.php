@@ -403,6 +403,7 @@ class CRM_Civicase_Hook_BuildForm_TokenTree {
         $this->addCustomTokens($newTokenTree, self::RECIPIENT_TOKEN_TEXT, $token);
       }
       elseif (strpos($token['id'], 'case.custom_') !== FALSE) {
+        $token['id'] = str_replace('case.custom_', 'case_cf.custom_', $token['id']);
         $this->addCustomTokens($newTokenTree, self::CASE_TOKEN_TEXT, $token);
       }
       else {
