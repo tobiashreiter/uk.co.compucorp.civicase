@@ -14,20 +14,10 @@ use CRM_Civicase_Helper_GlobRecursive as GlobRecursive;
 use CRM_Civicase_Helper_NewCaseWebform as NewCaseWebform;
 use CRM_Civicase_Service_CaseCategoryCustomFieldsSetting as CaseCategoryCustomFieldsSetting;
 use CRM_Civicase_Helper_CaseUrl as CaseUrlHelper;
-use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 
 [$caseCategoryId, $caseCategoryName] = CaseUrlHelper::getCategoryParamsFromUrl();
 
 $caseCategorySetting = new CRM_Civicase_Service_CaseCategorySetting();
-
-if (CRM_Utils_System::currentPath() !== 'civicrm/case/contact-case-tab') {
-  $notTranslationPath = $caseCategoryName == CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME && CRM_Utils_System::currentPath() != 'civicrm/case/a';
-  if (!$notTranslationPath) {
-    if (!in_array($caseCategoryName, CaseCategoryHelper::getAccessibleCaseTypeCategories())) {
-      throw new Exception('Access denied! You are not authorized to access this page.');
-    }
-  }
-}
 
 $options = [
   'activityTypes' => 'activity_type',
