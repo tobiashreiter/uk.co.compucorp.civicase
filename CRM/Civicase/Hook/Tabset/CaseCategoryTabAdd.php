@@ -66,7 +66,7 @@ class CRM_Civicase_Hook_Tabset_CaseCategoryTabAdd {
           'cid' => $contactID,
           'case_type_category' => $caseCategory['value'],
         ]),
-        'title' => ts($caseCategory['label']),
+        'title' => ucfirst(strtolower($caseCategory['label'])),
         'weight' => $caseTabWeight,
         'count' => CaseCategoryHelper::getCaseCount($caseCategory['name'], $contactID),
         'class' => 'livePage',
