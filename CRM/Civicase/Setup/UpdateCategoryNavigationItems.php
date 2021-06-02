@@ -22,7 +22,7 @@ class CRM_Civicase_Setup_UpdateCategoryNavigationItems {
       $categoryInstance = CaseCategoryHelper::getInstanceObject($category['value']);
       $categoryMenu = $categoryInstance->getMenuObject();
       $categoryMenu->resetCaseCategorySubmenusUrl(
-        CategoryHelper::get($category['name']),
+        CategoryHelper::get($category['name'])
       );
     }
 
