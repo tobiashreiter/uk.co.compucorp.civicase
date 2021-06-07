@@ -6,7 +6,7 @@ use CRM_Case_BAO_CaseType as CaseType;
 use CRM_Civicase_Service_CaseCategoryFromUrl as CaseCategoryFromUrl;
 
 /**
- * Class CRM_Civicase_Hook_PermissionCheck_CaseCategory.
+ * Class for check permissions related to case categories.
  */
 class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
 
@@ -42,7 +42,8 @@ class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
     // will return true as the logic for equivalent case category permission
     // will be applied.
     $isAdvancedSearchPage = $url == 'civicrm/contact/search/advanced' && $permission != 'basic case information';
-    // We need to exclude Standalone page, since we can't precisely detect the category in it.
+    // We need to exclude Standalone page, since we can't precisely detect
+    // the category in it.
     $isStandalonePage = $url === 'civicrm/export/standalone';
 
     $caseCategoryName = $caseCategoryFromUrl->get($url);
