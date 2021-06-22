@@ -27,7 +27,7 @@ class CRM_Civicase_Hook_ValidateForm_SendBulkEmail {
   private $caseIds;
 
   /**
-   * Indicates of the client role is present on the roles to be notified.
+   * Indicates if the client role is present on the roles to be notified.
    *
    * @var bool
    */
