@@ -118,8 +118,8 @@ class CRM_Civicase_Hook_ValidateForm_SendBulkEmail {
   private function getCasesContactInfo() {
     $casesContactInfo = [];
 
-    $casesContactInfo = $this->parseClientContacts($casesContactInfo);
-    $casesContactInfo = $this->parseNonClientContacts($casesContactInfo);
+    $casesContactInfo = $this->getCaseClients($casesContactInfo);
+    $casesContactInfo = $this->getCaseRoleContacts($casesContactInfo);
 
     return $casesContactInfo;
   }
@@ -133,7 +133,7 @@ class CRM_Civicase_Hook_ValidateForm_SendBulkEmail {
    * @return array
    *   Returns the received array with the new information.
    */
-  private function parseClientContacts(array $casesContactInfo) {
+  private function getCaseClients(array $casesContactInfo) {
     if (!$this->isClientRoleSelected) {
       return $casesContactInfo;
     }
@@ -159,7 +159,7 @@ class CRM_Civicase_Hook_ValidateForm_SendBulkEmail {
    * @return array
    *   Returns the received array with the new information.
    */
-  private function parseNonClientContacts(array $casesContactInfo) {
+  private function getCaseRoleContacts(array $casesContactInfo) {
     if (count($this->caseRoles) === 0) {
       return $casesContactInfo;
     }
