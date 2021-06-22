@@ -235,6 +235,7 @@ function civicase_civicrm_buildForm($formName, &$form) {
     new CRM_Civicase_Hook_BuildForm_LinkCaseActivityDefaultStatus(),
     new CRM_Civicase_Hook_BuildForm_HandleDraftActivities(),
     new CRM_Civicase_Hook_BuildForm_AddCaseCategoryCustomFields(),
+    new CRM_Civicase_Hook_BuildForm_AddCaseRolesField(),
   ];
 
   foreach ($hooks as $hook) {
