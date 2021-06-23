@@ -120,6 +120,62 @@ class CRM_Civicase_Hook_SendBulkEmailTest extends BaseHeadlessTest {
   }
 
   /**
+   * Verify client is not notified if it was excluded from receiving contacts.
+   */
+  public function testHookDoNotSendEmailToExcludedContact() {
+    $clientA = CRM_Civicase_Test_Fabricator_Contact::fabricateWithEmail()['id'];
+    $clientB = CRM_Civicase_Test_Fabricator_Contact::fabricateWithEmail()['id'];
+
+    $caseA = $this->createCaseForContact($clientA)['id'];
+    $caseB = $this->createCaseForContact($clientB)['id'];
+    $_REQUEST['caseRoles'] = $_GET['caseRoles'] = "client";
+
+    $this->form = new CRM_Contact_Form_Task_Email();
+    $this->runHook([$caseA, $caseB], [$clientA]);
+
+    $this->assertEquals(1, $this->countEmailActivitiesCreated($caseA));
+    $this->assertEquals(0, $this->countEmailActivitiesCreated($caseB));
+  }
+
+  /**
+   * Verify client is notified when that role is selected.
+   */
+  public function testHookCreateEmailActivitiesForCaseClientsOnly() {
+    $client = CRM_Civicase_Test_Fabricator_Contact::fabricateWithEmail()['id'];
+    $case = $this->createCaseForContact($client)['id'];
+    $_REQUEST['caseRoles'] = $_GET['caseRoles'] = "client";
+
+    $this->form = new CRM_Contact_Form_Task_Email();
+    $this->runHook([$case], [$client]);
+
+    $this->assertEquals(1, $this->countEmailActivitiesCreated($case));
+  }
+
+  /**
+   * Verify contact is notified when the role is selected.
+   */
+  public function testHookCreateEmailActivitiesForCaseRoleOnly() {
+    $client = CRM_Civicase_Test_Fabricator_Contact::fabricateWithEmail()['id'];
+    $contact = CRM_Civicase_Test_Fabricator_Contact::fabricateWithEmail()['id'];
+    $relationshipType = CRM_Civicase_Test_Fabricator_RelationshipType::fabricate()['id'];
+
+    $case = $this->createCaseForContact($client)['id'];
+    CRM_Civicase_Test_Fabricator_Relationship::fabricate([
+      'case_id' => $case,
+      'contact_id_a' => $client,
+      'contact_id_b' => $contact,
+      'relationship_type_id' => $relationshipType,
+    ]);
+
+    $_REQUEST['caseRoles'] = $_GET['caseRoles'] = "$relationshipType";
+
+    $this->form = new CRM_Contact_Form_Task_Email();
+    $this->runHook([$case], [$contact]);
+
+    $this->assertEquals(1, $this->countEmailActivitiesCreated($case));
+  }
+
+  /**
    * Create a case for the given contact.
    *
    * @param int $contact
