@@ -144,7 +144,13 @@ class CRM_Civicase_Hook_ValidateForm_SendBulkEmail {
     ])['values'];
 
     foreach ($cases as $caseId => $caseInfo) {
-      $casesContactInfo[$caseId] = $caseInfo['client_id'];
+      foreach ($caseInfo['client_id'] as $clientId) {
+        if (!in_array($clientId, $this->form->_contactIds)) {
+          // The contact was not selected.
+          continue;
+        }
+        $casesContactInfo[$caseId][] = $clientId;
+      }
     }
 
     return $casesContactInfo;
@@ -173,7 +179,10 @@ class CRM_Civicase_Hook_ValidateForm_SendBulkEmail {
     ])['values'];
 
     foreach ($relationships as $relationship) {
-      $casesContactInfo[$relationship['case_id']] = $casesContactInfo[$relationship['case_id']] ?? [];
+      if (!in_array($relationship['contact_id_b'], $this->form->_contactIds)) {
+        // The contact was not selected.
+        continue;
+      }
       $casesContactInfo[$relationship['case_id']][] = $relationship['contact_id_b'];
     }
 
