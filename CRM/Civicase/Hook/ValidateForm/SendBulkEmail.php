@@ -214,8 +214,13 @@ class CRM_Civicase_Hook_ValidateForm_SendBulkEmail {
    */
   private function updateStatusMessage(int $uniqueContacts, int $messageSentCount) {
     $status = CRM_Core_Session::singleton()->getStatus(TRUE)[0];
+
+    $originalMessage = $uniqueContacts === 1
+      ? 'One message was sent successfully.'
+      : "$uniqueContacts messages were sent successfully.";
+
     $status['text'] = str_replace(
-      "$uniqueContacts messages were sent successfully.",
+      $originalMessage,
       "$messageSentCount messages were sent successfully.",
       $status['text']
     );
