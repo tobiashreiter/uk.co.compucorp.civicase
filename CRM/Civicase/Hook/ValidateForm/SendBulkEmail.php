@@ -34,6 +34,20 @@ class CRM_Civicase_Hook_ValidateForm_SendBulkEmail {
   private $isClientRoleSelected;
 
   /**
+   * Contains the original contacts to be notified, before this hook action.
+   *
+   * @var array|int[]
+   */
+  private $originalContactIds;
+
+  /**
+   * Contains the original emails to be notified, before this hook action.
+   *
+   * @var array|int[]
+   */
+  private $originalToContactEmails;
+
+  /**
    * CRM_Civicase_Hook_ValidateForm_SendBulkEmail constructor.
    *
    * @throws CRM_Core_Exception
@@ -74,7 +88,8 @@ class CRM_Civicase_Hook_ValidateForm_SendBulkEmail {
       return FALSE;
     }
 
-    $uniqueContacts = count($this->form->_contactIds);
+    $this->originalContactIds = $this->form->_contactIds;
+    $this->originalToContactEmails = $this->form->_toContactEmails;
 
     $casesContactInfo = $this->getCasesContactInfo();
     $messageSentCount = 0;
@@ -84,8 +99,8 @@ class CRM_Civicase_Hook_ValidateForm_SendBulkEmail {
       $messageSentCount += count($contactIds);
     }
 
-    if ($messageSentCount > $uniqueContacts) {
-      $this->updateStatusMessage($uniqueContacts, $messageSentCount);
+    if ($messageSentCount > count($this->originalContactIds)) {
+      $this->updateStatusMessage($messageSentCount);
     }
     if (CRM_Utils_Array::value('snippet', $_GET) === 'json') {
       CRM_Core_Page_AJAX::returnJsonResponse([]);
@@ -201,23 +216,28 @@ class CRM_Civicase_Hook_ValidateForm_SendBulkEmail {
     $_GET['caseid'] = $_REQUEST['caseid'] = $caseId;
     $this->form->_caseId = $caseId;
     $this->form->_contactIds = $contactIds;
+
+    $toContactEmails = [];
+    foreach ($contactIds as $contactId) {
+      $originalPosition = array_search($contactId, $this->originalContactIds);
+      $toContactEmails[] = $this->originalToContactEmails[$originalPosition];
+    }
+    $this->form->_toContactEmails = $toContactEmails;
     $this->form->submit($this->form->exportValues());
   }
 
   /**
    * Update the status message shown to the user.
    *
-   * @param int $uniqueContacts
-   *   Number of unique contacts to be notified.
    * @param int $messageSentCount
    *   Number of messages sent.
    */
-  private function updateStatusMessage(int $uniqueContacts, int $messageSentCount) {
+  private function updateStatusMessage(int $messageSentCount) {
     $status = CRM_Core_Session::singleton()->getStatus(TRUE)[0];
 
-    $originalMessage = $uniqueContacts === 1
+    $originalMessage = count($this->originalContactIds) === 1
       ? 'One message was sent successfully.'
-      : "$uniqueContacts messages were sent successfully.";
+      : count($this->originalContactIds) . ' messages were sent successfully.';
 
     $status['text'] = str_replace(
       $originalMessage,
