@@ -44,7 +44,7 @@ class CRM_Civicase_Hook_SendBulkEmailTest extends BaseHeadlessTest {
   public function testHookCreateEmailForCases() {
     $clientA = $this->createContact('client_a');
     $clientB = $this->createContact('client_b');
-    ;
+
     $contact = $this->createContact('contact');
     $relationshipType = CRM_Civicase_Test_Fabricator_RelationshipType::fabricate();
 
@@ -127,7 +127,7 @@ class CRM_Civicase_Hook_SendBulkEmailTest extends BaseHeadlessTest {
   public function testHookDoNotSendEmailToExcludedContact() {
     $clientA = $this->createContact('client_a');
     $clientB = $this->createContact('client_b');
-    ;
+
     $caseA = $this->createCaseForContact($clientA['id']);
     $caseB = $this->createCaseForContact($clientB['id']);
 
