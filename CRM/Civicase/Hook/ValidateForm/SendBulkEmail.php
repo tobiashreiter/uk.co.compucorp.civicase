@@ -156,6 +156,7 @@ class CRM_Civicase_Hook_ValidateForm_SendBulkEmail {
     $cases = civicrm_api3('Case', 'get', [
       'return' => ['contact_id'],
       'id' => ['IN' => $this->caseIds],
+      'options' => ['limit' => 0],
     ])['values'];
 
     foreach ($cases as $caseId => $caseInfo) {
@@ -191,6 +192,7 @@ class CRM_Civicase_Hook_ValidateForm_SendBulkEmail {
       'relationship_type_id' => ['IN' => $this->caseRoles],
       'is_active' => 1,
       'return' => ['case_id', 'contact_id_b'],
+      'options' => ['limit' => 0],
     ])['values'];
 
     foreach ($relationships as $relationship) {
