@@ -314,6 +314,7 @@ function civicase_civicrm_validateForm($formName, &$fields, &$files, &$form, &$e
   $hooks = [
     new CRM_Civicase_Hook_ValidateForm_SaveActivityDraft(),
     new CRM_Civicase_Hook_ValidateForm_SaveCaseTypeCategory(),
+    new CRM_Civicase_Hook_ValidateForm_SendBulkEmail(),
   ];
 
   foreach ($hooks as $hook) {
