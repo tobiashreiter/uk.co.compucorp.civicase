@@ -39,11 +39,20 @@ class CRM_Civicase_Hook_alterMailParams_SubjectCaseTypeCategoryProcessor {
 
     // Get replacement words and replace the word 'case' in subject.
     $wordReplacements = CaseCategoryHelper::getWordReplacements($caseTypeCategory);
+
     if (!empty($wordReplacements['case'])) {
-      // Make sure we make just 1 replacement.
-      $subject = explode($this->toReplace, $params['subject'], 2);
-      $params['subject'] = '[' . $wordReplacements['case'] . ' ' . $subject[1];
+      $replaceCaseWith = $wordReplacements['case'];
     }
+    if (!empty($wordReplacements['_singular_wildcard_'])) {
+      $replaceCaseWith = $wordReplacements['_singular_wildcard_'];
+    }
+
+    if (empty($replaceCaseWith)) {
+      return;
+    }
+    // Make sure we make just 1 replacement.
+    $subject = explode($this->toReplace, $params['subject'], 2);
+    $params['subject'] = '[' . $replaceCaseWith . ' ' . $subject[1];
   }
 
   /**
