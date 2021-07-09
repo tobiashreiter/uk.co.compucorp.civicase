@@ -82,11 +82,25 @@
     function getTags () {
       return civicaseCrmApi('Tag', 'get', {
         sequential: 1,
-        used_for: { LIKE: '%civicrm_case%' },
-        options: { limit: 0 }
+        used_for: 'Cases',
+        options: { limit: 0, sort: 'name ASC' }
       }).then(function (data) {
-        return data.values;
+        return filterTags(data.values);
       });
+    }
+
+    /**
+     * Removes tags that are not selectable from the array.
+     *
+     * @param {Array} tags tags
+     * @returns {Array} filtered tags array.
+     */
+    function filterTags (tags) {
+      _.remove(tags, function (tag) {
+        return tag.is_tagset === '0' && tag.is_selectable === '0';
+      });
+
+      return tags;
     }
 
     /**
