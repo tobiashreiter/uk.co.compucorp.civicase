@@ -1,6 +1,6 @@
 <?php
 
-use CRM_Civicase_ExtensionUtil as E;
+use CRM_Civicase_Hook_Helper_CaseTypeCategory as CaseTypeCategoryHelper;
 
 /**
  * Add current user tokens.
@@ -52,11 +52,11 @@ class CRM_Civicase_Hook_Tokens_AddContactTokens {
   public function run(array &$tokens) {
     foreach ($this->contactFieldsService->get() as $field) {
       $tokens[self::TOKEN_KEY]['current_user.contact_' . $field] =
-        E::ts('Current User ') . ucwords(str_replace("_", " ", $field));
+        CaseTypeCategoryHelper::translate('Current User ' . ucwords(str_replace("_", " ", $field)));
     }
     foreach ($this->contactCustomFieldsService->get() as $key => $field) {
       $tokens[self::TOKEN_KEY]['current_user.contact_' . $key] =
-        E::ts('Current User ') . ucwords(str_replace("_", " ", $field));
+        CaseTypeCategoryHelper::translate('Current User ' . ucwords(str_replace("_", " ", $field)));
     }
   }
 
