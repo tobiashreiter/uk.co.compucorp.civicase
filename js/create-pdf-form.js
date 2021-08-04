@@ -1,6 +1,4 @@
-(function ($, _, civicaseBase) {
-  civicaseBase.shouldClosePDFPopup = false;
-
+(function ($, _) {
   $(document).one('crmLoad', function () {
     var $dialog;
 
@@ -14,24 +12,22 @@
     /**
      * Open popup to ask filename
      *
-     * @param {object} e event
+     * @param {object} event event
      */
-    function openFileNamePopup (e) {
+    function openFileNamePopup (event) {
       if (!isFormValid()) {
         return;
       }
 
-      var $form = $(e.target);
+      var $form = $(event.target);
       var $clickedButtonIdentifier = $(document.activeElement).data('identifier');
       var isDownloadDocumentButtonClicked = $clickedButtonIdentifier === 'buttons[_qf_PDF_upload]';
 
-      var pdfFileNameHiddenField = $('#pdf_filename_hidden');
-
-      if (pdfFileNameHiddenField.length > 0 || !isDownloadDocumentButtonClicked) {
+      if (!isDownloadDocumentButtonClicked) {
         return;
       }
 
-      e.preventDefault();
+      event.preventDefault();
 
       $dialog = $('<div class="civicase__pdf-filename-dialog"></div>')
         .html(getPopupMarkUp($form))
@@ -96,20 +92,13 @@
               if (!$('#civicase__pdf-filename-form').valid()) {
                 return;
               }
-              $('#pdf_filename_hidden').remove();
 
-              var $form = $('.CRM_Contact_Form_Task_PDF');
-              $('<input>').attr({
-                type: 'hidden',
-                id: 'pdf_filename_hidden',
-                name: 'pdf_file_name',
-                value: $('#pdf_filename').val()
-              }).appendTo($form);
+              $('[name="pdf_file_name"]').val($('#pdf_filename').val());
 
               $dialog.remove();
               $('[data-identifier="buttons[_qf_PDF_upload]"]').trigger('click');
-              $('#pdf_filename_hidden').remove();
-              CRM['civicase-base'].closePDFPopup(true);
+
+              closePDFPopup();
             }
           },
           {
@@ -121,5 +110,21 @@
         ]
       };
     }
+
+    /**
+     * Close the PDF popup, and trigger `crmPopupFormSuccess` event.
+     */
+    function closePDFPopup () {
+      var $form = $('.CRM_Contact_Form_Task_PDF');
+      var popup = $form.closest('.ui-dialog-content');
+
+      // For PDF form, the PHP code does a `CRM_Utils_System::civiExit();`,
+      // and for that reason there is no way to capture the `success` event
+      // after the api call is finished, hence using timeout of 1000 ms
+      setTimeout(function () {
+        popup.trigger('crmPopupFormSuccess'); // to refresh the page.
+        popup.dialog('close');
+      }, 1000);
+    }
   });
-})(CRM.$, CRM._, CRM['civicase-base']);
+})(CRM.$, CRM._);

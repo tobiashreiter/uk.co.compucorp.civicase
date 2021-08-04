@@ -203,15 +203,6 @@ function civicase_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
 }
 
 /**
- * Implements hook_civicrm_coreResourceList().
- */
-function civicase_civicrm_coreResourceList(&$items, $region) {
-  if ($region == 'html-header') {
-    CRM_Core_Resources::singleton()->addScriptFile('uk.co.compucorp.civicase', 'js/close-pdf-form.js');
-  }
-}
-
-/**
  * Implements hook_civicrm_buildForm().
  */
 function civicase_civicrm_buildForm($formName, &$form) {
