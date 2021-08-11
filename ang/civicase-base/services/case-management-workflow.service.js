@@ -84,7 +84,7 @@
      * Redirect to the workflow creation screen
      */
     function redirectToWorkflowCreationScreen () {
-      $window.location.href = '/civicrm/a/#/caseType/new';
+      $window.location.href = CRM.url('civicrm/a/') + '#/caseType/new';
     }
   }
 })(CRM._, angular);
