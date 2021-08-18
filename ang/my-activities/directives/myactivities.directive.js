@@ -1,11 +1,11 @@
 (function (angular, _) {
-  var module = angular.module('civicase');
+  var module = angular.module('my-activities');
 
   module.directive('civicaseMyActivities', function () {
     return {
       restrict: 'EA',
       controller: 'CivicaseMyActivitiesController',
-      templateUrl: '~/civicase/activity/myactivities/myactivities.directive.html',
+      templateUrl: '~/my-activities/directives/myactivities.directive.html',
       scope: {}
     };
   });

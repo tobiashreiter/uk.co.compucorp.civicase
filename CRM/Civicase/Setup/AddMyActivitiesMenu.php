@@ -8,7 +8,7 @@ class CRM_Civicase_Setup_AddMyActivitiesMenu {
   /**
    * My Activities URL.
    */
-  const MY_ACTIVITIES_URL = '/civicrm/case/a/#/myactivities';
+  const MY_ACTIVITIES_URL = '/civicrm/case/my-activities';
 
   /**
    * Adds My Activities Menu item.

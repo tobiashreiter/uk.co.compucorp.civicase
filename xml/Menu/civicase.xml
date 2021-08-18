@@ -18,6 +18,12 @@
     <access_arguments>access CiviCRM</access_arguments>
   </item>
   <item>
+    <path>civicrm/case/my-activities</path>
+    <page_callback>CRM_Civicase_Page_MyActivities</page_callback>
+    <title>My Activities</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+  <item>
     <path>civicrm/workflow/a</path>
     <page_callback>CRM_Civicase_Page_WorkflowAngular</page_callback>
     <access_arguments>administer CiviCase</access_arguments>

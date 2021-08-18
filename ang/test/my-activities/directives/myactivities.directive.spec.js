@@ -2,7 +2,7 @@
   describe('civicaseMyActivities', () => {
     var $controller, $rootScope, $scope;
 
-    beforeEach(module('civicase.data', 'civicase', 'civicase.templates'));
+    beforeEach(module('civicase.data', 'my-activities', 'civicase.templates'));
 
     beforeEach(inject((_$controller_, _$rootScope_) => {
       $controller = _$controller_;
