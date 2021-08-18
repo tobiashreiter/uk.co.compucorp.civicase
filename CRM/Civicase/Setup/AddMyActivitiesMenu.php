@@ -38,7 +38,7 @@ class CRM_Civicase_Setup_AddMyActivitiesMenu {
     $myActivitiesMenu = civicrm_api3('Navigation', 'create', [
       'is_active' => 1,
       'parent_id' => 'user-menu-ext__user-menu',
-      'permission' => 'access CiviCRM backend and API',
+      'permission' => 'access CiviCRM',
       'label' => 'My Activities',
       'name' => 'civicase__my-activities__menu',
       'url' => self::MY_ACTIVITIES_URL,

@@ -51,7 +51,7 @@
   module.config(function ($routeProvider) {
     var templateMarkup;
 
-    if (CRM.checkPerm('access CiviCRM backend and API')) {
+    if (CRM.checkPerm('access CiviCRM')) {
       templateMarkup = '<civicase-my-activities></civicase-my-activities>';
     } else {
       templateMarkup = '<civicase-access-denied></civicase-access-denied>';

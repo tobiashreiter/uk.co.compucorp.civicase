@@ -67,7 +67,7 @@ function load_resources() {
     ->addPermissions([
       'administer CiviCase', 'administer CiviCRM',
       'access all cases and activities', 'add cases', 'basic case information',
-      'access CiviCRM backend and API',
+      'access CiviCRM',
     ])
     ->addScriptFile('org.civicrm.shoreditch', 'base/js/affix.js', 1000, 'html-header')
     ->addSetting([
