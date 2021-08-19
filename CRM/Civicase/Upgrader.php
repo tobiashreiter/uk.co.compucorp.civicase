@@ -13,6 +13,7 @@ use CRM_Civicase_Setup_AddManageWorkflowMenu as AddManageWorkflowMenu;
 use CRM_Civicase_Service_CaseCategoryInstance as CaseCategoryInstance;
 use CRM_Civicase_Helper_CaseUrl as CaseUrlHelper;
 use CRM_Civicase_Setup_AddSingularLabels as AddSingularLabels;
+use CRM_Civicase_ExtensionUtil as E;
 
 /**
  * Collection of upgrade steps.
@@ -152,7 +153,7 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
    */
   private function createManageCasesMenuItem() {
     $this->addNav([
-      'label' => ts('Manage Cases', ['domain' => 'uk.co.compucorp.civicase']),
+      'label' => E::ts('Manage Cases'),
       'name' => 'Manage Cases',
       'url' => CaseUrlHelper::getUrlByRouteType('all'),
       'permission' => 'access my cases and activities,access all cases and activities',
@@ -301,31 +302,31 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
     // Create activity types.
     $this->addOptionValue([
       'option_group_id' => 'activity_type',
-      'label' => ts('Alert'),
+      'label' => E::ts('Alert'),
       'name' => 'Alert',
       'grouping' => 'alert',
       'is_reserved' => 0,
-      'description' => ts('Alerts to display in cases'),
+      'description' => E::ts('Alerts to display in cases'),
       'component_id' => 'CiviCase',
       'icon' => 'fa-exclamation',
     ]);
     $this->addOptionValue([
       'option_group_id' => 'activity_type',
-      'label' => ts('File Upload'),
+      'label' => E::ts('File Upload'),
       'name' => 'File Upload',
       'grouping' => 'file',
       'is_reserved' => 0,
-      'description' => ts('Add files to a case'),
+      'description' => E::ts('Add files to a case'),
       'component_id' => 'CiviCase',
       'icon' => 'fa-file',
     ]);
     $this->addOptionValue([
       'option_group_id' => 'activity_type',
-      'label' => ts('Remove Client From Case'),
+      'label' => E::ts('Remove Client From Case'),
       'name' => 'Remove Client From Case',
       'grouping' => 'system',
       'is_reserved' => 0,
-      'description' => ts('Client removed from multi-client case'),
+      'description' => E::ts('Client removed from multi-client case'),
       'component_id' => 'CiviCase',
       'icon' => 'fa-user-times',
     ]);
@@ -333,7 +334,7 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
     // Create activity statuses.
     $this->addOptionValue([
       'option_group_id' => 'activity_status',
-      'label' => ts('Unread'),
+      'label' => E::ts('Unread'),
       'name' => 'Unread',
       'grouping' => 'communication',
       'is_reserved' => 0,
@@ -341,7 +342,7 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
     ]);
     $this->addOptionValue([
       'option_group_id' => 'activity_status',
-      'label' => ts('Draft'),
+      'label' => E::ts('Draft'),
       'name' => 'Draft',
       'grouping' => 'communication',
       'is_reserved' => 0,
@@ -500,8 +501,10 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
       if ($revisionNum <= $currentRevisionNum) {
         continue;
       }
-      $tsParams = [1 => $this->extensionName, 2 => $revisionNum];
-      $title = ts('Upgrade %1 to revision %2', $tsParams);
+      $title = E::ts('Upgrade %1 to revision %2', [
+        1 => $this->extensionName,
+        2 => $revisionNum,
+      ]);
       $upgradeTask = new CRM_Queue_Task(
         [get_class($this), 'runStepUpgrade'],
         [(new $revisionClass())],
