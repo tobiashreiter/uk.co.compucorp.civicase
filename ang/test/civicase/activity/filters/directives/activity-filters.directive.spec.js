@@ -210,7 +210,7 @@
         CRM.checkPerm.and.callFake(checkPermMock);
       });
 
-      describe('when both "my cases" and "all cases" permission is not available', () => {
+      describe('when both "my cases" and "all cases" permissions are not available', () => {
         beforeEach(() => {
           permissions = {
             'access my cases and activities': false,
@@ -255,7 +255,7 @@
         });
       });
 
-      describe('when both "my cases" and "all cases" permission is available', () => {
+      describe('when both "my cases" and "all cases" permissions are available', () => {
         beforeEach(() => {
           permissions = {
             'access my cases and activities': true,
@@ -282,7 +282,7 @@
           });
         });
 
-        describe('and case id filter and contact id filter is present', () => {
+        describe('and case id filter and contact id filter are present', () => {
           beforeEach(() => {
             activityFilters.isolateScope().params.case_id = '1';
             activityFilters.isolateScope().params.filters.$contact_id = '2';
@@ -308,7 +308,7 @@
           });
         });
 
-        describe('and case id filter and contact id filter is not present', () => {
+        describe('and case id filter and contact id filter are not present', () => {
           beforeEach(() => {
             activityFilters.isolateScope().params.case_id = null;
             activityFilters.isolateScope().params.filters.$contact_id = null;

@@ -22,7 +22,7 @@
 
     describe('on init', () => {
       describe('visibility of cases activities', () => {
-        describe('when both "my cases" and "all cases" permission is not available', () => {
+        describe('when both "my cases" and "all cases" permissions are not available', () => {
           beforeEach(() => {
             permissions = {
               'access my cases and activities': false,
@@ -67,7 +67,7 @@
           });
         });
 
-        describe('when both "my cases" and "all cases" permission is available', () => {
+        describe('when both "my cases" and "all cases" permissions are available', () => {
           beforeEach(() => {
             permissions = {
               'access my cases and activities': true,

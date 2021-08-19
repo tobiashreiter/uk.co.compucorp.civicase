@@ -1,3 +1,3 @@
-(function (angular, $, _) {
+(function (angular) {
   angular.module('my-activities', CRM.angRequires('my-activities'));
-})(angular, CRM.$, CRM._);
+})(angular);

@@ -1,4 +1,4 @@
-(function (angular, $, _) {
+(function (angular) {
   var module = angular.module('my-activities');
 
   module.config(function ($routeProvider) {
