@@ -137,8 +137,8 @@
           CRM.checkPerm('access all cases and activities'));
 
         return isPermissionAvailableToSeeCasesActivities &&
-          !$scope.params.case_id &&
-          $scope.params.filters.$contact_id;
+          !!(!$scope.params.case_id &&
+          $scope.params.filters.$contact_id);
       }
 
       /**

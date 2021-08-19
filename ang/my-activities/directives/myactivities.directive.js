@@ -19,8 +19,13 @@
    */
   function CivicaseMyActivitiesController ($scope, Contact, ActivityStatus) {
     var INCOMPLETE_ACTIVITY_STATUS_CATEGORY = '0';
+    var isPermissionAvailableToSeeCasesActivities =
+      (CRM.checkPerm('access my cases and activities') ||
+      CRM.checkPerm('access all cases and activities'));
 
-    $scope.displayOptions = { include_case: true };
+    $scope.displayOptions = {
+      include_case: isPermissionAvailableToSeeCasesActivities
+    };
     $scope.filters = {
       $contact_id: Contact.getCurrentContactID(),
       '@involvingContact': 'myActivities',
