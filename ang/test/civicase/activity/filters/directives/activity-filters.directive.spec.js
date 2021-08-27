@@ -1,7 +1,8 @@
 (function ($, _) {
   describe('civicaseActivityFilters', () => {
     var $compile, $rootScope, $scope, activityFilters, CaseTypeCategory,
-      categoryWhereUserCanAccessActivities, ActivityType, ActivityStatus;
+      categoryWhereUserCanAccessActivities, ActivityType, ActivityStatus,
+      permissions;
 
     beforeEach(module('civicase.data', 'civicase', 'civicase.templates', () => {
       killDirective('civicaseActivityFiltersContact');
@@ -22,6 +23,11 @@
 
       $scope = $rootScope.$new();
       $scope.filters = {};
+
+      $scope.params = {
+        case_id: null,
+        filters: { $contact_id: '2' }
+      };
 
       initDirective();
     }));
@@ -197,6 +203,125 @@
       });
     });
 
+    describe('visibility of cases activities', () => {
+      var returnValue;
+
+      beforeEach(() => {
+        CRM.checkPerm.and.callFake(checkPermMock);
+      });
+
+      describe('when both "my cases" and "all cases" permissions are not available', () => {
+        beforeEach(() => {
+          permissions = {
+            'access my cases and activities': false,
+            'access all cases and activities': false
+          };
+
+          returnValue = activityFilters.isolateScope().showIncludeCasesOption();
+        });
+
+        it('hides the case activites', () => {
+          expect(returnValue).toEqual(false);
+        });
+      });
+
+      describe('when only "my cases" permission is available', () => {
+        beforeEach(() => {
+          permissions = {
+            'access my cases and activities': true,
+            'access all cases and activities': false
+          };
+
+          returnValue = activityFilters.isolateScope().showIncludeCasesOption();
+        });
+
+        it('shows the case activites', () => {
+          expect(returnValue).toEqual(true);
+        });
+      });
+
+      describe('when only "all cases" permission is available', () => {
+        beforeEach(() => {
+          permissions = {
+            'access my cases and activities': false,
+            'access all cases and activities': true
+          };
+
+          returnValue = activityFilters.isolateScope().showIncludeCasesOption();
+        });
+
+        it('shows the case activites', () => {
+          expect(returnValue).toEqual(true);
+        });
+      });
+
+      describe('when both "my cases" and "all cases" permissions are available', () => {
+        beforeEach(() => {
+          permissions = {
+            'access my cases and activities': true,
+            'access all cases and activities': true
+          };
+
+          returnValue = activityFilters.isolateScope().showIncludeCasesOption();
+        });
+
+        it('shows the case activites', () => {
+          expect(returnValue).toEqual(true);
+        });
+
+        describe('and case id filter is not present but contact id filter is present', () => {
+          beforeEach(() => {
+            activityFilters.isolateScope().params.case_id = null;
+            activityFilters.isolateScope().params.filters.$contact_id = '2';
+
+            returnValue = activityFilters.isolateScope().showIncludeCasesOption();
+          });
+
+          it('shows the case activites', () => {
+            expect(returnValue).toEqual(true);
+          });
+        });
+
+        describe('and case id filter and contact id filter are present', () => {
+          beforeEach(() => {
+            activityFilters.isolateScope().params.case_id = '1';
+            activityFilters.isolateScope().params.filters.$contact_id = '2';
+
+            returnValue = activityFilters.isolateScope().showIncludeCasesOption();
+          });
+
+          it('hides the case activites', () => {
+            expect(returnValue).toEqual(false);
+          });
+        });
+
+        describe('and case id filter is present but contact id filter is not present', () => {
+          beforeEach(() => {
+            activityFilters.isolateScope().params.case_id = '1';
+            activityFilters.isolateScope().params.filters.$contact_id = null;
+
+            returnValue = activityFilters.isolateScope().showIncludeCasesOption();
+          });
+
+          it('hides the case activites', () => {
+            expect(returnValue).toEqual(false);
+          });
+        });
+
+        describe('and case id filter and contact id filter are not present', () => {
+          beforeEach(() => {
+            activityFilters.isolateScope().params.case_id = null;
+            activityFilters.isolateScope().params.filters.$contact_id = null;
+
+            returnValue = activityFilters.isolateScope().showIncludeCasesOption();
+          });
+
+          it('hides the case activites', () => {
+            expect(returnValue).toEqual(false);
+          });
+        });
+      });
+    });
     /**
      * Initializes the ActivityPanel directive
      */
@@ -204,6 +329,7 @@
       activityFilters = $compile(`<div
           civicase-activity-filters="filters"
           can-select-case-type-category="canSelectCaseTypeCategory"
+          feed-params="params"
         ></div>`)($scope);
       $rootScope.$digest();
     }
@@ -237,6 +363,17 @@
         color: option.color,
         icon: option.icon
       };
+    }
+
+    /**
+     * Mock function to determines if the user has permission
+     * using the permissions global object.
+     *
+     * @param {string} permissionName the name of the permission.
+     * @returns {boolean} true if the user has the given permission.
+     */
+    function checkPermMock (permissionName) {
+      return permissions[permissionName];
     }
   });
 })(CRM.$, CRM._);

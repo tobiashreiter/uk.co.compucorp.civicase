@@ -44,6 +44,7 @@
         tag_id: true,
         text: true
       };
+      $scope.showIncludeCasesOption = showIncludeCasesOption;
 
       (function init () {
         if ($scope.canSelectCaseTypeCategory) {
@@ -125,6 +126,19 @@
       function feedQueryListener (event, feedQueryParams) {
         $scope.combinedFilterParams = angular.extend({}, feedQueryParams.apiParams, feedQueryParams.filters);
         delete $scope.combinedFilterParams['api.Activity.getactionlinks'];
+      }
+
+      /**
+       * @returns {boolean} returns true if the include cases option should be visible
+       */
+      function showIncludeCasesOption () {
+        var isPermissionAvailableToSeeCasesActivities =
+          (CRM.checkPerm('access my cases and activities') ||
+          CRM.checkPerm('access all cases and activities'));
+
+        return isPermissionAvailableToSeeCasesActivities &&
+          !!(!$scope.params.case_id &&
+          $scope.params.filters.$contact_id);
       }
 
       /**
