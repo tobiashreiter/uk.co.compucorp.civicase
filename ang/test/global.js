@@ -2,6 +2,7 @@
   CRM['civicase-base'] = {};
   CRM.civicase = {};
   CRM.workflow = {};
+  CRM['my-activities'] = {};
   CRM['civicase-base'].currentCaseCategory = '1';
   CRM.angular = { requires: {} };
   CRM.config = {};
@@ -12,6 +13,7 @@
   CRM.angular.requires.civicase = ['civicase-base', 'crmAttachment', 'crmUi', 'ngRoute', 'angularFileUpload', 'bw.paging', 'crmRouteBinder', 'crmResource', 'ui.bootstrap', 'uibTabsetClass', 'dialogService'];
   CRM.angular.requires['civicase-base'] = ['crmUtil'];
   CRM.angular.requires.workflow = ['crmUi', 'ngRoute', 'dialogService', 'civicase-base'];
+  CRM.angular.requires['my-activities'] = ['civicase'];
 
   CRM.checkPerm = jasmine.createSpy('checkPerm');
   CRM.loadForm = jasmine.createSpy('loadForm');

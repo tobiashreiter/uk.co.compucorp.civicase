@@ -1,5 +1,6 @@
 <?php
 
+use CRM_Civicase_ExtensionUtil as E;
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 use CRM_Civicase_Service_CaseCategorySetting as CaseCategorySetting;
 
@@ -120,6 +121,25 @@ class CRM_Civicase_Hook_Helper_CaseTypeCategory {
     $allowCaseCategoryWebform = Civi::settings()->get($allowCaseCategoryWebform);
 
     return $allowCaseCategoryWebform ? Civi::settings()->get($caseCategoryWebformUrl) : NULL;
+  }
+
+  /**
+   * This is wrapper for "E::ts" function.
+   *
+   * CiviCRM does not recomment to use this to translate variables.
+   * But in CiviCase, we have used this function in few places with variables
+   * to achieve certain results.
+   * Hence this new function has been created, so that it can be only used in
+   * the places where it is absolutely necessary.
+   *
+   * @param string $value
+   *   Value to be translated.
+   *
+   * @return string
+   *   Translated value.
+   */
+  public static function translate($value) {
+    return E::ts($value);
   }
 
 }

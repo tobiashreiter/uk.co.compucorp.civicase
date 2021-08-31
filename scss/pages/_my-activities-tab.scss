@@ -1,0 +1,28 @@
+/* stylelint-disable selector-max-id  */
+/* stylelint-disable selector-max-compound-selectors */
+#{$outside-namespace-marker} {
+  #civicaseMyActivitiesTab {
+    // to maximise area for activity feed
+    margin-left: -10px;
+    margin-right: -10px;
+
+    [crm-page-title] {
+      display: none;
+    }
+
+    .civicase__activity-feed {
+      > .panel-body {
+        padding-left: 0;
+        padding-right: 0;
+      }
+    }
+
+    .civicase__activity-filter {
+      padding: 16px 0;
+
+      &.affix {
+        width: calc(100% - 240px);
+      }
+    }
+  }
+}

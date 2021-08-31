@@ -15,18 +15,16 @@ class CRM_Civicase_Service_CaseCategoryCustomFieldsSettingTest extends BaseHeadl
   public function testSaveCustomFields() {
     $caseCategoryId = uniqid();
     $caseCategoryCustomFields = new CaseCategoryCustomFieldsSetting();
-
-    $caseCategoryCustomFields->save($caseCategoryId, [
-      'my_custom_field' => 'value',
-    ]);
-
-    $caseCategoryCustomFieldsValues = $this->getCaseCategoryCustomFieldsValues();
-    $expectedValues = [];
-    $expectedValues[$caseCategoryId] = [
+    $fieldData = [
       'my_custom_field' => 'value',
     ];
 
-    $this->assertEquals($expectedValues, $caseCategoryCustomFieldsValues);
+    $caseCategoryCustomFields->save($caseCategoryId, $fieldData);
+
+    $caseCategoryCustomFieldsValues = $this->getCaseCategoryCustomFieldsValues();
+
+    $this->assertArrayHasKey($caseCategoryId, $caseCategoryCustomFieldsValues);
+    $this->assertEquals($caseCategoryCustomFieldsValues[$caseCategoryId], $fieldData);
   }
 
   /**

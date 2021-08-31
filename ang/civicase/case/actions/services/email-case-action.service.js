@@ -205,7 +205,8 @@
             reset: 1,
             cid: contactIDs.join(','),
             caseid: model.caseIds[0],
-            caseRolesBulkEmail: 1
+            caseRolesBulkEmail: 1,
+            caseRoles: model.selectedCaseRoles
           }
         };
 
