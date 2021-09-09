@@ -55,7 +55,7 @@ class CRM_Civicase_Page_ContactCaseTab extends CRM_Core_Page {
     $angularManager = new Manager(CRM_Core_Resources::singleton());
     $moduleAndDependenciesNames = $angularManager->resolveDependencies([$mainModuleName]);
 
-    foreach ($angularManager->resolveDependencies(['civicase']) as $moduleName) {
+    foreach ($moduleAndDependenciesNames as $moduleName) {
       $module = $angularManager->getModule($moduleName);
       $translationDomainName = 'strings::' . $module['ext'];
       $moduleTranslations = $angularManager->getTranslatedStrings($moduleName);
@@ -74,7 +74,7 @@ class CRM_Civicase_Page_ContactCaseTab extends CRM_Core_Page {
       );
     }
 
-    return $translations;
+    return $translations ?? [];
   }
 
 }
