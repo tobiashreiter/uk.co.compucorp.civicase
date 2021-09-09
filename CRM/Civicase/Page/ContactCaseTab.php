@@ -74,7 +74,7 @@ class CRM_Civicase_Page_ContactCaseTab extends CRM_Core_Page {
       );
     }
 
-    return $translations;
+    return $translations ?? [];
   }
 
 }
