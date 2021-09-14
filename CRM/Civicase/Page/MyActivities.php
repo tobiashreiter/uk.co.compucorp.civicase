@@ -24,7 +24,7 @@ class CRM_Civicase_Page_MyActivities extends CRM_Core_Page {
     $loader->load();
 
     CRM_Core_Resources::singleton()
-      ->addScriptFile('uk.co.compucorp.civicase', 'packages/moment.min.js');
+      ->addScriptFile('uk.co.compucorp.civicase', 'packages/moment-with-locales.min.js');
 
     return parent::run();
   }
