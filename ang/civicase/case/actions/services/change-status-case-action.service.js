@@ -18,7 +18,7 @@
      * @param {Function} callbackFn callback function
      */
     this.doAction = function (cases, action, callbackFn) {
-      var ts = CRM.ts('civicase');
+      var ts = CRM.ts('uk.co.compucorp.civicase');
       var types = _.uniq(_.map(cases, 'case_type_id'));
       var currentStatuses = _.uniq(_.collect(cases, 'status_id'));
       var currentStatus = currentStatuses.length === 1 ? currentStatuses[0] : null;
