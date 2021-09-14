@@ -23,7 +23,7 @@
      */
     function civicaseCaseActionsLink ($scope, element, attributes) {
       var CASE_ACTIONS = CaseActions.getAll();
-      var ts = CRM.ts('civicase');
+      var ts = CRM.ts('uk.co.compucorp.civicase');
       var isBulkMode = attributes.isBulkMode;
 
       $scope.doAction = doAction;

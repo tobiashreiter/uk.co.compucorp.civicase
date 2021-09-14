@@ -94,7 +94,7 @@
       </div>
       <div class="civicase__activity-card-row" ng-if="activity.target_contact_name">
         <!-- With -->
-        <span class="civicase__activity-with">With:&nbsp;</span>
+        <span class="civicase__activity-with">{{ ts('With:') }}&nbsp;</span>
         <div
           class="civicase__contact-card"
           civicase-contact-card
@@ -123,7 +123,7 @@
   <div ng-if="!activity" class="panel panel-default">
     <div class="panel-body">
       <div>
-        <div class="civicase__activity-empty-message">No upcoming activity</div>
+        <div class="civicase__activity-empty-message">{{ ts('No upcoming activity' }}</div>
         <span civicase-dropdown>
           <a
             ng-show="isReadOnly !== true"
@@ -131,7 +131,7 @@
             href
             civicase-dropdown-toggle
           >
-            Click here to add an activity
+            {{ ts('Click here to add an activity') }}
           </a>
           <civicase-add-activity-menu
             case="case">
