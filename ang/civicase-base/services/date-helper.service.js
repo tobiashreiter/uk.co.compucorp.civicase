@@ -18,6 +18,7 @@
     this.formatDate = function (date, format) {
       format = format || 'DD/MM/YYYY';
 
+      moment.locale('fr');
       return moment(date).format(format);
     };
   }

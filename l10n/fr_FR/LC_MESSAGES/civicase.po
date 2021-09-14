@@ -2729,3 +2729,13 @@ msgstr "Selectionner les %1 qui correspondent à la recherche"
 
 msgid "Clear All"
 msgstr "Enlever tout"
+
+msgid "Now"
+msgstr "Courant"
+
+msgid "Future"
+msgstr "A venir"
+
+msgid "Past"
+msgstr "Passé"
+

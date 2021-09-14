@@ -163,7 +163,7 @@
         isOverDueGroup: !!isOverDueGroup,
         month: dateObject.month,
         year: dateObject.year,
-        monthName: moment(dateObject.month, 'MM').format('MMMM')
+        monthName: moment(dateObject.month, 'MM').locale('fr').format('MMMM')
       };
 
       if (yearObject) {
@@ -227,11 +227,12 @@
      * Initialise the Group object for the directive
      */
     function initGroups () {
+      var ts = CRM.ts('uk.co.compucorp.civicase');
       $scope.groups = [
-        { groupName: 'overdue', records: [] },
-        { groupName: 'future', records: [] },
-        { groupName: 'now', records: [] },
-        { groupName: 'past', records: [] }
+        { groupName: 'overdue', records: [], groupLabel: ts('Overdue') },
+        { groupName: 'future', records: [], groupLabel: ts('Future') },
+        { groupName: 'now', records: [], groupLabel: ts('Now') },
+        { groupName: 'past', records: [], groupLabel: ts('Past') }
       ];
     }
 
