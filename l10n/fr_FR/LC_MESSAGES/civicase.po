@@ -2448,7 +2448,7 @@ msgstr "chaîne"
 
 #: ang/civicase-base/directives/access-denied.directive.html
 msgid "Access Denied"
-msgstr "Accés interdit"
+msgstr "Accès interdit"
 
 #: ang/civicase-base/providers/activity-actions.provider.js
 msgid "Resume Draft"
