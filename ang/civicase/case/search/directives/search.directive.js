@@ -479,7 +479,7 @@
           ? CaseType.getTitlesForNames(filters.case_type_id)
           : [];
 
-        $scope.pageTitle = status.join(' & ') + ' ' + types.join(' & ') + ' ' + ts('Cases');
+        $scope.pageTitle = ts('Cases'); // SYMBIOTIC: difficult to translate, not particularly useful: + status.join(' & ') + ' ' + types.join(' & ') + ' ' + ts('Cases');
       }
 
       if (hasTotalCount) {
