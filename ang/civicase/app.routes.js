@@ -18,8 +18,15 @@
         var urlParams = UrlParametersProvider.parse(window.location.search);
         var urlHash = UrlParametersProvider.parse(window.location.hash);
 
-        if (urlParams.case_type_category === urlHash.case_type_category) {
+        // SYMBIOTIC Not sure how to trigger the bug this was trying to fix
+        // See: https://github.com/compucorp/uk.co.compucorp.civicase/pull/784
+        if (CRM.config.userFramework == 'WordPress') {
           return '<civicase-dashboard></civicase-dashboard>';
+        }
+        else {
+          if (urlParams.case_type_category === urlHash.case_type_category) {
+            return '<civicase-dashboard></civicase-dashboard>';
+          }
         }
 
         return '<civicase-access-denied></civicase-access-denied>';
