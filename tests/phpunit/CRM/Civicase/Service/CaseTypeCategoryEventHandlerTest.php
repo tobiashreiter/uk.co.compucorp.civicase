@@ -17,8 +17,9 @@ class CRM_Civicase_Service_CaseTypeCategoryEventHandlerTest extends BaseHeadless
   public function testOnCreateEventForCaseCategory() {
     $caseCategoryEventHandler = $this->getEventHandlerObject();
     $caseTypeCategory = CaseCategoryFabricator::fabricate();
+    $caseTypeCategory['singular_label'] = $caseTypeCategory['label'];
     $caseCategoryInstance = $this->getCaseCategoryInstance();
-    $caseCategoryEventHandler->onCreate($caseCategoryInstance, $caseTypeCategory['name']);
+    $caseCategoryEventHandler->onCreate($caseCategoryInstance, $caseTypeCategory);
     $caseCategoryMenu = $this->getCaseCategoryParentMenu($caseTypeCategory['name']);
 
     // Verify that the case category main menu is created and not duplicated.
@@ -35,8 +36,9 @@ class CRM_Civicase_Service_CaseTypeCategoryEventHandlerTest extends BaseHeadless
   public function testOnUpdateEventForCaseCategory() {
     $caseCategoryEventHandler = $this->getEventHandlerObject();
     $caseTypeCategory = CaseCategoryFabricator::fabricate();
+    $caseTypeCategory['singular_label'] = $caseTypeCategory['label'];
     $caseCategoryInstance = $this->getCaseCategoryInstance();
-    $caseCategoryEventHandler->onCreate($caseCategoryInstance, $caseTypeCategory['name']);
+    $caseCategoryEventHandler->onCreate($caseCategoryInstance, $caseTypeCategory);
 
     // Update the case type category.
     $caseTypeCategory = CaseCategoryFabricator::fabricate(
@@ -48,7 +50,7 @@ class CRM_Civicase_Service_CaseTypeCategoryEventHandlerTest extends BaseHeadless
         'icon' => 'fa-folder-open-o',
       ]
     );
-    $caseCategoryEventHandler->onUpdate($caseCategoryInstance, $caseTypeCategory['id'], $caseTypeCategory['is_active'], $caseTypeCategory['icon']);
+    $caseCategoryEventHandler->onUpdate($caseCategoryInstance, $caseTypeCategory);
 
     $caseCategoryMenu = $this->getCaseCategoryParentMenu($caseTypeCategory['name']);
 
@@ -65,10 +67,11 @@ class CRM_Civicase_Service_CaseTypeCategoryEventHandlerTest extends BaseHeadless
   public function testOnDeleteEventForCaseCategory() {
     $caseCategoryEventHandler = $this->getEventHandlerObject();
     $caseTypeCategory = CaseCategoryFabricator::fabricate();
+    $caseTypeCategory['singular_label'] = $caseTypeCategory['label'];
     $caseCategoryInstance = $this->getCaseCategoryInstance();
-    $caseCategoryEventHandler->onCreate($caseCategoryInstance, $caseTypeCategory['name']);
+    $caseCategoryEventHandler->onCreate($caseCategoryInstance, $caseTypeCategory);
     // On delete event.
-    $caseCategoryEventHandler->onDelete($caseCategoryInstance, $caseTypeCategory['name']);
+    $caseCategoryEventHandler->onDelete($caseCategoryInstance, $caseTypeCategory);
 
     $caseCategoryMenu = $this->getCaseCategoryParentMenu($caseTypeCategory['name']);
     // Verify that the case category main menu is deleted because the

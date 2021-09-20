@@ -2,7 +2,9 @@
   var module = angular.module('civicase');
 
   // Angular binding for CiviCRM's jQuery-based crm-editable
-  module.directive('crmEditable', function ($timeout) {
+  module.directive('crmEditable', function ($filter, $timeout) {
+    var escapeString = $filter('civicaseEscapeString');
+
     return {
       restrict: 'A',
       link: crmEditableLink,
@@ -28,7 +30,7 @@
             .html(
               textarea
                 ? nl2br(getHTMLToShow(scope, elem, attrs))
-                : _.escape(getHTMLToShow(scope, elem, attrs))
+                : getHTMLToShow(scope, elem, attrs)
             )
             .on('crmFormSuccess', function (e, value) {
               $timeout(function () {
@@ -39,11 +41,12 @@
               });
             })
             .crmEditable();
+
           scope.$watchCollection('model', function (model) {
             elem.html(
               textarea
                 ? nl2br(getHTMLToShow(scope, elem, attrs))
-                : _.escape(getHTMLToShow(scope, elem, attrs)));
+                : getHTMLToShow(scope, elem, attrs));
 
             applyLineLimitIfApplicableWithTimeout(scope, elem);
           });
@@ -64,7 +67,7 @@
 
     /**
      * Retuns the text to be shown as HTML,
-     * if the model value is null or empty string, retuns the placeholder
+     * if the model value is null or empty string, retuns the placeholder.
      *
      * @param {object} scope scope object
      * @param {object} elem element
@@ -76,7 +79,7 @@
       var placeholder = attrs.placeholder;
 
       return (scope.model[field] && scope.model[field] !== '')
-        ? scope.model[field]
+        ? escapeString(scope.model[field])
         : placeholder;
     }
 

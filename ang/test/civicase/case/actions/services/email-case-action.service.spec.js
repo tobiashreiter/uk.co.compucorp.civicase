@@ -103,7 +103,8 @@
                   cid: '170,4,6',
                   hideDraftButton: 1,
                   caseid: '141',
-                  caseRolesBulkEmail: 1
+                  caseRolesBulkEmail: 1,
+                  caseRoles: 'client,11,12'
                 }
               });
             });
@@ -174,7 +175,8 @@
               hideDraftButton: 1,
               caseid: '141',
               allCaseIds: '141,3',
-              caseRolesBulkEmail: 1
+              caseRolesBulkEmail: 1,
+              caseRoles: 'client,11,12'
             }
           });
         });

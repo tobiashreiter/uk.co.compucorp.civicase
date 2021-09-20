@@ -38,9 +38,11 @@ module.exports = function (config) {
       extPath + '/ang/civicase-base.js',
       extPath + '/ang/civicase.js',
       extPath + '/ang/workflow.js',
+      extPath + '/ang/my-activities.js',
       { pattern: extPath + '/ang/civicase-base/**/*.js' },
       { pattern: extPath + '/ang/civicase/**/*.js' },
       { pattern: extPath + '/ang/workflow/**/*.js' },
+      { pattern: extPath + '/ang/my-activities/**/*.js' },
 
       // Spec files
       { pattern: extPath + '/ang/test/mocks/modules.mock.js' },
@@ -48,7 +50,8 @@ module.exports = function (config) {
       { pattern: extPath + '/ang/test/**/mocks/**/*.js' },
       { pattern: extPath + '/ang/test/civicase/**/*.js' },
       { pattern: extPath + '/ang/test/civicase-base/**/*.js' },
-      { pattern: extPath + '/ang/test/workflow/**/*.js' }
+      { pattern: extPath + '/ang/test/workflow/**/*.js' },
+      { pattern: extPath + '/ang/test/my-activities/**/*.js' }
     ],
     exclude: [
     ],
@@ -58,6 +61,7 @@ module.exports = function (config) {
       obj[extPath + '/ang/civicase/**/*.js'] = ['coverage'];
       obj[extPath + '/ang/civicase-base/**/*.js'] = ['coverage'];
       obj[extPath + '/ang/workflow/**/*.js'] = ['coverage'];
+      obj[extPath + '/ang/my-activities/**/*.js'] = ['coverage'];
 
       return obj;
     })({}),

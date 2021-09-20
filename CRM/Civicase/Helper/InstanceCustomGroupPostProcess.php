@@ -19,6 +19,7 @@ class CRM_Civicase_Helper_InstanceCustomGroupPostProcess {
       'sequential' => 1,
       'return' => ['id'],
       'case_type_category' => $caseTypeCategoryId,
+      'options' => ['limit' => 0],
     ]);
 
     return array_column($result['values'], 'id');
@@ -64,6 +65,7 @@ class CRM_Civicase_Helper_InstanceCustomGroupPostProcess {
       'extends' => 'Case',
       'extends_entity_column_id' => $caseCategoryId,
       'extends_entity_column_value' => ['NOT LIKE' => '%' . CRM_Core_DAO::VALUE_SEPARATOR . $caseTypeId . CRM_Core_DAO::VALUE_SEPARATOR . '%'],
+      'options' => ['limit' => 0],
     ]);
 
     // API above will not fetch results for when
@@ -72,6 +74,7 @@ class CRM_Civicase_Helper_InstanceCustomGroupPostProcess {
       'extends' => 'Case',
       'extends_entity_column_id' => $caseCategoryId,
       'extends_entity_column_value' => ['IS NULL' => 1],
+      'options' => ['limit' => 0],
     ]);
 
     return array_merge($customGroupsWithoutCurrentCaseType['values'], $customGroupsWithNullCaseType['values']);
@@ -102,6 +105,7 @@ class CRM_Civicase_Helper_InstanceCustomGroupPostProcess {
       'extends' => 'Case',
       'extends_entity_column_id' => ['NOT IN' => [$caseCategoryId]],
       'extends_entity_column_value' => ['LIKE' => '%' . CRM_Core_DAO::VALUE_SEPARATOR . $caseTypeId . CRM_Core_DAO::VALUE_SEPARATOR . '%'],
+      'options' => ['limit' => 0],
     ]);
 
     return $result['values'];

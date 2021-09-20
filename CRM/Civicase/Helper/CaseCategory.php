@@ -11,7 +11,22 @@ use CRM_Civicase_BAO_CaseCategoryInstance as CaseCategoryInstance;
 class CRM_Civicase_Helper_CaseCategory {
 
   const CASE_TYPE_CATEGORY_GROUP_NAME = 'case_type_categories';
+
+
+  /**
+   * Case category name.
+   */
   const CASE_TYPE_CATEGORY_NAME = 'Cases';
+
+  /**
+   * Case category label.
+   */
+  const CASE_TYPE_CATEGORY_LABEL = 'Cases';
+
+  /**
+   * Case category singular label.
+   */
+  const CASE_TYPE_CATEGORY_SINGULAR_LABEL = 'Case';
 
   /**
    * Returns the full list of case type categories.
@@ -127,11 +142,17 @@ class CRM_Civicase_Helper_CaseCategory {
         return [];
       }
 
+      $category = CRM_Civicase_Helper_Category::get($caseTypeCategoryName);
+
       return [
-        'Case' => ucfirst($caseTypeCategoryName),
-        'Cases' => ucfirst($caseTypeCategoryName) . 's',
-        'case' => strtolower($caseTypeCategoryName),
-        'cases' => strtolower($caseTypeCategoryName) . 's',
+        'Cases' => '_PLURAL_WILDCARD_',
+        'Case' => '_SINGULAR_WILDCARD_',
+        '_PLURAL_WILDCARD_' => ucfirst($category['label']),
+        '_SINGULAR_WILDCARD_' => ucfirst($category['singular_label']),
+        'cases' => '_plural_wildcard_',
+        'case' => '_singular_wildcard_',
+        '_plural_wildcard_' => strtolower($category['label']),
+        '_singular_wildcard_' => strtolower($category['singular_label']),
       ];
     }
 
@@ -272,10 +293,10 @@ class CRM_Civicase_Helper_CaseCategory {
    * also so that the dashboard leads to the case category dashboard page
    * depending on the case category.
    *
-   * @param string $caseCategoryName
-   *   Case category name.
+   * @param string $caseCategoryId
+   *   Case category Id.
    */
-  public static function updateBreadcrumbs($caseCategoryName) {
+  public static function updateBreadcrumbs($caseCategoryId) {
     CRM_Utils_System::resetBreadCrumb();
     $breadcrumb = [
       [
@@ -288,8 +309,8 @@ class CRM_Civicase_Helper_CaseCategory {
       ],
       [
         'title' => ts('Case Dashboard'),
-        'url' => CRM_Utils_System::url('civicrm/case/a/', ['case_type_category' => $caseCategoryName], TRUE,
-          "/case?case_type_category={$caseCategoryName}"),
+        'url' => CRM_Utils_System::url('civicrm/case/a/', ['case_type_category' => $caseCategoryId], TRUE,
+          "/case?case_type_category={$caseCategoryId}"),
       ],
     ];
 
@@ -345,6 +366,102 @@ class CRM_Civicase_Helper_CaseCategory {
     $instances = CaseCategoryInstance::buildOptions('instance_id', 'validate');
 
     return $instances[$result['instance_id']];
+  }
+
+  /**
+   * Get the weight value of the Cases navigation menu.
+   *
+   * @return int
+   *   Weight of the menu.
+   */
+  public static function getWeightOfCasesMenu() {
+    return CRM_Core_DAO::getFieldValue(
+      'CRM_Core_DAO_Navigation',
+      'Cases',
+      'weight',
+      'name'
+    );
+  }
+
+  /**
+   * Gets case category option details by id.
+   *
+   * @param int $id
+   *   Category Id.
+   *
+   * @return array
+   *   Category details.
+   */
+  public static function getById($id) {
+    return self::getByParams(['id' => $id]);
+  }
+
+  /**
+   * Gets case category option details by name.
+   *
+   * @param string $name
+   *   Category name.
+   *
+   * @return array
+   *   Category details.
+   */
+  public static function getByName($name) {
+    return self::getByParams(['name' => $name]);
+  }
+
+  /**
+   * Gets case category option details by params.
+   *
+   * @param array $params
+   *   Catetgory params.
+   *
+   * @return array
+   *   Category details.
+   */
+  private static function getByParams(array $params) {
+    $apiParams = [
+      'sequential' => 1,
+      'option_group_id' => 'case_type_categories',
+    ];
+    $apiParams = array_merge($apiParams, $params);
+    $result = civicrm_api3('OptionValue', 'get', $apiParams);
+
+    return !empty($result['values'][0]) ? $result['values'][0] : [];
+  }
+
+  /**
+   * Returns the option value of Cases category.
+   *
+   * @return int|null
+   *   Case category value.
+   */
+  public static function getOptionValue() {
+    $result = civicrm_api3('OptionValue', 'get', [
+      'sequential' => 1,
+      'option_group_id' => 'case_type_categories',
+      'name' => self::CASE_TYPE_CATEGORY_NAME,
+      'return' => ['value'],
+    ]);
+
+    if ($result['count'] === 0) {
+      return NULL;
+    }
+
+    return $result['values'][0]['value'];
+  }
+
+  /**
+   * Get data for creating the menu.
+   *
+   * @return string[]
+   *   Category data.
+   */
+  public static function getDataForMenu() {
+    return [
+      'name' => self::CASE_TYPE_CATEGORY_NAME,
+      'label' => self::CASE_TYPE_CATEGORY_LABEL,
+      'singular_label' => self::CASE_TYPE_CATEGORY_SINGULAR_LABEL,
+    ];
   }
 
 }

@@ -13,13 +13,22 @@ use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
 use CRM_Civicase_Helper_NewCaseWebform as NewCaseWebform;
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 use CRM_Civicase_Hook_Permissions_ExportCasesAndReports as ExportCasesAndReports;
+use CRM_Civicase_Helper_CaseUrl as CaseUrlHelper;
 
 load_resources();
-$caseCategoryName = CRM_Utils_Request::retrieve('case_type_category', 'String');
+[$caseCategoryId, $caseCategoryName] = CaseUrlHelper::getCategoryParamsFromUrl();
 
 // Word replacements are already loaded for the contact tab ContactCaseTab.
 if (CRM_Utils_System::currentPath() !== 'civicrm/case/contact-case-tab') {
-  CRM_Civicase_Hook_Helper_CaseTypeCategory::addWordReplacements($caseCategoryName);
+  $notTranslationPath = $caseCategoryName == CaseCategoryHelper::CASE_TYPE_CATEGORY_NAME && CRM_Utils_System::currentPath() != 'civicrm/case/a';
+
+  if (!$notTranslationPath) {
+    if (!in_array($caseCategoryName, CaseCategoryHelper::getAccessibleCaseTypeCategories())) {
+      throw new Exception('Access denied! You are not authorized to access this page.');
+    }
+
+    CRM_Civicase_Hook_Helper_CaseTypeCategory::addWordReplacements($caseCategoryName);
+  }
 }
 
 $permissionService = new CaseCategoryPermission();
@@ -28,7 +37,7 @@ $caseCategoryPermissions = $permissionService->get($caseCategoryName);
 // The following changes are only relevant to the full-page app.
 if (CRM_Utils_System::currentPath() == 'civicrm/case/a') {
   adds_shoreditch_css();
-  CaseCategoryHelper::updateBreadcrumbs($caseCategoryName);
+  CaseCategoryHelper::updateBreadcrumbs($caseCategoryId);
 }
 
 $options = [];
@@ -58,6 +67,7 @@ function load_resources() {
     ->addPermissions([
       'administer CiviCase', 'administer CiviCRM',
       'access all cases and activities', 'add cases', 'basic case information',
+      'access CiviCRM', 'access my cases and activities',
     ])
     ->addScriptFile('org.civicrm.shoreditch', 'base/js/affix.js', 1000, 'html-header')
     ->addSetting([

@@ -1,5 +1,6 @@
 <?php
 
+use CRM_Civicase_ExtensionUtil as E;
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 use CRM_Civicase_Service_CaseCategorySetting as CaseCategorySetting;
 
@@ -11,22 +12,16 @@ class CRM_Civicase_Hook_Helper_CaseTypeCategory {
   /**
    * Checks if the case type category is valid or not.
    *
-   * @param string $caseCategoryName
+   * @param int $caseCategoryId
    *   Category Name.
    *
    * @return bool
    *   return value.
    */
-  public static function isValidCategory($caseCategoryName) {
-    $caseCategoryName = strtolower($caseCategoryName);
-    if ($caseCategoryName == 'cases') {
-      return TRUE;
-    }
-
+  public static function isValidCategory($caseCategoryId) {
     $caseCategoryOptions = CRM_Case_BAO_CaseType::buildOptions('case_type_category', 'validate');
-    $caseCategoryOptions = array_map('strtolower', $caseCategoryOptions);
 
-    if (!in_array($caseCategoryName, $caseCategoryOptions)) {
+    if (!in_array($caseCategoryId, array_flip($caseCategoryOptions))) {
       return FALSE;
     }
 
@@ -69,12 +64,17 @@ class CRM_Civicase_Hook_Helper_CaseTypeCategory {
    *   Case category name.
    */
   public static function addWordReplacements($caseCategoryName) {
-    CRM_Core_Resources::singleton()->flushStrings()->resetCacheCode();
-
     if (!$caseCategoryName) {
       return;
     }
 
+    $currentCaseCategory = \Civi::cache('metadata')->get('current_case_category');
+    if ($currentCaseCategory === $caseCategoryName) {
+      return;
+    }
+
+    CRM_Core_Resources::singleton()->flushStrings()->resetCacheCode();
+    \Civi::cache('metadata')->set('current_case_category', $caseCategoryName);
     $wordReplacements = CaseCategoryHelper::getWordReplacements($caseCategoryName);
     if (empty($wordReplacements)) {
       return;
@@ -121,6 +121,25 @@ class CRM_Civicase_Hook_Helper_CaseTypeCategory {
     $allowCaseCategoryWebform = Civi::settings()->get($allowCaseCategoryWebform);
 
     return $allowCaseCategoryWebform ? Civi::settings()->get($caseCategoryWebformUrl) : NULL;
+  }
+
+  /**
+   * This is wrapper for "E::ts" function.
+   *
+   * CiviCRM does not recomment to use this to translate variables.
+   * But in CiviCase, we have used this function in few places with variables
+   * to achieve certain results.
+   * Hence this new function has been created, so that it can be only used in
+   * the places where it is absolutely necessary.
+   *
+   * @param string $value
+   *   Value to be translated.
+   *
+   * @return string
+   *   Translated value.
+   */
+  public static function translate($value) {
+    return E::ts($value);
   }
 
 }

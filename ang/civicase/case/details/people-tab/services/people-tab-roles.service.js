@@ -14,6 +14,7 @@
     roles.isLoading = true;
     roles.list = [];
 
+    roles.getActiveNonClientContacts = getActiveNonClientContacts;
     roles.filterRoles = filterRoles;
     roles.getCountOfAssignedRoles = getCountOfAssignedRoles;
     roles.goToPage = goToPage;
@@ -21,6 +22,20 @@
     roles.setCaseRelationships = setCaseRelationships;
     roles.setCaseTypeRoles = setCaseTypeRoles;
     roles.updateRolesList = updateRolesList;
+
+    /**
+     * @returns {Array} contact ids for active non client roles
+     */
+    function getActiveNonClientContacts () {
+      return _.chain(roles.fullRolesList)
+        .filter(function (role) {
+          return !!role.relationship_type_id && isTruthy(role.is_active);
+        })
+        .map(function (role) {
+          return role.contact_id;
+        })
+        .value();
+    }
 
     /**
      * Assign number of roles present per type of relationship.
@@ -140,6 +155,7 @@
               relationship_type_id: caseTypeRole.relationship_type_id,
               role: caseTypeRole.role,
               relationship: caseRelation,
+              relationship_is_active: relTypes[caseTypeRole.relationship_type_id].is_active,
               previousValues: {
                 end_date: caseRelation.end_date,
                 start_date: caseRelation.start_date
@@ -151,7 +167,8 @@
           caseRoles.push({
             description: caseTypeRole.description,
             relationship_type_id: caseTypeRole.relationship_type_id,
-            role: caseTypeRole.role
+            role: caseTypeRole.role,
+            relationship_is_active: relTypes[caseTypeRole.relationship_type_id].is_active
           });
         }
       });

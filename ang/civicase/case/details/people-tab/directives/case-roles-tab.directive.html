@@ -115,13 +115,13 @@
     <tbody class="civicase__people-tab__table-body">
       <tr
         class="contact--{{role.contact_id}}"
-        ng-class="{unassigned: !role.contact_id}"
+        ng-class="{unassigned: !role.contact_id, 'ui-state-disabled': role.relationship_is_active === '0'}"
         ng-form="roleForm"
         ng-if="!roles.isLoading"
         ng-repeat="role in roles.list track by $index"
       >
         <td class="civicase__people-tab__table-column civicase__people-tab__table-column--first">
-          <span ng-if="role.contact_id" class="civicase__checkbox" >
+          <span ng-if="role.contact_id && role.relationship_is_active !== '0'" class="civicase__checkbox" >
             <input
               id="select-role-{{ $index }}"
               class="civicase__people-tab__table-checkbox"
@@ -190,7 +190,7 @@
             <i class="fa fa-user-plus"></i>
           </button>
           <div
-            ng-if="(role.is_active === '1' || role.is_client === '1') && role.contact_id"
+            ng-if="(role.is_active === '1' || role.is_client === '1') && role.contact_id && role.relationship_is_active !== '0'"
             class="btn-group btn-group-sm">
             <button
               type="button"

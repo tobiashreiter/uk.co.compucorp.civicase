@@ -7,7 +7,7 @@
     <a ng-if="isAddCaseVisible()"
       class="btn-primary btn civicase__contact-cases-tab-add"
       ng-click="addCase({
-        caseTypeCategoryName: caseTypeCategoryName,
+        caseTypeCategoryId: caseTypeCategory,
         contactId: contactId,
         callbackFn: refresh,
       })">
@@ -126,7 +126,7 @@
       ng-if="isAddCaseVisible()"
       class="civicase__activity-card--big--empty-button btn"
       ng-click="addCase({
-        caseTypeCategoryName: caseTypeCategoryName,
+        caseTypeCategoryId: caseTypeCategory,
         contactId: contactId,
         callbackFn: refresh,
       })">

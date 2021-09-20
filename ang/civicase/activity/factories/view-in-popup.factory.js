@@ -1,7 +1,7 @@
 (function (angular, $, _, CRM) {
   var module = angular.module('civicase');
 
-  module.factory('viewInPopup', function (ActivityForms, civicaseCrmLoadForm) {
+  module.factory('viewInPopup', function ($rootScope, ActivityForms, civicaseCrmLoadForm) {
     /**
      * View activity in a popup
      *
@@ -25,7 +25,10 @@
         return;
       }
 
-      return civicaseCrmLoadForm(activityForm.getActivityFormUrl(activity, formOptions));
+      return civicaseCrmLoadForm(activityForm.getActivityFormUrl(activity, formOptions))
+        .on('crmFormSuccess crmPopupFormSuccess', function () {
+          $rootScope.$broadcast('civicase::activity::updated');
+        });
     }
 
     return viewInPopup;

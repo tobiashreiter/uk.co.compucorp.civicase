@@ -74,7 +74,7 @@ class CRM_Civicase_Service_CaseCategoryInstance {
   }
 
   /**
-   * Creates instance for the given case type category.
+   * Creates/Edits instance for the given case type category.
    *
    * @param mixed $categoryValue
    *   Case category value.
@@ -83,9 +83,15 @@ class CRM_Civicase_Service_CaseCategoryInstance {
    */
   public function createInstanceTypeFor($categoryValue, $instanceId) {
     $caseCategoryInstance = new CaseCategoryInstance();
-    $caseCategoryInstance->instance_id = $instanceId;
     $caseCategoryInstance->category_id = $categoryValue;
+    $caseCategoryInstance->find();
+    $existingInstance = $caseCategoryInstance->fetchAll();
 
+    if (!empty($existingInstance)) {
+      $caseCategoryInstance->id = $existingInstance[0]['id'];
+    }
+
+    $caseCategoryInstance->instance_id = $instanceId;
     $caseCategoryInstance->save();
   }
 

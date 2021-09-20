@@ -595,7 +595,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * @return string
    *   Report query.
    */
-  public function buildQuery($applyLimit = TRUE) {
+  public function buildQuery($applyLimit = FALSE) {
     if (empty($this->_params)) {
       $this->_params = $this->controller->exportValues($this->_name);
     }
@@ -805,8 +805,13 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
       return $this->getContactColumnOptions($spec, $usedIds);
     }
 
+    $fieldOptions = $this->getCustomFieldOptions($spec);
+    if (CRM_Utils_Array::value('type', $spec) === CRM_Report_Form::OP_DATE) {
+      return $fieldOptions;
+    }
+
     return array_intersect_key(
-      $this->getCustomFieldOptions($spec),
+      $fieldOptions,
       $this->getUsedOptions($spec['dbAlias'], $fieldName)
     );
   }

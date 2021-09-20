@@ -52,6 +52,8 @@
       if ($scope.customFilters.tag_id) {
         applyTagsFilter();
       }
+
+      $scope.refresh();
     }
 
     /**

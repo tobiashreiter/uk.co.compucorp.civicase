@@ -43,7 +43,7 @@
 
     beforeEach(() => {
       listenForCaseOverviewRecalculate();
-      compileDirective({ caseTypeCategory: 'Cases' });
+      compileDirective({ caseTypeCategory: '1' });
     });
 
     describe('compile directive', () => {
@@ -57,13 +57,13 @@
 
       beforeEach(() => {
         expectedFilters = {
-          'case_type_id.case_type_category': 'Cases'
+          'case_type_id.case_type_category': '1'
         };
         expectedCaseTypes = CaseTypesMockData.getSequential();
 
         civicaseCrmApi.and.returnValue($q.resolve([CasesOverviewStats]));
         compileDirective({
-          caseTypeCategory: 'Cases'
+          caseTypeCategory: '1'
         });
 
         $rootScope.$digest();
@@ -87,14 +87,14 @@
       beforeEach(() => {
         civicaseCrmApi.and.returnValue($q.resolve([CasesOverviewStats]));
         compileDirective({
-          caseTypeCategory: 'Cases',
+          caseTypeCategory: '1',
           status_id: '1'
         });
       });
 
       it('fetches the case statistics, but shows all case statuses', () => {
         expect(civicaseCrmApi).toHaveBeenCalledWith([['Case', 'getstats', {
-          'case_type_id.case_type_category': 'Cases'
+          'case_type_id.case_type_category': '1'
         }]]);
       });
     });
@@ -104,16 +104,16 @@
 
       describe('when loading a subset of case types', () => {
         beforeEach(() => {
-          const sampleCaseStatuses = _.sample(CaseStatus.getAll(), 2);
           const sampleCaseTypes = _.sample(CaseType.getAll(), 3);
 
-          sampleCaseTypes[0].definition.statuses = [sampleCaseStatuses[0].name];
-          sampleCaseTypes[1].definition.statuses = [sampleCaseStatuses[1].name];
-          sampleCaseTypes[2].definition.statuses = [sampleCaseStatuses[1].name];
+          sampleCaseTypes[0].definition.statuses = _.map(CaseStatus.getAll(), 'name');
+          sampleCaseTypes[1].definition.statuses = _.map(CaseStatus.getAll(), 'name');
+          sampleCaseTypes[2].definition.statuses = _.map(CaseStatus.getAll(), 'name');
 
-          expectedCaseStatuses = _.chain(sampleCaseStatuses)
-            .sortBy('weight')
-            .indexBy('value')
+          expectedCaseStatuses = _.chain(CaseStatus.getAll())
+            .sortBy(function (status) {
+              return parseInt(status.weight, 10);
+            })
             .value();
 
           CaseManagementWorkflow.getWorkflowsListForCaseOverview.and.returnValue($q.resolve({
@@ -121,7 +121,7 @@
             count: sampleCaseTypes.length
           }));
 
-          compileDirective({ caseTypeCategory: 'Cases' });
+          compileDirective({ caseTypeCategory: '1' });
 
           $rootScope.$digest();
         });
@@ -139,8 +139,9 @@
           delete caseType.definition.statuses;
 
           expectedCaseStatuses = _.chain(allCaseStatuses)
-            .sortBy('weight')
-            .indexBy('value')
+            .sortBy(function (status) {
+              return parseInt(status.weight, 10);
+            })
             .value();
 
           CaseManagementWorkflow.getWorkflowsListForCaseOverview.and.returnValue($q.resolve({
@@ -148,7 +149,7 @@
             count: 1
           }));
 
-          compileDirective({ caseTypeCategory: 'Cases' });
+          compileDirective({ caseTypeCategory: '1' });
 
           $rootScope.$digest();
         });

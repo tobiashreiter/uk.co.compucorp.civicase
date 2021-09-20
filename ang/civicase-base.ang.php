@@ -12,8 +12,11 @@ use Civi\CCase\Utils as Utils;
 use CRM_Civicase_Helper_OptionValues as OptionValuesHelper;
 use CRM_Civicase_Helper_GlobRecursive as GlobRecursive;
 use CRM_Civicase_Helper_NewCaseWebform as NewCaseWebform;
+use CRM_Civicase_Service_CaseCategoryCustomFieldsSetting as CaseCategoryCustomFieldsSetting;
+use CRM_Civicase_Helper_CaseUrl as CaseUrlHelper;
 
-$caseCategoryName = CRM_Utils_Request::retrieve('case_type_category', 'String');
+[$caseCategoryId, $caseCategoryName] = CaseUrlHelper::getCategoryParamsFromUrl();
+
 $caseCategorySetting = new CRM_Civicase_Service_CaseCategorySetting();
 
 $options = [
@@ -22,7 +25,6 @@ $options = [
   'caseStatuses' => 'case_status',
   'priority' => 'priority',
   'activityCategories' => 'activity_category',
-  'caseTypeCategories' => 'case_type_categories',
   'caseCategoryInstanceType' => 'case_category_instance_type',
 ];
 
@@ -35,15 +37,41 @@ set_file_categories_to_js_vars($options);
 set_activity_status_types_to_js_vars($options);
 set_custom_fields_info_to_js_vars($options);
 set_tags_to_js_vars($options);
+add_case_type_categories_to_options($options);
 expose_settings($options, [
-  'caseCategoryName' => $caseCategoryName,
+  'caseCategoryId' => $caseCategoryId,
 ]);
+
+/**
+ * Adds the case type categories and their labels to the given options.
+ *
+ * @param array $options
+ *   List of options to pass to the front-end.
+ */
+function add_case_type_categories_to_options(array &$options) {
+  $caseCategoryCustomFields = new CaseCategoryCustomFieldsSetting();
+  $caseCategories = civicrm_api3('OptionValue', 'get', [
+    'is_sequential' => '1',
+    'option_group_id' => 'case_type_categories',
+    'options' => ['limit' => 0],
+  ]);
+
+  foreach ($caseCategories['values'] as &$caseCategory) {
+    $caseCategory['custom_fields'] = $caseCategoryCustomFields->get(
+      $caseCategory['value']
+    );
+  }
+
+  $options['caseTypeCategories'] = array_column($caseCategories['values'], NULL, 'value');
+}
 
 /**
  * Sets the tags and tagsets to javascript global variable.
  */
 function set_case_category_instance_to_js_vars(&$options) {
-  $result = civicrm_api3('CaseCategoryInstance', 'get')['values'];
+  $result = civicrm_api3('CaseCategoryInstance', 'get', [
+    'options' => ['limit' => 0],
+  ])['values'];
   $options['caseCategoryInstanceMapping'] = $result;
 }
 
@@ -70,9 +98,7 @@ function expose_settings(array &$options, array $defaults) {
   $options['civicaseSingleCaseRolePerType'] = (bool) Civi::settings()->get('civicaseSingleCaseRolePerType');
   $options['caseTypeCategoriesWhereUserCanAccessActivities'] =
     CRM_Civicase_Helper_CaseCategory::getWhereUserCanAccessActivities();
-  $options['currentCaseCategory'] = $defaults['caseCategoryName']
-    ? strtolower($defaults['caseCategoryName'])
-    : strtolower(CRM_Civicase_Helper_CaseCategory::CASE_TYPE_CATEGORY_NAME);
+  $options['currentCaseCategory'] = $defaults['caseCategoryId'] ?: NULL;
 }
 
 /**
@@ -121,7 +147,6 @@ function set_case_types_to_js_vars(&$options) {
  */
 function set_relationship_types_to_js_vars(&$options) {
   $result = civicrm_api3('RelationshipType', 'get', [
-    'is_active' => 1,
     'options' => ['limit' => 0],
   ]);
   $options['relationshipTypes'] = $result['values'];

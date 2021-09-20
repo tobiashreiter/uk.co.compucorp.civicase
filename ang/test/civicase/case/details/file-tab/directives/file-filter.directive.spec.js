@@ -22,6 +22,7 @@
 
         it('filters by the selected tags', () => {
           expect($scope.fileFilterParams.tag_id).toEqual('1');
+          expect($scope.refresh).toHaveBeenCalled();
         });
       });
 
@@ -33,6 +34,7 @@
 
         it('filters by all the selected tags', () => {
           expect($scope.fileFilterParams.tag_id).toEqual({ IN: ['1', '2'] });
+          expect($scope.refresh).toHaveBeenCalled();
         });
       });
 
@@ -44,6 +46,7 @@
 
         it('does not filter by tags', () => {
           expect($scope.fileFilterParams.tag_id).toBeUndefined();
+          expect($scope.refresh).toHaveBeenCalled();
         });
       });
     });
@@ -54,6 +57,7 @@
     function initController () {
       $scope = $rootScope.$new();
       $scope.fileFilterParams = {};
+      $scope.refresh = jasmine.createSpy('refresh');
 
       $controller('civicaseFileFilterController', {
         $scope: $scope

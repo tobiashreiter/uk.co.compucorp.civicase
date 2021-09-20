@@ -99,7 +99,7 @@
         .on('crmFormSuccess', function () {
           $scope.refresh();
           if (tab === 'relations') {
-            $scope.getRelations();
+            $scope.getRelations($scope.relationsFilter);
           }
         });
     }

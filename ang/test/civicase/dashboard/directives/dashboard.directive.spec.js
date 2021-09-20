@@ -106,7 +106,7 @@
           expect(returnedLink)
             .toBe('#/case/list?' + $.param({
               cf: JSON.stringify({
-                case_type_category: 'cases',
+                case_type_category: '1',
                 case_type_id: ['type'],
                 status_id: ['status']
               })
@@ -126,7 +126,7 @@
           expect(returnedLink)
             .toBe('#/case/list?' + $.param({
               cf: JSON.stringify({
-                case_type_category: 'cases',
+                case_type_category: '1',
                 case_type_id: ['type'],
                 status_id: ['status'],
                 case_manager: [CRM.config.user_contact_id]
@@ -147,7 +147,7 @@
           expect(returnedLink)
             .toBe('#/case/list?' + $.param({
               cf: JSON.stringify({
-                case_type_category: 'cases',
+                case_type_category: '1',
                 case_type_id: ['type'],
                 status_id: ['status'],
                 contact_involved: [CRM.config.user_contact_id]

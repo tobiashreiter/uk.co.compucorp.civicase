@@ -2,8 +2,8 @@
   var module = angular.module('civicase');
 
   module.directive('civicaseActivityFilters', function ($rootScope, $timeout, ts,
-    crmUiHelp, ActivityCategory, ActivityStatus, ActivityType,
-    CustomActivityField, CaseTypeCategory) {
+    ActivityCategory, ActivityStatus, ActivityType, CustomActivityField,
+    CaseTypeCategory) {
     return {
       restrict: 'A',
       scope: {
@@ -44,6 +44,7 @@
         tag_id: true,
         text: true
       };
+      $scope.showIncludeCasesOption = showIncludeCasesOption;
 
       (function init () {
         if ($scope.canSelectCaseTypeCategory) {
@@ -128,6 +129,19 @@
       }
 
       /**
+       * @returns {boolean} returns true if the include cases option should be visible
+       */
+      function showIncludeCasesOption () {
+        var isPermissionAvailableToSeeCasesActivities =
+          (CRM.checkPerm('access my cases and activities') ||
+          CRM.checkPerm('access all cases and activities'));
+
+        return isPermissionAvailableToSeeCasesActivities &&
+          !!(!$scope.params.case_id &&
+          $scope.params.filters.$contact_id);
+      }
+
+      /**
        * Prepare Activity Filters
        *
        * @returns {Array} filters
@@ -138,7 +152,7 @@
             name: 'activity_type_id',
             label: ts('Activity type'),
             html_type: 'Select',
-            options: _.map(CRM.civicase.activityTypes, mapSelectOptions)
+            options: _.map(ActivityType.getAll(), mapSelectOptions)
           },
           {
             name: 'status_id',

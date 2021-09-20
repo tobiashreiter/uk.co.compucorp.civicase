@@ -22,10 +22,11 @@
    * @param {object} CaseTypeCategory case type catgory service
    * @param {object[]} WorkflowListFilters list of workflow filters
    * @param {Function} getServiceForInstance get service for a specific instance
+   * @param {string} currentCaseCategory The current case type category name
    */
   function workflowListController ($scope, ts, WorkflowListColumns,
     WorkflowListActionItems, CaseTypeCategory, WorkflowListFilters,
-    getServiceForInstance) {
+    getServiceForInstance, currentCaseCategory) {
     $scope.ts = ts;
     $scope.isLoading = false;
     $scope.workflows = [];
@@ -35,6 +36,8 @@
     $scope.tableColumns = filterArrayForCurrentInstance(WorkflowListColumns);
     $scope.filters = filterArrayForCurrentInstance(WorkflowListFilters);
     $scope.selectedFilters = {};
+    $scope.currentCaseCategory = CaseTypeCategory.findById(currentCaseCategory);
+
     $scope.refreshWorkflowsList = refreshWorkflowsList;
     $scope.redirectToWorkflowCreationScreen = redirectToWorkflowCreationScreen;
     $scope.setPageTo = setPageTo;
@@ -78,7 +81,7 @@
      * Apply default value to filters
      */
     function redirectToWorkflowCreationScreen () {
-      var categoryObject = CaseTypeCategory.findByName($scope.caseTypeCategory);
+      var categoryObject = CaseTypeCategory.findById($scope.caseTypeCategory);
       var instanceName = CaseTypeCategory.getCaseTypeCategoryInstance(categoryObject.value).name;
 
       getServiceForInstance(instanceName)
@@ -130,7 +133,7 @@
      * @returns {Promise} list of workflows
      */
     function getWorkflows (caseTypeCategory) {
-      var categoryObject = CaseTypeCategory.findByName(caseTypeCategory);
+      var categoryObject = CaseTypeCategory.findById(caseTypeCategory);
       var instanceName = CaseTypeCategory.getCaseTypeCategoryInstance(categoryObject.value).name;
 
       var filters = _.cloneDeep($scope.selectedFilters);

@@ -3,7 +3,7 @@
 
   CRM['civicase-base'].allowMultipleCaseClients = true;
   CRM['civicase-base'].allowCaseLocks = false;
-  CRM['civicase-base'].currentCaseCategory = 'cases';
+  CRM['civicase-base'].currentCaseCategory = '1';
   CRM['civicase-base'].showFullContactNameOnActivityFeed = true;
   CRM['civicase-base'].includeActivitiesForInvolvedContact = true;
   CRM['civicase-base'].caseCategoryWebformSettings = {

@@ -11,6 +11,11 @@
       id: '2',
       category_id: '1',
       instance_id: '1'
+    },
+    3: {
+      id: '3',
+      category_id: '4',
+      instance_id: '3'
     }
   };
 

@@ -209,6 +209,26 @@
           });
         });
       });
+
+      describe('when returning non client active contact ids', () => {
+        var returnValue;
+
+        beforeEach(() => {
+          const relationshipsToBeAdded = [
+            _.extend({}, relationships[0], { contact_id: '1', is_active: '1' }),
+            _.extend({}, relationships[0], { contact_id: '3', is_active: '1' }),
+            _.extend({}, relationships[0], { relationship_type_id: null, contact_id: '4', is_active: '1' }),
+            _.extend({}, relationships[0], { contact_id: '2', is_active: '0' })
+          ];
+          peopleTabRoles.fullRolesList = relationshipsToBeAdded;
+
+          returnValue = peopleTabRoles.getActiveNonClientContacts();
+        });
+
+        it('returns all non client active contact ids', () => {
+          expect(returnValue).toEqual(['1', '3']);
+        });
+      });
     });
 
     describe('role types and counts', () => {

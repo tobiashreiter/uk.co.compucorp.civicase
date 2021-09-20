@@ -21,8 +21,10 @@
    * @param {object} $scope the scope reference.
    * @param {Function} CaseTypeCategory case type category service.
    * @param {Function} ts translation service
+   * @param {object} civicaseCrmUrl civicrm url service
    */
-  function CivicaseContactCaseTabCaseDetailsController ($scope, CaseTypeCategory, ts) {
+  function CivicaseContactCaseTabCaseDetailsController ($scope, CaseTypeCategory,
+    ts, civicaseCrmUrl) {
     $scope.getCaseDetailsUrl = getCaseDetailsUrl;
     $scope.ts = ts;
 
@@ -36,9 +38,8 @@
      */
     function getCaseDetailsUrl (caseItem) {
       var caseTypeCategoryId = caseItem['case_type_id.case_type_category'];
-      var caseTypeCategoryName = CaseTypeCategory.getAll()[caseTypeCategoryId].name;
 
-      return CRM.url('civicrm/case/a/', 'case_type_category=' + caseTypeCategoryName +
+      return civicaseCrmUrl('civicrm/case/a/', 'case_type_category=' + caseTypeCategoryId +
         '#/case/list?caseId=' + caseItem.id + '&focus=1&all_statuses=1');
     }
   }

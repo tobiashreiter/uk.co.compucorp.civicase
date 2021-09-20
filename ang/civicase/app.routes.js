@@ -11,10 +11,19 @@
     });
   });
 
-  module.config(function ($routeProvider) {
+  module.config(function ($routeProvider, UrlParametersProvider) {
     $routeProvider.when('/case', {
       reloadOnSearch: false,
-      template: '<civicase-dashboard></civicase-dashboard>'
+      template: function () {
+        var urlParams = UrlParametersProvider.parse(window.location.search);
+        var urlHash = UrlParametersProvider.parse(window.location.hash);
+
+        if (urlParams.case_type_category === urlHash.case_type_category) {
+          return '<civicase-dashboard></civicase-dashboard>';
+        }
+
+        return '<civicase-access-denied></civicase-access-denied>';
+      }
     });
   });
 

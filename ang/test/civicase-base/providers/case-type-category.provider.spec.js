@@ -73,7 +73,7 @@
       });
 
       it('returns true if the case type category belongs to the sent instance', () => {
-        expect(CaseTypeCategory.isInstance('Cases', 'case_management')).toBe(true);
+        expect(CaseTypeCategory.isInstance('1', 'case_management')).toBe(true);
       });
     });
 
@@ -84,12 +84,12 @@
         module('civicase-base', 'civicase.data');
         injectDependencies();
 
-        expectedResult = {
+        expectedResult = jasmine.objectContaining({
           value: '1',
           label: 'Cases',
           name: 'Cases',
           is_active: '1'
-        };
+        });
       });
 
       it('returns the case type category which matches the sent id', () => {
@@ -104,12 +104,14 @@
         module('civicase-base', 'civicase.data');
         injectDependencies();
 
-        expectedResult = [{
-          value: '3',
-          label: 'Awards',
-          name: 'awards',
-          is_active: '1'
-        }];
+        expectedResult = [
+          jasmine.objectContaining({
+            value: '3',
+            label: 'Awards',
+            name: 'awards',
+            is_active: '1'
+          })
+        ];
       });
 
       it('returns all the case type categories belonging to sent instance', () => {

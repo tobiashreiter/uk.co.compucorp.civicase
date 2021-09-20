@@ -12,11 +12,11 @@ class CRM_Civicase_Service_CaseCategoryCustomDataType {
    * in the `extends_entity_column_id` column of the custom group table as the
    * column must contain valid values from the custom_data_type option group.
    *
-   * @param string $caseCategoryName
+   * @param string $caseTypeCategoryName
    *   Case Category Name.
    */
-  public function create($caseCategoryName) {
-    $result = $this->getCustomDataOptionValue($caseCategoryName);
+  public function create($caseTypeCategoryName) {
+    $result = $this->getCustomDataOptionValue($caseTypeCategoryName);
 
     if ($result['count'] > 0) {
       return;
@@ -27,9 +27,9 @@ class CRM_Civicase_Service_CaseCategoryCustomDataType {
     try {
       civicrm_api3('OptionValue', 'create', [
         'option_group_id' => 'custom_data_type',
-        'name' => $caseCategoryName,
-        'label' => $caseCategoryName,
-        'value' => $caseCategoryOptions[$caseCategoryName],
+        'name' => $caseTypeCategoryName,
+        'label' => $caseTypeCategoryName,
+        'value' => $caseCategoryOptions[$caseTypeCategoryName],
         'description' => NULL,
         'is_active' => TRUE,
         'is_reserved' => TRUE,
@@ -44,11 +44,11 @@ class CRM_Civicase_Service_CaseCategoryCustomDataType {
   /**
    * Creates the Custom data type option value for case category.
    *
-   * @param string $caseCategoryName
+   * @param string $caseTypeCategoryName
    *   Case Category Name.
    */
-  public function delete($caseCategoryName) {
-    $result = $this->getCustomDataOptionValue($caseCategoryName);
+  public function delete($caseTypeCategoryName) {
+    $result = $this->getCustomDataOptionValue($caseTypeCategoryName);
 
     if ($result['count'] == 0) {
       return;

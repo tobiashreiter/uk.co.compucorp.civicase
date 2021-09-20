@@ -6,7 +6,7 @@ use CRM_Case_BAO_CaseType as CaseType;
 use CRM_Civicase_Service_CaseCategoryFromUrl as CaseCategoryFromUrl;
 
 /**
- * Class CRM_Civicase_Hook_PermissionCheck_CaseCategory.
+ * Class for check permissions related to case categories.
  */
 class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
 
@@ -35,18 +35,22 @@ class CRM_Civicase_Hook_PermissionCheck_CaseCategory {
     }
 
     $url = CRM_Utils_System::currentPath();
+
     $caseCategoryFromUrl = new CaseCategoryFromUrl();
     $isAjaxRequest = $url == 'civicrm/ajax/rest';
     // We need to exclude this permission for this page because the permission
     // will return true as the logic for equivalent case category permission
     // will be applied.
     $isAdvancedSearchPage = $url == 'civicrm/contact/search/advanced' && $permission != 'basic case information';
-    $caseCategoryName = $caseCategoryFromUrl->get($url);
+    // We need to exclude Standalone page, since we can't precisely detect
+    // the category in it.
+    $isStandalonePage = $url === 'civicrm/export/standalone';
 
+    $caseCategoryName = $caseCategoryFromUrl->get($url);
     if ($caseCategoryName) {
       $this->modifyPermissionCheckForCategory($permission, $granted, $caseCategoryName);
     }
-    elseif (($isAjaxRequest && !$caseCategoryFromUrl->getIsCaseEntity()) || $isAdvancedSearchPage) {
+    elseif (($isAjaxRequest && !$caseCategoryFromUrl->getIsCaseEntity()) || $isAdvancedSearchPage || $isStandalonePage) {
       $this->checkForEquivalentCaseCategoryPermission($permission, $granted);
     }
   }

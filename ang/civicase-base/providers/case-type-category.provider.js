@@ -51,19 +51,19 @@
      */
     function findAllByInstance (instanceName) {
       return _.filter(getAll(), function (caseTypeCategory) {
-        return isInstance(caseTypeCategory.name, instanceName);
+        return isInstance(caseTypeCategory.value, instanceName);
       });
     }
 
     /**
      * Check if the sent case type category is part of the sent instance
      *
-     * @param {string} caseTypeCategoryName case type category name
+     * @param {string} caseTypeCategoryId case type category name or id
      * @param {string} instanceName instance name
      * @returns {boolean} if the sent case type category is part of the sent instance
      */
-    function isInstance (caseTypeCategoryName, instanceName) {
-      var caseTypeCategoryObject = findByName(caseTypeCategoryName);
+    function isInstance (caseTypeCategoryId, instanceName) {
+      var caseTypeCategoryObject = findById(caseTypeCategoryId);
 
       if (!caseTypeCategoryObject) {
         return;

@@ -43,7 +43,6 @@ return [
     'css/*.css',
   ],
   'js' => get_workflow_js_files(),
-  'settings' => $options,
   'requires' => $requires,
   'partials' => [
     'ang/workflow',

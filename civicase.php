@@ -205,7 +205,7 @@ function civicase_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
 function civicase_civicrm_buildForm($formName, &$form) {
   $hooks = [
     new CRM_Civicase_Hook_BuildForm_CaseClientPopulator(),
-    new CRM_Civicase_Hook_BuildForm_CaseCategoryCustomFieldsProcessing(),
+    new CRM_Civicase_Hook_BuildForm_FilterCaseTypesByCategoryForNewCase(),
     new CRM_Civicase_Hook_BuildForm_FilterByCaseCategoryOnChangeCaseType(),
     new CRM_Civicase_Hook_BuildForm_CaseCategoryFormLabelTranslationForNewCase(),
     new CRM_Civicase_Hook_BuildForm_CaseCategoryFormLabelTranslationForChangeCase(),
@@ -222,6 +222,10 @@ function civicase_civicrm_buildForm($formName, &$form) {
     new CRM_Civicase_Hook_BuildForm_TokenTree(),
     new CRM_Civicase_Hook_BuildForm_LinkCaseActivityDefaultStatus(),
     new CRM_Civicase_Hook_BuildForm_HandleDraftActivities(),
+    new CRM_Civicase_Hook_BuildForm_AddCaseCategoryCustomFields(),
+    new CRM_Civicase_Hook_BuildForm_MakePdfFormSubjectRequired(),
+    new CRM_Civicase_Hook_BuildForm_PdfFormButtonsLabelChange(),
+    new CRM_Civicase_Hook_BuildForm_AddScriptToCreatePdfForm(),
   ];
 
   foreach ($hooks as $hook) {
@@ -301,6 +305,7 @@ function civicase_civicrm_validateForm($formName, &$fields, &$files, &$form, &$e
   $hooks = [
     new CRM_Civicase_Hook_ValidateForm_SaveActivityDraft(),
     new CRM_Civicase_Hook_ValidateForm_SaveCaseTypeCategory(),
+    new CRM_Civicase_Hook_ValidateForm_SendBulkEmail(),
   ];
 
   foreach ($hooks as $hook) {
@@ -335,6 +340,7 @@ function civicase_civicrm_postProcess($formName, &$form) {
     new CRM_Civicase_Hook_PostProcess_RedirectToCaseDetails(),
     new CRM_Civicase_Hook_PostProcess_AttachEmailActivityToAllCases(),
     new CRM_Civicase_Hook_PostProcess_HandleDraftActivity(),
+    new CRM_Civicase_Hook_PostProcess_SaveCaseCategoryCustomFields(),
   ];
 
   foreach ($hooks as $hook) {
@@ -395,6 +401,7 @@ function civicase_civicrm_tokens(&$tokens) {
   $contactCustomFieldsService = new CRM_Civicase_Service_ContactCustomFieldsProvider();
   $hooks = [
     new CRM_Civicase_Hook_Tokens_AddContactTokens($contactFieldsService, $contactCustomFieldsService),
+    new CRM_Civicase_Hook_Tokens_AddCaseTokenCategory(),
   ];
   foreach ($hooks as &$hook) {
     $hook->run($tokens);
@@ -407,8 +414,10 @@ function civicase_civicrm_tokens(&$tokens) {
 function civicase_civicrm_tokenValues(&$values, $cids, $job = NULL, $tokens = [], $context = NULL) {
   $contactFieldsService = new CRM_Civicase_Service_ContactFieldsProvider();
   $contactCustomFieldsService = new CRM_Civicase_Service_ContactCustomFieldsProvider();
+  $caseTokenValuesHelper = new CRM_Civicase_Hook_Tokens_Helper_CaseTokenValues();
   $hooks = [
     new CRM_Civicase_Hook_Tokens_AddContactTokensValues($contactFieldsService, $contactCustomFieldsService),
+    new CRM_Civicase_Hook_Tokens_AddCaseCustomFieldsTokenValues($caseTokenValuesHelper),
   ];
   foreach ($hooks as &$hook) {
     $hook->run($values, $cids, $job, $tokens, $context);

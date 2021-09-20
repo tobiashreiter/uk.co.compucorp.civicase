@@ -5,7 +5,7 @@ use CRM_Civicase_Service_CaseCategoryCustomFieldExtends as CaseCategoryCustomFie
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 
 /**
- * CRM_Civicase_Setup_ProcessCaseCategoryForCustomGroupSupport class.
+ * Process CaseCategory For Custom Group Support class.
  */
 class CRM_Civicase_Setup_ProcessCaseCategoryForCustomGroupSupport {
 

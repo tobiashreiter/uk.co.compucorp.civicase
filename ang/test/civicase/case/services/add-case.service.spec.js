@@ -53,7 +53,7 @@
           });
 
           AddCase.clickHandler({
-            caseTypeCategoryName: 'case',
+            caseTypeCategoryId: '1',
             contactId: '5'
           });
         });
@@ -67,7 +67,7 @@
         beforeEach(() => {
           CaseCategoryWebformSettings.getSettingsFor.and.returnValue({ newCaseWebformUrl: null });
           AddCase.clickHandler({
-            caseTypeCategoryName: 'case',
+            caseTypeCategoryId: '1',
             contactId: '5'
           });
         });
@@ -79,7 +79,7 @@
         it('opens the new case form', () => {
           expect(civicaseCrmUrl).toHaveBeenCalledWith('civicrm/case/add', {
             action: 'add',
-            case_type_category: 'case',
+            case_type_category: '1',
             civicase_cid: '5',
             context: 'standalone',
             reset: 1

@@ -1,6 +1,7 @@
 <?php
 
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
+use CRM_Civicase_Hook_Helper_CaseTypeCategory as CaseTypeCategoryHelper;
 
 /**
  * Class CaseCategoryWordReplacementsForChangeCase.
@@ -50,7 +51,7 @@ class CRM_Civicase_Hook_PreProcess_CaseCategoryWordReplacementsForChangeCase {
    *   Form Object.
    */
   private function setPageTitle(CRM_Core_Form $form) {
-    $pageTitle = ts($form->get_template_vars('activityTypeName'));
+    $pageTitle = CaseTypeCategoryHelper::translate($form->get_template_vars('activityTypeName'));
     $displayName = $this->getContactDisplayName($form);
     if ($displayName) {
       CRM_Utils_System::setTitle($displayName . ' - ' . $pageTitle);

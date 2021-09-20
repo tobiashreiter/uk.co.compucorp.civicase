@@ -97,17 +97,18 @@ class CRM_Civicase_Service_CaseCategoryFromUrl {
    */
   private function getCaseCategoryFromUrl($caseTypeCategoryParam) {
     $caseCategory = CRM_Utils_Request::retrieve($caseTypeCategoryParam, 'String');
+    $caseTypeCategories = CaseType::buildOptions($caseTypeCategoryParam, 'validate');
     if ($caseCategory) {
       if (is_numeric($caseCategory)) {
-        $caseTypeCategories = CaseType::buildOptions($caseTypeCategoryParam, 'validate');
-
-        return isset($caseTypeCategories[$caseCategory]) ? $caseTypeCategories[$caseCategory] : NULL;
+        return $caseTypeCategories[$caseCategory] ?? NULL;
       }
 
       return $caseCategory;
     }
 
-    return $this->getParamValueFromEntryUrl($caseTypeCategoryParam);
+    $caseCategoryId = $this->getParamValueFromEntryUrl($caseTypeCategoryParam);
+
+    return $caseTypeCategories[$caseCategoryId] ?? NULL;
   }
 
   /**
