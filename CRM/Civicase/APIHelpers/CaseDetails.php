@@ -388,14 +388,14 @@ class CRM_Civicase_APIHelpers_CaseDetails {
           // Remove this field,so the case API won't use it in filtering.
           unset($params[$key]);
 
-          self::joinCustomFieldQuery($sql, $columnGroup, $value);
+          self::joinCustomFieldQuery($sql, $columnGroup, (array) $value);
         }
       }
     }
   }
 
   /**
-   * Joins the custom fields table column and adds a where condition to filter the result.
+   * Joins the custom fields table column with filter condition.
    *
    * @param CRM_Utils_SQL_Select $sql
    *   Reference to the SQL object.
