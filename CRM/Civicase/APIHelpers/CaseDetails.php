@@ -1,6 +1,7 @@
 <?php
 
 use Civi\CCase\Utils as CiviCaseUtils;
+use CRM_Civicase_APIHelpers_CustomFieldFilter as CustomFieldFilter;
 
 /**
  * Case Details API Helper Class.
@@ -74,6 +75,8 @@ class CRM_Civicase_APIHelpers_CaseDetails {
         }
       }
     }
+
+    CustomFieldFilter::filter($sql, $params);
 
     return [
       'resultMetadata' => $resultMetadata,
