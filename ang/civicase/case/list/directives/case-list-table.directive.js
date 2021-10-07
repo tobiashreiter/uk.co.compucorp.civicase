@@ -194,7 +194,7 @@
      * Remove route params added by individual tabs
      */
     function removeExtraRouteParams () {
-      var allowedRouteParams = ['caseId', 'cf', 'all_statuses'];
+      var allowedRouteParams = ['caseId', 'cf'];
 
       $route.current.params = _.pick($route.current.params, function (value, key) {
         return allowedRouteParams.indexOf(key) !== -1;

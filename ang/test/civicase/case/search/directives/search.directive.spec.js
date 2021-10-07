@@ -217,7 +217,7 @@
 
         it('shows the cases', () => {
           const expectedURL = 'case_type_category=1#/case/list?' +
-            'caseId=10&all_statuses=1&cf=%7B"case_type_category":"1"%7D';
+            'caseId=10&cf=%7B"case_type_category":"1"%7D';
 
           expect($window.location.href)
             .toBe(expectedURL);
