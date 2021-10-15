@@ -158,12 +158,17 @@
         return yearObj.year === dateObject.year;
       });
 
+      if (typeof CRM.config.locale != 'undefined') {
+        var locale = CRM.config.locale.substr(0,2);
+        moment.locale(locale);
+      }
+
       var monthObject = {
         count: dateObject.count,
         isOverDueGroup: !!isOverDueGroup,
         month: dateObject.month,
         year: dateObject.year,
-        monthName: moment(dateObject.month, 'MM').locale('fr').format('MMMM')
+        monthName: moment(dateObject.month, 'MM').format('MMMM')
       };
 
       if (yearObject) {

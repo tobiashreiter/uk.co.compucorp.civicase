@@ -21,7 +21,7 @@
       <div class="pull-left civicase__case-card-subject" ng-bind-html="data.subject"></div>
       <div class="pull-right">
         <span ng-if="data.status !== 'Resolved'">
-          <span>Next Milestone: </span>
+          <span>{{ts('Next Milestone: ')}}</span>
           <span
             class="civicase__case-card__date"
             ng-class="{'civicase__overdue-activity-icon': data.activity_summary.milestone[0].is_overdue}">
