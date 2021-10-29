@@ -126,7 +126,6 @@
       $scope.$bindToRoute({ expr: 'expanded', param: 'sx', format: 'bool', default: false });
       $scope.$bindToRoute({ expr: 'filters', param: 'cf', default: {} });
       $scope.$bindToRoute({ expr: 'contactRoleFilter', param: 'crf', default: $scope.contactRoleFilter });
-      $scope.$bindToRoute({ expr: 'showCasesFromAllStatuses', param: 'all_statuses', format: 'bool' });
     }
 
     /**
@@ -347,7 +346,6 @@
       $window.location.href =
         'case_type_category=' + caseTypeCategory +
         '#/case/list?caseId=' + data.caseId +
-        '&all_statuses=1' +
         '&cf=%7B"case_type_category":"' + caseTypeCategory + '"%7D';
     }
 

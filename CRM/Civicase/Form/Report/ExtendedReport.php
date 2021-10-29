@@ -1703,7 +1703,7 @@ class CRM_Civicase_Form_Report_ExtendedReport extends CRM_Report_Form {
 
       if (function_exists('dpm')) {
         dpm($err);
-        dpm($this->_columns);;
+        dpm($this->_columns);
       }
       else {
         CRM_Core_Error::debug($err);
@@ -3109,7 +3109,7 @@ WHERE cg.extends IN ('" . implode("','", $extends) . "') AND
       if (!empty($spec['is_filters']) && !empty($spec['statistics']) && !empty($options) && !empty($options['group_by'])) {
         foreach ($spec['statistics'] as $statisticName => $statisticLabel) {
           $columns[$tableName]['filters'][$fieldAlias . '_' . $statisticName] = array_merge($spec, [
-            'title' => E::E::ts('Aggregate filter : ') . $statisticLabel,
+            'title' => E::ts('Aggregate filter : ') . $statisticLabel,
             'having' => TRUE,
             'dbAlias' => $tableName . '_' . $fieldAlias . '_' . $statisticName,
             'selectAlias' => "{$statisticName}({$tableAlias}.{$spec['name']})",
@@ -3999,7 +3999,7 @@ WHERE cg.extends IN ('" . implode("','", $extends) . "') AND
    */
   function getContributionColumns($options) {
 
-    $options = array_merge(['group_title' => E::E::ts('Contributions')], $options);
+    $options = array_merge(['group_title' => E::ts('Contributions')], $options);
     $specs = [
       'id' => [
         'title' => E::ts('Contribution ID'),
@@ -4630,7 +4630,7 @@ WHERE cg.extends IN ('" . implode("','", $extends) . "') AND
     }
     foreach ($this->getSelectedJoinFilters() as $fieldName => $field) {
       $join = $this->getQillForField($field, $fieldName, 'join_filter_');
-      $join['title'] = E::E::ts('%1 only included based on filter ', [$field['entity']]) . $join['title'];
+      $join['title'] = E::ts('%1 only included based on filter ', [$field['entity']]) . $join['title'];
       $statistics['filters'][] = $join;
     }
   }
@@ -7132,7 +7132,7 @@ ON ({$this->_aliases['civicrm_event']}.id = {$this->_aliases['civicrm_participan
         // Perhaps later we should find a way to support them not being the same but for now....
         if (CRM_Utils_Array::value('field_on_null', $orderBys[$fieldName], [])
           !== CRM_Utils_Array::value('field_on_null', $selectedFields[$fieldName], [])) {
-          CRM_Core_Session::setStatus(E::E::ts('Selected field fallback altered to match order by fallback. Currently different configurations are not supported if both are selected'));
+          CRM_Core_Session::setStatus(E::ts('Selected field fallback altered to match order by fallback. Currently different configurations are not supported if both are selected'));
           $selectedFields[$fieldName]['field_on_null'] = CRM_Utils_Array::value('field_on_null', $orderBys[$fieldName], []);
           $this->_formValues['extended_fields'][$fieldName] = $selectedFields[$fieldName];
         }
