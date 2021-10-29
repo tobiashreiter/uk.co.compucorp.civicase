@@ -30,7 +30,7 @@
     </div>
     <div class="civicase__case-card__type">{{ data.case_type }}</div>
     <div class="civicase__case-card__next-milestone" ng-if="data.activity_summary.milestone.length > 0">
-      <span>Next Milestone: </span>
+      <span>{{ts('Next Milestone: ')}}</span>
       <a class="civicase__case-card__next-milestone-date"
          ng-class="{'civicase__overdue-activity-icon': data.activity_summary.milestone[0].is_overdue}"
          ng-href="{{getActivityFeedUrl({ caseId: data.id, category: 'milestone', statusType: 'incomplete', activityId: data.activity_summary.milestone[0].id })}}"
