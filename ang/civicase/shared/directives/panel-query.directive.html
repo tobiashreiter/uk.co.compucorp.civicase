@@ -58,10 +58,14 @@
       text-prev="&lsaquo;">
     </paging>
     <div ng-if="loading.full || total === 0">
-      Showing - to - of - {{customData.itemName || 'items'}}
+      {{ ts('Showing - to - of - %1', {1: customData.itemName || ts('items')})  }}
     </div>
     <div ng-if="!loading.full && total > 0">
-      Showing {{pagination.range.from}} to {{pagination.range.to}} of {{total}} {{customData.itemName || 'items'}}
+      {{ ts('Showing %1 to %2 of %3 %4', {
+           1: pagination.range.from,
+           2: pagination.range.to,
+           3: total,
+           4: customData.itemName || ts('items')} ) }}
     </div>
   </footer>
 </div>

@@ -44,7 +44,7 @@
           <panel-query-empty>
             <div class="civicase__activity-card--empty">
               <div class="civicase__activity-no-result-icon civicase__activity-no-result-icon--case"></div>
-              <div class="civicase__activity-card--big--empty-title">No new {{customData.itemName}}</div>
+              <div class="civicase__activity-card--big--empty-title">{{ ts('No new %1', {1: customData.itemName}) }}</div>
               <div class="civicase__activity-card--big--empty-description">
                 {{ts('You have no new %1 this %2', {1: customData.itemName, 2: selectedRange})}}
               </div>

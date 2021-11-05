@@ -2759,3 +2759,36 @@ msgstr "Aucune activité à venir"
 
 msgid "No new tasks"
 msgstr "Aucune nouvelle tâche"
+
+msgid "No new %1"
+msgstr "Pas de %1"
+
+msgid "View all cases"
+msgstr "Voir tous les dossiers"
+
+msgid "View all my cases"
+msgstr "Voir tous mes dossiers"
+
+msgid "Showing - to - of - %1"
+msgstr "Résultats - à - (%1)"
+
+msgid "Showing %1 to %2 of %3 %4"
+msgstr "Résultats %1 à %2 sur %3 (%4)"
+
+msgid "milestones"
+msgstr "jalons"
+
+msgid "activities"
+msgstr "activités"
+
+msgid "items"
+msgstr "éléments"
+
+msgid "Overview"
+msgstr "Résumé"
+
+msgid "This Week"
+msgstr "Cette semaine"
+
+msgid "This Month"
+msgstr "Ce mois"

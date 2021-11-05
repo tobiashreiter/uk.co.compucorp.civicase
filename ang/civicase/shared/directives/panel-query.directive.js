@@ -63,8 +63,8 @@
     $scope.ts = ts;
     $scope.selectedRange = 'week';
     $scope.periodRange = [
-      { label: 'This Week', value: 'week' },
-      { label: 'This Month', value: 'month' }
+      { label: ts('This Week'), value: 'week' },
+      { label: ts('This Month'), value: 'month' }
     ];
     $scope.pagination = {
       page: 1,
