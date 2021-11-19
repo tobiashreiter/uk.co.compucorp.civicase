@@ -2095,6 +2095,9 @@ msgstr "Cliquer sur le bouton ci-dessous pour ajouter un jalon à ce dossier"
 msgid "ADD ACTIVITY"
 msgstr "AJOUTER UNE ACTIVITE"
 
+msgid "ADD MILESTONE"
+msgstr "AJOUTER UN JALON"
+
 #: ang/civicase/activity/feed/directives/activity-feed.directive.js
 msgid "Future Activities"
 msgstr "Activités à venir"
@@ -2792,3 +2795,15 @@ msgstr "Cette semaine"
 
 msgid "This Month"
 msgstr "Ce mois"
+
+msgid "Open Tasks"
+msgstr "Tâches ouvertes"
+
+msgid "Unread Comms"
+msgstr "Comm. non lues"
+
+msgid "Scheduled Activities"
+msgstr "Activités planifiées"
+
+msgid "%1 overdue"
+msgstr "%1 en retard"
