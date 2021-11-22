@@ -343,10 +343,11 @@
     function focusSpecificCase (event, data) {
       var caseTypeCategory = $scope.filters.case_type_category;
 
-      $window.location.href =
+      $window.location.href = CRM.url('civicrm/case/a/?' +
         'case_type_category=' + caseTypeCategory +
         '#/case/list?caseId=' + data.caseId +
-        '&cf=%7B"case_type_category":"' + caseTypeCategory + '"%7D';
+        '&cf=%7B"case_type_category":"' + caseTypeCategory + '"%7D'
+      );
     }
 
     /**
