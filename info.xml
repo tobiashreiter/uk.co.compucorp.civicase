@@ -20,7 +20,10 @@
   <compatibility>
     <ver>5.35</ver>
   </compatibility>
-  <comments></comments>
+  <comments>
+    Supported CiviCRM versions  :
+    - A patched version of CiviCRM 5.35.2 (Download link: https://github.com/compucorp/civicrm-core/releases/download/5.35.2%2Bpatch.3c757c/civicrm-5.35.2+patch.3c757c.tar.gz)
+  </comments>
   <classloader>
     <psr4 prefix="Civi\" path="Civi" />
   </classloader>
