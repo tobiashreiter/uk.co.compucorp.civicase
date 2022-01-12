@@ -71,13 +71,13 @@ class CRM_Civicase_Api_Wrapper_CaseGetList implements API_Wrapper {
   /**
    * Handles request coming from Case.getlist API.
    *
-   * @param array $apiRequest
+   * @param array|Civi\Api4\Generic\AbstractAction $apiRequest
    *   API Request.
    *
    * @return bool
    *   If request can be handled.
    */
-  private function canHandleTheRequest(array $apiRequest) {
+  private function canHandleTheRequest($apiRequest) {
     return $apiRequest['entity'] == 'Case' && $apiRequest['action'] == 'getlist';
   }
 
