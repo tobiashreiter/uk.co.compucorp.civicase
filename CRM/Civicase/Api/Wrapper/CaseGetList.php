@@ -64,20 +64,24 @@ class CRM_Civicase_Api_Wrapper_CaseGetList implements API_Wrapper {
     $excludedCaseIds = !empty($apiRequest['params']['params']['case_id']['NOT IN']) ? $apiRequest['params']['params']['case_id']['NOT IN'] : [];
     if (!in_array($input, $excludedCaseIds)) {
       $apiRequest['params']['params']['case_id'] = $input;
-      $apiRequest['params']['params']['options'] = ['or' => [['case_id', 'contact_id.sort_name']]];
+      $apiRequest['params']['params']['options'] = [
+        'or' => [
+          ['case_id', 'contact_id.sort_name'],
+        ],
+      ];
     }
   }
 
   /**
    * Handles request coming from Case.getlist API.
    *
-   * @param array $apiRequest
+   * @param array|Civi\Api4\Generic\AbstractAction $apiRequest
    *   API Request.
    *
    * @return bool
    *   If request can be handled.
    */
-  private function canHandleTheRequest(array $apiRequest) {
+  private function canHandleTheRequest($apiRequest) {
     return $apiRequest['entity'] == 'Case' && $apiRequest['action'] == 'getlist';
   }
 
