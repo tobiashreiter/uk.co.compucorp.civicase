@@ -48,10 +48,11 @@
    * @param {object} CaseTypeCategory the case type category service reference.
    * @param {Function} getServiceForInstance get service for a specific instance
    * @param {string} currentCaseCategory current case category
+   * @param {Function} isTruthy service to check if value is truthy
    */
   function civicaseCaseOverviewController ($scope, civicaseCrmApi, BrowserCache,
     CaseStatus, CaseType, CaseTypeCategory, getServiceForInstance,
-    currentCaseCategory) {
+    currentCaseCategory, isTruthy) {
     var BROWSER_CACHE_IDENTIFIER = 'civicase.CaseOverview.hiddenCaseStatuses';
     var MAXIMUM_CASE_TYPES_TO_DISPLAY_BREAKDOWN = 1;
     var allCaseStatusNames = _.map(CaseStatus.getAll(true), 'name');
@@ -100,6 +101,9 @@
           caseStatusNames = getCaseStatusNamesBelongingToCaseTypes($scope.caseTypes);
           $scope.caseStatuses = _.sortBy(getStatusesByName(caseStatusNames), function (status) {
             return parseInt(status.weight, 10);
+          });
+          $scope.caseStatuses = $scope.caseStatuses.filter(function (status) {
+            return isTruthy(status.is_active);
           });
           $scope.showBreakdown = $scope.caseTypes.length <=
             MAXIMUM_CASE_TYPES_TO_DISPLAY_BREAKDOWN;
