@@ -81,7 +81,7 @@ function civicrm_api3_case_getfiles(array $params) {
 function _civicrm_api3_case_getfiles_format_params(array $params) {
   // Blerg, option value expansions don't seem to work in non-standard actions.
   if (isset($params['activity_type_id'])) {
-    $actTypes = CRM_Core_OptionGroup::values('activity_type', FALSE, FALSE, FALSE, NULL, 'name');;
+    $actTypes = CRM_Core_OptionGroup::values('activity_type', FALSE, FALSE, FALSE, NULL, 'name');
 
     if (isset($params['activity_type_id'][0]) && $params['activity_type_id'][0] === 'IN') {
       $params['activity_type_id'][1] = array_map(function ($type) use ($actTypes) {
@@ -119,7 +119,7 @@ function _civicrm_api3_case_getfiles_find(array $params, array $options) {
   $select = _civicrm_api3_case_getfiles_select($params);
 
   if (!empty($options['limit'])) {
-    $select->limit($options['limit'], isset($options['offset']) ? $options['offset'] : 0);
+    $select->limit($options['limit'], $options['offset'] ?? 0);
   }
 
   $dao = \CRM_Core_DAO::executeQuery($select->toSQL());
