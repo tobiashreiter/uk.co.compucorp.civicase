@@ -81,7 +81,7 @@ function civicrm_api3_case_getfiles(array $params) {
 function _civicrm_api3_case_getfiles_format_params(array $params) {
   // Blerg, option value expansions don't seem to work in non-standard actions.
   if (isset($params['activity_type_id'])) {
-    $actTypes = CRM_Core_OptionGroup::values('activity_type', FALSE, FALSE, FALSE, NULL, 'name');;
+    $actTypes = CRM_Core_OptionGroup::values('activity_type', FALSE, FALSE, FALSE, NULL, 'name');
 
     if (isset($params['activity_type_id'][0]) && $params['activity_type_id'][0] === 'IN') {
       $params['activity_type_id'][1] = array_map(function ($type) use ($actTypes) {
@@ -119,7 +119,7 @@ function _civicrm_api3_case_getfiles_find(array $params, array $options) {
   $select = _civicrm_api3_case_getfiles_select($params);
 
   if (!empty($options['limit'])) {
-    $select->limit($options['limit'], isset($options['offset']) ? $options['offset'] : 0);
+    $select->limit($options['limit'], $options['offset'] ?? 0);
   }
 
   $dao = \CRM_Core_DAO::executeQuery($select->toSQL());
@@ -143,29 +143,22 @@ function _civicrm_api3_case_getfiles_find(array $params, array $options) {
  *   Query select class.
  */
 function _civicrm_api3_case_getfiles_select(array $params) {
-  $select = CRM_Utils_SQL_Select::from('civicrm_case_activity caseact')
+  $activitySelect = CRM_Utils_SQL_Select::from('civicrm_activity act')
     ->strict()
-    ->join('ef', 'INNER JOIN civicrm_entity_file ef ON (ef.entity_table = "civicrm_activity" AND ef.entity_id = caseact.activity_id) ')
-    ->join('et', 'LEFT JOIN civicrm_entity_tag et ON (et.entity_table = "civicrm_activity" AND et.entity_id = caseact.activity_id) ')
+    ->join('ef', 'INNER JOIN civicrm_entity_file ef ON (ef.entity_table = "civicrm_activity" AND ef.entity_id = act.id) ')
+    ->join('et', 'LEFT JOIN civicrm_entity_tag et ON (et.entity_table = "civicrm_activity" AND et.entity_id = act.id) ')
     ->join('f', 'INNER JOIN civicrm_file f ON ef.file_id = f.id')
-    ->select('caseact.case_id as case_id, caseact.activity_id as activity_id, f.id as id, act.activity_date_time')
+    ->select('f.id as fid, act.activity_date_time, act.original_id, act.is_current_revision, act.id')
     ->distinct();
 
-  if (isset($params['case_id'])) {
-    $select->where('caseact.case_id = #caseIDs', [
-      'caseIDs' => $params['case_id'],
-    ]);
-  }
-
   if (isset($params['tag_id'])) {
-    $select->where(_civicase_get_tag_id_sql($params['tag_id']));
+    $activitySelect->where(_civicase_get_tag_id_sql($params['tag_id']));
   }
 
-  $select->join('act', 'INNER JOIN civicrm_activity act ON ((caseact.activity_id = act.id OR caseact.activity_id = act.original_id) AND act.is_current_revision=1)');
   if (isset($params['text'])) {
     // The end of the uri contains a hash which we want to ignore.
     // So we match from the start of the file uri as a cheap fix. CRM-20096.
-    $select->where('act.subject LIKE @q OR act.details LIKE @q OR f.description LIKE @q OR f.uri LIKE @q OR f.uri LIKE @s', [
+    $activitySelect->where('act.subject LIKE @q OR act.details LIKE @q OR f.description LIKE @q OR f.uri LIKE @q OR f.uri LIKE @s', [
       'q' => '%' . $params['text'] . '%',
       's' => $params['text'] . '%',
     ]
@@ -182,15 +175,15 @@ function _civicrm_api3_case_getfiles_select(array $params) {
     else {
       throw new \API_Exception("Field 'mime_type_cat' only supports string or IN values.");
     }
-    $select->where(CRM_Civicase_FileCategory::createSqlFilter('f.mime_type', $cats));
+    $activitySelect->where(CRM_Civicase_FileCategory::createSqlFilter('f.mime_type', $cats));
   }
 
   if (isset($params['mime_type'])) {
     if (is_array($params['mime_type'])) {
-      $select->where(CRM_Core_DAO::createSqlFilter('f.mime_type', $params['mime_type'], 'String'));
+      $activitySelect->where(CRM_Core_DAO::createSqlFilter('f.mime_type', $params['mime_type'], 'String'));
     }
     else {
-      $select->where('f.mime_type LIKE @type', [
+      $activitySelect->where('f.mime_type LIKE @type', [
         '@type' => $params['mime_type'],
       ]
       );
@@ -208,29 +201,43 @@ function _civicrm_api3_case_getfiles_select(array $params) {
       ->select('cov.value, cov.name');
     $actTypes = $selectActTypes->execute()->fetchMap('value', 'name');
     if ($actTypes) {
-      $select->where('act.activity_type_id IN (#type)', [
+      $activitySelect->where('act.activity_type_id IN (#type)', [
         '#type' => array_keys($actTypes),
       ]
       );
     }
     else {
-      $select->where('0 = 1');
+      $activitySelect->where('0 = 1');
     }
   }
 
   if (isset($params['activity_type_id'])) {
     if (is_array($params['activity_type_id'])) {
-      $select->where(CRM_Core_DAO::createSqlFilter('act.activity_type_id', $params['activity_type_id'], 'String'));
+      $activitySelect->where(CRM_Core_DAO::createSqlFilter('act.activity_type_id', $params['activity_type_id'], 'String'));
     }
     else {
-      $select->where('act.activity_type_id = #type', [
+      $activitySelect->where('act.activity_type_id = #type', [
         '#type' => $params['activity_type_id'],
       ]
       );
     }
   }
 
-  $select->orderBy(['act.activity_date_time DESC, act.id DESC, f.id DESC']);
+  $activitySelect->orderBy(['act.activity_date_time DESC, act.id DESC, f.id DESC']);
+
+  $select = CRM_Utils_SQL_Select::from('civicrm_case_activity caseact')
+    ->strict()
+    ->select('caseact.case_id as case_id, caseact.activity_id as activity_id, act.fid as id, act.activity_date_time')
+    ->distinct();
+
+  if (isset($params['case_id'])) {
+    $select->where('caseact.case_id = #caseIDs', [
+      'caseIDs' => $params['case_id'],
+    ]);
+  }
+
+  $select->join('act', "INNER JOIN (" . $activitySelect->toSql() . ") AS act ON ((caseact.activity_id = act.id OR caseact.activity_id = act.original_id) AND act.is_current_revision=1)");
+
   return $select;
 }
 
