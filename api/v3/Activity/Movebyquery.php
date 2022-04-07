@@ -76,8 +76,25 @@ function civicrm_api3_activity_movebyquery(array $params) {
     $result = CRM_Activity_Page_AJAX::_convertToCaseActivity($caseActivityParams);
     if (empty($result['error_msg']) && !empty($result['newId'])) {
       $activityIds[] = $result['newId'];
+      delete_case_activity($activityId);
     }
   }
 
   return civicrm_api3_create_success($activityIds, $params, 'Activity', 'copybyquery');
+}
+
+/**
+ * Delete a case activity after moving to another case.
+ *
+ * @param int $activityId
+ *   Activity ID.
+ */
+function delete_case_activity($activityId) {
+  try {
+    civicrm_api3('Activity', 'deletebyquery', [
+      'id' => $activityId,
+    ]);
+  }
+  catch (Exception $e) {
+  }
 }
