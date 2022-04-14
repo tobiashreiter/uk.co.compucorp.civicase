@@ -76,6 +76,7 @@ function civicrm_api3_activity_movebyquery(array $params) {
     $result = CRM_Activity_Page_AJAX::_convertToCaseActivity($caseActivityParams);
     if (empty($result['error_msg']) && !empty($result['newId'])) {
       $activityIds[] = $result['newId'];
+      $activityQueryApiHelper->transferActivityTags($activityId, $result['newId'], 'move');
       delete_case_activity($activityId);
     }
   }

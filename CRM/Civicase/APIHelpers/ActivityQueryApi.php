@@ -3,7 +3,7 @@
 use CRM_Civicase_APIHelpers_GenericApi as GenericApiHelper;
 
 /**
- * Class CRM_Civicase_APIHelpers_ActivityQueryApi.
+ * ActivityQueryApi API Helper Class.
  */
 class CRM_Civicase_APIHelpers_ActivityQueryApi {
 
@@ -45,6 +45,33 @@ class CRM_Civicase_APIHelpers_ActivityQueryApi {
     }
 
     return $apiParams;
+  }
+
+  /**
+   * Copy tags from one activity to another activity.
+   *
+   * @param int $activityId
+   *   ID of the activity that is being copied.
+   * @param int $newActivityId
+   *   ID of the new activity.
+   * @param string $mode
+   *   Mode can either be move or copy.
+   */
+  public function transferActivityTags($activityId, $newActivityId, $mode = 'copy') {
+    $result = civicrm_api3('EntityTag', 'get', [
+      'sequential' => 1,
+      'entity_table' => "civicrm_activity",
+      'entity_id' => $activityId,
+    ]);
+
+    array_walk($result['values'], function ($tag) use ($newActivityId, $mode) {
+      $tag['entity_id'] = $newActivityId;
+      if ($mode === 'copy') {
+        unset($tag['id']);
+      }
+
+      civicrm_api3('EntityTag', 'create', $tag);
+    });
   }
 
 }
