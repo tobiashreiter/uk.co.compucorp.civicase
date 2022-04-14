@@ -73,6 +73,7 @@ function civicrm_api3_activity_copybyquery(array $params) {
 
     $result = CRM_Activity_Page_AJAX::_convertToCaseActivity($caseActivityParams);
     if (empty($result['error_msg']) && !empty($result['newId'])) {
+      $activityQueryApiHelper->transferActivityTags($activityId, $result['newId']);
       $activityIds[] = $result['newId'];
     }
   }
