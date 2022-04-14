@@ -51,16 +51,38 @@ function civicrm_api3_activity_deletebyquery(array $params) {
   }
 
   $activityIds = [];
+
+  unlink_from_other_activities($activities);
   foreach ($activities as $activityId) {
     try {
       civicrm_api3('Activity', 'delete', [
         'id' => $activityId,
       ]);
       $activityIds[] = $activityId;
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
     }
 
   }
 
   return civicrm_api3_create_success($activityIds, $params, 'Activity', 'copybyquery');
+}
+
+/**
+ * Unlink activities from other activity they are linked to.
+ *
+ * @param array $activities
+ *   Array of activity ids.
+ */
+function unlink_from_other_activities(array $activities) {
+  try {
+    civicrm_api3('Activity', 'get', [
+      'sequential' => 1,
+      'return' => ['id'],
+      'original_id' => ['IN' => $activities],
+      'api.Activity.update' => ['original_id' => ''],
+    ]);
+  }
+  catch (Exception $e) {
+  }
 }
