@@ -26,7 +26,7 @@ class CRM_Civicase_Activity_ContactActivitiesSelector {
 
     $this->addAssigneeContactIdToReturnParams($newParams);
 
-    $activities = civicrm_api3('Activity', 'get', $newParams);
+    $activities = civicrm_api3('Activity', 'getall', $newParams);
 
     $this->filterOutActivitiesNotBelongingToContact($activities, $newParams);
 
