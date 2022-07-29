@@ -21,10 +21,10 @@ function _civicrm_api3_activity_getall_spec(array &$spec) {
  * When adding 'target_contact_name' or 'assignee_contact_name' to
  * civicrm “Activity.get” API, it will fetch all the target and assignee
  * contacts for each activity, but certain known type of activities such as
- * "Bulk Email" and "Bulk SMS" are known to have large number of target activities,
- * which results in slow queries.
+ * "Bulk Email" and "Bulk SMS" are known to have large number of target
+ * activities, which results in slow queries.
  * This API is similar to “Activity.get”, the difference
- * is that it does Not fetch the target and assignee contacts for
+ * is that it does not fetch the target and assignee contacts for
  * activity types that are known to have large number of contacts.
  *
  * @param array $params
@@ -49,8 +49,10 @@ function civicrm_api3_activity_getall(array $params) {
 
   $result = civicrm_api3('Activity', 'get', $params);
 
-  // These two activity types are known to often have a lot of contacts attached to them (mostly as target contacts),
-  // thus we ignore fetching contacts for them, since for example the user can just open the mailing report to see
+  // These two activity types are known to often have a lot
+  // of contacts attached to them (mostly as target contacts),
+  // thus we ignore fetching contacts for them, since for
+  // example the user can just open the mailing report to see
   // the contacts who received the email.
   $bulkEmailActivityId = CRM_Core_PseudoConstant::getKey('CRM_Activity_BAO_Activity', 'activity_type_id', 'Bulk Email');
   $massSmsActivityId = CRM_Core_PseudoConstant::getKey('CRM_Activity_BAO_Activity', 'activity_type_id', 'Mass SMS');
@@ -63,14 +65,14 @@ function civicrm_api3_activity_getall(array $params) {
     }
   }
 
-  // here we fetch the contacts separately, but only for
+  // Here we fetch the contacts separately, but only for
   // the activities that are not of the types defined above.
   if (!empty($activityIdsToFetchContactsFor)) {
     _civicrm_api3_activity_fill_activity_contact_names($activityIdsToFetchContactsFor, $params, $contactTypesToReturn);
   }
 
-  // merging the activity contacts back to the activities
-  // we fetched earlier
+  // Merging the activity contacts back to the activities
+  // we fetched earlier.
   foreach ($result['values'] as &$row) {
     if (!empty($activityIdsToFetchContactsFor[$row['id']])) {
       $row = array_merge($activityIdsToFetchContactsFor[$row['id']], $row);
