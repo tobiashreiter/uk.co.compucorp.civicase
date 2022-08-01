@@ -109,11 +109,7 @@
 
           beforeEach(() => {
             getCaseListApiParams = modalOpenCall[2].getCaseListApiParams;
-            expectedApiParams = {
-              params: {
-                search_by_case_id: true
-              }
-            };
+            expectedApiParams = {};
           });
 
           it('displays cases from those case type categories for which user has "basic case information" permission', () => {
@@ -383,11 +379,7 @@
 
           beforeEach(() => {
             getCaseListApiParams = modalOpenCall[2].getCaseListApiParams;
-            expectedApiParams = {
-              params: {
-                search_by_case_id: true
-              }
-            };
+            expectedApiParams = {};
           });
 
           it('displays cases from those case type categories for which user has "basic case information" permission', () => {
