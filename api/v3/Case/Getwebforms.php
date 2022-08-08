@@ -47,9 +47,12 @@ function civicrm_api3_case_getwebforms(array $params) {
     return $out;
   }
 
+  $sort = htmlspecialchars($params['options']['sort'] ?? 'title');
+
   $query = "SELECT a.nid, a.data, n.title
           FROM webform_civicrm_forms a
-          INNER JOIN node n ON a.nid = n.nid";
+          INNER JOIN node n ON a.nid = n.nid
+          ORDER BY {$sort}";
 
   db_set_active('default');
   $daos = db_query($query);
