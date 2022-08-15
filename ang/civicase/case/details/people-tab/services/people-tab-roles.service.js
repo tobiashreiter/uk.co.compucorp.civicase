@@ -248,6 +248,22 @@
     }
 
     /**
+     * Adds relationship_ids param to the
+     * case relationships.
+     *
+     * @param {object[]} relationships list of case relationships.
+     * @returns {object[]} a  list of case relationships with relationship_ids param.
+     */
+    function addRelationshipIdsParam (relationships) {
+      return _(relationships)
+        .map(function (relationship) {
+          relationship.relationship_ids = [relationship.id];
+          return relationship;
+        })
+        .value();
+    }
+
+    /**
      * Updates the list of roles to display the given page.
      *
      * @param {number} pageNumber the page number to navigate to.
@@ -279,7 +295,7 @@
      */
     function setCaseRelationships (newCaseRelationships) {
       caseRelationships = !allowMultipleCaseClients
-        ? newCaseRelationships
+        ? addRelationshipIdsParam(newCaseRelationships)
         : getUniqueCaseRelationships(newCaseRelationships);
     }
 
