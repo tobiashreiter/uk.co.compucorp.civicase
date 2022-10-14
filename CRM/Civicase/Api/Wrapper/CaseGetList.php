@@ -33,8 +33,6 @@ class CRM_Civicase_Api_Wrapper_CaseGetList implements API_Wrapper {
       ];
     }
 
-    $this->allowSearchByCaseId($apiRequest);
-
     return $apiRequest;
   }
 
@@ -44,32 +42,6 @@ class CRM_Civicase_Api_Wrapper_CaseGetList implements API_Wrapper {
   public function toApiOutput($apiRequest, $result) {
 
     return $result;
-  }
-
-  /**
-   * Allows search by Case ID in addition to the contact name.
-   *
-   * This is done by setting the case ID to the input and adding
-   * and 'OR' condition between the contact name and case Id field.
-   *
-   * @param array $apiRequest
-   *   API Request.
-   */
-  private function allowSearchByCaseId(array &$apiRequest) {
-    $isInputNumeric = !empty($apiRequest['params']['input']) && is_numeric($apiRequest['params']['input']);
-    if (!$isInputNumeric || empty($apiRequest['params']['params']['search_by_case_id'])) {
-      return;
-    }
-    $input = $apiRequest['params']['input'];
-    $excludedCaseIds = !empty($apiRequest['params']['params']['case_id']['NOT IN']) ? $apiRequest['params']['params']['case_id']['NOT IN'] : [];
-    if (!in_array($input, $excludedCaseIds)) {
-      $apiRequest['params']['params']['case_id'] = $input;
-      $apiRequest['params']['params']['options'] = [
-        'or' => [
-          ['case_id', 'contact_id.sort_name'],
-        ],
-      ];
-    }
   }
 
   /**
@@ -145,7 +117,7 @@ class CRM_Civicase_Api_Wrapper_CaseGetList implements API_Wrapper {
     if (is_numeric($caseCategory)) {
       $caseTypeCategories = CaseType::buildOptions('case_type_category', 'validate');
 
-      return isset($caseTypeCategories[$caseCategory]) ? $caseTypeCategories[$caseCategory] : NULL;
+      return $caseTypeCategories[$caseCategory] ?? NULL;
     }
 
     return $caseCategory;
