@@ -126,8 +126,13 @@ Link to extension: https://github.com/civicrm/org.civicrm.casetokens
 * Activity type icons
 * Case status now has a ‘Status class’ field to show cases which are incomplete, completed, or cancelled.
 
-# Technical Requirements
-* CiviCRM: CiviCase is designed and tested with a [patched version of CiviCRM v5.35.2](https://github.com/compucorp/civicrm-core/releases/download/5.35.2%2Bpatch.f58e72/civicrm-5.35.2+patch.f58e72.tar.gz) with PHP 7.3 and may have unforeseen issues with newer versions of CiviCRM and hence we would recommend only using it with that version of CiviCRM. Compucorp normally undertakes to update these extensions shortly after a new CiviCRM security release.
+## Supported versions of CiviCRM
+This extension is designed and tested with a specific (and patched) version of CiviCRM and may have unforeseen issues if used with different (including later) versions.
+In the extension info.xml file, see the “comments” field where we specify the currently supported version of CiviCRM and have a download link to the correct version.
+
+Compuco normally undertakes to update the compatible version shortly after a new CiviCRM security release.
+
+# Other Technical Requirements
 * [Shoreditch](https://github.com/civicrm/org.civicrm.shoreditch): version >= v0.1-alpha32, preferably the latest version.
 * [Usermenu](https://github.com/compucorp/uk.co.compucorp.usermenu).
 * (Recommended) Migrate from embedded activity revisions to full system logging ([CRM-21051](https://issues.civicrm.org/jira/browse/CRM-21051))

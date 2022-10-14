@@ -2,7 +2,7 @@
 <extension key="uk.co.compucorp.civicase" type="module">
   <file>civicase</file>
   <name>CiviCase</name>
-  <description>Manage cases, clients, activities, etc.</description>
+  <description>Manage cases, clients, activities, etc. Symbiotic.coop fork.</description>
   <license>AGPL-3.0</license>
   <maintainer>
     <author>Compucorp</author>
@@ -20,7 +20,7 @@
   <compatibility>
     <ver>5.39</ver>
   </compatibility>
-  <comments></comments>
+  <comments>CiviCase fork by www.symbiotic.coop, mostly for WordPress support.</comments>
   <classloader>
     <psr4 prefix="Civi\" path="Civi" />
   </classloader>
