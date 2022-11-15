@@ -67,6 +67,7 @@ class CRM_Civicase_Hook_BuildForm_ModifyCaseTypesForAdvancedSearch {
     $result = civicrm_api3('CaseType', 'get', [
       'return' => ['id'],
       'case_type_category' => ['IN' => $this->accessibleCaseCategories],
+      'options' => ['limit' => 0],
     ]);
 
     return $result['values'];
