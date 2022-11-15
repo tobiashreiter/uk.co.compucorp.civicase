@@ -4,7 +4,7 @@ use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 use CRM_Case_BAO_CaseType as CaseType;
 
 /**
- * Class CRM_Civicase_Hook_BuildForm_ModifyCaseTypesForAdvancedSearch.
+ * Modifying case types list in CiviCRM advanced search form.
  */
 class CRM_Civicase_Hook_BuildForm_ModifyCaseTypesForAdvancedSearch {
 
