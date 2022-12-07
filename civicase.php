@@ -185,6 +185,7 @@ function civicase_civicrm_alterMenu(&$items) {
   $items['civicrm/case/activity']['ids_arguments']['json'][] = 'civicase_reload';
   $items['civicrm/activity']['ids_arguments']['json'][] = 'civicase_reload';
   $items['civicrm/activity/email/add']['ids_arguments']['json'][] = 'civicase_reload';
+  $items['civicrm/case/email/add']['ids_arguments']['json'][] = 'civicase_reload';
   $items['civicrm/activity/pdf/add']['ids_arguments']['json'][] = 'civicase_reload';
   $items['civicrm/case/cd/edit']['ids_arguments']['json'][] = 'civicase_reload';
   $items['civicrm/export/standalone']['ids_arguments']['json'][] = 'civicase_reload';
@@ -214,7 +215,6 @@ function civicase_civicrm_buildForm($formName, &$form) {
     new CRM_Civicase_Hook_BuildForm_ModifyCaseTypesForAdvancedSearch(),
     new CRM_Civicase_Hook_BuildForm_AddCaseCategoryInstanceField(),
     new CRM_Civicase_Hook_BuildForm_AddStyleFieldToCaseCustomGroups(),
-    new CRM_Civicase_Hook_BuildForm_DisplayAllCustomGroupsInCaseForm(),
     new CRM_Civicase_Hook_BuildForm_RemoveExportActionFromReports(),
     new CRM_Civicase_Hook_BuildForm_RestrictCaseEmailContacts(),
     new CRM_Civicase_Hook_BuildForm_LimitRecipientFieldsToOnlySelectedContacts(),
