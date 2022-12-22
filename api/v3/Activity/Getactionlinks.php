@@ -69,11 +69,14 @@ function _civicrm_api3_activity_getActivityActionLinks(array $params) {
     $seqLinks[] = $link;
   }
 
+  $caseId = (array) CRM_Utils_Array::value('case_id', $params);
+  $caseId = ((array) $caseId)[0] ?? NULL;
+
   $values = [
     'id' => $params['activity_id'],
     'cid' => CRM_Core_Session::getLoggedInContactID(),
     'cxt' => '',
-    'caseid' => CRM_Utils_Array::value('case_id', $params),
+    'caseid' => $caseId,
   ];
 
   // Invoke hook links for activity tab rows.
