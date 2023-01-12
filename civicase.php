@@ -74,6 +74,11 @@ function civicase_civicrm_config(&$config) {
     ['CRM_Civicase_Event_Listener_CaseCustomFields', 'loadOnDemand'],
     10
   );
+
+  Civi::dispatcher()->addListener(
+    'hook_civicrm_buildAsset',
+    ['CRM_Civicase_Event_Listener_AssetBuilder', 'addWordReplacements']
+  );
 }
 
 /**
