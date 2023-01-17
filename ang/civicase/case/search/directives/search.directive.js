@@ -19,10 +19,11 @@
    * Controller Function for civicase-search directive
    */
   module.controller('civicaseSearchController', function ($scope, $rootScope, $window,
-    $timeout, civicaseCrmApi, Select2Utils, ts, CaseStatus, CaseTypeCategory,
+    $timeout, civicaseCrmApi, Select2Utils, ts, CaseStatus, Collector, CaseTypeCategory,
     CaseType, currentCaseCategory, CustomSearchField, includeActivitiesForInvolvedContact) {
     var caseTypes = CaseType.getAll();
     var caseStatuses = CaseStatus.getAll();
+    var collectors = Collector.getAll();
     var allSearchFields = {
       id: { label: ts('Case ID'), html_type: 'Number' },
       has_role: { label: ts('Contact Search') },
@@ -37,13 +38,14 @@
       { text: ts('Cases I am involved in'), id: 'is_involved' },
       { text: ts('All Cases'), id: 'all' }
     ];
-
+        
     var DEFAULT_CASE_FILTERS = {
       case_type_category: currentCaseCategory
     };
 
     $scope.caseRelationshipOptions = caseRelationshipConfig;
     $scope.caseStatusOptions = _.map(caseStatuses, mapSelectOptions);
+    $scope.caseCollectorOptions = _.map(collectors, mapCollectors);
     $scope.caseTypeOptions = [];
     $scope.checkPerm = CRM.checkPerm;
     $scope.customGroups = CustomSearchField.getAll();
@@ -55,7 +57,7 @@
       selectedContacts: null,
       selectedContactRoles: ['all-case-roles']
     };
-    $scope.contactRoles = [
+    $scope.contactRoles = [ 
       { id: 'all-case-roles', text: ts('All Case Roles') },
       { id: 'client', text: ts('Client') }
     ];
@@ -331,6 +333,7 @@
       $scope.$on('civicase::case-details::clear-filter-and-focus-specific-case', focusSpecificCase);
       $scope.$watch('expanded', expandedWatcher);
       $scope.$watch('relationshipType', relationshipTypeWatcher);
+      $scope.$watch('collector', collectorWatcher);
       $scope.$watchCollection('contactRoleFilter', caseRoleWatcher);
     }
 
@@ -393,6 +396,20 @@
     }
 
     /**
+     * Map the collector parameter from API
+     * to show up correctly on the UI.
+     *
+     * @param {object} collector object for collectors
+     * @returns {object} mapped value to be used in UI
+     */
+    function mapCollectors (collector) {
+      return {
+        id: collector.contact_id,
+        text: collector.sort_name
+      };
+    }
+
+    /**
      * Watcher for relationshipType filter
      */
     function relationshipTypeWatcher () {
@@ -408,6 +425,15 @@
         } else {
           delete ($scope.filters.contact_involved);
         }
+      }
+    }
+
+    /**
+     * Watcher for relationshipType filter
+     */
+    function collectorWatcher () {
+      if ($scope.collector) {
+         $scope.filters.case_manager = parseInt($scope.collector[0]);
       }
     }
 

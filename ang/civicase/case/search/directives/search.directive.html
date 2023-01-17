@@ -9,18 +9,6 @@
     <form class="form-inline civicase__case-filters-container">
       <input
         class="form-control civicase__case-filter__input"
-        ng-list
-        crm-ui-select="{
-          allowClear: true,
-          multiple: true,
-          placeholder: ts('Case Type: Any'),
-          data: caseTypeOptions
-        }"
-        ng-model="filters.case_type_id"
-        ng-change="doSearchIfNotExpanded()"
-      />
-      <input
-        class="form-control civicase__case-filter__input"
         ng-list crm-ui-select="{
           allowClear: true,
           multiple: true,
@@ -36,10 +24,10 @@
         crm-ui-select="{
           allowClear: false,
           multiple: false,
-          placeholder: ts('Relationship Type: All'),
-          data: caseRelationshipOptions
+          placeholder: ts('Collector: All'),
+          data: caseCollectorOptions
         }"
-        ng-model="relationshipType"
+        ng-model="collector"
         ng-change="doSearchIfNotExpanded()"
       />
       <button
@@ -136,13 +124,15 @@
   <div
     class="panel-body civicase__case-filter-panel__description"
     ng-if="!expanded && filterDescription.length">
+    <!-- 
     <ul class="civicase__filter-search-description-list-container">
       <li
         ng-repeat="des in filterDescription"
         class="col-lg-6 civicase__filter-search-description-list">
-        <strong>{{ des.label }}:</strong> {{ des.text }}
+        <strong>{{ des.label }}:</strong> {{ des.text }}{{ des.value }}
       </li>
     </ul>
+     -->
     <button
       class="btn btn-danger btn-sm pull-right civicase__case-filter-panel__button"
       ng-click="clearSearch()">

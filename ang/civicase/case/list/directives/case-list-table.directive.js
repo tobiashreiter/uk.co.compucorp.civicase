@@ -53,7 +53,7 @@
   module.controller('CivicaseCaseListTableController', function ($q, $route,
     $scope, $window, BulkActions, civicaseCrmApi, currentCaseCategory,
     crmThrottle, formatCase, CasesUtils, ts, ActivityCategory, ActivityType,
-    CaseStatus) {
+    CaseStatus,CaseCollector) {
     var firstLoad = true;
     var allCases = [];
 
@@ -62,6 +62,7 @@
     $scope.page = { total: 0 };
     $scope.cases = [];
     $scope.caseStatuses = CaseStatus.getAll();
+    $scope.caseCollectors = CaseCollector.getAll();
     $scope.CRM = CRM;
     $scope.isLoading = true;
     $scope.selectedCases = [];

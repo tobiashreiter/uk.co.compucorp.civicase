@@ -33,6 +33,7 @@ NewCaseWebform::addWebformDataToOptions($options, $caseCategorySetting);
 set_case_types_to_js_vars($options);
 set_case_category_instance_to_js_vars($options);
 set_relationship_types_to_js_vars($options);
+set_collectors_to_js_vars($options);
 set_file_categories_to_js_vars($options);
 set_activity_status_types_to_js_vars($options);
 set_custom_fields_info_to_js_vars($options);
@@ -150,6 +151,17 @@ function set_relationship_types_to_js_vars(&$options) {
     'options' => ['limit' => 0],
   ]);
   $options['relationshipTypes'] = $result['values'];
+}
+
+/**
+ * Sets the collectors to javascript global variable.
+ */
+function set_collectors_to_js_vars(&$options) {
+    $result = civicrm_api3('Contact', 'get', [
+        'contact_sub_type' => 'Collector',
+        'options' => ['limit' => 0],
+    ]);
+    $options['collectors'] = $result['values'];
 }
 
 /**
