@@ -6,11 +6,10 @@
 class CRM_Civicase_BAO_Query_ContactLock extends CRM_Contact_BAO_Query_Interface {
 
   /**
-   * Implements getFields method, required by CRM_Contact_BAO_Query_Interface
-   * class.
+   * {@inheritDoc}
    */
   public function &getFields() {
-    $fields = array();
+    $fields = [];
 
     return $fields;
   }
@@ -18,7 +17,7 @@ class CRM_Civicase_BAO_Query_ContactLock extends CRM_Contact_BAO_Query_Interface
   /**
    * Alters from statement to include case locks.
    */
-  public function from($fieldName, $mode, $side) {
+  public static function from($fieldName, $mode, $side) {
     if ($fieldName == 'civicase_contactlock') {
       $loggedContactID = CRM_Core_Session::singleton()->getLoggedInContactID();
 
@@ -38,7 +37,7 @@ class CRM_Civicase_BAO_Query_ContactLock extends CRM_Contact_BAO_Query_Interface
   /**
    * Alters where statement to include case locks.
    */
-  public function where(&$query) {
+  public static function where(&$query) {
     if ($query->_mode == CRM_Contact_BAO_QUERY::MODE_ACTIVITY) {
 
       $query->_where[0][] = CRM_Contact_BAO_Query::buildClause("activity_lock", 'IS NULL');
@@ -47,9 +46,7 @@ class CRM_Civicase_BAO_Query_ContactLock extends CRM_Contact_BAO_Query_Interface
   }
 
   /**
-   * Implements getPanesMapper, required by getPanesMapper hook.
-   *
-   * @param $panes
+   * {@inheritDoc}
    */
   public function getPanesMapper(&$panes) {
 
