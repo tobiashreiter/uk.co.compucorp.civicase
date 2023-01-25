@@ -68,11 +68,6 @@ class CRM_Civicase_Hook_Helper_CaseTypeCategory {
       return;
     }
 
-    $currentCaseCategory = \Civi::cache('metadata')->get('current_case_category');
-    if ($currentCaseCategory === $caseCategoryName) {
-      return;
-    }
-
     CRM_Core_Resources::singleton()->flushStrings()->resetCacheCode();
     \Civi::cache('metadata')->set('current_case_category', $caseCategoryName);
     $wordReplacements = CaseCategoryHelper::getWordReplacements($caseCategoryName);
