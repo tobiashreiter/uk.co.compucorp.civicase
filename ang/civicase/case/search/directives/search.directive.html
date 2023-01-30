@@ -9,6 +9,11 @@
     <form class="form-inline civicase__case-filters-container">
       <input
         class="form-control civicase__case-filter__input"
+        ng-model="keyword"
+        ng-change="doSearchIfNotExpanded()"
+      />
+      <input
+        class="form-control civicase__case-filter__input"
         ng-list crm-ui-select="{
           allowClear: true,
           multiple: true,

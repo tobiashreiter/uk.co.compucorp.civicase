@@ -10,7 +10,6 @@
    */
   function CaseCollector (isTruthy) {
     var allCaseCollectors = CRM['civicase-base'].caseCollectors;
-      console.log('this gets case collectored',allCaseCollectors);
     var activeCaseCollector = _.chain(allCaseCollectors)
       .filter(function (caseCollector) {
         return isTruthy(caseCollector.is_active);

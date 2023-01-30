@@ -14,7 +14,8 @@ var postcss = require('gulp-postcss');
 var postcssDiscardDuplicates = require('postcss-discard-duplicates');
 var postcssPrefix = require('postcss-prefix-selector');
 var rename = require('gulp-rename');
-var sass = require('gulp-sass');
+var sass = require('gulp-sass')(require('sass'));
+
 var stripCssComments = require('gulp-strip-css-comments');
 var sourcemaps = require('gulp-sourcemaps');
 var transformSelectors = require('gulp-transform-selectors');

@@ -13,7 +13,7 @@
   left: 20px;
   line-height: 24px;
   margin: 0;
-  max-width: calc(((100% - 950px) / 2) - 20px); // total width - width of the search criterion and its left half section minus left 20px spacing.
+  // max-width: calc(((100% - 950px) / 2) - 20px); // total width - width of the search criterion and its left half section minus left 20px spacing.
   overflow: hidden;
   position: absolute;
   text-overflow: ellipsis;
@@ -24,7 +24,7 @@
 
 .civicase__case-filters-container {
   display: flex;
-  justify-content: center;
+  justify-content: right;
   left: 0;
   padding: 13.5px 0;
   top: 0;

@@ -334,6 +334,7 @@
       $scope.$watch('expanded', expandedWatcher);
       $scope.$watch('relationshipType', relationshipTypeWatcher);
       $scope.$watch('collector', collectorWatcher);
+      $scope.$watch('keyword', keywordWatcher);
       $scope.$watchCollection('contactRoleFilter', caseRoleWatcher);
     }
 
@@ -438,6 +439,14 @@
     }
 
     /**
+     * Watcher for relationshipType filter
+     */
+    function keywordWatcher () {
+         $scope.filters.name = $scope.keyword;
+         $scope.filters.subject = $scope.keyword;
+    }
+
+    /**
      * Requests the list of relationship types that have been assigned to case
      * types.
      *
@@ -505,6 +514,7 @@
 
         $scope.pageTitle = status.join(' & ') + ' ' + types.join(' & ') + ' ' + ts('Cases');
       }
+        console.log($scope.pageTitle);
 
       if (hasTotalCount) {
         $scope.pageTitle += ' (' + totalCount + ')';
