@@ -4,7 +4,7 @@
   module.factory('formatActivity', function (CasesUtils, ActivityStatusType,
     ActivityStatus, ActivityType, CaseStatus, CaseType, isTruthy) {
     var activityTypes = ActivityType.getAll(true);
-    var activityStatuses = ActivityStatus.getAll();
+    var activityStatuses = ActivityStatus.getAll(true);
     var caseStatuses = CaseStatus.getAll();
 
     return function (act, caseId) {
