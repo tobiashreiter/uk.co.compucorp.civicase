@@ -86,7 +86,15 @@ class CRM_Civicase_Api_Wrapper_CaseList implements API_Wrapper {
       'modified_date', 'contacts', 'activity_summary', 'category_count',
       'tag_id.name', 'tag_id.color', 'tag_id.description',
     ];
-    $params['return'] = (isset($params['return']) ? array_merge($defaultAPIReturnedColumns, $params['return']) : $defaultAPIReturnedColumns);
+
+    if ((isset($params['return']))) {
+      $params['return'] = is_string($params['return']) ? explode(',', $params['return']) : $params['return'];
+      $params['return'] = array_merge($defaultAPIReturnedColumns, $params['return']);
+    }
+    else {
+      $params['return'] = $defaultAPIReturnedColumns;
+    }
+
     $cases = civicrm_api3('Case', 'getdetails', $params);
 
     foreach ($cases['values'] as &$case) {
@@ -115,7 +123,7 @@ class CRM_Civicase_Api_Wrapper_CaseList implements API_Wrapper {
         }
       }
 
-      $case['next_activity'] = isset($case['activity_summary']['next'][0]) ? $case['activity_summary']['next'][0] : NULL;
+      $case['next_activity'] = $case['activity_summary']['next'][0] ?? NULL;
     }
 
     return $cases;
