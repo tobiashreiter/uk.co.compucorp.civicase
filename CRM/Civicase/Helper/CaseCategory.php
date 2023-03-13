@@ -299,18 +299,19 @@ class CRM_Civicase_Helper_CaseCategory {
   public static function updateBreadcrumbs($caseCategoryId) {
     CRM_Utils_System::resetBreadCrumb();
     $breadcrumb = [
+      /* This is already part of breadcrumbs
       [
         'title' => ts('Home'),
         'url' => CRM_Utils_System::url(),
       ],
+      */
       [
         'title' => ts('CiviCRM'),
         'url' => CRM_Utils_System::url('civicrm', 'reset=1'),
       ],
       [
-        'title' => ts('Case Dashboard'),
-        'url' => CRM_Utils_System::url('civicrm/case/a/', ['case_type_category' => $caseCategoryId], TRUE,
-          "/case?case_type_category={$caseCategoryId}"),
+        'title' => ts('Manage Cases'),
+        'url' => CRM_Utils_System::url('civicrm/case/a/'),
       ],
     ];
 

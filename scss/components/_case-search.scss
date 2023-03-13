@@ -22,6 +22,12 @@
   white-space: nowrap;
 }
 
+.case-is-focused h3.civicase__case-filter-panel__title,
+.case-is-focused form.civicase__case-filters-container  {
+    display: none;
+}
+
+
 .civicase__case-filters-container {
   display: flex;
   justify-content: right;

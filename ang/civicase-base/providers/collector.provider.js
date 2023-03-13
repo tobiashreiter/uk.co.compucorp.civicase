@@ -3,7 +3,6 @@
 
   module.provider('Collector', CollectorProvider);
 
-console.log('collector provider is active');
   /**
    * Collector Service Provider
    */

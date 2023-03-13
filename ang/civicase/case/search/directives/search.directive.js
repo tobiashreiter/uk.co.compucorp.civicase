@@ -27,11 +27,13 @@
     var allSearchFields = {
       id: { label: ts('Case ID'), html_type: 'Number' },
       has_role: { label: ts('Contact Search') },
+      status_id: { label: ts('Status') },
       case_manager: { label: ts('Case Manager') },
       start_date: { label: ts('Start Date') },
       end_date: { label: ts('End Date') },
       is_deleted: { label: ts('Deleted Cases') },
-      tag_id: { label: ts('Tags') }
+      tag_id: { label: ts('Tags') },
+      subject:  { label: ts('Keyword') }
     };
     var caseRelationshipConfig = [
       { text: ts('My Cases'), id: 'is_case_manager' },
@@ -61,7 +63,7 @@
       { id: 'all-case-roles', text: ts('All Case Roles') },
       { id: 'client', text: ts('Client') }
     ];
-
+    
     $scope.caseManagerIsMe = caseManagerIsMe;
     $scope.clearSearch = clearSearch;
     $scope.doSearchIfNotExpanded = doSearchIfNotExpanded;
@@ -128,6 +130,7 @@
       $scope.$bindToRoute({ expr: 'expanded', param: 'sx', format: 'bool', default: false });
       $scope.$bindToRoute({ expr: 'filters', param: 'cf', default: {} });
       $scope.$bindToRoute({ expr: 'contactRoleFilter', param: 'crf', default: $scope.contactRoleFilter });
+      $scope.$bindToRoute({ expr: 'showCasesFromAllStatuses', param: 'all_statuses', format: 'bool' });
     }
 
     /**
@@ -141,8 +144,16 @@
       _.each($scope.filters, function (val, key) {
         var field = allSearchFields[key];
         if (field) {
+            
           var d = { label: field.label };
-          if (field.options) {
+          if (key === 'status_id') {
+              $scope.caseStatusOptions.forEach( function(caseStatusOption){
+                  if (val.indexOf(caseStatusOption.id) > -1) {
+                      d.text = ts(caseStatusOption.text);
+                  }
+              });              
+          }
+          else if (field.options) {
             var text = [];
             _.each(val, function (o) {
               text.push(_.findWhere(field.options, { key: o }).value);
@@ -150,6 +161,12 @@
             d.text = text.join(', ');
           } else if (key === 'case_manager' && $scope.caseManagerIsMe()) {
             d.text = ts('Me');
+          } else if (key === 'case_manager') {
+              $scope.caseCollectorOptions.forEach( function(collectorOption){
+                  if (parseInt(collectorOption.id) === parseInt(val)) {
+                      d.text = ts(collectorOption.text);
+                  }
+              });
           } else if (key === 'has_role') {
             d.text = ts('%1 selected', { 1: val.contact.IN.length });
           } else if ($.isArray(val)) {
@@ -173,6 +190,7 @@
           des.push(d);
         }
       });
+      
       return des;
     }
 
@@ -234,6 +252,7 @@
         selectedContactRoles: ['all-case-roles']
       };
       $scope.filters = {};
+      delete $scope.collector;
       doSearch();
     }
 
@@ -350,6 +369,7 @@
       $window.location.href =
         'case_type_category=' + caseTypeCategory +
         '#/case/list?caseId=' + data.caseId +
+        '&all_statuses=1' +
         '&cf=%7B"case_type_category":"' + caseTypeCategory + '"%7D';
     }
 
@@ -442,8 +462,11 @@
      * Watcher for relationshipType filter
      */
     function keywordWatcher () {
-         $scope.filters.name = $scope.keyword;
-         $scope.filters.subject = $scope.keyword;
+       if ($scope.keyword && $scope.keyword.length) {
+          $scope.filters.subject = $scope.keyword;
+       } else {
+           delete $scope.filters.subject;
+       }
     }
 
     /**
@@ -514,7 +537,6 @@
 
         $scope.pageTitle = status.join(' & ') + ' ' + types.join(' & ') + ' ' + ts('Cases');
       }
-        console.log($scope.pageTitle);
 
       if (hasTotalCount) {
         $scope.pageTitle += ' (' + totalCount + ')';

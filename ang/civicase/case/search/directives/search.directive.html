@@ -1,7 +1,6 @@
 <div
   class="panel panel-default civicase__case-filter-panel clearfix"
   ng-class="{'case-is-focused': $parent.caseIsFocused}">
-  <div crm-ui-debug="filters"></div>
   <div class="panel-header">
     <h3 class="civicase__case-filter-panel__title" title="{{ pageTitle }}">
       {{ pageTitle }}
@@ -11,6 +10,7 @@
         class="form-control civicase__case-filter__input"
         ng-model="keyword"
         ng-change="doSearchIfNotExpanded()"
+        placeholder="Enter collection title..."
       />
       <input
         class="form-control civicase__case-filter__input"
@@ -27,12 +27,12 @@
         class="form-control civicase__case-filter__input"
         ng-list
         crm-ui-select="{
-          allowClear: false,
+          allowClear: true,
           multiple: false,
           placeholder: ts('Collector: All'),
           data: caseCollectorOptions
         }"
-        ng-model="collector"
+        ng-model="filters.case_manager"
         ng-change="doSearchIfNotExpanded()"
       />
       <button
@@ -129,7 +129,6 @@
   <div
     class="panel-body civicase__case-filter-panel__description"
     ng-if="!expanded && filterDescription.length">
-    <!-- 
     <ul class="civicase__filter-search-description-list-container">
       <li
         ng-repeat="des in filterDescription"
@@ -137,7 +136,6 @@
         <strong>{{ des.label }}:</strong> {{ des.text }}{{ des.value }}
       </li>
     </ul>
-     -->
     <button
       class="btn btn-danger btn-sm pull-right civicase__case-filter-panel__button"
       ng-click="clearSearch()">
