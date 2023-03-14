@@ -23,7 +23,8 @@
 }
 
 .case-is-focused h3.civicase__case-filter-panel__title,
-.case-is-focused form.civicase__case-filters-container  {
+.case-is-focused form.civicase__case-filters-container, 
+.case-is-focused .civicase__case-filter-panel__description  {
     display: none;
 }
 
