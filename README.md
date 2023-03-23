@@ -127,10 +127,9 @@ Link to extension: https://github.com/civicrm/org.civicrm.casetokens
 * Case status now has a ‘Status class’ field to show cases which are incomplete, completed, or cancelled.
 
 ## Supported versions of CiviCRM
-This extension is designed and tested with a specific (and patched) version of CiviCRM and may have unforeseen issues if used with different (including later) versions.
-In the extension info.xml file, see the “comments” field where we specify the currently supported version of CiviCRM and have a download link to the correct version.
+This extension is designed and tested with a specific version of CiviCRM and may have unforeseen issues if used with different (including later) versions.
+In the extension info.xml file, see the “comments” field where we specify the version of CiviCRM the extension has been tested on.
 
-Compuco normally undertakes to update the compatible version shortly after a new CiviCRM security release.
 
 # Other Technical Requirements
 * [Shoreditch](https://github.com/civicrm/org.civicrm.shoreditch): version >= v0.1-alpha32, preferably the latest version.
