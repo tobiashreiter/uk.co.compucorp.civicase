@@ -22,12 +22,6 @@
       case-id="data.id"
       contacts="data.client"
     ></div>
-    <div class="civicase__case-card__additional-information">
-      <span class="civicase__case-card__case-id">
-        {{ ts("Case ID:") }} {{ data.id }}
-      </span>
-      <i class="material-icons civicase__case-card__lock" ng-if="data.lock">lock</i>
-    </div>
     <div class="civicase__case-card__type">{{ data.case_type }}</div>
     <div class="civicase__case-card__next-milestone" ng-if="data.activity_summary.milestone.length > 0">
       <span>Next Milestone: </span>

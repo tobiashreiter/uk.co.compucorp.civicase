@@ -14,6 +14,18 @@
       />
       <input
         class="form-control civicase__case-filter__input"
+        ng-list
+        crm-ui-select="{
+          allowClear: true,
+          multiple: true,
+          placeholder: ts('Case Type: Any'),
+          data: caseTypeOptions
+        }"
+        ng-model="filters.case_type_id"
+        ng-change="doSearchIfNotExpanded()"
+      />
+      <input
+        class="form-control civicase__case-filter__input"
         ng-list crm-ui-select="{
           allowClear: true,
           multiple: true,

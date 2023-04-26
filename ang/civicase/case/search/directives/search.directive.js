@@ -535,7 +535,12 @@
           ? CaseType.getTitlesForNames(filters.case_type_id)
           : [];
 
-        $scope.pageTitle = status.join(' & ') + ' ' + types.join(' & ') + ' ' + ts('Cases');
+        if (types.length) {
+            $scope.pageTitle = status.join(' & ') + ' ' + types.join(' & ');
+        }
+        else {
+            $scope.pageTitle = status.join(' & ') + ' ' + 'Cases';            
+        }
       }
 
       if (hasTotalCount) {
