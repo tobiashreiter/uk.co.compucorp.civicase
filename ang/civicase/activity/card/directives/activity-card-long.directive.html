@@ -38,10 +38,6 @@
                         {{ civicaseTs(activity.type) }}
                     </span>
                 </span>
-            
-            
-            
-            
           </span>
           <span
             class="civicase__tooltip__ellipsis civicase__activity-subject"
@@ -160,7 +156,6 @@
 
       <div class="civicase__activity-card-row civicase__activity-card-row--file" ng-if="activity.type === 'File Upload'" ng-init="getAttachments(activity)">
         <div ng-repeat="file in activity.attachments || []">
-          {{ file }}
           <a class="civicase__activity-attachment__file-name"
             title="{{ file.description || ts('Download File') }}"
             href="{{ file.url }}">
