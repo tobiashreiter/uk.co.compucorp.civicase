@@ -49,7 +49,7 @@ class CRM_Civicase_Hook_alterAngular_AngularChangeSet {
       ->alterHtml('~/crmCaseType/list.html', function (phpQueryObject $doc) {
         $element = $doc->find("a[ng-href*=#/caseType/new");
         if ($element->length) {
-          $element->remove();
+          //$element->remove();
         }
       });
   }

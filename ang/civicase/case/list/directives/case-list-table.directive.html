@@ -17,15 +17,24 @@
         <thead class="civicase__case-list-table__header">
         <tr>
           <th
-            ng-show="!viewingCase"
-            class="civicase__case-list-column--fixed civicase__case-list-column--first"
-            ng-include="'~/civicase/case/list/directives/case-list-table-first-column-header.html'">
-          </th>
+            ng-if="!viewingCase"
+            class="civicase__case-list-table__column civicase__case-list-table__column--contact"
+            civicase-case-list-sort-header="contact_id.sort_name">Contact</th>        
           <th
             ng-if="!viewingCase"
             ng-repeat="header in headers"
             class="civicase__case-list-table__column civicase__case-list-table__column--{{header.display_type}}"
-            civicase-case-list-sort-header="{{ header.sort }}">{{ ts(header.label) }}
+            civicase-case-list-sort-header="{{ header.sort }}">
+            <span ng-switch on="header.label">
+                <span ng-switch-when="Subject">
+                    Collection Title
+                </span>
+                <span ng-switch-default>
+                    {{ ts(header.label) }}
+                </span>
+                
+            </span>
+            
           </th>
         </tr>
         </thead>

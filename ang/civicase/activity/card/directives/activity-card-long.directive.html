@@ -28,7 +28,20 @@
             ng-if="activity.type !== 'File Upload'"
             class="civicase__tooltip__ellipsis civicase__activity-type"
             ng-class="{'civicase__activity-type--completed': (activity.category.indexOf('task') > -1 && activity.is_completed)}">
-            {{ civicaseTs(activity.type) }}
+               <span ng-switch on="activity.type">
+                   <!-- [{{ civicaseTs(activity.type) }}] -->
+                    <span ng-switch-when="Add Note to Case">
+                        <span ng-if="activity.subject && activity.subject !== ''">{{ activity.subject }}</span>
+                        <span ng-if="!activity.subject" ng-bind-html="activity.details"></span>
+                    </span>
+                    <span ng-switch-default>
+                        {{ civicaseTs(activity.type) }}
+                    </span>
+                </span>
+            
+            
+            
+            
           </span>
           <span
             class="civicase__tooltip__ellipsis civicase__activity-subject"
@@ -147,6 +160,7 @@
 
       <div class="civicase__activity-card-row civicase__activity-card-row--file" ng-if="activity.type === 'File Upload'" ng-init="getAttachments(activity)">
         <div ng-repeat="file in activity.attachments || []">
+          {{ file }}
           <a class="civicase__activity-attachment__file-name"
             title="{{ file.description || ts('Download File') }}"
             href="{{ file.url }}">
