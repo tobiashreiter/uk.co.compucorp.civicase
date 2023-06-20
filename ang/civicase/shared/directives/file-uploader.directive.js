@@ -180,7 +180,7 @@
       return civicaseCrmApi('Tag', 'get', {
         sequential: 1,
         used_for: { LIKE: '%civicrm_activity%' },
-        options: { limit: 0 }
+        options: { limit: 0, sort: 'name ASC' }
       }).then(function (data) {
         return data.values;
       });
