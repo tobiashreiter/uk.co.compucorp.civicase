@@ -116,6 +116,7 @@
             item.formData = [
               _.extend({ crm_attachment_token: CRM.crmAttachment.token }, target, item.crmData)
             ];
+            validateFileSize(item);
           });
           return $scope.uploader.uploadAllWithPromise();
         }).then(function () {
@@ -131,8 +132,30 @@
 
       return $scope.block(crmStatus({
         start: $scope.ts('Uploading...'),
-        success: $scope.ts('Uploaded')
+        success: $scope.ts('Uploaded'),
+        error: function (error) {
+          let msg = 'Sorry an error occurred while uploading file';
+          if (error && error.cause && error.cause === 'Invalid size') {
+            msg = error.message;
+          }
+          CRM.alert(msg, $scope.ts('Attachment failed'), 'error');
+        }
       }, promise));
+    }
+
+    /**
+     * Validates file size before adding to Uploader Queue
+     *
+     * @param {string} item selected file object
+     * @returns {boolean} true if file size is valid
+     * @throws Error for empty file
+     */
+    function validateFileSize (item) {
+      if (item.file.size <= 0) {
+        const msg = 'Your file(s) cannot be uploaded because one or more of your files is empty. Your file(s) will not be uploaded. Check the contents of your file(s) and then try again.';
+        throw new Error(msg, { cause: 'Invalid size' });
+      }
+      return true;
     }
 
     /**
