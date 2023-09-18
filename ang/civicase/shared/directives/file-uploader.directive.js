@@ -106,6 +106,10 @@
      * @returns {Promise} promise
      */
     function saveActivity () {
+      if ($scope.activity.activity_date_time === '') {
+        delete $scope.activity.activity_date_time;
+      }
+
       var promise = civicaseCrmApi('Activity', 'create', $scope.activity)
         .then(function (activity) {
           saveTags(activity.id);
