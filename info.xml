@@ -14,8 +14,8 @@
     <url desc="Support">https://github.com/compucorp/uk.co.compucorp.civicase/issues</url>
     <url desc="Licensing">http://www.gnu.org/licenses/agpl-3.0.html</url>
   </urls>
-  <releaseDate>2023-07-13</releaseDate>
-  <version>3.1.1</version>
+  <releaseDate>2023-09-18</releaseDate>
+  <version>3.1.2</version>
   <develStage>stable</develStage>
   <compatibility>
     <ver>5.51</ver>
