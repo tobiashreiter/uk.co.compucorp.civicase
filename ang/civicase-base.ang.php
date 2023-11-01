@@ -10,7 +10,7 @@
 
 return [
   'js' => CRM_Civicase_BaseAngular::get_js_files(),
-  'settingsFactory' => [ 'CRM_Civicase_BaseAngular', 'getOptions'],
+  'settingsFactory' => ['CRM_Civicase_BaseAngular', 'getOptions'],
   'requires' => ['crmUtil', 'bw.paging'],
   'partials' => [
     'ang/civicase-base',

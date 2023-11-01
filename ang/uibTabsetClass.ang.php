@@ -7,6 +7,6 @@ return [
   'js' => [
     'ang/uibTabsetClass.js',
   ],
-  'requires' => [ 'ui.bootstrap' ],
+  'requires' => ['ui.bootstrap'],
   'basePages' => [],
 ];

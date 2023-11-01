@@ -20,6 +20,12 @@
           <input type="text" class="form-control" id="uploadSubject" required placeholder="" ng-model="activity.subject"/>
         </div>
         <div class="row">
+          <div class="form-group col-md-4 civicase__ui-range">
+            <div><label for="receivedDate">{{ts('Received Date')}}</label></div>
+            <input  id="receivedDate" class="form-control" crm-ui-datepicker="{time: false}" ng-model="activity.activity_date_time" placeholder=""/>
+          </div>
+        </div>
+        <div class="row">
           <div class="civicase__file-upload-name col-md-8"><label>{{ts('Name')}}</label></div>
           <div class="civicase__file-upload-size col-md-2"><label>{{ts('Size')}}</label></div>
           <div class="civicase__file-upload-action col-md-2"></div>
