@@ -1,9 +1,9 @@
 <?php
 
 use CRM_Case_BAO_CaseType as CaseType;
+use CRM_Civicase_BAO_CaseCategoryInstance as CaseCategoryInstance;
 use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
 use CRM_Civicase_Service_CaseManagementUtils as CaseManagementUtils;
-use CRM_Civicase_BAO_CaseCategoryInstance as CaseCategoryInstance;
 
 /**
  * CaseCategory Helper class with useful functions for managing case categories.
@@ -87,7 +87,7 @@ class CRM_Civicase_Helper_CaseCategory {
     try {
       $result = civicrm_api3('CaseType', 'getvalue', [
         'id' => $caseTypeId,
-        'return' => ['case_type_category'],
+        'return' => 'case_type_category',
       ]);
 
       if (!empty($result['is_error'])) {
