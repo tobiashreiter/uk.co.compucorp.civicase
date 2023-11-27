@@ -1,6 +1,6 @@
 <!-- Tasks -->
 <div class="civicase__case-card__activity-count-container">
-  <span>Tasks: </span>
+  <span>{{ ts('Tasks: ')}}</span>
   <a class="civicase__case-card__activity-count"
       ng-if="data.category_count.task.incomplete"
       ng-href="{{getActivityFeedUrl({ caseId: data.id, category: 'task', statusType: 'incomplete' })}}"
@@ -20,7 +20,7 @@
 
 <!-- Communication -->
 <div class="civicase__case-card__activity-count-container">
-  <span>Comms: </span>
+  <span>{{ ts('Comms: ')}}</span>
   <a class="civicase__case-card__activity-count"
     ng-if="data.category_count.communication.incomplete"
     ng-href="{{getActivityFeedUrl({ caseId: data.id, category: 'communication', statusType: 'incomplete' })}}"
@@ -40,7 +40,7 @@
 
 <!-- Others -->
 <div class="civicase__case-card__activity-count-container">
-  <span>Other: </span>
+  <span>{{ ts('Other: ')}}</span>
   <span class="civicase__case-card__activity-count"
     ng-if="data.category_count.other.incomplete"
   > {{ data.category_count.other.incomplete }} </span>

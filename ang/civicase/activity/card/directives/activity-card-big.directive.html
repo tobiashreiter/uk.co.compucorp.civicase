@@ -86,7 +86,7 @@
         <!-- End - Tags -->
         <!-- With -->
         <div class="civicase__activity-card-row">
-          <span class="civicase__activity-with">With:&nbsp;</span>
+          <span class="civicase__activity-with">{{ ts('With:') }}&nbsp;</span>
           <span
             class="civicase__contact-card"
             civicase-contact-card
@@ -104,8 +104,8 @@
   <div ng-if="!activity" class="civicase__activity-card--big--empty">
     <div ng-if="type === 'milestone'" class="civicase__activity-no-result-icon civicase__activity-no-result-icon--milestone"></div>
     <div ng-if="type === 'activity'" class="civicase__activity-no-result-icon civicase__activity-no-result-icon--activity"></div>
-    <div class="civicase__activity-card--big--empty-title" ng-if="type === 'milestone'"> No upcoming milestones </div>
-    <div class="civicase__activity-card--big--empty-title" ng-if="type === 'activity'"> No upcoming activities </div>
+    <div class="civicase__activity-card--big--empty-title" ng-if="type === 'milestone'"> {{ts('No upcoming milestones')}} </div>
+    <div class="civicase__activity-card--big--empty-title" ng-if="type === 'activity'"> {{ts('No upcoming activities')}} </div>
       <div class="civicase__activity-card--big--empty-description" ng-if="type === 'milestone'">
           {{ ts("Click on the button below to add a milestone to this case") }}
       </div>
@@ -117,7 +117,7 @@
         ng-disabled="isReadOnly"
       >
         <i class="material-icons">add_circle</i>
-        ADD MILESTONE
+        {{ ts('ADD MILESTONE'); }}
         <i class="fa fa-caret-down"></i>
       </button>
       <civicase-add-activity-menu

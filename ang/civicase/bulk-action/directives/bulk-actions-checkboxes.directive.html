@@ -1,11 +1,11 @@
-<div class="civicase__bulkactions-checkbox">
+ <div class="civicase__bulkactions-checkbox">
   <span class="civicase__checkbox civicase__bulkactions-checkbox-toggle" ng-click="toggleCheckbox()">
     <i
       class="civicase__checkbox--checked material-icons"
       ng-class="{'civicase__checkbox--checked--hide': !showCheckboxes}">
       {{showCheckboxes ? 'check_box' : 'check'}}
     </i>
-  </span>
+  </span> 
   <button
     type="button"
     class="civicase__bulkactions-select-mode-dropdown dropdown-toggle"
@@ -19,7 +19,7 @@
         href=""
         ng-click="select('all')"
         ng-attr-title="{{'Select everything that matches search.'}}">
-        Everything ({{everythingCount}})
+        {{ts('Everything (%1)', {1: everythingCount})}}
       </a>
     </li>
     <li>
@@ -27,7 +27,7 @@
         href=""
         ng-click="select('visible')"
         title="Select all displayed items">
-        Displayed ({{displayedCount}})
+        {{ts('Displayed (%1)', {1: displayedCount})}}
       </a>
     </li>
     <li>
@@ -35,7 +35,7 @@
         href=""
         ng-click="select('none')"
         title="Deselect all items">
-        None
+        {{ts('None')}}
       </a>
     </li>
   </ul>

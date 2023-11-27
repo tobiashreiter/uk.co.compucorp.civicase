@@ -40,7 +40,7 @@
       var caseTypeCategoryId = caseItem['case_type_id.case_type_category'];
 
       return civicaseCrmUrl('civicrm/case/a/', 'case_type_category=' + caseTypeCategoryId +
-        '#/case/list?caseId=' + caseItem.id + '&focus=1&cf={"id":' + caseItem.id + '}');
+        '#/case/list?caseId=' + caseItem.id + '&focus=1&cf={"id":' + caseItem.id + ',"case_type_category":' + caseTypeCategoryId + '}');
     }
   }
 })(angular, CRM.$, CRM._);

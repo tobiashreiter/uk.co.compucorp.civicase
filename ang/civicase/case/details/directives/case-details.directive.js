@@ -147,7 +147,7 @@
         }).join(',')
       };
 
-      civicaseCrmLoadForm(civicaseCrmUrl('civicrm/activity/email/add', createEmailURLParams))
+      civicaseCrmLoadForm(civicaseCrmUrl('civicrm/case/email/add', createEmailURLParams))
         .on('crmFormSuccess', function () {
           $rootScope.$broadcast('civicase::activity::updated');
         });
@@ -185,6 +185,7 @@
      * @returns {string} the formatted date
      */
     function formatDate (date, format) {
+      moment.locale('fr');
       return moment(date).format(format);
     }
 

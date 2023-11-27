@@ -7,7 +7,7 @@
    * @param {object} $scope scope object
    */
   function civicaseSearchPageController ($scope) {
-    $scope.ts = CRM.ts('civicase');
+    $scope.ts = CRM.ts('uk.co.compucorp.civicase');
     $scope.selections = {};
     $scope.show = function (selectedFilters) {
       $scope.selections = selectedFilters;

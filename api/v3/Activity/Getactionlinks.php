@@ -69,11 +69,14 @@ function _civicrm_api3_activity_getActivityActionLinks(array $params) {
     $seqLinks[] = $link;
   }
 
+  $caseId = (array) CRM_Utils_Array::value('case_id', $params);
+  $caseId = ((array) $caseId)[0] ?? NULL;
+
   $values = [
     'id' => $params['activity_id'],
     'cid' => CRM_Core_Session::getLoggedInContactID(),
     'cxt' => '',
-    'caseid' => CRM_Utils_Array::value('case_id', $params),
+    'caseid' => $caseId,
   ];
 
   // Invoke hook links for activity tab rows.
@@ -86,7 +89,7 @@ function _civicrm_api3_activity_getActivityActionLinks(array $params) {
     $values
   );
 
-  return _civicrm_api3_activity_GetActionLinks_processLinks($seqLinks);
+  return _civicrm_api3_activity_GetActionLinks_processLinks($seqLinks, $values);
 }
 
 /**
@@ -94,11 +97,13 @@ function _civicrm_api3_activity_getActivityActionLinks(array $params) {
  *
  * @param array $activityActionLinks
  *   Activity Action Links.
+ * @param array $values
+ *   Placeholder values.
  *
  * @return array
  *   Activity Action Links.
  */
-function _civicrm_api3_activity_GetActionLinks_processLinks(array $activityActionLinks) {
+function _civicrm_api3_activity_GetActionLinks_processLinks(array $activityActionLinks, array $values) {
   foreach ($activityActionLinks as $id => $link) {
     // Remove action links already added by civicase.
     if (in_array($link['name'], ACTIONS_DEFINED_BY_CIVICASE)) {
@@ -115,6 +120,9 @@ function _civicrm_api3_activity_GetActionLinks_processLinks(array $activityActio
     else {
       $urlPath = CRM_Utils_Array::value('url', $link, '#');
     }
+
+    // pec/civicrm#6 URLs are encoded, so & becomes '&amp', which breaks redirections in WordPress
+    $urlPath = html_entity_decode($urlPath);
 
     $activityActionLinks[$id]['url'] = $urlPath;
 

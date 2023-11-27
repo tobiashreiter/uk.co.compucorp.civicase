@@ -5,6 +5,7 @@
 
     beforeEach(function () {
       jasmine.clock().install();
+
       var today = moment('2018-10-19').toDate();
       jasmine.clock().mockDate(today);
     });

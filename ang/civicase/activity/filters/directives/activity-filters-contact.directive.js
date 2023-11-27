@@ -18,7 +18,7 @@
      * @param {object} $scope scope object
      */
     function civicaseActivityFiltersContactLink ($scope) {
-      $scope.ts = CRM.ts('civicase');
+      $scope.ts = CRM.ts('uk.co.compucorp.civicase');
 
       (function init () {
         $scope.$watch('filters', filtersWatcher);

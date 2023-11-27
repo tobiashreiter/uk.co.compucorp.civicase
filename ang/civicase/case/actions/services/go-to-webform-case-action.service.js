@@ -21,6 +21,7 @@
      */
     function doAction (cases, action, callbackFn) {
       var window;
+      var url;
       var urlObject = { case1: cases[0].id };
 
       if (action.clientID) {
@@ -34,7 +35,8 @@
         { expires: 1800000 }
       );
 
-      window = $window.open(civicaseCrmUrl(action.path, urlObject), '_blank');
+      url = civicaseCrmUrl(action.path, urlObject).replace('/civicrm', '/');
+      window = $window.open(url, '_blank');
       window.focus();
     }
 

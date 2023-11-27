@@ -2,7 +2,7 @@
 <extension key="uk.co.compucorp.civicase" type="module">
   <file>civicase</file>
   <name>CiviCase</name>
-  <description>Manage cases, clients, activities, etc.</description>
+  <description>Manage cases, clients, activities, etc. Symbiotic.coop fork.</description>
   <license>AGPL-3.0</license>
   <maintainer>
     <author>Compucorp</author>
@@ -14,16 +14,13 @@
     <url desc="Support">https://github.com/compucorp/uk.co.compucorp.civicase/issues</url>
     <url desc="Licensing">http://www.gnu.org/licenses/agpl-3.0.html</url>
   </urls>
-  <releaseDate>2022-10-19</releaseDate>
-  <version>2.9.1</version>
+  <releaseDate>2023-11-02</releaseDate>
+  <version>3.1.2-agileware</version>
   <develStage>stable</develStage>
   <compatibility>
-    <ver>5.39</ver>
+    <ver>5.51</ver>
   </compatibility>
-  <comments>
-    Supported CiviCRM versions  :
-    - A patched version of CiviCRM 5.39.1 (Download link: https://github.com/compucorp/civicrm-core/releases/download/5.39.1%2Bpatch.76dd32/civicrm-5.39.1+patch.76dd32.tar.gz)
-  </comments>
+  <comments>CiviCase fork by Agileware with work from www.symbiotic.coop, mostly for WordPress support.</comments>
   <classloader>
     <psr4 prefix="Civi\" path="Civi" />
   </classloader>
@@ -32,6 +29,5 @@
   </civix>
   <requires>
     <ext>org.civicrm.shoreditch</ext>
-    <ext>uk.co.compucorp.usermenu</ext>
   </requires>
 </extension>

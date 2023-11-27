@@ -20,11 +20,11 @@ class CRM_Civicase_Page_MyActivities extends CRM_Core_Page {
   public function run() {
     $loader = new AngularLoader();
     $loader->setPageName('civicrm/case/my-activities');
-    $loader->setModules(['crmApp', 'my-activities']);
+    $loader->addModules(['crmApp', 'my-activities']);
     $loader->load();
 
     CRM_Core_Resources::singleton()
-      ->addScriptFile('uk.co.compucorp.civicase', 'packages/moment.min.js');
+      ->addScriptFile('uk.co.compucorp.civicase', 'packages/moment-with-locales.min.js');
 
     return parent::run();
   }

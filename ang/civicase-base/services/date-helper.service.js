@@ -18,6 +18,11 @@
     this.formatDate = function (date, format) {
       format = format || 'DD/MM/YYYY';
 
+      if (typeof CRM.config.locale != 'undefined') {
+        var locale = CRM.config.locale.substr(0,2);
+        moment.locale(locale);
+      }
+
       return moment(date).format(format);
     };
   }

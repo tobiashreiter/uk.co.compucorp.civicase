@@ -24,11 +24,11 @@
       var instanceName = CaseTypeCategory
         .getCaseTypeCategoryInstance(workflow.case_type_category).name;
 
-      var url = civicaseCrmUrl(
-        getServiceForInstance(instanceName).getEditWorkflowURL(workflow)
-      );
+      var url, fragment;
 
-      $window.location.href = url;
+      [url, fragment] = getServiceForInstance(instanceName).getEditWorkflowURL(workflow).split('#');
+      
+      $window.location.href = civicaseCrmUrl(url) + '#' + fragment;
     }
 
     /**
