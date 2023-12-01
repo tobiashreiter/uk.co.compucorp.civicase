@@ -26,7 +26,7 @@ class CRM_Civicase_Hook_PageRun_AddContactPageSummaryResources {
     Civi::resources()
       ->addScriptFile('uk.co.compucorp.civicase', 'js/disable-contact-summary-tab-activate.js', 2, 'html-header');
     CRM_Core_Resources::singleton()
-      ->addScriptFile('uk.co.compucorp.civicase', 'packages/moment.min.js');
+      ->addScriptFile('uk.co.compucorp.civicase', 'packages/moment-with-locales.min.js');
   }
 
   /**

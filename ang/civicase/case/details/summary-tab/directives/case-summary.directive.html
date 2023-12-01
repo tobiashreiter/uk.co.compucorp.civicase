@@ -33,33 +33,33 @@
     <div class="civicase__summary-activity-count">
       <a ng-href="{{getActivityFeedUrl({ caseId: item.id, category: 'task', statusType: 'incomplete' })}}">
         <div class="civicase__summary-activity-count__number">{{item.category_count.task.incomplete || 0}}</div>
-        <div class="civicase__summary-activity-count__description">Open Tasks</div>
+        <div class="civicase__summary-activity-count__description">{{ ts('Open Tasks') }}</div>
         <div
           ng-class="{ 'invisible': !item.category_count.task.overdue }"
           class="text-danger civicase__summary-overdue-count">
-          {{item.category_count.task.overdue}} overdue
+          {{ ts('%1 overdue', {1: item.category_count.task.overdue}) }}
         </div>
       </a>
     </div>
     <div class="civicase__summary-activity-count">
       <a ng-href="{{getActivityFeedUrl({ caseId: item.id, category: 'communication', statusType: 'incomplete' })}}">
         <div class="civicase__summary-activity-count__number">{{item.category_count.communication.incomplete || 0}}</div>
-        <div class="civicase__summary-activity-count__description">Unread Comms</div>
+        <div class="civicase__summary-activity-count__description">{{ ts('Unread Comms') }}</div>
         <div
           ng-class="{ 'invisible': !item.category_count.communication.overdue }"
           class="text-danger civicase__summary-overdue-count">
-          {{item.category_count.communication.overdue}} overdue
+          {{ ts('%1 overdue', {1: item.category_count.communication.overdue}) }}
         </div>
       </a>
     </div>
     <div class="civicase__summary-activity-count">
       <a ng-href="{{getActivityFeedUrl({ caseId: item.id, status: 'Scheduled' })}}">
         <div class="civicase__summary-activity-count__number">{{item.status_count.scheduled.count}}</div>
-        <div class="civicase__summary-activity-count__description">Scheduled Activities</div>
+        <div class="civicase__summary-activity-count__description">{{ ts('Scheduled Activities') }}</div>
         <div
           ng-class="{ 'invisible': !item.status_count.scheduled.overdue }"
           class="text-danger civicase__summary-overdue-count">
-          {{item.status_count.scheduled.overdue}} overdue
+          {{ ts('%1 overdue', {1: item.status_count.scheduled.overdue}) }}
         </div>
       </a>
     </div>

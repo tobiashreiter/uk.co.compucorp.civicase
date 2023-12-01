@@ -27,7 +27,8 @@
   function civicaseFilesUploaderController ($scope, civicaseCrmApi, crmBlocker,
     crmStatus, FileUploader, $q, $timeout, civicaseCrmUrl) {
     $scope.block = crmBlocker();
-    $scope.ts = CRM.ts('civicase');
+    $scope.ts = CRM.ts('uk.co.compucorp.civicase'); // NO OBVIOUS CHANGE
+//    $scope.ts = CRM.ts('civicase');
     $scope.uploader = createUploader();
     $scope.tags = { all: [], selected: [] };
 

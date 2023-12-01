@@ -72,7 +72,7 @@
     crmUiHelp, crmThrottle, formatActivity, $rootScope, dialogService,
     ContactsCache, ActivityStatus, ActivityType, CaseType, showFullContactNameOnActivityFeed) {
     // The ts() and hs() functions help load strings for this module.
-    var ts = $scope.ts = CRM.ts('civicase');
+    var ts = $scope.ts = CRM.ts('uk.co.compucorp.civicase');
     var ITEMS_PER_PAGE = 25;
     var activityStartingOffset = 0;
     var caseId = $scope.params ? $scope.params.case_id : null;

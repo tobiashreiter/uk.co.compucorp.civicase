@@ -31,7 +31,7 @@
             </a>
           </panel-query-actions>
           <panel-query-title>
-            You have {{loading.full ? '-' : total}} new {{ts("cases")}}
+            {{ts('You have %1 new cases', {1: loading.full ? '-' : total})}}
           </panel-query-title>
           <panel-query-results>
             <civicase-case-card
@@ -44,9 +44,9 @@
           <panel-query-empty>
             <div class="civicase__activity-card--empty">
               <div class="civicase__activity-no-result-icon civicase__activity-no-result-icon--case"></div>
-              <div class="civicase__activity-card--big--empty-title">No new {{customData.itemName}}</div>
+              <div class="civicase__activity-card--big--empty-title">{{ ts('No new %1', {1: customData.itemName}) }}</div>
               <div class="civicase__activity-card--big--empty-description">
-                You have no new {{customData.itemName}} this {{selectedRange}}
+                {{ts('You have no new %1 this %2', {1: customData.itemName, 2: selectedRange})}}
               </div>
             </div>
           </panel-query-empty>
@@ -59,7 +59,7 @@
           handlers="newMilestonesPanel.handlers"
           custom-data="newMilestonesPanel.custom">
           <panel-query-title>
-            You have {{loading.full ? '-' : total}} milestones due
+            {{ts('You have %1 milestones due', {1: loading.full ? '-' : total})}}
           </panel-query-title>
           <panel-query-actions>
             <div
@@ -80,9 +80,9 @@
           <panel-query-empty>
             <div class="civicase__activity-card--empty">
               <div class="civicase__activity-no-result-icon civicase__activity-no-result-icon--milestone"></div>
-              <div class="civicase__activity-card--big--empty-title">No upcoming {{customData.itemName}}</div>
+              <div class="civicase__activity-card--big--empty-title">{{ts('No upcoming %1', {1: customData.itemName})}}</div>
               <div class="civicase__activity-card--big--empty-description">
-                You have no {{customData.itemName}} due this {{selectedRange}}
+                {{ts('You have no %1 due this %2', {1: customData.itemName, 2: selectedRange})}}
               </div>
             </div>
           </panel-query-empty>
@@ -95,7 +95,7 @@
           handlers="activitiesPanel.handlers"
           custom-data="activitiesPanel.custom">
           <panel-query-title>
-            You have {{loading.full ? '-' : total}} {{customData.itemName}} due
+            {{ts('You have %1 %2 due', {1: loading.full ? '-' : total, 2: customData.itemName})}}
           </panel-query-title>
           <panel-query-actions>
             <div
@@ -116,9 +116,9 @@
           <panel-query-empty>
             <div class="civicase__activity-card--empty">
               <div class="civicase__activity-no-result-icon civicase__activity-no-result-icon--activity"></div>
-              <div class="civicase__activity-card--big--empty-title">No upcoming {{customData.itemName}}</div>
+              <div class="civicase__activity-card--big--empty-title">{{ts('No upcoming %1', {1: customData.itemName})}}</div>
               <div class="civicase__activity-card--big--empty-description">
-                You have no {{customData.itemName}} due this {{selectedRange}}
+                {{ts('You have no %1 due this %2', {1: customData.itemName, 2: selectedRange})}}
               </div>
             </div>
           </panel-query-empty>

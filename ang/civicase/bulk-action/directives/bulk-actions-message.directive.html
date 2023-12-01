@@ -1,21 +1,17 @@
 <div class="civicase__bulkactions-message" ng-show="(selectedItems > 0 || isSelectAll) && showCheckboxes">
   <div class="alert">
-    You have selected <strong>{{isSelectAll ? totalCount : selectedItems}}</strong>
-    <ng-pluralize
-      count="selectedItems"
-      when="{'one': 'item', 'other': 'items'}">
-    </ng-pluralize>.
+    {{ts('You have selected %1 items', {1: (isSelectAll ? totalCount : selectedItems)})}}
     <a
       ng-show="totalCount !== selectedItems && isSelectAll === false"
       href=""
       ng-click="select('all')">
-      Select all {{totalCount}} that match the search
-    </a>
+      {{ts('Select all %1 that match the search', {1: totalCount})}}
+      </a>
     <a
       ng-show="totalCount === selectedItems || isSelectAll"
       href=""
       ng-click="select('none')">
-      Clear All
+      {{ts('Clear All')}}
     </a>
   </div>
 </div>

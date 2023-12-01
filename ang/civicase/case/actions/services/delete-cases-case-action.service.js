@@ -15,7 +15,7 @@
      * @param {Function} callbackFn callback function
      */
     this.doAction = function (cases, action, callbackFn) {
-      var ts = CRM.ts('civicase');
+      var ts = CRM.ts('uk.co.compucorp.civicase');
       var msg;
       var trash = 1;
 

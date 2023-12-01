@@ -25,7 +25,7 @@ class CRM_Civicase_Hook_PageRun_AddCaseAngularPageResources {
   private function addResources() {
     // Adds Moment.js file.
     CRM_Core_Resources::singleton()
-      ->addScriptFile('uk.co.compucorp.civicase', 'packages/moment.min.js');
+      ->addScriptFile('uk.co.compucorp.civicase', 'packages/moment-with-locales.min.js');
     // Adds simplescrollbarjs.
     CRM_Core_Resources::singleton()
       ->addScriptFile('uk.co.compucorp.civicase', 'packages/simplebar.min.js');

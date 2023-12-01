@@ -3,7 +3,8 @@
 
   // Ex: <div crm-ui-number-range="model.some_field" />
   module.directive('crmUiNumberRange', function ($timeout) {
-    var ts = CRM.ts('civicase');
+    var ts = CRM.ts('uk.co.compucorp.civicase');  // NO OBVIOUS CHANGE
+    //var ts = CRM.ts('civicase');
     return {
       restrict: 'AE',
       scope: {

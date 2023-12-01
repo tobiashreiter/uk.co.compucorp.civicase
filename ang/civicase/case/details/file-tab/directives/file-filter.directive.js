@@ -26,7 +26,7 @@
    * @param {object} FileCategory FileCategory
    */
   function civicaseFileFilterController ($scope, $timeout, ActivityCategory, FileCategory) {
-    $scope.ts = CRM.ts('civicase');
+    $scope.ts = CRM.ts('uk.co.compucorp.civicase');
     $scope.fileCategoriesIT = FileCategory.getAll();
     $scope.activityCategories = ActivityCategory.getAll();
     $scope.customFilters = {

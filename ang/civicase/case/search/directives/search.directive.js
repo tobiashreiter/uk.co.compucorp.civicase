@@ -366,11 +366,12 @@
     function focusSpecificCase (event, data) {
       var caseTypeCategory = $scope.filters.case_type_category;
 
-      $window.location.href =
+      $window.location.href = CRM.url('civicrm/case/a/?' +
         'case_type_category=' + caseTypeCategory +
         '#/case/list?caseId=' + data.caseId +
         '&all_statuses=1' +
-        '&cf=%7B"case_type_category":"' + caseTypeCategory + '"%7D';
+        '&cf=%7B"case_type_category":"' + caseTypeCategory + '"%7D'
+      );
     }
 
     /**
@@ -535,12 +536,7 @@
           ? CaseType.getTitlesForNames(filters.case_type_id)
           : [];
 
-        if (types.length) {
-            $scope.pageTitle = status.join(' & ') + ' ' + types.join(' & ');
-        }
-        else {
-            $scope.pageTitle = status.join(' & ') + ' ' + 'Cases';            
-        }
+        $scope.pageTitle = ts('Cases'); // SYMBIOTIC: difficult to translate, not particularly useful: + status.join(' & ') + ' ' + types.join(' & ') + ' ' + ts('Cases');
       }
 
       if (hasTotalCount) {

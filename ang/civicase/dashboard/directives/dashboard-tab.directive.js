@@ -392,8 +392,8 @@
       return {
         url: $sce.trustAsResourceUrl('#/case/list?' + $.param(queryParams)),
         label: $scope.filters.caseRelationshipType === 'all'
-          ? 'View all ' + ts('cases')
-          : 'View all my ' + ts('cases')
+          ? ts('View all cases')
+          : ts('View all my cases')
       };
     }
 
