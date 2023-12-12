@@ -61,7 +61,7 @@ function civicrm_api3_case_getwebforms(array $params) {
   foreach ($daos as $dao) {
     $data = unserialize($dao->data);
 
-    if ($data['case']['number_of_case'] >= 0) {
+    if ($data['case']['number_of_case'] >= 1) {
       $webforms[] = [
         'nid' => $dao->nid,
         'title' => $dao->title,
@@ -90,9 +90,11 @@ function _get_case_type_ids_from_webform(array $webform) {
   $caseTypeIds = [];
 
   foreach ($webform['case'] as $cases) {
-    foreach ($cases['case'] as $case) {
-      if (!empty($case['case_type_id'])) {
-        array_push($caseTypeIds, $case['case_type_id']);
+    if (is_array($cases)) {
+      foreach ($cases['case'] as $case) {
+        if (!empty($case['case_type_id'])) {
+          array_push($caseTypeIds, $case['case_type_id']);
+        }
       }
     }
   }

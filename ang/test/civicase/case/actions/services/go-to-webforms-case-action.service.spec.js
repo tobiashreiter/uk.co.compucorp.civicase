@@ -1,13 +1,14 @@
 (function (_, $) {
   describe('GoToWebformCaseAction', function () {
-    var GoToWebformCaseAction, CaseActionsData, CasesData;
+    var GoToWebformCaseAction, CaseActionsData, CasesData, civicaseCrmUrl;
 
     beforeEach(module('civicase', 'civicase.data'));
 
-    beforeEach(inject(function (_GoToWebformCaseAction_, _CaseActionsData_, _CasesData_) {
+    beforeEach(inject(function (_GoToWebformCaseAction_, _CaseActionsData_, _CasesData_, _civicaseCrmUrl_) {
       GoToWebformCaseAction = _GoToWebformCaseAction_;
       CaseActionsData = _CaseActionsData_;
       CasesData = _CasesData_.get().values;
+      civicaseCrmUrl = _civicaseCrmUrl_;
     }));
 
     describe('checkIfWebformVisible()', function () {
@@ -60,6 +61,8 @@
         var goToWebformAction = _.find(CaseActionsData.get(), function (action) {
           return action.action === 'Webforms';
         }).items[0];
+
+        civicaseCrmUrl.and.returnValue(goToWebformAction.path);
 
         GoToWebformCaseAction.doAction(cases, goToWebformAction);
       });
