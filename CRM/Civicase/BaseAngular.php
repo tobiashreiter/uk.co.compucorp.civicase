@@ -34,6 +34,7 @@ class CRM_Civicase_BaseAngular {
     self::set_case_types_to_js_vars();
     self::set_case_category_instance_to_js_vars();
     self::set_relationship_types_to_js_vars();
+    self::set_collectors_to_js_vars();
     self::set_file_categories_to_js_vars();
     self::set_activity_status_types_to_js_vars();
     self::set_custom_fields_info_to_js_vars();
@@ -158,6 +159,17 @@ class CRM_Civicase_BaseAngular {
     ]));
   }
 
+  /**
+   * Sets the collectors to javascript global variable.
+   */
+  public static function set_collectors_to_js_vars() {
+      $result = civicrm_api3('Contact', 'get', [
+          'contact_sub_type' => 'Collector',
+          'options' => ['limit' => 0],
+      ]);
+      self::$options['collectors'] = $result['values'];
+  }
+  
   /**
    * Sets the file categories to javascript global variable.
    */
