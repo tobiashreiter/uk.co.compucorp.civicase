@@ -3,3 +3,4 @@ coverage/
 bin/*
 !bin/install-php-linter
 *.css.map
+/drupal/
