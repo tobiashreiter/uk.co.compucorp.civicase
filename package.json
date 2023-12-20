@@ -56,6 +56,7 @@
     "karma-ng-html2js-preprocessor": "^1.0.0",
     "lint-staged": "^13.1.0",
     "lodash": "^4.17.21",
+    "minify": "^11.0.1",
     "moment": "^2.29.4",
     "postcss-discard-duplicates": "^5.1.0",
     "postcss-prefix-selector": "^1.16.0",

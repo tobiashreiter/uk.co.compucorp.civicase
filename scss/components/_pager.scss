@@ -15,6 +15,7 @@
     display: none;
   }
 
+/*
   [title='Previous Page'],
   [title='First Page'],
   [title='Last Page'],
@@ -25,6 +26,17 @@
       top: -3px;
     }
   }
+*/
+
+  [title='Previous Page'],
+  [title='Next Page'] {
+    a {
+      font-size: 16px;
+      font-weight: $font-weight-content;
+      top: -3px;
+    }
+  }
+
 }
 
 .civicase__pager--fixed {

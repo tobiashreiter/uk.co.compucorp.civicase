@@ -90,19 +90,23 @@ angular.module('bw.paging', []).directive('paging', function () {
      * @param {object} attrs - Angular link attribute
      */
     function fieldTemplate(el, attrs){
-            return '<ul data-ng-hide="Hide" data-ng-class="ulClass"> ' +
-                '<li ' +
-                    'title="{{Item.title}}" ' +
-                    'data-ng-class="Item.liClass" ' +
-                    'data-ng-repeat="Item in List"> ' +
-                        '<a ' + 
-                            (attrs.pgHref ? 'data-ng-href="{{Item.pgHref}}" ' : 'href ') +
-                            'data-ng-class="Item.aClass" ' +
-                            'data-ng-click="Item.action()" ' +
-                            'data-ng-bind="Item.value">'+ 
-                        '</a> ' +
-                '</li>' +
-            '</ul>' 
+            return '<nav role="navigation" aria-label="Pagination Navigation">' + 
+                    '<ul data-ng-hide="Hide" data-ng-class="ulClass"> ' +
+                        '<li ' +
+                            'title="{{Item.title}}" ' +
+                            'data-ng-class="Item.liClass" ' +
+                            'data-ng-repeat="Item in List"> ' +
+                                '<a ' + 
+                                    (attrs.pgHref ? 'data-ng-href="{{Item.pgHref}}" ' : 'href ') +
+                                    'aria-label="Go to {{Item.title}}" ' +
+                                    'data-ng-class="Item.aClass" ' +
+                                    'data-ng-click="Item.action()" ' +
+                                    'data-ng-bind="Item.value">'+ 
+                                '</a> ' +
+                        '</li>' +
+                    '</ul>' +
+                '</nav>'
+            
     }
 
 
