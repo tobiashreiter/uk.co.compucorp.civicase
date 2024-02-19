@@ -1,25 +1,29 @@
 <?php
 
-use CRM_Civicase_Setup_CaseTypeCategorySupport as CaseTypeCategorySupport;
-use CRM_Civicase_Setup_CreateCasesOptionValue as CreateCasesOptionValue;
+use CRM_Civicase_ExtensionUtil as E;
+use CRM_Civicase_Helper_CaseUrl as CaseUrlHelper;
+use CRM_Civicase_Service_CaseCategoryInstance as CaseCategoryInstance;
 use CRM_Civicase_Setup_AddCaseCategoryWordReplacementOptionGroup as AddCaseCategoryWordReplacementOptionGroup;
-use CRM_Civicase_Setup_MoveCaseTypesToCasesCategory as MoveCaseTypesToCasesCategory;
-use CRM_Civicase_Setup_CreateSafeFileExtensionOptionValue as CreateSafeFileExtensionOptionValue;
-use CRM_Civicase_Uninstall_RemoveCustomGroupSupportForCaseCategory as RemoveCustomGroupSupportForCaseCategory;
-use CRM_Civicase_Setup_ProcessCaseCategoryForCustomGroupSupport as ProcessCaseCategoryForCustomGroupSupport;
-use CRM_Civicase_Setup_CaseCategoryInstanceSupport as CaseCategoryInstanceSupport;
 use CRM_Civicase_Setup_AddChangeCaseRoleDateActivityTypes as AddChangeCaseRoleDateActivityTypes;
 use CRM_Civicase_Setup_AddManageWorkflowMenu as AddManageWorkflowMenu;
-use CRM_Civicase_Service_CaseCategoryInstance as CaseCategoryInstance;
-use CRM_Civicase_Helper_CaseUrl as CaseUrlHelper;
-use CRM_Civicase_Setup_AddSingularLabels as AddSingularLabels;
-use CRM_Civicase_ExtensionUtil as E;
 use CRM_Civicase_Setup_AddMyActivitiesMenu as AddMyActivitiesMenu;
+use CRM_Civicase_Setup_AddSingularLabels as AddSingularLabels;
+use CRM_Civicase_Setup_CaseCategoryInstanceSupport as CaseCategoryInstanceSupport;
+use CRM_Civicase_Setup_CaseTypeCategorySupport as CaseTypeCategorySupport;
+use CRM_Civicase_Setup_CreateCasesOptionValue as CreateCasesOptionValue;
+use CRM_Civicase_Setup_CreateSafeFileExtensionOptionValue as CreateSafeFileExtensionOptionValue;
+use CRM_Civicase_Setup_Manage_CaseSalesOrderStatusManager as CaseSalesOrderStatusManager;
+use CRM_Civicase_Setup_Manage_CaseTypeCategoryFeaturesManager as CaseTypeCategoryFeaturesManager;
+use CRM_Civicase_Setup_Manage_MembershipTypeCustomFieldManager as MembershipTypeCustomFieldManager;
+use CRM_Civicase_Setup_Manage_QuotationTemplateManager as QuotationTemplateManager;
+use CRM_Civicase_Setup_MoveCaseTypesToCasesCategory as MoveCaseTypesToCasesCategory;
+use CRM_Civicase_Setup_ProcessCaseCategoryForCustomGroupSupport as ProcessCaseCategoryForCustomGroupSupport;
+use CRM_Civicase_Uninstall_RemoveCustomGroupSupportForCaseCategory as RemoveCustomGroupSupportForCaseCategory;
 
 /**
  * Collection of upgrade steps.
  */
-class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
+class CRM_Civicase_Upgrader extends CRM_Extension_Upgrader_Base {
 
   // By convention, functions that look like "function upgrade_NNNN()" are
   // upgrade tasks. They are executed in order (like Drupal's hook_update_N).
@@ -148,6 +152,10 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
     }
 
     $this->createManageCasesMenuItem();
+    (new CaseTypeCategoryFeaturesManager())->create();
+    (new CaseSalesOrderStatusManager())->create();
+    (new QuotationTemplateManager())->create();
+    (new MembershipTypeCustomFieldManager())->create();
   }
 
   /**
@@ -243,6 +251,10 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
     foreach ($steps as $step) {
       $step->apply();
     }
+
+    (new CaseTypeCategoryFeaturesManager())->remove();
+    (new CaseSalesOrderStatusManager())->remove();
+    (new QuotationTemplateManager())->remove();
   }
 
   /**
@@ -407,6 +419,10 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
 
     $workflowMenu = new AddManageWorkflowMenu();
     $workflowMenu->apply();
+
+    (new CaseTypeCategoryFeaturesManager())->enable();
+    (new CaseSalesOrderStatusManager())->enable();
+    (new QuotationTemplateManager())->enable();
   }
 
   /**
@@ -416,6 +432,9 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
     $this->swapCaseMenuItems();
 
     $this->toggleNav('Manage Cases', FALSE);
+    (new CaseTypeCategoryFeaturesManager())->disable();
+    (new CaseSalesOrderStatusManager())->disable();
+    (new QuotationTemplateManager())->disable();
   }
 
   /**
@@ -497,13 +516,13 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
    *
    * @inheritdoc
    */
-  public function enqueuePendingRevisions(CRM_Queue_Queue $queue) {
+  public function enqueuePendingRevisions() {
     $currentRevisionNum = (int) $this->getCurrentRevision();
     foreach ($this->getRevisions() as $revisionClass => $revisionNum) {
       if ($revisionNum <= $currentRevisionNum) {
         continue;
       }
-      $title = E::ts('Upgrade %1 to revision %2', [
+      $title = ts('Upgrade %1 to revision %2', [
         1 => $this->extensionName,
         2 => $revisionNum,
       ]);
@@ -512,13 +531,8 @@ class CRM_Civicase_Upgrader extends CRM_Civicase_Upgrader_Base {
         [(new $revisionClass())],
         $title
       );
-      $queue->createItem($upgradeTask);
-      $setRevisionTask = new CRM_Queue_Task(
-        [get_class($this), '_queueAdapter'],
-        ['setCurrentRevision', $revisionNum],
-        $title
-      );
-      $queue->createItem($setRevisionTask);
+      $this->queue->createItem($upgradeTask);
+      $this->appendTask($title, 'setCurrentRevision', $revisionNum);
     }
   }
 

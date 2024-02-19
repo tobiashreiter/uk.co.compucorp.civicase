@@ -1,0 +1,177 @@
+<div id="bootstrap-theme" class="civicase__container">
+  <h1 crm-page-title>{{ ts('View Quotation') }}</h1>
+
+  <div class="row">
+
+      <div class="panel panel-default">
+        <div class="panel-body" >
+          <div class="row">
+            <div class="col-md-6 col-sm-12">
+              <table class="table" id="quotation__detail">
+                <tbody>
+                  <tr>
+                    <td>Quotation Id</td>
+                    <td>{{salesOrder.id}}</td>
+                  </tr>
+                  <tr>
+                    <td>Client</td>
+                    <td><a href="{{getContactLink(salesOrder.client_id)}}" target="_blank">{{salesOrder['client_id.display_name']}}</a></td>
+                  </tr>
+                  <tr>
+                    <td>Date</td>
+                    <td>{{salesOrder.quotation_date}}</td>
+                  </tr>
+                  <tr>
+                    <td>Description</td>
+                    <td ng-bind-html="salesOrder.description"></td>
+                  </tr>
+                </tbody>
+                <tbody ng-if="hasCase">
+                  <tr>
+                    <td colspan="2"><strong>Case/Opportunity</strong></td>
+                  </tr>
+                  <tr>
+                    <td>Case Id</td>
+                    <td><a href="{{dashboardLink}}" target="_blank">{{salesOrder.case_id}}</a></td>
+                  </tr>
+                  <tr>
+                    <td>Case Type</td>
+                    <td>{{salesOrder['case_id.case_type_id:label']}}</td>
+                  </tr>
+                  <tr>
+                    <td>Case Subject</td>
+                    <td>{{salesOrder['case_id.subject']}}</td>
+                  </tr>
+                </tbody>
+
+                <tbody>
+                  <tr>
+                    <td>Owner</td>
+                    <td><a href="{{getContactLink(salesOrder.owner_id)}}" target="_blank">{{salesOrder['owner_id.display_name']}}</a></td>
+                  </tr>
+                  <tr>
+                    <td>Status</td>
+                    <td>{{salesOrder['status_id:label']}}</td>
+                  </tr>
+                  <tr>
+                    <td>Currency</td>
+                    <td>{{salesOrder.currency}}</td>
+                  </tr>
+                  <tr>
+                    <td>Invoicing</td>
+                    <td>{{salesOrder['invoicing_status_id:label']}}</td>
+                  </tr>
+                  <tr>
+                    <td>Payments</td>
+                    <td>{{salesOrder['payment_status_id:label']}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12" style="margin: 1em 0em;">
+              <h3><strong>Items Overview</strong></h3>
+            </div>
+            <div class="col-md-12" style="border: 1px solid; padding: 0em;">
+              <table class="table table-bordered">
+                <tr>
+                  <th>Product</th>
+                  <th>Item Description </th>
+                  <th>Financial Type</th>
+                  <th>Unit Price</th>
+                  <th>Quantity</th>
+                  <th>Discount %</th>
+                  <th>Tax %</th>
+                  <th>Subtotal</th>
+                </tr>
+                <tr ng-repeat="item in salesOrder.items track by $index">
+                  <td>{{ item["product_id.name"] }}</td>
+                  <td>{{ item["item_description"] }}</td>
+                  <td>{{ item["financial_type_id.name"] }}</td>
+                  <td>{{ item["unit_price"] || 0 }}</td>
+                  <td>{{ item["quantity"] || 0 }}</td>
+                  <td>{{ item["discounted_percentage"] || 0 }}</td>
+                  <td>{{ item["tax_rate"] || 0 }}</td>
+                  <td>{{ item["subtotal_amount"] }}</td>
+                </tr>
+                </table>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12" style="margin: 1em 0em;">
+              <h3><strong>Amount Summary</strong></h3>
+            </div>
+            <div class="col-md-6 col-sm-12">
+              <table class="table" id="amount__summary">
+                <tr>
+                  <td>Total</td>
+                  <td>{{ currencySymbol }} {{ salesOrder.total_before_tax }}</td>
+                </tr>
+                  <tr ng-repeat="i in salesOrder.taxRates track by $index">
+                    <td>Tax @ {{ i.rate }}%</td>
+                    <td>{{ currencySymbol }} {{ i.value }}</td>
+                  </tr>
+                <tr>
+                  <td>Grand Total</td>
+                  <td>{{ currencySymbol }} {{salesOrder.total_after_tax}}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12" style="margin: 1em 0em;">
+              <hr/>
+            </div>
+            <div class="col-md-6 col-sm-12">
+              <table class="table" id="payment__invoice_statuses">
+                <tr>
+                  <td>Total Amount Invoiced</td>
+                  <td>{{ currencySymbol }} {{ salesOrder.totalAmountInvoiced.amount }}</td>
+                </tr>
+                <tr>
+                  <td>Total Amount Paid</td>
+                  <td>{{ currencySymbol }} {{salesOrder.totalAmountPaid.amount}}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12" style="margin: 1em 0em;">
+              <h3><strong>Notes</strong></h3>
+            </div>
+          </div>
+          <div class="col-md-6 col-sm-12">
+            <p>
+              {{salesOrder.notes}}
+            </p>
+          </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<style>
+  table#quotation__detail.table > tbody > tr > td,
+  table#amount__summary.table > tbody > tr > td,
+  table#payment__invoice_statuses.table > tbody > tr > td  {
+    border: 0;
+    border-top: 0;
+  }
+
+  table#quotation__detail.table>tbody+tbody {
+    border-top: 0;
+  }
+
+  table#quotation__detail.table>tbody+tbody:before {
+    content:"@";
+    display:block;
+    line-height:2em;
+    text-indent:-99999px;
+}
+</style>
