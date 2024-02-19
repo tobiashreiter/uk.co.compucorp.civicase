@@ -1,11 +1,11 @@
 <?php
 
-use Civi\Token\Event\TokenValueEvent;
-use Civi\Token\Event\TokenRegisterEvent;
-use CRM_Civicase_ExtensionUtil as E;
 use Civi\Api4\CaseSalesOrder;
 use Civi\Token\AbstractTokenSubscriber;
+use Civi\Token\Event\TokenRegisterEvent;
+use Civi\Token\Event\TokenValueEvent;
 use Civi\Token\TokenRow;
+use CRM_Civicase_ExtensionUtil as E;
 
 /**
  * Sales Order Specific Tokens.

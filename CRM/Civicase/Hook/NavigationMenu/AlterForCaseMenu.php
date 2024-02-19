@@ -1,8 +1,8 @@
 <?php
 
 use Civi\Api4\OptionGroup;
-use CRM_Civicase_Service_CaseCategorySetting as CaseCategorySetting;
 use CRM_Civicase_Helper_CaseUrl as CaseUrlHelper;
+use CRM_Civicase_Service_CaseCategorySetting as CaseCategorySetting;
 
 /**
  * Class CRM_Civicase_Hook_Navigation_AlterForCaseMenu.

@@ -2,8 +2,8 @@
 
 namespace Civi\Api4\Action\CaseSalesOrder;
 
-use Civi\Api4\Generic\Result;
 use Civi\Api4\Generic\AbstractAction;
+use Civi\Api4\Generic\Result;
 use Civi\Api4\Generic\Traits\DAOActionTrait;
 use CRM_Civicase_BAO_CaseSalesOrder as CaseSalesOrderBAO;
 

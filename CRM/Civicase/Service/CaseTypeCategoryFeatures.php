@@ -1,8 +1,8 @@
 <?php
 
-use Civi\Api4\OptionGroup;
 use Civi\Api4\CaseCategoryFeatures;
-use Civi\Api4\OptionValue as OptionValue;
+use Civi\Api4\OptionGroup;
+use Civi\Api4\OptionValue;
 
 /**
  * CaseTypeCategoryFeatures class.
