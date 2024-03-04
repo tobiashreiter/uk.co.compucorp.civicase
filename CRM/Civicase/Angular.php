@@ -4,7 +4,7 @@
  * Option factory class for Civicase AngularJS module
  */
 class CRM_Civicase_Angular {
-
+  /** @var array */
   private static $options = [];
   private static $case_category_permissions;
 
@@ -94,7 +94,7 @@ class CRM_Civicase_Angular {
       CRM_Civicase_Helper_GlobRecursive::getRelativeToExtension(
         'uk.co.compucorp.civicase',
         'ang/civicase/*.js'
-    )
+      )
     );
   }
 

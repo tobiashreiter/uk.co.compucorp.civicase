@@ -33,6 +33,15 @@ return [
   'partials' => [
     'ang/civicase',
   ],
+  'permissions' => [
+    'administer CiviCase',
+    'administer CiviCRM',
+    'access all cases and activities',
+    'add cases',
+    'basic case information',
+    'access CiviCRM',
+    'access my cases and activities',
+  ],
   'settingsFactory' => ['CRM_Civicase_Angular', 'getOptions'],
   'requires' => $requires,
   'basePages' => [],

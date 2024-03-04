@@ -79,11 +79,11 @@
       <!-- Case Webform Dropdown -->
       <div
         ng-if="isCaseWebformDropdownVisible"
-        class="btn-group btn-group-md">
+        class="btn-group btn-group-md" civicase-dropdown>
         <button
           type="button"
           class="btn btn-primary civicase__case-header__webform-dropdown"
-          data-toggle="dropdown">
+          civicase-dropdown-toggle>
           {{ webformsListButtonLabel }}
           <span class="caret"></span>
         </button>
@@ -96,13 +96,13 @@
         </ul>
       </div>
       <!-- End - Case Webform Dropdown -->
-      <div class="btn-group btn-group-md">
+      <div class="btn-group btn-group-md"  civicase-dropdown>
         <button
           type="button"
           ng-disabled="item['case_type_id.is_active'] === '0'"
           ng-style="{'background-color': caseStatuses[item.status_id].color }"
           class="btn btn-primary"
-          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+          civicase-dropdown-toggle aria-haspopup="true" aria-expanded="false"
           title="{{ ts('Change case status') }}"
         >
           {{ item.status }}
@@ -128,16 +128,17 @@
                 }
               }}"
             >
+              <span ng-style="{'background-color': status.color }" style="width: 12px; height: 12px; display:inline-block;"></span>
               {{ status.label }}
             </a>
           </li>
         </ul>
       </div>
-      <div class="btn-group btn-group-md">
+      <div class="btn-group btn-group-md"  civicase-dropdown>
         <button
           type="button"
           class="civicase__case-header__action-icon btn btn-primary"
-          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+          civicase-dropdown-toggle aria-haspopup="true" aria-expanded="false"
         >
           <i class="material-icons">menu</i>
         </button>
