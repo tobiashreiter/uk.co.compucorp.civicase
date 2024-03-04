@@ -8,10 +8,10 @@
       <div class="pull-right">
         <div
           ng-if="canChangeStatus"
-          class="btn-group btn-group-md civicase__activity-panel__status-dropdown"
+          class="btn-group btn-group-md civicase__activity-panel__status-dropdown" civicase-dropdown
         >
           <button
-            type="button" class="btn btn-primary-outline" data-toggle="dropdown"
+            type="button" class="btn btn-primary-outline" civicase-dropdown-toggle
             aria-haspopup="true" aria-expanded="false"
             title="{{ ts('Change activity status') }}">
             {{ activity.status }}
@@ -28,9 +28,9 @@
             </li>
           </ul>
         </div>
-        <div class="btn-group btn-group-md civicase__activity-panel__priority-dropdown">
+        <div class="btn-group btn-group-md civicase__activity-panel__priority-dropdown" civicase-dropdown>
           <button
-            type="button" class="btn btn-primary-outline" data-toggle="dropdown"
+            type="button" class="btn btn-primary-outline" civicase-dropdown-toggle
             aria-haspopup="true" aria-expanded="false"
             title="{{ ts('Change activity priority') }}">
             {{ activityPriorties[activity.priority_id].label || 'Set Priority' }}

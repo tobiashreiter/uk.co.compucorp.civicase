@@ -2,8 +2,8 @@
   civicase-activity-filters-affix
   class="panel-header civicase__activity-filter">
   <div class="clearfix">
-    <div class="civicase__activity-filter__settings btn-group">
-      <button type="button" class="btn btn-default btn-clean dropdown-toggle" data-toggle="dropdown">
+    <div class="civicase__activity-filter__settings btn-group" civicase-dropdown>
+      <button type="button" class="btn btn-default btn-clean dropdown-toggle" civicase-dropdown-toggle>
         <i class="material-icons">settings</i> <span class="caret"></span>
       </button>
       <ul class="dropdown-menu" role="menu">
@@ -28,17 +28,17 @@
     <span
       ng-if="bulkAllowed"
       class="civicase__bulkactions-actions-dropdown btn-group btn-group-sm">
-      <div class="btn-group">
+      <div class="btn-group" civicase-dropdown>
         <button
           type="button" class="btn btn-default"
           ng-class="{disabled: (!selectedActivities.length || !showCheckboxes) && !isSelectAll}"
-          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          civicase-dropdown-toggle aria-haspopup="true" aria-expanded="false">
           {{ ts('Actions') }}
         </button>
         <button
           type="button" class="btn btn-default dropdown-toggle"
           ng-class="{disabled: (!selectedActivities.length || !showCheckboxes) && !isSelectAll}"
-          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          civicase-dropdown-toggle aria-haspopup="true" aria-expanded="false">
           <span class="caret"></span>
         </button>
         <ul
@@ -109,11 +109,11 @@
     </div>
 
     <div class="input-group civicase__activity-filter__add">
-      <span class="input-group-btn">
+      <span class="input-group-btn" civicase-dropdown>
         <input
           class="form-control" ng-model="availableFilterSearchText"
-          data-toggle="dropdown" placeholder="{{ ts('Add Filter') }}" />
-        <button type="button" class="btn btn-info btn-sm dropdown-toggle btn-filter" data-toggle="dropdown">
+          civicase-dropdown-toggle placeholder="{{ ts('Add Filter') }}" />
+        <button type="button" class="btn btn-info btn-sm dropdown-toggle btn-filter" civicase-dropdown-toggle>
           <span class="crm-i fa-filter"></span>
         </button>
         <ul class="dropdown-menu" role="menu">

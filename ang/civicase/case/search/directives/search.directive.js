@@ -69,6 +69,8 @@
     $scope.doSearchIfNotExpanded = doSearchIfNotExpanded;
     $scope.handleSearchSubmit = handleSearchSubmit;
     $scope.isEnabled = isEnabled;
+    // Override to make all statuses available at all times
+    $scope.showCasesFromAllStatuses = true;
 
     (function init () {
       bindRouteParamsToScope();
@@ -130,7 +132,8 @@
       $scope.$bindToRoute({ expr: 'expanded', param: 'sx', format: 'bool', default: false });
       $scope.$bindToRoute({ expr: 'filters', param: 'cf', default: {} });
       $scope.$bindToRoute({ expr: 'contactRoleFilter', param: 'crf', default: $scope.contactRoleFilter });
-      $scope.$bindToRoute({ expr: 'showCasesFromAllStatuses', param: 'all_statuses', format: 'bool' });
+      // Overriding, so that the show cases from all statuses is always true
+      // $scope.$bindToRoute({ expr: 'showCasesFromAllStatuses', param: 'all_statuses', format: 'bool' });
     }
 
     /**

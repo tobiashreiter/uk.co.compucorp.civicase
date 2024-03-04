@@ -168,7 +168,7 @@
         isOverDueGroup: !!isOverDueGroup,
         month: dateObject.month,
         year: dateObject.year,
-        monthName: moment(dateObject.month, 'MM').locale('fr').format('MMMM')
+        monthName: moment(dateObject.month, 'MM').format('MMMM')
       };
 
       if (yearObject) {

@@ -30,4 +30,7 @@
   <requires>
     <ext>org.civicrm.shoreditch</ext>
   </requires>
+  <mixins>
+    <mixin>smarty-v2@1.0.1</mixin>
+  </mixins>
 </extension>

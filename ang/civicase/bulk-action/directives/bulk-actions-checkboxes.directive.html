@@ -1,4 +1,4 @@
- <div class="civicase__bulkactions-checkbox">
+ <div class="civicase__bulkactions-checkbox" civicase-dropdown>
   <span class="civicase__checkbox civicase__bulkactions-checkbox-toggle" ng-click="toggleCheckbox()">
     <i
       class="civicase__checkbox--checked material-icons"
@@ -10,7 +10,7 @@
     type="button"
     class="civicase__bulkactions-select-mode-dropdown dropdown-toggle"
     ng-class="{disabled: !showCheckboxes}"
-    data-toggle="dropdown">
+    civicase-dropdown-toggle>
     <i class="fa fa-caret-down"></i>
   </button>
   <ul class="dropdown-menu">

@@ -15,11 +15,11 @@
           {{ ts('Go To Case') }}
         </a>
         <!-- hamburger icon -->
-        <div class="btn-group btn-group-md">
+        <div class="btn-group btn-group-md" civicase-dropdown>
           <button
             type="button"
             class="civicase__case-header__action-icon btn btn-link"
-            data-toggle="dropdown"
+            civicase-dropdown-toggle
             aria-haspopup="true"
             aria-expanded="false">
             <i class="material-icons">menu</i>
@@ -45,12 +45,12 @@
             Disabled
           </span>
           <!-- status dropdown -->
-          <div class="btn-group btn-group-md civicase__contact-cases-tab__status">
+          <div class="btn-group btn-group-md civicase__contact-cases-tab__status" civicase-dropdown>
             <button
               type="button" class="btn btn-primary"
               ng-disabled="item['case_type_id.is_active'] === '0'"
               style="background-color: {{ caseStatuses[item.status_id].color }};"
-              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+              civicase-dropdown-toggle aria-haspopup="true" aria-expanded="false"
               title="{{ ts('Change case status') }}">
               <span class="civicase__contact-cases-tab__status-label">{{ item.status }}</span>
               <span class="caret"></span>
