@@ -1,0 +1,8 @@
+{* It looks like this help file is missing. This was a hidden error in the past, but throws a serious error with PHP 8.3 *}
+{htxt id="id-civicaseRestrictCaseEmailContacts-title"}
+  {ts}Missing Help{/ts}
+{/htxt}
+{htxt id="id-civicaseRestrictCaseEmailContacts"}
+It looks like the developer of CiviCase didn't add a help file here.
+{/htxt}
+
