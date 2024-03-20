@@ -54,7 +54,7 @@ class CRM_Civicase_Form_CaseSalesOrderContributionCreate extends CRM_Core_Form {
       $this->addRule('to_be_invoiced', ts('Invoice value is required'), 'required');
     }
 
-    $statusOptions = OptionValue::get()
+    $statusOptions = OptionValue::get(FALSE)
       ->addSelect('value', 'label')
       ->addWhere('option_group_id:name', '=', 'case_sales_order_status')
       ->execute()
@@ -92,7 +92,7 @@ class CRM_Civicase_Form_CaseSalesOrderContributionCreate extends CRM_Core_Form {
    * {@inheritDoc}
    */
   public function setDefaultValues() {
-    $caseSalesOrder = CaseSalesOrder::get()
+    $caseSalesOrder = CaseSalesOrder::get(FALSE)
       ->addWhere('id', '=', $this->id)
       ->addSelect('status_id')
       ->execute()
@@ -173,7 +173,7 @@ class CRM_Civicase_Form_CaseSalesOrderContributionCreate extends CRM_Core_Form {
    * Checks if the sales order has left over balance to be invoiced.
    */
   public function hasRemainingBalance() {
-    $caseSalesOrder = CaseSalesOrder::get()
+    $caseSalesOrder = CaseSalesOrder::get(FALSE)
       ->addSelect('total_after_tax')
       ->addWhere('id', '=', $this->id)
       ->setLimit(1)
@@ -184,7 +184,7 @@ class CRM_Civicase_Form_CaseSalesOrderContributionCreate extends CRM_Core_Form {
     }
 
     // Get all the previous contributions.
-    $contributions = Contribution::get()
+    $contributions = Contribution::get(FALSE)
       ->addSelect('total_amount')
       ->addWhere('Opportunity_Details.Quotation', '=', $this->id)
       ->execute()

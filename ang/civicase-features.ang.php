@@ -60,7 +60,7 @@ function set_case_types_with_features_enabled(&$options) {
  * Exposes case sales order statuses to Angular.
  */
 function set_case_sales_order_status(&$options) {
-  $optionValues = OptionValue::get()
+  $optionValues = OptionValue::get(FALSE)
     ->addSelect('id', 'value', 'name', 'label')
     ->addWhere('option_group_id:name', '=', 'case_sales_order_status')
     ->execute();

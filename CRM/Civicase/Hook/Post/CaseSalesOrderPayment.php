@@ -35,7 +35,7 @@ class CRM_Civicase_Hook_Post_CaseSalesOrderPayment {
       return;
     }
 
-    $contribution = Contribution::get()
+    $contribution = Contribution::get(FALSE)
       ->addSelect('Opportunity_Details.Case_Opportunity', 'Opportunity_Details.Quotation')
       ->addWhere('id', '=', $contributionId)
       ->execute()
@@ -63,7 +63,7 @@ class CRM_Civicase_Hook_Post_CaseSalesOrderPayment {
       $paymentStatusID = $caseSaleOrderContributionService->calculatePaymentStatus();
       $invoicingStatusID = $caseSaleOrderContributionService->calculateInvoicingStatus();
 
-      CaseSalesOrder::update()
+      CaseSalesOrder::update(FALSE)
         ->addWhere('id', '=', $salesOrderID)
         ->addValue('invoicing_status_id', $invoicingStatusID)
         ->addValue('payment_status_id', $paymentStatusID)

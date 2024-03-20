@@ -129,7 +129,7 @@ class CRM_Civicase_Service_CaseSalesOrderOpportunityCalculator extends CRM_Civic
    * Updates opportunity financial details.
    */
   public function updateOpportunityFinancialDetails(): void {
-    CiviCase::update()
+    CiviCase::update(FALSE)
       ->addValue('Case_Opportunity_Details.Total_Amount_Quoted', $this->calculateTotalQuotedAmount())
       ->addValue('Case_Opportunity_Details.Total_Amount_Invoiced', $this->calculateTotalInvoicedAmount())
       ->addValue('Case_Opportunity_Details.Invoicing_Status', $this->calculateInvoicingStatus())

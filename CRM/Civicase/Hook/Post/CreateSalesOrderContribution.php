@@ -34,7 +34,7 @@ class CRM_Civicase_Hook_Post_CreateSalesOrderContribution {
       return;
     }
 
-    $salesOrder = CaseSalesOrder::get()
+    $salesOrder = CaseSalesOrder::get(FALSE)
       ->addSelect('status_id', 'case_id')
       ->addWhere('id', '=', $salesOrderId)
       ->execute()
@@ -51,7 +51,7 @@ class CRM_Civicase_Hook_Post_CreateSalesOrderContribution {
       $paymentStatusID = $caseSaleOrderContributionService->calculatePaymentStatus();
       $invoicingStatusID = $caseSaleOrderContributionService->calculateInvoicingStatus();
 
-      CaseSalesOrder::update()
+      CaseSalesOrder::update(FALSE)
         ->addWhere('id', '=', $salesOrderId)
         ->addValue('status_id', $salesOrderStatusId)
         ->addValue('invoicing_status_id', $invoicingStatusID)
@@ -90,7 +90,7 @@ class CRM_Civicase_Hook_Post_CreateSalesOrderContribution {
    * Gets quotation ID by contribution ID.
    */
   private function getQuotationId($id) {
-    return Contribution::get()
+    return Contribution::get(FALSE)
       ->addSelect('Opportunity_Details.Quotation')
       ->addWhere('id', '=', $id)
       ->execute()

@@ -137,7 +137,7 @@ class CRM_Civicase_Form_CaseSalesOrderInvoice extends CRM_Core_Form {
 
     $salesOrderId = CRM_Utils_Request::retrieveValue('id', 'Positive');
 
-    $caseSalesOrder = CaseSalesOrder::get()
+    $caseSalesOrder = CaseSalesOrder::get(FALSE)
       ->addWhere('id', '=', $salesOrderId)
       ->execute()
       ->first();

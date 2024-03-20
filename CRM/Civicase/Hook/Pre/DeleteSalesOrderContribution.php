@@ -43,7 +43,7 @@ class CRM_Civicase_Hook_Pre_DeleteSalesOrderContribution {
       ->addValue('payment_status_id', $paymentStatusId)
       ->execute();
 
-    $caseSalesOrder = CaseSalesOrder::get()
+    $caseSalesOrder = CaseSalesOrder::get(FALSE)
       ->addSelect('case_id')
       ->addWhere('id', '=', $salesOrderId)
       ->execute()

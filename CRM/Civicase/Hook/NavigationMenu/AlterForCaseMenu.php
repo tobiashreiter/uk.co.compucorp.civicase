@@ -156,7 +156,7 @@ class CRM_Civicase_Hook_NavigationMenu_AlterForCaseMenu extends CRM_Civicase_Hoo
    * Returnd the ID of the case type category option group.
    */
   private function getCaseTypeCategoryGroupId() {
-    $optionGroups = OptionGroup::get()
+    $optionGroups = OptionGroup::get(FALSE)
       ->addSelect('id')
       ->addWhere('name', '=', 'case_type_categories')
       ->setLimit(25)

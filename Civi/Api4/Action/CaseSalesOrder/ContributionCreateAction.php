@@ -146,15 +146,15 @@ class ContributionCreateAction extends AbstractAction {
    *   Array of price fields
    */
   private function getDefaultPriceSetFields(): array {
-    $priceSet = PriceSet::get()
+    $priceSet = PriceSet::get(FALSE)
       ->addWhere('name', '=', 'default_contribution_amount')
       ->addWhere('is_quick_config', '=', 1)
       ->execute()
       ->first();
 
-    return PriceField::get()
+    return PriceField::get(FALSE)
       ->addWhere('price_set_id', '=', $priceSet['id'])
-      ->addChain('price_field_value', PriceFieldValue::get()
+      ->addChain('price_field_value', PriceFieldValue::get(FALSE)
         ->addWhere('price_field_id', '=', '$id')
       )->execute()
       ->getArrayCopy();
@@ -169,7 +169,7 @@ class ContributionCreateAction extends AbstractAction {
    *   Contribution ID.
    */
   private function linkCaseSalesOrderToContribution(int $salesOrderId, int $contributionId): void {
-    $salesOrder = CaseSalesOrder::get()
+    $salesOrder = CaseSalesOrder::get(FALSE)
       ->addWhere('id', '=', $salesOrderId)
       ->execute()
       ->first();
@@ -201,7 +201,7 @@ class ContributionCreateAction extends AbstractAction {
    *   pending status ID
    */
   private function getPendingContributionStatusId(): ?int {
-    $pendingStatus = OptionValue::get()
+    $pendingStatus = OptionValue::get(FALSE)
       ->addSelect('value')
       ->addWhere('option_group_id:name', '=', 'contribution_status')
       ->addWhere('name', '=', 'pending')
