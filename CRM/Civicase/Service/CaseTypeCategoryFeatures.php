@@ -15,7 +15,7 @@ class CRM_Civicase_Service_CaseTypeCategoryFeatures {
    * Gets the available additional features.
    */
   public function getFeatures() {
-    $optionValues = OptionValue::get()
+    $optionValues = OptionValue::get(FALSE)
       ->addSelect('id', 'label', 'value', 'name', 'option_group_id')
       ->addWhere('option_group_id:name', '=', self::NAME)
       ->execute();
@@ -33,13 +33,13 @@ class CRM_Civicase_Service_CaseTypeCategoryFeatures {
    *   Array of Key\Pair value grouped by case instance id.
    */
   public function retrieveCaseInstanceWithEnabledFeatures(array $features) {
-    $caseInstanceGroup = OptionGroup::get()->addWhere('name', '=', 'case_type_categories')->execute()[0] ?? NULL;
+    $caseInstanceGroup = OptionGroup::get(FALSE)->addWhere('name', '=', 'case_type_categories')->execute()[0] ?? NULL;
 
     if (empty($caseInstanceGroup)) {
       return [];
     }
 
-    $result = CaseCategoryFeatures::get()
+    $result = CaseCategoryFeatures::get(FALSE)
       ->addSelect('*', 'option_value.label', 'option_value.name', 'feature_id:name', 'feature_id:label', 'navigation.id')
       ->addJoin('OptionValue AS option_value', 'LEFT',
       ['option_value.value', '=', 'category_id']

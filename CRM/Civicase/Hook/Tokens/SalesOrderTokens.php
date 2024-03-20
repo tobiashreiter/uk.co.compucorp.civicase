@@ -53,7 +53,7 @@ class CRM_Civicase_Hook_Tokens_SalesOrderTokens extends AbstractTokenSubscriber 
         if (!empty($row->context['salesOrderId'])) {
           $salesOrderId = $row->context['salesOrderId'];
 
-          $caseSalesOrder = CaseSalesOrder::get()
+          $caseSalesOrder = CaseSalesOrder::get(FALSE)
             ->addWhere('id', '=', $salesOrderId)
             ->execute()
             ->first();

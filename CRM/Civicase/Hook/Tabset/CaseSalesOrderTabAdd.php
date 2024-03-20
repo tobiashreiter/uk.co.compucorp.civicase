@@ -43,7 +43,7 @@ class CRM_Civicase_Hook_Tabset_CaseSalesOrderTabAdd {
    *   Contact ID to retrieve count for.
    */
   public function getContactSalesOrderCount(int $contactID) {
-    $result = CaseSalesOrder::get()
+    $result = CaseSalesOrder::get(FALSE)
       ->addSelect('COUNT(id) AS count')
       ->addWhere('client_id', '=', $contactID)
       ->execute()

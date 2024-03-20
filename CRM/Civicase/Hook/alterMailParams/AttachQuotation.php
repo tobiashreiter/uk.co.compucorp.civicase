@@ -40,11 +40,11 @@ class CRM_Civicase_Hook_alterMailParams_AttachQuotation {
    *   The contribution ID.
    */
   private function getContributionQuotationInvoice($contributionId) {
-    $salesOrder = Contribution::get()
+    $salesOrder = Contribution::get(FALSE)
       ->addSelect('Opportunity_Details.Quotation')
       ->addWhere('Opportunity_Details.Quotation', 'IS NOT EMPTY')
       ->addWhere('id', '=', $contributionId)
-      ->addChain('salesOrder', CaseSalesOrder::get()
+      ->addChain('salesOrder', CaseSalesOrder::get(FALSE)
         ->addWhere('id', '=', '$Opportunity_Details.Quotation')
       )
       ->execute()

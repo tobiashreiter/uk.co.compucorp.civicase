@@ -66,7 +66,7 @@ function _civicrm_api3_case_sales_order_getlist_output($result, $request) {
   $output = [];
   if (!empty($result['values'])) {
     foreach ($result['values'] as $row) {
-      $caseSalesOrder = CaseSalesOrder::get()
+      $caseSalesOrder = CaseSalesOrder::get(FALSE)
         ->addSelect('contact.display_name', 'quotation_date')
         ->addJoin('Contact AS contact', 'LEFT', ['contact.id', '=', 'client_id'])
         ->addWhere('id', '=', $row['id'])

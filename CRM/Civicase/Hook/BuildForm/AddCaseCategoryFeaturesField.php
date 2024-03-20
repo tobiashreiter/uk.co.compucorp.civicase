@@ -85,7 +85,7 @@ class CRM_Civicase_Hook_BuildForm_AddCaseCategoryFeaturesField extends CRM_Civic
     $caseCategory = $form->getVar('_values')['value'];
     $enabledFeatures = [];
 
-    $caseCategoryFeatures = CaseCategoryFeatures::get()
+    $caseCategoryFeatures = CaseCategoryFeatures::get(FALSE)
       ->addWhere('category_id', '=', $caseCategory)
       ->execute();
 
