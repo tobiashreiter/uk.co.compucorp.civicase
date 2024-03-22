@@ -468,8 +468,8 @@
     function keywordWatcher () {
        if ($scope.keyword && $scope.keyword.length) {
           $scope.filters.subject = $scope.keyword;
-       } else {
-           delete $scope.filters.subject;
+       } else if (!$scope.keyword && $scope.filters.subject && $scope.filters.subject.length) {
+          $scope.keyword = $scope.filters.subject;
        }
     }
 

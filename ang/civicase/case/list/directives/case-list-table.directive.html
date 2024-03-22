@@ -79,7 +79,7 @@
                 <span ng-switch on="header.name">
 	              <span ng-switch-when="subject">
 	              
-	                 <a href="/civicrm/case/a/?case_type_category=1#/case/list?caseId={{item['id']}}&focus=1&cf=%7B%22id%22:{{item['id']}},%22case_type_category%22:1%7D">{{ item[header.name] }}</a>
+	                 <a href="/civicrm/case/a/?case_type_category=1#/case/list?caseId={{item['id']}}&keyword={{filters.subject}}&case_manager={{filters.case_manager}}&case_type_id={{filters.case_type_id}}&status_id={{filters.status_id}}&focus=1&cf=%7B%22id%22:{{item['id']}},%22case_type_category%22:1%7D" target="_blank">{{ item[header.name] }}</a>
 	              </span>
                   <span ng-switch-default>
                      {{ item[header.name] }}

@@ -47,19 +47,27 @@
         ng-model="filters.case_manager"
         ng-change="doSearchIfNotExpanded()"
       />
+	  <!-- Disable this until such a time as extra searching has been requested -->
+	  <!-- 
       <button
         class="btn btn-primary btn-sm pull-right civicase__case-filter-panel__button"
         ng-click="expanded = true" ng-show="!expanded">
         <i class="fa fa-gear"></i>
         {{ filterDescription.length ? ts('Edit Search') : ts('Other Criteria') }}
       </button>
+      -->
+      <!-- This button is a bit of a misnomer: it doesn't perform a search, it just shows hides the other criteria button -->
+      <!-- 
       <button
         class="btn btn-primary btn-sm pull-right civicase__case-filter-panel__button"
         ng-click="handleSearchSubmit()" ng-show="expanded">
         <i class="fa fa-search"></i> {{ ts('Search') }}
       </button>
+      -->
     </form>
   </div>
+  <!-- Disable this until such a time as extra searching has been requested -->
+  <!-- 
   <form
     class="panel-body form-horizontal civicase__case-filter-panel__form"
     ng-show="expanded">
@@ -138,6 +146,9 @@
       <div ng-include="'~/civicase/case/search/directives/search-custom.html'"></div>
     </div>
   </form>
+  --->
+  <!-- We want to hide this as well, which may be permanent, even if filtering is desired -->
+  <!-- 
   <div
     class="panel-body civicase__case-filter-panel__description"
     ng-if="!expanded && filterDescription.length">
@@ -154,4 +165,5 @@
       <i class="fa fa-ban"></i> {{ ts('Clear Search') }}
     </button>
   </div>
+  -->
 </div>

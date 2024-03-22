@@ -12,7 +12,8 @@
     <!-- Contact Name -->
     <a
       class="civicase__contact-name"
-      href="{{ url('civicrm/contact/view', {cid: contacts[0].contact_id}) }}"
+      target="_blank"
+      href="{{ url('civicrm/contact/view', {cid: contacts[0].contact_id} ) }}"
       title="{{ ts('View Contact') }}">{{ contacts[0].display_name }}
     </a>
     <!-- End - Contact Name -->
@@ -20,6 +21,7 @@
   <span ng-if="isAvatar">
     <!-- Contact Avatar -->
     <a
+      target="_blank"
       href="{{ url('civicrm/contact/view', {cid: contacts[0].contact_id}) }}"
       class="civicase__contact-avatar crm_notification-badge"
       ng-class="{
