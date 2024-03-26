@@ -14,8 +14,8 @@
     <url desc="Support">https://github.com/compucorp/uk.co.compucorp.civicase/issues</url>
     <url desc="Licensing">http://www.gnu.org/licenses/agpl-3.0.html</url>
   </urls>
-  <releaseDate>2023-11-02</releaseDate>
-  <version>3.1.2-agileware</version>
+  <releaseDate>2024-03-26</releaseDate>
+  <version>3.1.3-agileware</version>
   <develStage>stable</develStage>
   <compatibility>
     <ver>5.51</ver>
@@ -27,7 +27,4 @@
   <civix>
     <namespace>CRM/Civicase</namespace>
   </civix>
-  <requires>
-    <ext>org.civicrm.shoreditch</ext>
-  </requires>
 </extension>
