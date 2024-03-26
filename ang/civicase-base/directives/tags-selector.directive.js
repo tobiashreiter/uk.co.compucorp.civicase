@@ -80,6 +80,7 @@
 
       _.each(filteredTags, function (tag) {
         tag.text = tag.name;
+        tag.disabled = !isTruthy(tag.is_selectable);
         returnArray.push(tag);
         tag.indentationLevel = level;
         returnArray = returnArray.concat(prepareGenericTags(tags, tag.id, level + 1));
