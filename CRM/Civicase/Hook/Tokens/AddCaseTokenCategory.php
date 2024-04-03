@@ -1,9 +1,24 @@
 <?php
 
+use CRM_Civicase_Hook_Helper_CaseTypeCategory as CaseTypeCategoryHelper;
+
 /**
  * Add Case token category class.
  */
 class CRM_Civicase_Hook_Tokens_AddCaseTokenCategory {
+
+  const TOKEN_KEY = 'case_cf';
+
+  /**
+   * CRM_Civicase_Hook_Tokens_AddCaseTokenCategory constructor.
+   *
+   * @param CRM_Civicase_Service_CaseCustomFieldsProvider $caseCustomFieldsService
+   *   Service for fetching contact custom fields.
+   */
+  public function __construct(
+    private CRM_Civicase_Service_CaseCustomFieldsProvider $caseCustomFieldsService) {
+    $this->caseCustomFieldsService = $caseCustomFieldsService;
+  }
 
   /**
    * Sets Case Token Category.
@@ -40,7 +55,10 @@ class CRM_Civicase_Hook_Tokens_AddCaseTokenCategory {
       return $tokens['case_cf'] = [];
     }
 
-    $tokens['case_cf'][''] = '';
+    foreach ($this->caseCustomFieldsService->get() as $key => $field) {
+      $tokens[self::TOKEN_KEY]['case_cf.' . $key] =
+        CaseTypeCategoryHelper::translate(ucwords(str_replace("_", " ", $field)));
+    }
   }
 
   /**
