@@ -1,6 +1,6 @@
 .civicase__case-list-table-container {
   border-left: 1px solid $gray-light;
-  margin-left: $case-card-width;
+  /* margin-left: $case-card-width; */
   overflow-x: auto;
   overflow-y: visible;
 }
@@ -38,7 +38,7 @@
   th:first-child {
     background: $gray-lighter;
     left: 0;
-    position: absolute;
+    /* position: absolute; */
     width: $case-card-width;
   }
 
@@ -65,7 +65,7 @@
       background: $crm-white;
       left: 0;
       padding: 0;
-      position: absolute;
+      /* position: absolute; */
       width: $case-card-width;
       z-index: 1;
     }

@@ -31,7 +31,7 @@
           </div>
           <!-- End - Attachments -->
           <!-- Stars -->
-          <a ng-click="toggleActivityStar($event, activity)" href ng-if="activity.is_star" title="{{ activity.is_star === '0' ? ts('Add star') : ts('Unstar') }}" class="civicase__activity-star__container">
+          <a ng-click="toggleActivityStar($event, activity)" href ng-if="activity.is_star" aria-label="Click to {{ activity.is_star === '0' ? ts('Add star') : ts('Unstar') }}" title="{{ activity.is_star === '0' ? ts('Add star') : ts('Unstar') }}" class="civicase__activity-star__container">
             <i ng-if="activity.is_star === '0'" class="civicase__activity-star material-icons">star_border</i>
             <i ng-if="activity.is_star === '1'" class="civicase__activity-star active material-icons">star</i>
           </a>

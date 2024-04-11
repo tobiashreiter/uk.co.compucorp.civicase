@@ -10,11 +10,13 @@
         class="form-control civicase__case-filter__input"
         ng-model="keyword"
         ng-change="doSearchIfNotExpanded()"
+        aria-label="Enter keyword to search collection titles"
         placeholder="Enter collection title..."
       />
       <input
         class="form-control civicase__case-filter__input"
         ng-list
+        aria-label="Press spacebar to choose collection type"
         crm-ui-select="{
           allowClear: true,
           multiple: true,
@@ -26,6 +28,7 @@
       />
       <input
         class="form-control civicase__case-filter__input"
+        aria-label="Press spacebar to choose collection status"
         ng-list crm-ui-select="{
           allowClear: true,
           multiple: true,
@@ -37,6 +40,7 @@
       />
       <input
         class="form-control civicase__case-filter__input"
+        aria-label="Press spacebar to choose collector"
         ng-list
         crm-ui-select="{
           allowClear: true,

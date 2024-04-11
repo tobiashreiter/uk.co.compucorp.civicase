@@ -1,9 +1,12 @@
 <div class="panel-header">
   <div ng-if="isMainContentVisible()" class="civicase__case-header">
     <div crm-ui-debug="item"></div>
+    <!-- We don't really want to show the side display of contacts, since we narrow it down to just the one -->
+    <!-- 
     <button class="civicase__case-header__expand_button" ng-click="focusToggle()">
       <i class="material-icons">keyboard_arrow_{{isFocused ? 'right' : 'left'}}</i>
     </button>
+     -->
     <div class="civicase__case-header__content">
       <div class="civicase__case-header__content__first-row">
         <i

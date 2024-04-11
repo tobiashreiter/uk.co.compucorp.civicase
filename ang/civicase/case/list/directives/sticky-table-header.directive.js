@@ -33,7 +33,7 @@
             }
 
             function unAffixElementExtras() {
-                $element.find('th:first').css('position', 'absolute');
+                // $element.find('th:first').css('position', 'absolute');
             }
 
             function affixElement() {

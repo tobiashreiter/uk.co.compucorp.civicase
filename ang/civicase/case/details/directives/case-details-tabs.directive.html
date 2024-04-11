@@ -7,7 +7,9 @@
       <li ng-repeat="tab in tabs" ng-class="{active: activeTab === tab.name}">
         <a href ng-click="selectTab(tab.name)">
           {{ tab.label }}
+          <!-- 
           <span class="sr-only" ng-if="activeTab === tab.name">{{ ts('Current') }}</span>
+           -->
         </a>
       </li>
       <li class="pull-right" civicase-dropdown>

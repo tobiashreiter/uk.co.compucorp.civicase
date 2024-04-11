@@ -109,9 +109,16 @@
      * Broadcast an event to clear all filters and focus on a specific case.
      */
     function clearAllFiltersToLoadSpecificCase () {
-      $rootScope.$broadcast('civicase::case-details::clear-filter-and-focus-specific-case', {
-        caseId: $scope.viewingCaseId
-      });
+      if ($scope.isFocused !== true ) {
+          $rootScope.$broadcast('civicase::case-details::clear-filter-and-focus-specific-case', {
+            caseId: $scope.viewingCaseId
+          });
+      }
+      else {
+          $rootScope.$broadcast('civicase::case-details::clear-filter-and-focus-specific-case', {
+            caseId: ''
+          });
+      }
     }
 
     /**

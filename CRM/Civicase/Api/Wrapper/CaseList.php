@@ -59,12 +59,6 @@ class CRM_Civicase_Api_Wrapper_CaseList implements API_Wrapper {
           'sort' => 'modified_date',
           'display_type' => 'date',
         ],
-        [
-          'name' => 'myRole',
-          'label' => ts('My Role'),
-          'sort' => 'my_role.label_b_a',
-          'display_type' => 'multiple_values',
-        ],
       ],
     ];
   }

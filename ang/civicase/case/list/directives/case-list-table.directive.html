@@ -1,10 +1,12 @@
 <div crm-ui-debug="selectedCases"></div>
 <div class="civicase__case-list" ng-class="{'civicase__case-list--summary': viewingCase}">
+  <!-- 
   <civicase-bulk-actions-message
     selected-items="selectedCases.length" total-count="totalCount"
     show-checkboxes="showCheckboxes"
     ng-hide="viewingCase">
   </civicase-bulk-actions-message>
+   -->
   <div ng-show="viewingCase"
     class="civicase__case-list-column--first--detached"
     ng-include="'~/civicase/case/list/directives/case-list-table-first-column-header.html'">
@@ -69,9 +71,9 @@
               <span ng-switch-when="contact_reference">
               
               
-	            <a href="#/case/list?cf=%7B%22case_manager%22:{{ item[header.name].contact_id }},%22case_type_category%22:%221%22%7D">
+                <a href="#/case/list?cf=%7B%22case_manager%22:{{ item[header.name].contact_id }},%22case_type_category%22:%221%22%7D">
                     {{ item[header.name].display_name }}
-	            </a>
+                </a>
               </span>
               <span ng-switch-when="date">{{ CRM.utils.formatDate(item[header.name]) }}</span>
               <span ng-switch-when="multiple_values">{{ item[header.name].join(', ') }}</span>

@@ -185,7 +185,7 @@
       customClass: getDayCustomClass,
       formatDay: 'd',
       showWeeks: false,
-      startingDay: 1
+      startingDay: 0
     };
 
     $scope.onDateSelected = onDateSelected;

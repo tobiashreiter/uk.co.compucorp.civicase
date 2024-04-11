@@ -32,7 +32,7 @@ class CRM_Civicase_Hook_BuildForm_HandleDraftActivities {
       return;
     }
 
-    $this->addSaveDraftButton($form, $formName);
+    //$this->addSaveDraftButton($form, $formName);
   }
 
   /**
