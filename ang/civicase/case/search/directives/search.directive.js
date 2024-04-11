@@ -48,8 +48,8 @@
     $scope.caseRelationshipOptions = caseRelationshipConfig;
     $scope.caseStatusOptions = _.map(caseStatuses, mapSelectOptions);
     $scope.caseCollectorOptions = _.map(collectors, mapCollectors);
-    var allCollectionOption = {id: '', text: 'All Collectors'};
-    $scope.caseCollectorOptions.unshift(allCollectionOption);
+    var allCollectorsOption = {id: '', text: 'All Collectors'};
+    $scope.caseCollectorOptions.unshift(allCollectorsOption);
     $scope.caseTypeOptions = [];
     $scope.checkPerm = CRM.checkPerm;
     $scope.customGroups = CustomSearchField.getAll();
