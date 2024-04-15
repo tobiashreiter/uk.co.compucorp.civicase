@@ -16,7 +16,8 @@ class CRM_Civicase_Hook_Tokens_AddCaseTokenCategory {
    *   Service for fetching contact custom fields.
    */
   public function __construct(
-    private CRM_Civicase_Service_CaseCustomFieldsProvider $caseCustomFieldsService) {
+    private CRM_Civicase_Service_CaseCustomFieldsProvider $caseCustomFieldsService,
+  ) {
     $this->caseCustomFieldsService = $caseCustomFieldsService;
   }
 

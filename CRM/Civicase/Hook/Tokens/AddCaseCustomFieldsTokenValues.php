@@ -68,7 +68,7 @@ class CRM_Civicase_Hook_Tokens_AddCaseCustomFieldsTokenValues {
    * Detects the token activity is triggered by webform.
    */
   private static function isWebform() {
-    return isset($_POST['form_id']) && stripos($_POST['form_id'], 'webform_client_form_');
+    return isset($_POST['form_id']) && stripos($_POST['form_id'], 'webform_client_form_') !== FALSE;
   }
 
 }
