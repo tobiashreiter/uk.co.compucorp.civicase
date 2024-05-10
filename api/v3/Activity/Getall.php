@@ -80,6 +80,10 @@ function civicrm_api3_activity_getall(array $params) {
     if (!empty($activityIdsToFetchContactsFor[$row['id']])) {
       $row = array_merge($activityIdsToFetchContactsFor[$row['id']], $row);
     }
+
+    if (!empty($row['activity_date_time'])) {
+      $row['formatted_activity_date_time'] = CRM_Utils_Date::customFormat($row['activity_date_time'], Civi::settings()->get('civiCaseActivityDateformat') ?? '%d %b %Y');
+    }
   }
 
   return $result;

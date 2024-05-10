@@ -156,6 +156,7 @@ function civicase_civicrm_buildForm($formName, &$form) {
     new CRM_Civicase_Hook_BuildForm_AttachQuotationToInvoiceMail(),
     new CRM_Civicase_Hook_BuildForm_RefreshInvoiceListOnUpdate(),
     new CRM_Civicase_Hook_BuildForm_AddCaseActivityDateFormatToDateSettings(),
+    new CRM_Civicase_Hook_BuildForm_FormatCaseActivityDateFormat(),
   ];
 
   foreach ($hooks as $hook) {
