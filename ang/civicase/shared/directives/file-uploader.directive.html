@@ -20,9 +20,9 @@
           <input type="text" class="form-control" id="uploadSubject" required placeholder="" ng-model="activity.subject"/>
         </div>
         <div class="row">
-          <div class="form-group col-md-4 civicase__ui-range">
+          <div class="form-group col-md-4 civicase__ui-range date_range">
             <div><label for="receivedDate">{{ts('Received Date')}}</label></div>
-            <input  id="receivedDate" class="form-control" crm-ui-datepicker="{time: false}" ng-model="activity.activity_date_time" placeholder=""/>
+            <input  id="receivedDate" class="form-control" crm-ui-datepicker="{time: true}" ng-model="activity.activity_date_time" placeholder=""/>
           </div>
         </div>
         <div class="row">
@@ -66,3 +66,12 @@
     </div>
   </fieldset>
 </form>
+
+<style>
+  .date_range > .crm-form-date-wrapper {
+    display: flex !important;
+  }
+  .date_range.civicase__ui-range .crm-form-date {
+    width: 100% !important;
+  }
+</style>
