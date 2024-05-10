@@ -155,6 +155,7 @@ function civicase_civicrm_buildForm($formName, &$form) {
     new CRM_Civicase_Hook_BuildForm_AddEntityReferenceToCustomField(),
     new CRM_Civicase_Hook_BuildForm_AttachQuotationToInvoiceMail(),
     new CRM_Civicase_Hook_BuildForm_RefreshInvoiceListOnUpdate(),
+    new CRM_Civicase_Hook_BuildForm_AddCaseActivityDateFormatToDateSettings(),
   ];
 
   foreach ($hooks as $hook) {
@@ -304,6 +305,7 @@ function civicase_civicrm_postProcess($formName, &$form) {
     new CRM_Civicase_Hook_PostProcess_SaveCaseCategoryCustomFields(),
     new CRM_Civicase_Hook_PostProcess_SaveCaseCategoryFeature(),
     new CRM_Civicase_Hook_PostProcess_SaveQuotationsNotesSettings(),
+    new CRM_Civicase_Hook_PostProcess_SaveCaseActivityDateFormat(),
   ];
 
   foreach ($hooks as $hook) {
