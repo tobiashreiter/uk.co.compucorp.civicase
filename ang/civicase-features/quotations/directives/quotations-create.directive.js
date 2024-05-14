@@ -313,7 +313,7 @@
         return;
       }
 
-      item.subtotal_amount = item.unit_price * item.quantity * ((100 - item.discounted_percentage) / 100) || 0;
+      item.subtotal_amount = roundTo(item.unit_price * item.quantity * ((100 - item.discounted_percentage) / 100) || 0, 2);
       $scope.$emit('totalChange');
       validateProductPrice(index);
     }
