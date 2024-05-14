@@ -1,13 +1,15 @@
 (function ($, _) {
   const waitForElement = function ($, elementPath, callBack) {
-    (new window.MutationObserver(function () {
-      callBack($, $(elementPath));
-    })).observe(document.querySelector(elementPath), {
-      attributes: true
-    });
+    window.setTimeout(function () {
+      if ($(elementPath).length) {
+        callBack($, $(elementPath));
+      } else {
+        window.waitForElement($, elementPath, callBack);
+      }
+    }, 500);
   };
 
-  $(document).one('crmLoad', function () {
+  $(document).one('crmLoad', async function () {
     const params = CRM.vars['uk.co.compucorp.civicase'];
     const salesOrderId = params.sales_order;
     const salesOrderStatusId = params.sales_order_status_id;
@@ -29,6 +31,9 @@
     }];
 
     if (Array.isArray(lineItems)) {
+      CRM.$.blockUI();
+      CRM.$('form#Contribution').css('visibility', 'hidden');
+      await new Promise(resolve => setTimeout(resolve, 2000));
       CRM.api4(apiRequest).then(function (batch) {
         const caseSalesOrder = batch.caseSalesOrders[0];
 
@@ -37,7 +42,6 @@
         });
 
         $('#total_amount').val(0);
-        $('#lineitem-add-block').show().removeClass('hiddenElement');
         $('#contribution_status_id').val(batch.optionValues[0].value);
         $('#source').val(`Quotation ${caseSalesOrder.id}`).trigger('change');
         $('#contact_id').select2('val', caseSalesOrder.client_id).trigger('change');
@@ -52,6 +56,9 @@
           $(`[name^=${caseCustomField}_]`).val(caseSalesOrder.case_id).trigger('change');
           $(`[name^=${quotationCustomField}_]`).val(caseSalesOrder.id).trigger('change');
         });
+      }).finally(() => {
+        CRM.$.unblockUI();
+        CRM.$('form#Contribution').css('visibility', 'visible');
       });
     }
 
@@ -73,10 +80,9 @@
 
       const total = quantity * parseFloat(unitPrice);
 
-      $('input[id^="item_unit_price"]', row).val(unitPrice);
       $('input[id^="item_line_total"]', row).val(CRM.formatMoney(total, true));
-
       $('input[id^="item_tax_amount"]', row).val(taxAmount);
+      $('input[id^="item_unit_price"]', row).val(unitPrice).trigger('change');
 
       count++;
     }
