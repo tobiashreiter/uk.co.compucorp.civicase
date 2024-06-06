@@ -179,7 +179,8 @@
       $scope.activity = {
         case_id: $scope.ctx.id,
         activity_type_id: 'File Upload',
-        subject: ''
+        subject: '',
+        activity_date_time: moment().format('YYYY-MM-DD HH:MM:SS')
       };
     }
 
