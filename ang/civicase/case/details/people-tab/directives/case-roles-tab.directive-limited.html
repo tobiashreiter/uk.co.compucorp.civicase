@@ -1,5 +1,5 @@
 <span ng-repeat="role in roles.list track by $index">
-    <a href ng-if="containsSubstring(role.role,'case')" ng-click="replaceRoleOrClient(role)" aria-label="Re-assign Collection Manager:" title="Re-assign Collection Manager:">
+    <a href ng-if="containsSubstring(role.role,'case') || containsSubstring(role.role,'collector')" ng-click="replaceRoleOrClient(role)" aria-label="Re-assign Collection Manager:" title="Re-assign Collection Manager:">
         <i class="material-icons" aria-hidden="true">edit</i>
     </a>
 </span>
