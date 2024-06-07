@@ -4,7 +4,7 @@
 <div id="bootstrap-theme" class="clearfix civicase__container">
   <h1>
     <span ng-if="viewingCase == ''" crm-page-title>{{ ts('Manage Cases') }}</span>
-    <span ng-if="viewingCase !== ''" crm-page-title>{{  cases[0].subject }} Title</span>
+    <span ng-if="viewingCase !== ''" crm-page-title>{{  cases[0].subject }}</span>
   </h1>  <!-- Added for SEO purpose (This will be hidden through css) -->
 
     <a ng-if="viewingCase == ''" class="btn-primary btn civicase__case-list-add" href="/civicrm/case/add?reset=1&action=add&atype=13&context=standalone">

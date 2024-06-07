@@ -4,7 +4,16 @@
   module.directive('civicaseCaseRolesTab', function () {
     return {
       restrict: 'E',
-      templateUrl: '~/civicase/case/details/people-tab/directives/case-roles-tab.directive.html',
+      templateUrl: function(element, attrs) {
+        var templateBaseUrl = '~/civicase/case/details/people-tab/directives/case-roles-tab.directive';
+        
+        if (attrs.limited) {
+            templateBaseUrl += "-limited"
+        }
+        templateUrl = templateBaseUrl + ".html";
+        
+        return templateUrl;
+      },
       controller: civicaseCaseRolesTabController
     };
   });
@@ -75,6 +84,11 @@
     $scope.unassignRole = unassignRole;
     $scope.toggleInactiveRoles = toggleInactiveRoles;
 
+    $scope.containsSubstring = function(input, substring) {
+      if (!input || !substring) return false;
+      return input.toLowerCase().indexOf(substring.toLowerCase()) !== -1;
+    };
+    
     (function init () {
       $scope.$watch('item', function () {
         if (!$scope.item.definition) {
