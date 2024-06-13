@@ -1,8 +1,9 @@
 <?php
 
-use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
 use CRM_Case_BAO_CaseType as CaseType;
+use CRM_Civicase_ExtensionUtil as E;
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
+use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
 
 /**
  * Case Category Permissions hook.
@@ -57,6 +58,11 @@ class CRM_Civicase_Hook_Permissions_CaseCategory {
     $this->permissions[$caseCategoryPermissions['BASIC_CASE_CATEGORY_INFO']['name']] = [
       $caseCategoryPermissions['BASIC_CASE_CATEGORY_INFO']['label'],
       $caseCategoryPermissions['BASIC_CASE_CATEGORY_INFO']['description'],
+    ];
+
+    $this->permissions['Update cases with user role via webform'] = [
+      'label' => E::ts('Update cases via webform where user has a case role'),
+      'description' => E::ts('Users with this permission will be able to update a case via webform if their linked contact record has a current role on a case.'),
     ];
   }
 
