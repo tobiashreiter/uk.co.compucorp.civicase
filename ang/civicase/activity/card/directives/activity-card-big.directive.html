@@ -74,7 +74,7 @@
           </civicase-tooltip>
         </div>
         <!-- End - top section -->
-        <span class="civicase__activity-date" ng-class="{'civicase__overdue-activity-icon': activity.is_overdue}"><i class="material-icons">event</i>{{formatDate(activity.activity_date_time, 'DD MMM YYYY') }}</span>
+        <span class="civicase__activity-date" ng-class="{'civicase__overdue-activity-icon': activity.is_overdue}"><i class="material-icons">event</i>{{activity.formatted_activity_date_time}}</span>
         <!-- Subject -->
           <div class="civicase__activity-subject">{{ activity.subject }}</div>
         <!-- End - Subject -->

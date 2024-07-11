@@ -96,7 +96,7 @@
           <span
             class="civicase__activity-date"
             ng-class="{'civicase__overdue-activity-icon': activity.is_overdue}">
-            {{formatDate(activity.activity_date_time, 'DD MMM YYYY')}}
+            {{activity.formatted_activity_date_time}}
           </span>
           <!-- End - Activity Date -->
 

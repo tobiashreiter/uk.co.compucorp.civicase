@@ -189,6 +189,10 @@ class CRM_Civicase_Service_CaseRoleCreationPostProcess extends CRM_Civicase_Serv
    *   Activity Subject.
    */
   private function createCaseActivity($caseId, $activityType, $subject) {
+    if (empty(CRM_Core_Session::getLoggedInContactID())) {
+      return;
+    }
+
     civicrm_api3('Activity', 'create', [
       'case_id' => $caseId,
       'target_contact_id' => $this->getCaseClients($caseId),

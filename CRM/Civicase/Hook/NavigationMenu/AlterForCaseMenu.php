@@ -1,12 +1,13 @@
 <?php
 
-use CRM_Civicase_Service_CaseCategorySetting as CaseCategorySetting;
+use Civi\Api4\OptionGroup;
 use CRM_Civicase_Helper_CaseUrl as CaseUrlHelper;
+use CRM_Civicase_Service_CaseCategorySetting as CaseCategorySetting;
 
 /**
  * Class CRM_Civicase_Hook_Navigation_AlterForCaseMenu.
  */
-class CRM_Civicase_Hook_NavigationMenu_AlterForCaseMenu {
+class CRM_Civicase_Hook_NavigationMenu_AlterForCaseMenu extends CRM_Civicase_Hook_NavigationMenu_AbstractMenuAlter {
 
   /**
    * Case category Setting.
@@ -29,6 +30,7 @@ class CRM_Civicase_Hook_NavigationMenu_AlterForCaseMenu {
     $this->caseCategorySetting = new CaseCategorySetting();
     $this->rewriteCaseUrls($menu);
     $this->addCaseWebformUrl($menu);
+    $this->addCiviCaseInstanceMenu($menu);
   }
 
   /**
@@ -114,6 +116,53 @@ class CRM_Civicase_Hook_NavigationMenu_AlterForCaseMenu {
         $this->menuWalk($menu[$key]['child'], $callback);
       }
     }
+  }
+
+  /**
+   * Adds the civicase instance menu to the Adminsiter Civicase Menu.
+   *
+   * @param array $menu
+   *   Tree of menu items, per hook_civicrm_navigationMenu.
+   */
+  private function addCiviCaseInstanceMenu(array &$menu) {
+    $groupId = $this->getCaseTypeCategoryGroupId();
+    if (empty($groupId)) {
+      return;
+    }
+
+    // Find the Civicase menu.
+    $caseID = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_Navigation', 'CiviCase', 'id', 'name');
+    $administerID = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_Navigation', 'Administer', 'id', 'name');
+    $civicaseSettings = &$menu[$administerID]['child'][$caseID];
+
+    $desiredWeight = $this->moveMenuDown($civicaseSettings['child'], 'Case Types');
+
+    $menu[$administerID]['child'][$caseID]['child'][] = [
+      'attributes' => [
+        'label' => ts('CiviCase Instances'),
+        'name' => 'CiviCase Instances',
+        'url' => "civicrm/admin/options?gid=$groupId&reset=1",
+        'permission' => 'access all cases and activities',
+        'operator' => 'OR',
+        'separator' => 1,
+        'parentID' => $caseID,
+        'active' => 1,
+        'weight' => $desiredWeight,
+      ],
+    ];
+  }
+
+  /**
+   * Returnd the ID of the case type category option group.
+   */
+  private function getCaseTypeCategoryGroupId() {
+    $optionGroups = OptionGroup::get(FALSE)
+      ->addSelect('id')
+      ->addWhere('name', '=', 'case_type_categories')
+      ->setLimit(25)
+      ->execute();
+
+    return $optionGroups[0]["id"] ?? NULL;
   }
 
 }

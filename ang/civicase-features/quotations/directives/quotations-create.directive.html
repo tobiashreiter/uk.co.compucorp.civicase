@@ -1,0 +1,253 @@
+<div id="bootstrap-theme" class="civicase__container">
+  <h1 crm-page-title>{{ ts(isUpdate ? 'Edit Quotation':'Create Quotation') }}</h1>
+
+  <div class="panel panel-default" id="quotation__create">
+    <div class="panel-body">
+      <form name="quotationsForm" class="form-horizontal">
+        <div class="form-group">
+          <label class="col-sm-2 control-label required-mark">
+            Client
+          </label>
+          <div class="col-sm-5">
+            <input class="form-control"
+              ng-model="salesOrder.client_id"
+              ng-change="handleClientChange()"
+              placeholder="Client"
+              name="client"
+              crm-entityref="{
+                create: true,
+                entity: 'Contact',
+                select: { multiple: false, allowClear: true }
+              }"
+              required
+              ng-minlength="1"
+            />
+            <span class="crm-inline-error" ng-show="quotationsForm.client.$dirty && quotationsForm.client.$invalid && quotationsForm.client.$error.required">Client is required</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label required-mark">
+            Date
+          </label>
+          <div class="col-sm-5 civicase__ui-range">
+              <input
+                class="form-control" crm-ui-datepicker="{time: false}" id="sales_order_date"
+                ng-model="salesOrder.quotation_date" placeholder="Date" name="date" required/>
+                <span class="crm-inline-error" ng-show="quotationsForm.date.$dirty && quotationsForm.date.$invalid">Date is required</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label required-mark">
+            Description
+            <a crm-ui-help="hs({title:ts('Description'), id:'sales_order_description'})"></a>
+          </label>
+          <div class="col-sm-5">
+            <textarea name="description" ng-model="salesOrder.description" class="crm-form-wysiwyg" id="sales-order-description" required></textarea>
+            <span class="crm-inline-error" ng-show="quotationsForm.description.$dirty && quotationsForm.description.$invalid && quotationsForm.description.$error.required">Description is required</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">
+            Case/Opportunity
+          </label>
+          <div class="col-sm-5">
+            <input class="form-control"
+              ng-model="salesOrder.case_id"
+              placeholder="Case"
+              name="case"
+              crm-entityref="{
+                entity: 'Case',
+                select: { multiple: false, allowClear: true },
+                api: caseApiParam(),
+              }"
+              ng-disabled="defaultCaseId !== null"
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label required-mark">
+            {{ts('Owner')}}
+          </label>
+          <div class="col-sm-5">
+            <input class="form-control"
+              ng-model="salesOrder.owner_id"
+              name="owner"
+              placeholder="Owner"
+              crm-entityref="{
+                create: true,
+                entity: 'Contact',
+                select: { multiple: false, allowClear: true }
+              }"
+              required
+              ng-minlength="1"
+            />
+            <span class="crm-inline-error" ng-show="quotationsForm.owner.$dirty && quotationsForm.owner.$invalid && quotationsForm.owner.$error.required">Owner is required</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label required-mark">
+            {{ts('Status')}}
+          </label>
+          <div class="col-sm-5">
+            <select class="form-control"
+              ng-model="salesOrder.status_id"
+              name="status"
+              required
+            >
+              <option value="">{{ ts('Status') }}</option>
+              <option ng-repeat="stauts in salesOrderStatus track by $index" value="{{ salesOrderStatus[$index].value }}">{{ salesOrderStatus[$index].label }}</option>
+            </select>
+            <span class="crm-inline-error" ng-show="quotationsForm.status.$dirty && quotationsForm.status.$invalid && quotationsForm.status.$error.required">Status is required</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label required-mark">
+            {{ts('Currency')}}
+          </label>
+          <div class="col-sm-5">
+            <select class="form-control"
+              ng-model="salesOrder.currency"
+              ng-change="handleCurrencyChange()"
+              placeholder="Currency"
+              name="currency"
+              required
+            >
+            <option value="">{{ ts('Currency') }}</option>
+            <option ng-repeat="currency in currencyCodes track by $index" value="{{ currencyCodes[$index].name }}">{{ currencyCodes[$index].name }}</option>
+            </select>
+            <span class="crm-inline-error" ng-show="quotationsForm.currency.$dirty && quotationsForm.currency.$invalid && quotationsForm.currency.$error.required">Currency is required</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label required-mark">
+            {{ts('Item')}}
+          </label>
+          <div class="col-sm-10" style="overflow: scroll;">
+           <table class="table table-bordered">
+            <tr>
+              <th>Product</th>
+              <th class="required-mark">Item Description </th>
+              <th class="required-mark">Financial Type</th>
+              <th class="required-mark">Unit Price</th>
+              <th class="required-mark">Quantity</th>
+              <th>Discount %</th>
+              <th>Tax %</th>
+              <th>Subtotal</th>
+              <th></th>
+            </tr>
+            <tr ng-repeat="item in salesOrder.items track by $index">
+              <td style="max-width: 15em;">
+                <input class="form-control"
+                  style="width: 100%; min-width: 12em"
+                  ng-model="salesOrder.items[$index].product_id"
+                  ng-change="handleProductChange($index)"
+                  placeholder="Product"
+                  crm-entityref="{
+                    entity: 'Product',
+                    create: true,
+                    select: { allowClear: true, 'minimumInputLength': 0, create: true }
+                  }"
+                  ng-minlength="1"
+                />
+              </td>
+              <td>
+                <textarea type="text" name="item_description_{{$index}}" ng-model="salesOrder.items[$index].item_description" class="form-control" style="resize: none" required> </textarea>
+                <br />
+                <span class="crm-inline-error" ng-show="quotationsForm.item_description_{{$index}}.$dirty && quotationsForm.item_description_{{$index}}.$invalid && quotationsForm.item_description_{{$index}}.$error.required">Description is required</span>
+              </td>
+              <td style="max-width: 15em;">
+                <input class="form-control"
+                style="width: 100%"
+                  ng-model="salesOrder.items[$index].financial_type_id"
+                  ng-change="handleFinancialTypeChange($index)"
+                  name="financial_type_{{$index}}"
+                  placeholder="Financial Type"
+                  crm-entityref="{
+                    entity: 'Financial Type',
+                    select: { allowClear: true, 'minimumInputLength': 0 }
+                  }"
+                  required
+                  ng-minlength="1"
+                />
+                <br />
+                <span class="crm-inline-error" ng-show="quotationsForm.financial_type_{{$index}}.$dirty && quotationsForm.financial_type_{{$index}}.$invalid && quotationsForm.financial_type_{{$index}}.$error.required">Financial Type is required</span>
+              </td>
+              <td>
+                <div class="input-group" style="width: 10em">
+                  <span class="input-group-addon">{{ currencySymbol }}</span>
+                  <input type="number" min="0" name="unit_price_{{$index}}" required placeholder="Unit Price" ng-model="salesOrder.items[$index].unit_price" ng-change="calculateSubtotal($index)" class="form-control" step="0.01" />
+                </div>
+                <br />
+                <span class="crm-inline-error" ng-show="quotationsForm.unit_price_{{$index}}.$dirty && (quotationsForm.unit_price_{{$index}}.$invalid || quotationsForm.unit_price_{{$index}}.$error.required)">Unit price is invalid</span>
+              </td>
+              <td>
+                  <input type="number" min="0" name="quantity_{{$index}}" required placeholder="Quantity" ng-model="salesOrder.items[$index].quantity" class="form-control" ng-change="calculateSubtotal($index)" style="width: 6em" step="0.01" />
+                <br />
+                <span class="crm-inline-error" ng-show="quotationsForm.quantity_{{$index}}.$dirty && (quotationsForm.quantity_{{$index}}.$invalid || quotationsForm.quantity_{{$index}}.$error.required)">Quantity is invalid</span>
+              </td>
+              <td>
+                  <input type="number" min="0" max="100" name="discounted_percentage_{{$index}}" placeholder="Discount" ng-model="salesOrder.items[$index].discounted_percentage" class="form-control" ng-change="calculateSubtotal($index)" step="0.01"/>
+                  <br />
+                  <span class="crm-inline-error" ng-show="quotationsForm.discounted_percentage_{{$index}}.$dirty && (quotationsForm.discounted_percentage_{{$index}}.$invalid)">Discount is invalid</span>
+              </td>
+              <td>
+                {{ roundTo(salesOrder.items[$index].tax_rate, 2) }}
+              </td>
+              <td>{{ formatMoney(salesOrder.items[$index].subtotal_amount, salesOrder.currency) }}</td>
+              <td><a ng-if="salesOrder.items.length > 1" href ng-click="removeSalesOrderItem($index)" ><i class="fa fa-trash"></i></a></td>
+            </tr>
+           </table>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2"></label>
+          <div class="col-sm-3">
+            <button class="btn btn-secondary" ng-click="newSalesOrderItem()" type="button"><span><i class="fa fa-plus"></i></span>{{ ts(' Add New') }}</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2"></label>
+          <div class="col-sm-3">
+            <table class="table">
+              <tr><th>Total</th><td>{{ currencySymbol }} {{ formatMoney(salesOrder.total, salesOrder.currency) }}</td></tr>
+                <tr ng-repeat="i in taxRates">
+                  <th>Tax @ {{ i.rate }}%</th>
+                  <td>{{ currencySymbol }} {{ formatMoney(i.value, salesOrder.currency) }}</td>
+                </tr>
+              <tr><th>Grand Total</th><td>{{ currencySymbol }} {{formatMoney(salesOrder.grandTotal, salesOrder.currency)}}</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">
+            {{ts('Notes')}}
+            <a crm-ui-help="hs({title:ts('Notes'), id:'sales_order_notes'})"></a>
+          </label>
+          <div class="col-sm-5">
+            <textarea name="notes" rows="5" cols="20" style="width: 100%;" ng-model="salesOrder.notes"></textarea>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="panel-footer flex-between crm-submit-buttons">
+      <button type="button" class="btn btn-primary-outline cancel" history-back>
+        <span class="btn-icon"></span> {{ts('Cancel')}}</button>
+      <button type="submit" class="btn btn-primary" ng-disabled="submitInProgress" ng-click="saveQuotation()">
+        <span class="btn-icon"></span> {{ts('Save')}}</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  #quotation__create .table>tbody>tr>td {
+    padding: 10px 10px;
+  }
+  .flex-between {
+    display: flex;
+    justify-content: space-between;
+  }
+</style>

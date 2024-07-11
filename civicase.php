@@ -28,7 +28,7 @@ function civicase_civicrm_tabset($tabsetName, &$tabs, $context) {
 
   if ($useAng) {
     $loader = Civi::service('angularjs.loader');
-    $loader->addModules('civicase');
+    $loader->addModules(['civicase', 'civicase-features']);
   }
 }
 
@@ -79,15 +79,24 @@ function civicase_civicrm_config(&$config) {
     'hook_civicrm_buildAsset',
     ['CRM_Civicase_Event_Listener_AssetBuilder', 'addWordReplacements']
   );
-}
 
-/**
- * Implements hook_civicrm_xmlMenu().
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_xmlMenu
- */
-function civicase_civicrm_xmlMenu(&$files) {
-  _civicase_civix_civicrm_xmlMenu($files);
+  Civi::dispatcher()->addListener(
+    'civi.token.list',
+    ['CRM_Civicase_Hook_Tokens_SalesOrderTokens', 'listSalesOrderTokens']
+  );
+
+  Civi::dispatcher()->addListener(
+    'civi.token.eval',
+    ['CRM_Civicase_Hook_Tokens_SalesOrderTokens', 'evaluateSalesOrderTokens']
+  );
+
+  Civi::dispatcher()->addListener(
+    'civi.token.eval',
+    [
+      'CRM_Civicase_Hook_Tokens_AddCaseCustomFieldsTokenValues',
+      'evaluateCaseCustomFieldsTokens',
+    ]
+  );
 }
 
 /**
@@ -100,85 +109,12 @@ function civicase_civicrm_install() {
 }
 
 /**
- * Implements hook_civicrm_postInstall().
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_postInstall
- */
-function civicase_civicrm_postInstall() {
-  _civicase_civix_civicrm_postInstall();
-}
-
-/**
- * Implements hook_civicrm_uninstall().
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_uninstall
- */
-function civicase_civicrm_uninstall() {
-  _civicase_civix_civicrm_uninstall();
-}
-
-/**
  * Implements hook_civicrm_enable().
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_enable
  */
 function civicase_civicrm_enable() {
   _civicase_civix_civicrm_enable();
-}
-
-/**
- * Implements hook_civicrm_disable().
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_disable
- */
-function civicase_civicrm_disable() {
-  _civicase_civix_civicrm_disable();
-}
-
-/**
- * Implements hook_civicrm_upgrade().
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_upgrade
- */
-function civicase_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
-  return _civicase_civix_civicrm_upgrade($op, $queue);
-}
-
-/**
- * Implements hook_civicrm_managed().
- *
- * Generate a list of entities to create/deactivate/delete when this module
- * is installed, disabled, uninstalled.
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_managed
- */
-function civicase_civicrm_managed(&$entities) {
-  _civicase_civix_civicrm_managed($entities);
-}
-
-/**
- * Implements hook_civicrm_caseTypes().
- *
- * Generate a list of case-types.
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_caseTypes
- */
-function civicase_civicrm_caseTypes(&$caseTypes) {
-  _civicase_civix_civicrm_caseTypes($caseTypes);
-}
-
-/**
- * Implements hook_civicrm_angularModules().
- *
- * Generate a list of Angular modules.
- *
- * Note: This hook only runs in CiviCRM 4.5+. It may
- * use features only available in v4.6+.
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_caseTypes
- */
-function civicase_civicrm_angularModules(&$angularModules) {
-  _civicase_civix_civicrm_angularModules($angularModules);
 }
 
 /**
@@ -194,15 +130,6 @@ function civicase_civicrm_alterMenu(&$items) {
   $items['civicrm/activity/pdf/add']['ids_arguments']['json'][] = 'civicase_reload';
   $items['civicrm/case/cd/edit']['ids_arguments']['json'][] = 'civicase_reload';
   $items['civicrm/export/standalone']['ids_arguments']['json'][] = 'civicase_reload';
-}
-
-/**
- * Implements hook_civicrm_alterSettingsFolders().
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_alterSettingsFolders
- */
-function civicase_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
-  _civicase_civix_civicrm_alterSettingsFolders($metaDataFolders);
 }
 
 /**
@@ -230,6 +157,14 @@ function civicase_civicrm_buildForm($formName, &$form) {
     new CRM_Civicase_Hook_BuildForm_MakePdfFormSubjectRequired(),
     new CRM_Civicase_Hook_BuildForm_PdfFormButtonsLabelChange(),
     new CRM_Civicase_Hook_BuildForm_AddScriptToCreatePdfForm(),
+    new CRM_Civicase_Hook_BuildForm_AddCaseCategoryFeaturesField(),
+    new CRM_Civicase_Hook_BuildForm_AddQuotationsNotesToContributionSettings(),
+    new CRM_Civicase_Hook_BuildForm_AddSalesOrderLineItemsToContribution(),
+    new CRM_Civicase_Hook_BuildForm_AddEntityReferenceToCustomField(),
+    new CRM_Civicase_Hook_BuildForm_AttachQuotationToInvoiceMail(),
+    new CRM_Civicase_Hook_BuildForm_RefreshInvoiceListOnUpdate(),
+    new CRM_Civicase_Hook_BuildForm_AddCaseActivityDateFormatToDateSettings(),
+    new CRM_Civicase_Hook_BuildForm_FormatCaseActivityDateFormat(),
   ];
 
   foreach ($hooks as $hook) {
@@ -300,6 +235,22 @@ function civicase_civicrm_buildForm($formName, &$form) {
   if (!empty($_REQUEST['civicase_reload'])) {
     $form->civicase_reload = json_decode($_REQUEST['civicase_reload'], TRUE);
   }
+
+  $isSearchKit = CRM_Utils_Request::retrieve('sk', 'Positive');
+  if ($formName == 'CRM_Contribute_Form_Task_PDF' && $isSearchKit) {
+    $form->add('hidden', 'mail_task_from_sk', $isSearchKit);
+  }
+
+  if ($formName == 'CRM_Contribute_Form_Task_Invoice' && $isSearchKit) {
+    $form->add('hidden', 'mail_task_from_sk', $isSearchKit);
+    CRM_Core_Resources::singleton()->addScriptFile(
+      CRM_Civicase_ExtensionUtil::LONG_NAME,
+      'js/invoice-bulk-mail.js',
+    );
+    $form->setTitle(ts('Email Contribution Invoice'));
+    $ids = CRM_Utils_Request::retrieve('id', 'Positive', $form, FALSE);
+    $form->assign('totalSelectedContributions', count(explode(',', $ids)));
+  }
 }
 
 /**
@@ -310,6 +261,7 @@ function civicase_civicrm_validateForm($formName, &$fields, &$files, &$form, &$e
     new CRM_Civicase_Hook_ValidateForm_SaveActivityDraft(),
     new CRM_Civicase_Hook_ValidateForm_SaveCaseTypeCategory(),
     new CRM_Civicase_Hook_ValidateForm_SendBulkEmail(),
+    new CRM_Civicase_Hook_ValidateForm_RemoveEmptyTargetContactFromActivity(),
   ];
 
   foreach ($hooks as $hook) {
@@ -322,6 +274,8 @@ function civicase_civicrm_validateForm($formName, &$fields, &$files, &$form, &$e
  */
 function civicase_civicrm_post($op, $objectName, $objectId, &$objectRef) {
   $hooks = [
+    new CRM_Civicase_Hook_Post_CaseSalesOrderPayment(),
+    new CRM_Civicase_Hook_Post_CreateSalesOrderContribution(),
     new CRM_Civicase_Hook_Post_PopulateCaseCategoryForCaseType(),
     new CRM_Civicase_Hook_Post_CaseCategoryCustomGroupSaver(),
     new CRM_Civicase_Hook_Post_UpdateCaseTypeListForCaseCategoryCustomGroup(),
@@ -329,6 +283,19 @@ function civicase_civicrm_post($op, $objectName, $objectId, &$objectRef) {
 
   foreach ($hooks as $hook) {
     $hook->run($op, $objectName, $objectId, $objectRef);
+  }
+}
+
+/**
+ * Implements hook_civicrm_pre().
+ */
+function civicase_civicrm_pre($op, $objectName, $id, &$params) {
+  $hooks = [
+    new CRM_Civicase_Hook_Pre_DeleteSalesOrderContribution(),
+  ];
+
+  foreach ($hooks as $hook) {
+    $hook->run($op, $objectName, $id, $params);
   }
 }
 
@@ -345,6 +312,9 @@ function civicase_civicrm_postProcess($formName, &$form) {
     new CRM_Civicase_Hook_PostProcess_AttachEmailActivityToAllCases(),
     new CRM_Civicase_Hook_PostProcess_HandleDraftActivity(),
     new CRM_Civicase_Hook_PostProcess_SaveCaseCategoryCustomFields(),
+    new CRM_Civicase_Hook_PostProcess_SaveCaseCategoryFeature(),
+    new CRM_Civicase_Hook_PostProcess_SaveQuotationsNotesSettings(),
+    new CRM_Civicase_Hook_PostProcess_SaveCaseActivityDateFormat(),
   ];
 
   foreach ($hooks as $hook) {
@@ -354,6 +324,15 @@ function civicase_civicrm_postProcess($formName, &$form) {
   if (!empty($form->civicase_reload)) {
     $api = civicrm_api3('Case', 'getdetails', ['check_permissions' => 1] + $form->civicase_reload);
     $form->ajaxResponse['civicase_reload'] = $api['values'];
+  }
+
+  if (
+      in_array($formName, [
+        'CRM_Contribute_Form_Task_Invoice', 'CRM_Contribute_Form_Task_PDF',
+      ])
+      && !empty($form->getVar('_submitValues')['mail_task_from_sk'])
+    ) {
+    CRM_Utils_System::redirect($_SERVER['HTTP_REFERER']);
   }
 }
 
@@ -403,9 +382,10 @@ function civicase_civicrm_alterAPIPermissions($entity, $action, &$params, &$perm
 function civicase_civicrm_tokens(&$tokens) {
   $contactFieldsService = new CRM_Civicase_Service_ContactFieldsProvider();
   $contactCustomFieldsService = new CRM_Civicase_Service_ContactCustomFieldsProvider();
+  $caseCustomFieldsService = new CRM_Civicase_Service_CaseCustomFieldsProvider();
   $hooks = [
     new CRM_Civicase_Hook_Tokens_AddContactTokens($contactFieldsService, $contactCustomFieldsService),
-    new CRM_Civicase_Hook_Tokens_AddCaseTokenCategory(),
+    new CRM_Civicase_Hook_Tokens_AddCaseTokenCategory($caseCustomFieldsService),
   ];
   foreach ($hooks as &$hook) {
     $hook->run($tokens);
@@ -418,10 +398,8 @@ function civicase_civicrm_tokens(&$tokens) {
 function civicase_civicrm_tokenValues(&$values, $cids, $job = NULL, $tokens = [], $context = NULL) {
   $contactFieldsService = new CRM_Civicase_Service_ContactFieldsProvider();
   $contactCustomFieldsService = new CRM_Civicase_Service_ContactCustomFieldsProvider();
-  $caseTokenValuesHelper = new CRM_Civicase_Hook_Tokens_Helper_CaseTokenValues();
   $hooks = [
     new CRM_Civicase_Hook_Tokens_AddContactTokensValues($contactFieldsService, $contactCustomFieldsService),
-    new CRM_Civicase_Hook_Tokens_AddCaseCustomFieldsTokenValues($caseTokenValuesHelper),
   ];
   foreach ($hooks as &$hook) {
     $hook->run($values, $cids, $job, $tokens, $context);
@@ -461,6 +439,7 @@ function civicase_civicrm_check(&$messages) {
 function civicase_civicrm_navigationMenu(&$menu) {
   $hooks = [
     new CRM_Civicase_Hook_NavigationMenu_AlterForCaseMenu(),
+    new CRM_Civicase_Hook_NavigationMenu_CaseInstanceFeaturesMenu(),
   ];
 
   foreach ($hooks as $hook) {
@@ -489,7 +468,6 @@ function civicase_civicrm_selectWhereClause($entity, &$clauses) {
  * Implements hook_civicrm_entityTypes().
  */
 function civicase_civicrm_entityTypes(&$entityTypes) {
-  _civicase_civix_civicrm_entityTypes($entityTypes);
   _civicase_add_case_category_case_type_entity($entityTypes);
 }
 
@@ -593,9 +571,64 @@ function _civicase_add_case_category_case_type_entity(array &$entityTypes) {
 function civicase_civicrm_alterMailParams(&$params, $context) {
   $hooks = [
     new CRM_Civicase_Hook_alterMailParams_SubjectCaseTypeCategoryProcessor(),
+    new CRM_Civicase_Hook_alterMailParams_AttachQuotation(),
   ];
 
   foreach ($hooks as &$hook) {
     $hook->run($params, $context);
+  }
+}
+
+/**
+ * Implements hook_civicrm_searchKitTasks().
+ */
+function civicase_civicrm_searchKitTasks(array &$tasks, bool $checkPermissions, ?int $userID) {
+  if (empty($tasks['CaseSalesOrder'])) {
+    return;
+  }
+
+  $actions = [];
+
+  if (!empty($tasks['CaseSalesOrder']['delete'])) {
+    $actions['delete'] = $tasks['CaseSalesOrder']['delete'];
+    $actions['delete']['title'] = 'Delete Quotation(s)';
+  }
+
+  $actions['add_discount'] = [
+    'module' => 'civicase-features',
+    'icon' => 'fa-percent',
+    'title' => ts('Add Discount'),
+    'uiDialog' => ['templateUrl' => '~/civicase-features/quotations/directives/quotations-discount.directive.html'],
+  ];
+
+  $actions['create_contribution'] = [
+    'module' => 'civicase-features',
+    'icon'  => 'fa-credit-card',
+    'title' => ts('Create Contribution(s)'),
+    'uiDialog' => ['templateUrl' => '~/civicase-features/quotations/directives/quotations-contribution-bulk.directive.html'],
+  ];
+
+  $tasks['CaseSalesOrder'] = $actions;
+
+}
+
+/**
+ * Implements hook_civicrm_searchTasks().
+ */
+function civicase_civicrm_searchTasks(string $objectName, array &$tasks) {
+  if ($objectName === 'contribution') {
+    $tasks['bulk_invoice'] = [
+      'title' => ts('Send Invoice by email'),
+      'class' => 'CRM_Contribute_Form_Task_Invoice',
+      'icon' => 'fa-paper-plane-o',
+      'url' => 'civicrm/contribute/task?reset=1&task_item=invoice&sk=1',
+      'key' => 'invoice',
+    ];
+
+    foreach ($tasks as &$task) {
+      if ($task['class'] === 'CRM_Contribute_Form_Task_PDF') {
+        $task['url'] .= '&sk=1';
+      }
+    }
   }
 }

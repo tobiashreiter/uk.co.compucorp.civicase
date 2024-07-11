@@ -1,0 +1,22 @@
+<div id="bootstrap-theme" class="civicase__container">
+  <h1 crm-page-title>{{ ts('Quotation Invoices') }}</h1>
+
+  <a
+      ng-click="contributionURL()"
+      class="btn btn-primary civicase-workflow-list__new-button">
+      <i class="material-icons">add_circle</i>
+    {{:: ts('Create Invoice') }}
+    </a>
+
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <afsearch-quotation-invoices></afsearch-quotation-invoices>
+    </div>
+  </div>
+</div>
+<style>
+  #bootstrap-theme crm-search-display-table p.alert-info {
+    background-color: transparent;
+    border: none;
+  }
+</style>

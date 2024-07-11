@@ -1,18 +1,19 @@
 <?php
 
+use Civi\Test;
 use Civi\Test\HeadlessInterface;
 use Civi\Test\TransactionalInterface;
-use Civi\Test;
 use CRM_Civicase_Test_Fabricator_Case as CaseFabricator;
 use CRM_Civicase_Test_Fabricator_CaseType as CaseTypeFabricator;
 use CRM_Civicase_Test_Fabricator_Contact as ContactFabricator;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Runs tests on CaseContactLock BAO.
  *
  * @group headless
  */
-class CRM_Civicase_BAO_CaseContactLockTest extends PHPUnit_Framework_TestCase implements HeadlessInterface, TransactionalInterface {
+class CRM_Civicase_BAO_CaseContactLockTest extends TestCase implements HeadlessInterface, TransactionalInterface {
 
   /**
    * {@inheritdoc}
