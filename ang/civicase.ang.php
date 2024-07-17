@@ -27,7 +27,8 @@ return [
   'css' => [
     // At the moment, it's safe to include this multiple times.
     // deduped by resource manager.
-    'assetBuilder://visual-bundle.css',
+    // THR: this appears to throw an error, because it creates relUrl-assetBuilder resource format, which isn't supported?
+    // 'assetBuilder://visual-bundle.css',
     'css/*.css',
   ],
   'partials' => [
