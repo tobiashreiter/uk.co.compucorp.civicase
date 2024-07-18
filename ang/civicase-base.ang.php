@@ -9,11 +9,11 @@
  */
 
 use Civi\CCase\Utils as Utils;
-use CRM_Civicase_Helper_OptionValues as OptionValuesHelper;
+use CRM_Civicase_Helper_CaseUrl as CaseUrlHelper;
 use CRM_Civicase_Helper_GlobRecursive as GlobRecursive;
 use CRM_Civicase_Helper_NewCaseWebform as NewCaseWebform;
+use CRM_Civicase_Helper_OptionValues as OptionValuesHelper;
 use CRM_Civicase_Service_CaseCategoryCustomFieldsSetting as CaseCategoryCustomFieldsSetting;
-use CRM_Civicase_Helper_CaseUrl as CaseUrlHelper;
 
 [$caseCategoryId, $caseCategoryName] = CaseUrlHelper::getCategoryParamsFromUrl();
 
@@ -110,7 +110,7 @@ function expose_settings(array &$options, array $defaults) {
 function get_base_js_files() {
   return array_merge(
     [
-      'assetBuilder://visual-bundle.js',
+      Civi::service('asset_builder')->getUrl('visual-bundle.js'),
       'ang/civicase-base.js',
     ],
     GlobRecursive::getRelativeToExtension(
