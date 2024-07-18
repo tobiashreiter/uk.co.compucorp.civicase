@@ -8,12 +8,12 @@
  * http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_angularModules.
  */
 
-use CRM_Civicase_Helper_GlobRecursive as GlobRecursive;
-use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
-use CRM_Civicase_Helper_NewCaseWebform as NewCaseWebform;
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
-use CRM_Civicase_Hook_Permissions_ExportCasesAndReports as ExportCasesAndReports;
 use CRM_Civicase_Helper_CaseUrl as CaseUrlHelper;
+use CRM_Civicase_Helper_GlobRecursive as GlobRecursive;
+use CRM_Civicase_Helper_NewCaseWebform as NewCaseWebform;
+use CRM_Civicase_Hook_Permissions_ExportCasesAndReports as ExportCasesAndReports;
+use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
 
 load_resources();
 [$caseCategoryId, $caseCategoryName] = CaseUrlHelper::getCategoryParamsFromUrl();
@@ -96,7 +96,7 @@ function get_js_files() {
     [
       // At the moment, it's safe to include this multiple times.
       // deduped by resource manager.
-      'assetBuilder://visual-bundle.js',
+      Civi::service('asset_builder')->getUrl('visual-bundle.js'),
       'ang/civicase.js',
     ],
     GlobRecursive::getRelativeToExtension(
@@ -255,7 +255,7 @@ return [
   'css' => [
     // At the moment, it's safe to include this multiple times.
     // deduped by resource manager.
-    'assetBuilder://visual-bundle.css',
+    Civi::service('asset_builder')->getUrl('visual-bundle.css'),
     'css/*.css',
   ],
   'partials' => [
