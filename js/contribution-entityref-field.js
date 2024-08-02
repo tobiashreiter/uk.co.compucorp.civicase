@@ -11,7 +11,7 @@
     const entityRefCustomFields = Object.values(CRM.vars.civicase.entityRefCustomFields ?? {});
 
     /* eslint-disable no-undef */
-    waitForElement($, '#customData', function ($, elem) {
+    waitForElement($, '#customData_Contribution', function ($, elem) {
       entityRefCustomFields.forEach(field => {
         $(`[name^=${field.name}_]`)
           .attr('placeholder', field.placeholder)
