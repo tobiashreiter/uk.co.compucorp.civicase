@@ -1,8 +1,8 @@
 (function ($, _, caseEntityNames) {
   $(document).on('crmLoad', function () {
-    var $multipleRecordsCheckboxRow = $('#is_multiple_row');
+    var $multipleRecordsCheckboxRow = $('tr.field-is_multiple');
     var $styleSelectTabWithTableOption = $('select[name="style"] option[value="Tab with table"]');
-    var $extendSelect = $('#extends_0');
+    var $extendSelect = $('#extends');
 
     (function init () {
       hideShowElementsNotRelevantWhenExtendingCases();
