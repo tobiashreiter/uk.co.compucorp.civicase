@@ -634,3 +634,16 @@ function civicase_civicrm_searchTasks(string $objectName, array &$tasks) {
     }
   }
 }
+
+/**
+ * Implements hook_civicrm_alterContent().
+ */
+function civicase_civicrm_alterContent(&$content, $context, $tplName, &$object) {
+  if ($context == "form") {
+    if ($tplName == "CRM/Activity/Form/Activity.tpl") {
+      // See: templates/CRM/Core/Form/RecurringEntity.tpl#209
+      // Ensure submit buttons will validate the form properly.
+      $content = str_replace("#_qf_Activity_upload-top, #_qf_Activity_upload-bottom", "#_qf_Activity_upload-top, #_qf_Activity_upload-bottom, #_qf_Activity_submit-bottom, #_qf_Activity_submit-top, #_qf_Activity_refresh-top, #_qf_Activity_refresh-bottom", $content);
+    }
+  }
+}
