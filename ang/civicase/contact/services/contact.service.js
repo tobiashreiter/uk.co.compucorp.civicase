@@ -9,8 +9,9 @@
      */
     this.getCurrentContactID = function () {
       var url = new URL(window.location.href);
+      var userIdFromConfig = CRM.config.user_contact_id ? CRM.config.user_contact_id : CRM.config.cid;
 
-      return url.searchParams.get('cid') !== null ? url.searchParams.get('cid') : CRM.config.user_contact_id;
+      return url.searchParams.get('cid') !== null ? url.searchParams.get('cid') : userIdFromConfig;
     };
   });
 })(angular, CRM.$, CRM._, CRM);
