@@ -24,8 +24,8 @@
         </tr>
         <tr>
           <td><font size="1" align="center">
-          {if $sales_order.clientAddress.street_address }{$sales_order.clientAddress.street_address}{/if}
-          {if $sales_order.clientAddress.supplemental_address_1 }{$sales_order.clientAddress.supplemental_address_1}{/if}
+          {if !empty($sales_order.clientAddress.street_address) }{$sales_order.clientAddress.street_address}{/if}
+          {if !empty($sales_order.clientAddress.supplemental_address_1) }{$sales_order.clientAddress.supplemental_address_1}{/if}
           </font></td>
           <td><font size="1" align="right">{$sales_order.quotation_date|crmDate}</font></td>
           <td style="white-space: nowrap"><font size="1" align="right">
@@ -35,8 +35,8 @@
         </tr>
         <tr>
           <td><font size="1" align="center">
-          {if $sales_order.clientAddress.supplemental_address_2  }{$sales_order.clientAddress.supplemental_address_2 }{/if}
-          {if $sales_order.clientAddress.state }{$sales_order.clientAddress.state}{/if}
+          {if !empty($sales_order.clientAddress.supplemental_address_2)  }{$sales_order.clientAddress.supplemental_address_2 }{/if}
+          {if !empty($sales_order.clientAddress.state) }{$sales_order.clientAddress.state}{/if}
           </font></td>
           <td><b><font size="1" align="right">Quote Number</font></b></td>
           <td style="white-space: nowrap"><font size="1" align="right">
@@ -46,8 +46,8 @@
         </tr>
         <tr>
           <td><font size="1" align="center">
-          {if $sales_order.clientAddress.city  }{$sales_order.clientAddress.city }{/if}
-          {if $sales_order.clientAddress.postal_code }{$sales_order.clientAddress.postal_code}{/if}
+          {if !empty($sales_order.clientAddress.city)  }{$sales_order.clientAddress.city }{/if}
+          {if !empty($sales_order.clientAddress.postal_code) }{$sales_order.clientAddress.postal_code}{/if}
           </font></td>
           <td><font size="1" align="right">{$sales_order.id}</font></td>
           <td style="white-space: nowrap"><font size="1" align="right">
@@ -57,7 +57,7 @@
         </tr>
         <tr>
           <td><font size="1" align="center">
-          {if $sales_order.clientAddress.country  }{$sales_order.clientAddress.country}{/if}
+          {if !empty($sales_order.clientAddress.country)  }{$sales_order.clientAddress.country}{/if}
           </font></td>
           <td></td>
           <td style="white-space: nowrap"><font size="1" align="right">
