@@ -180,8 +180,10 @@
      * @returns {boolean} if the current logged in user is a case manager
      */
     function caseManagerIsMe () {
+      var userIdFromConfig = CRM.config.user_contact_id ? CRM.config.user_contact_id : CRM.config.cid;
+
       return !!$scope.filters.case_manager && $scope.filters.case_manager.length === 1 &&
-        parseInt($scope.filters.case_manager[0], 10) === CRM.config.user_contact_id;
+        parseInt($scope.filters.case_manager[0], 10) === userIdFromConfig;
     }
 
     /**
@@ -371,7 +373,8 @@
     function isFilterEqualToLoggedInUser (filterName) {
       var filterValue = $scope.filters[filterName];
       var isEqualToUserContactId = filterValue === 'user_contact_id';
-      var isSelectingLoggedInUser = _.isEqual(filterValue, [CRM.config.user_contact_id]);
+      var userIdFromConfig = CRM.config.user_contact_id ? CRM.config.user_contact_id : CRM.config.cid;
+      var isSelectingLoggedInUser = _.isEqual(filterValue, [userIdFromConfig]);
 
       return isEqualToUserContactId || isSelectingLoggedInUser;
     }
@@ -396,13 +399,15 @@
      * Watcher for relationshipType filter
      */
     function relationshipTypeWatcher () {
+      var userIdFromConfig = CRM.config.user_contact_id ? CRM.config.user_contact_id : CRM.config.cid;
+
       if ($scope.relationshipType) {
         $scope.relationshipType[0] === 'is_case_manager'
-          ? $scope.filters.case_manager = [CRM.config.user_contact_id]
+          ? $scope.filters.case_manager = [userIdFromConfig]
           : delete ($scope.filters.case_manager);
 
         if ($scope.relationshipType[0] === 'is_involved') {
-          $scope.filters.contact_involved = [CRM.config.user_contact_id];
+          $scope.filters.contact_involved = [userIdFromConfig];
           $scope.filters.has_activities_for_involved_contact =
             includeActivitiesForInvolvedContact ? 1 : 0;
         } else {
