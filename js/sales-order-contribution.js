@@ -1,12 +1,10 @@
 (function ($, _) {
   const waitForElement = function ($, elementPath, callBack) {
-    window.setTimeout(function () {
-      if ($(elementPath).length) {
-        callBack($, $(elementPath));
-      } else {
-        window.waitForElement($, elementPath, callBack);
-      }
-    }, 500);
+    (new window.MutationObserver(function () {
+      callBack($, $(elementPath));
+    })).observe(document.querySelector(elementPath), {
+      attributes: true
+    });
   };
 
   $(document).one('crmLoad', async function () {
@@ -18,7 +16,6 @@
     const lineItems = JSON.parse(params.line_items);
     const caseCustomField = params.case_custom_field;
     const quotationCustomField = params.quotation_custom_field;
-    let count = 0;
 
     const apiRequest = {};
     apiRequest.caseSalesOrders = ['CaseSalesOrder', 'get', {
@@ -37,14 +34,6 @@
       CRM.api4(apiRequest).then(function (batch) {
         const caseSalesOrder = batch.caseSalesOrders[0];
 
-        lineItems.forEach(lineItem => {
-          setTimeout(
-            () => addLineItem(lineItem.qty, lineItem.unit_price, lineItem.label, lineItem.financial_type_id, lineItem.tax_amount),
-            2000
-          );
-        });
-
-        $('input[id="total_amount"]').trigger('change');
         $('#contribution_status_id').val(batch.optionValues[0].value);
         $('#source').val(`Quotation ${caseSalesOrder.id}`).trigger('change');
         $('#contact_id').select2('val', caseSalesOrder.client_id).trigger('change');
@@ -62,31 +51,6 @@
         CRM.$.unblockUI();
         CRM.$('form#Contribution').css('visibility', 'visible');
       });
-    }
-
-    /**
-     * @param {number} quantity Item quantity
-     * @param {number} unitPrice Item unit price
-     * @param {string} description Item description
-     * @param {number} financialTypeId Item financial type
-     * @param {number|object} taxAmount Item tax amount
-     */
-    function addLineItem (quantity, unitPrice, description, financialTypeId, taxAmount) {
-      const row = $($(`tr#add-item-row-${count}`));
-      row.show().removeClass('hiddenElement');
-      quantity = +parseFloat(quantity).toFixed(10); // limit to 10 decimal places
-
-      $('input[id^="item_label"]', row).val(ts(description));
-      $('select[id^="item_financial_type_id"]', row).select2('val', financialTypeId);
-      $('input[id^="item_qty"]', row).val(quantity);
-
-      const total = quantity * parseFloat(unitPrice);
-
-      $('input[id^="item_line_total"]', row).val(CRM.formatMoney(total, true));
-      $('input[id^="item_tax_amount"]', row).val(taxAmount);
-      $('input[id^="item_unit_price"]', row).val(unitPrice).trigger('change');
-
-      count++;
     }
   });
 })(CRM.$, CRM._);
