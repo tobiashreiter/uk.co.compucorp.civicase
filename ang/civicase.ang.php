@@ -26,8 +26,6 @@ if (CRM_Utils_System::currentPath() !== 'civicrm/case/contact-case-tab') {
     if (!in_array($caseCategoryName, CaseCategoryHelper::getAccessibleCaseTypeCategories())) {
       throw new Exception('Access denied! You are not authorized to access this page.');
     }
-
-    CRM_Civicase_Hook_Helper_CaseTypeCategory::addWordReplacements($caseCategoryName);
   }
 }
 
