@@ -646,4 +646,12 @@ function civicase_civicrm_alterContent(&$content, $context, $tplName, &$object) 
       $content = str_replace("#_qf_Activity_upload-top, #_qf_Activity_upload-bottom", "#_qf_Activity_upload-top, #_qf_Activity_upload-bottom, #_qf_Activity_submit-bottom, #_qf_Activity_submit-top, #_qf_Activity_refresh-top, #_qf_Activity_refresh-bottom", $content);
     }
   }
+
+  $hooks = [
+    new CRM_Civicase_Hook_alterContent_AddSalesOrderLineToContribution($content, $context, $tplName),
+  ];
+
+  foreach ($hooks as $hook) {
+    $hook->run();
+  }
 }
