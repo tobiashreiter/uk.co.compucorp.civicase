@@ -67,6 +67,7 @@ AND    ac.case_id = %1
     $template->assign('caseId', $caseID);
     $template->assign('clientID', $clientID);
     $template->assign('activitySetName', $activitySetName);
+    $allActivityTypes = CRM_Case_PseudoConstant::caseActivityType();
 
     if (!empty($params['is_redact'])) {
       $report->_isRedact = TRUE;
@@ -96,10 +97,10 @@ AND    ac.case_id = %1
 
     if ($activitySetName && !empty($activitySetNames[$activitySetName])) {
       $timelineActivities = $report->getActivityTypes($xml, $activitySetName);
-      $activityTypes = !empty($timelineActivities) ? $timelineActivities : CRM_Case_XMLProcessor::allActivityTypes();
+      $activityTypes = !empty($timelineActivities) ? $timelineActivities : $allActivityTypes;
     }
     else {
-      $activityTypes = CRM_Case_XMLProcessor::allActivityTypes();
+      $activityTypes = $allActivityTypes;
     }
 
     if (!$activityTypes) {
