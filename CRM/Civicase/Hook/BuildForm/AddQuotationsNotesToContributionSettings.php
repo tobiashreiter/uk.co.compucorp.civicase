@@ -49,11 +49,13 @@ class CRM_Civicase_Hook_BuildForm_AddQuotationsNotesToContributionSettings {
         'weight' => 5,
         'description' => ts('Enter note or message to be displyaed on quotations'),
         'attributes' => ['rows' => 2, 'cols' => 40],
+        'name' => $fieldName,
+        'quick_form_type' => 'Element',
       ],
     ];
 
     $form->add('wysiwyg', $fieldName, $field[$fieldName]['title'], $field[$fieldName]['attributes']);
-    $form->assign('htmlFields', array_merge($form->get_template_vars('htmlFields'), $field));
+    $form->assign('fields', array_values(array_merge($form->getTemplateVars('fields'), $field)));
     $value = Civi::settings()->get($fieldName) ?? NULL;
     $form->setDefaults(array_merge($form->_defaultValues, [$fieldName => $value]));
 

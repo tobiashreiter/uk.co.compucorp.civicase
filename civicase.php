@@ -415,6 +415,7 @@ function civicase_civicrm_pageRun(&$page) {
     new CRM_Civicase_Hook_PageRun_AddCaseAngularPageResources(),
     new CRM_Civicase_Hook_PageRun_AddContactPageSummaryResources(),
     new CRM_Civicase_Hook_PageRun_CaseCategoryCustomGroupListing(),
+    new CRM_Civicase_Hook_PageRun_AddCaseTypeCategoryToCache(),
   ];
 
   foreach ($hooks as $hook) {
@@ -542,7 +543,9 @@ function civicase_civicrm_alterAngular(Manager $angular) {
  *   Entity types array.
  */
 function _civicase_add_case_category_case_type_entity(array &$entityTypes) {
-  $entityTypes['CRM_Case_DAO_CaseType']['fields_callback'][] = function ($class, &$fields) {
+  $caseTypeEntityName = isset($entityTypes['CRM_Case_DAO_CaseType']) ? 'CRM_Case_DAO_CaseType' : 'CaseType';
+
+  $entityTypes[$caseTypeEntityName]['fields_callback'][] = function ($class, &$fields) {
     $fields['case_type_category'] = [
       'name' => 'case_type_category',
       'type' => CRM_Utils_Type::T_INT,
@@ -630,5 +633,26 @@ function civicase_civicrm_searchTasks(string $objectName, array &$tasks) {
         $task['url'] .= '&sk=1';
       }
     }
+  }
+}
+
+/**
+ * Implements hook_civicrm_alterContent().
+ */
+function civicase_civicrm_alterContent(&$content, $context, $tplName, &$object) {
+  if ($context == "form") {
+    if ($tplName == "CRM/Activity/Form/Activity.tpl") {
+      // See: templates/CRM/Core/Form/RecurringEntity.tpl#209
+      // Ensure submit buttons will validate the form properly.
+      $content = str_replace("#_qf_Activity_upload-top, #_qf_Activity_upload-bottom", "#_qf_Activity_upload-top, #_qf_Activity_upload-bottom, #_qf_Activity_submit-bottom, #_qf_Activity_submit-top, #_qf_Activity_refresh-top, #_qf_Activity_refresh-bottom", $content);
+    }
+  }
+
+  $hooks = [
+    new CRM_Civicase_Hook_alterContent_AddSalesOrderLineToContribution($content, $context, $tplName),
+  ];
+
+  foreach ($hooks as $hook) {
+    $hook->run();
   }
 }
