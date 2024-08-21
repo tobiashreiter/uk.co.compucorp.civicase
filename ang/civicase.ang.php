@@ -11,8 +11,6 @@
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 use CRM_Civicase_Helper_CaseUrl as CaseUrlHelper;
 use CRM_Civicase_Helper_GlobRecursive as GlobRecursive;
-use CRM_Civicase_Helper_NewCaseWebform as NewCaseWebform;
-use CRM_Civicase_Hook_Permissions_ExportCasesAndReports as ExportCasesAndReports;
 use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
 
 load_resources();
@@ -38,8 +36,6 @@ if (CRM_Utils_System::currentPath() == 'civicrm/case/a') {
   CaseCategoryHelper::updateBreadcrumbs($caseCategoryId);
 }
 
-$options = [];
-
 $requires = [
   'crmAttachment',
   'crmUi',
@@ -53,9 +49,6 @@ $requires = [
   'civicase-base',
 ];
 $requires = CRM_Civicase_Hook_addDependentAngularModules::invoke($requires);
-
-set_case_actions($options, $caseCategoryPermissions);
-set_contact_tasks($options);
 
 /**
  * Loads Resources.
@@ -99,150 +92,6 @@ function get_js_files() {
   );
 }
 
-/**
- * Bulk actions for case list.
- *
- * We put this here so it can be modified by other extensions.
- */
-function set_case_actions(&$options, $caseCategoryPermissions) {
-  $options['caseActions'] = [
-    [
-      'title' => ts('Change Case Status'),
-      'action' => 'ChangeStatus',
-      'icon' => 'fa-pencil-square-o',
-      'is_write_action' => TRUE,
-    ],
-    [
-      'title' => ts('Edit Tags'),
-      'action' => 'EditTags',
-      'icon' => 'fa-tags',
-      'number' => 1,
-      'is_write_action' => TRUE,
-    ],
-    [
-      'title' => ts('Print Case'),
-      'action' => 'Print',
-      'number' => 1,
-      'icon' => 'fa-print',
-      'is_write_action' => FALSE,
-    ],
-    [
-      'title' => ts('Email - send now'),
-      'action' => 'Email',
-      'icon' => 'fa-envelope-o',
-      'is_write_action' => TRUE,
-    ],
-    [
-      'title' => ts('Print/Merge Document'),
-      'action' => 'PrintMerge',
-      'icon' => 'fa-file-pdf-o',
-      'is_write_action' => TRUE,
-    ],
-    [
-      'title' => ts('Link Cases'),
-      'action' => 'LinkCases',
-      'number' => 1,
-      'icon' => 'fa-link',
-      'is_write_action' => TRUE,
-    ],
-    [
-      'title' => ts('Link 2 Cases'),
-      'action' => 'LinkCases',
-      'number' => 2,
-      'icon' => 'fa-link',
-      'is_write_action' => TRUE,
-    ],
-  ];
-  if (CRM_Core_Permission::check('administer CiviCase')) {
-    $options['caseActions'][] = [
-      'title' => ts('Merge 2 Cases'),
-      'number' => 2,
-      'action' => 'MergeCases',
-      'icon' => 'fa-compress',
-      'is_write_action' => TRUE,
-    ];
-    $options['caseActions'][] = [
-      'title' => ts('Lock Case'),
-      'action' => 'LockCases',
-      'number' => 1,
-      'icon' => 'fa-lock',
-      'is_write_action' => TRUE,
-    ];
-  }
-  if (CRM_Core_Permission::check($caseCategoryPermissions['DELETE_IN_CASE_CATEGORY']['name'])) {
-    $options['caseActions'][] = [
-      'title' => ts('Delete Case'),
-      'action' => 'DeleteCases',
-      'icon' => 'fa-trash',
-      'is_write_action' => TRUE,
-    ];
-  }
-  if (CRM_Core_Permission::check(ExportCasesAndReports::PERMISSION_NAME)) {
-    $options['caseActions'][] = [
-      'title' => ts('Export Cases'),
-      'action' => 'ExportCases',
-      'icon' => 'fa-file-excel-o',
-      'is_write_action' => FALSE,
-    ];
-  }
-
-  add_webforms_case_action($options);
-}
-
-/**
- * Add webforms with cases attached to menu.
- */
-function add_webforms_case_action(&$options) {
-  $items = [];
-
-  $webformsToDisplay = Civi::settings()->get('civi_drupal_webforms');
-  if (isset($webformsToDisplay)) {
-    $allowedWebforms = [];
-    foreach ($webformsToDisplay as $webformNode) {
-      $allowedWebforms[] = $webformNode['nid'];
-    }
-    $webforms = civicrm_api3('Case', 'getwebforms');
-    if (isset($webforms['values'])) {
-      foreach ($webforms['values'] as $webform) {
-        if (!in_array($webform['nid'], $allowedWebforms)) {
-          continue;
-        }
-
-        $client = NewCaseWebform::getCaseWebformClientId($webform['nid']);
-
-        $items[] = [
-          'title' => $webform['title'],
-          'action' => 'GoToWebform',
-          'path' => $webform['path'],
-          'case_type_ids' => $webform['case_type_ids'],
-          'clientID' => $client,
-          'is_write_action' => FALSE,
-        ];
-      }
-      $options['caseActions'][] = [
-        'title' => ts('Webforms'),
-        'action' => 'Webforms',
-        'icon' => 'fa-file-text-o',
-        'items' => $items,
-        'is_write_action' => FALSE,
-      ];
-    }
-  }
-}
-
-/**
- * Sets contact tasks.
- */
-function set_contact_tasks(&$options) {
-  $contactTasks = CRM_Contact_Task::permissionedTaskTitles(CRM_Core_Permission::getPermission());
-  $options['contactTasks'] = [];
-  foreach (CRM_Contact_Task::$_tasks as $id => $value) {
-    if (isset($contactTasks[$id]) && isset($value['url'])) {
-      $options['contactTasks'][$id] = $value;
-    }
-  }
-}
-
 return [
   'js' => get_js_files(),
   'css' => [
@@ -254,7 +103,7 @@ return [
   'partials' => [
     'ang/civicase',
   ],
-  'settings' => $options,
+  'settings' => [],
   'requires' => $requires,
   'basePages' => [],
   'permissions' => [
@@ -266,4 +115,5 @@ return [
     'access CiviCRM',
     'access my cases and activities',
   ],
+  'settingsFactory' => ['CRM_Civicase_Settings', 'getAll'],
 ];
