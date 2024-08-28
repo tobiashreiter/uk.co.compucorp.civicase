@@ -73,7 +73,7 @@ class CRM_Civicase_APIHelpers_CustomValues {
       'custom_value' => [],
     ];
     foreach (array_keys($options['return']) as $r) {
-      list($type, $field) = explode('.', $r);
+      [$type, $field] = explode('.', $r);
       if (isset($toReturn[$type])) {
         $toReturn[$type][] = $field;
       }
@@ -103,7 +103,6 @@ class CRM_Civicase_APIHelpers_CustomValues {
         break;
 
       case 'Participant':
-        // Todo.
     }
     $treeParams = [
       'entityType' => $params['entity_type'],
