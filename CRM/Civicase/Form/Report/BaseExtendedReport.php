@@ -149,7 +149,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * This function is overridden because of a bug that does not allow
    * the custom fields to appear in the Filters tab in the base class.
    */
-  protected function addAggregateSelectorsToForm() {
+  protected function addAggregateSelectorsToForm(): void {
     if (!$this->isPivot) {
       return;
     }
@@ -307,19 +307,17 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    *   Prefix label.
    * @param string $prefix
    *   Prefix.
-   * @param array $customFieldMeta
-   *   Custom field meta data.
    *
    * @return mixed
    *   Custom field meta data.
    */
-  protected function getCustomFieldMetadata($field, $prefixLabel, $prefix = '', array $customFieldMeta = []) {
+  protected function getCustomFieldMetadata(array $field, string $prefixLabel, string $prefix = ''): array {
     $field = array_merge($field, [
       'name' => $field['column_name'],
       'title' => $prefixLabel . $field['label'],
       'dataType' => $field['data_type'],
       'htmlType' => $field['html_type'],
-      'operatorType' => $this->getOperatorType($this->getFieldType($field), [], []),
+      'operatorType' => $this->getOperatorType($this->getFieldType($field)),
       'is_fields' => TRUE,
       'is_filters' => TRUE,
       'is_group_bys' => FALSE,
@@ -378,7 +376,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * @param string $tableKey
    *   Table key.
    */
-  protected function addCustomTableToColumns(array $field, $currentTable, $prefix, $prefixLabel, $tableKey) {
+  protected function addCustomTableToColumns(array $field, string $currentTable, $prefix, $prefixLabel, $tableKey): void {
     $entity = $field['extends'];
     if (in_array($entity, ['Individual', 'Organization', 'Household'])) {
       $entity = 'Contact';
@@ -411,7 +409,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * @return array
    *   Available Joins.
    */
-  public function getAvailableJoins() {
+  protected function getAvailableJoins(): array {
     $availableJoins = parent::getAvailableJoins();
 
     $joins = [
@@ -438,7 +436,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * @param array $rows
    *   Result rows.
    */
-  public function alterRollupRows(array &$rows) {
+  protected function alterRollupRows(array &$rows): void {
     array_walk($rows, [$this, 'replaceNullRowValues']);
     if (count($rows) === 1) {
       // If the report only returns one row there is no rollup.
@@ -595,7 +593,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * @return string
    *   Report query.
    */
-  public function buildQuery($applyLimit = FALSE) {
+  public function buildQuery($applyLimit = TRUE): string {
     if (empty($this->_params)) {
       $this->_params = $this->controller->exportValues($this->_name);
     }
@@ -648,7 +646,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    * @return array
    *   Custom data.
    */
-  protected function getCustomDataDaos($extends) {
+  protected function getCustomDataDaos(array $extends): array {
     $extendsKey = implode(',', $extends);
     if (isset($this->customDataDAOs[$extendsKey])) {
       return $this->customDataDAOs[$extendsKey];
@@ -821,7 +819,7 @@ abstract class CRM_Civicase_Form_Report_BaseExtendedReport extends CRM_Civicase_
    *
    * Overridden to support custom data for multiple entities of the same type.
    */
-  public function extendedCustomDataFrom() {
+  public function extendedCustomDataFrom(): void {
     foreach ($this->getMetadataByType('metadata') as $prop) {
       $table = $prop['table_name'];
       if (empty($prop['extends']) || !$this->isCustomTableSelected($table)) {
@@ -867,7 +865,7 @@ LEFT JOIN civicrm_contact {$field['alias']} ON {$field['alias']}.id = {$this->_a
    * @param array $spec
    *   Specifications.
    */
-  public function addColumnAggregateSelect($fieldName, $dbAlias, array $spec) {
+  protected function addColumnAggregateSelect(string $fieldName, string $dbAlias, array $spec): void {
     if (empty($fieldName)) {
       $this->addAggregateTotal($fieldName);
       return;
@@ -1075,7 +1073,7 @@ LEFT JOIN civicrm_contact {$field['alias']} ON {$field['alias']}.id = {$this->_a
    * @return array
    *   Custom field options.
    */
-  protected function getCustomFieldOptions(array $spec) {
+  protected function getCustomFieldOptions(array $spec): array {
     $options = [];
     if (!empty($spec['options'])) {
       return $spec['options'];
@@ -1175,7 +1173,7 @@ LEFT JOIN civicrm_contact {$field['alias']} ON {$field['alias']}.id = {$this->_a
    *
    * @inheritDoc
    */
-  protected function buildColumns($specs, $tableName, $daoName = NULL, $tableAlias = NULL, $defaults = [], $options = []) {
+  protected function buildColumns($specs, $tableName, $daoName = NULL, $tableAlias = NULL, $defaults = [], $options = []): array {
 
     if (!$tableAlias) {
       $tableAlias = str_replace('civicrm_', '', $tableName);
@@ -1211,7 +1209,7 @@ LEFT JOIN civicrm_contact {$field['alias']} ON {$field['alias']}.id = {$this->_a
       }
 
       if (!isset($spec['operatorType'])) {
-        $spec['operatorType'] = $this->getOperatorType($spec['type'], $spec);
+        $spec['operatorType'] = $this->getOperatorType($spec['type']);
       }
       foreach (array_merge($types, ['fields']) as $type) {
         if (isset($options[$type]) && !empty($spec['is_' . $type])) {
@@ -1293,7 +1291,7 @@ LEFT JOIN civicrm_contact {$field['alias']} ON {$field['alias']}.id = {$this->_a
    *
    * @inheritDoc
    */
-  public function formatDisplay(&$rows, $pager = TRUE) {
+  public function formatDisplay(&$rows, $pager = TRUE): void {
     // Set pager based on if any limit was applied in the query.
     if ($pager) {
       $this->setPager();
@@ -1337,7 +1335,7 @@ LEFT JOIN civicrm_contact {$field['alias']} ON {$field['alias']}.id = {$this->_a
    *
    * @inheritDoc
    */
-  public function alterFromOptions($value, array &$row, $selectedField, $criteriaFieldName, array $specs) {
+  protected function alterFromOptions(?string $value, array $row, string $selectedField, string $criteriaFieldName, array $specs): string {
     if ($specs['data_type'] == 'ContactReference') {
       if (!empty($row[$selectedField]) && $row[$selectedField] !== 'NULL') {
         return CRM_Contact_BAO_Contact::displayName($row[$selectedField]);
@@ -1398,7 +1396,7 @@ LEFT JOIN civicrm_contact {$field['alias']} ON {$field['alias']}.id = {$this->_a
    * @return array
    *   Default values.
    */
-  public function setDefaultValues($freeze = TRUE) {
+  public function setDefaultValues($freeze = TRUE): array {
     parent::setDefaultValues();
     if (empty($this->_id)) {
       $this->_defaults['data_function'] = 'COUNT';
@@ -1467,7 +1465,7 @@ LEFT JOIN civicrm_contact {$field['alias']} ON {$field['alias']}.id = {$this->_a
    * @return string
    *   Template file name.
    */
-  public function getTemplateFileName() {
+  public function getTemplateFileName(): string {
     $defaultTpl = parent::getTemplateFileName();
 
     if (in_array($this->_outputMode, ['print', 'pdf'])) {
@@ -1534,7 +1532,7 @@ LEFT JOIN civicrm_contact {$field['alias']} ON {$field['alias']}.id = {$this->_a
    * This function is overridden so that we can a report class
    * can define additional extra filters and modify the where clause.
    */
-  public function storeWhereHavingClauseArray() {
+  public function storeWhereHavingClauseArray(): void {
     $filters = $this->getSelectedFilters();
     foreach ($filters as $filterName => $field) {
       if (!empty($field['pseudofield'])) {
@@ -1567,7 +1565,7 @@ LEFT JOIN civicrm_contact {$field['alias']} ON {$field['alias']}.id = {$this->_a
    * when more than one contact entity is joined to the report, the filter
    * fields can be organized and displayed per contact entity.
    */
-  public function addFilters() {
+  public function addFilters(): void {
     foreach (['filters', 'join_filters'] as $filterString) {
       $filters = $filterGroups = [];
       $filterExtendsContactGroup = [];
@@ -1771,7 +1769,7 @@ LEFT JOIN civicrm_contact {$field['alias']} ON {$field['alias']}.id = {$this->_a
    *
    * @inheritDoc
    */
-  public function setParams($params) {
+  public function setParams($params): void {
     if (empty($params)) {
       $this->_params = $params;
       return;
