@@ -142,7 +142,7 @@ class CRM_Civicase_Form_Report_Case_CaseWithActivityPivot extends CRM_Civicase_F
    * @return array
    *   From clauses.
    */
-  public function fromClauses() {
+  protected function fromClauses(): array {
     return [
       'contact_from_case',
       'activity_from_case',
