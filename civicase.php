@@ -415,7 +415,6 @@ function civicase_civicrm_pageRun(&$page) {
     new CRM_Civicase_Hook_PageRun_AddCaseAngularPageResources(),
     new CRM_Civicase_Hook_PageRun_AddContactPageSummaryResources(),
     new CRM_Civicase_Hook_PageRun_CaseCategoryCustomGroupListing(),
-    new CRM_Civicase_Hook_PageRun_AddCaseTypeCategoryToCache(),
   ];
 
   foreach ($hooks as $hook) {

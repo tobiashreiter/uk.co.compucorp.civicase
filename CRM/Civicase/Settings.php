@@ -1,12 +1,12 @@
 <?php
 
-use Civi\CCase\Utils as Utils;
 use CRM_Civicase_Helper_CaseUrl as CaseUrlHelper;
 use CRM_Civicase_Helper_NewCaseWebform as NewCaseWebform;
 use CRM_Civicase_Helper_OptionValues as OptionValuesHelper;
 use CRM_Civicase_Hook_Permissions_ExportCasesAndReports as ExportCasesAndReports;
 use CRM_Civicase_Service_CaseCategoryCustomFieldsSetting as CaseCategoryCustomFieldsSetting;
 use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
+use Civi\CCase\Utils as Utils;
 
 /**
  * Get a list of settings for angular pages.
@@ -28,6 +28,7 @@ class CRM_Civicase_Settings {
 
     [$caseCategoryId, $caseCategoryName] = CaseUrlHelper::getCategoryParamsFromUrl();
 
+    CRM_Civicase_Hook_Helper_CaseTypeCategory::addWordReplacements($caseCategoryName);
     $permissionService = new CaseCategoryPermission();
     $caseCategoryPermissions = $permissionService->get($caseCategoryName);
     $caseCategorySetting = new CRM_Civicase_Service_CaseCategorySetting();
