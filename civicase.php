@@ -647,6 +647,10 @@ function civicase_civicrm_alterContent(&$content, $context, $tplName, &$object) 
     }
   }
 
+  if ($context == "form" && $tplName == "CRM/Contact/Form/Task/PDF.tpl") {
+    $content = str_replace("showSaveDetails(\$('input[name=saveTemplate]', \$form)[0]);", "if (\$('input[name=saveTemplate]').length) { showSaveDetails(\$('input[name=saveTemplate]', \$form)[0]); }", $content);
+  }
+
   $hooks = [
     new CRM_Civicase_Hook_alterContent_AddSalesOrderLineToContribution($content, $context, $tplName),
   ];
