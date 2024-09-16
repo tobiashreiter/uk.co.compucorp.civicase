@@ -2827,7 +2827,14 @@ WHERE cg.extends IN ('" . implode("','", $extends) . "') AND
         break;
 
       case 'Link':
-        $retValue = CRM_Utils_System::formatWikiURL($value);
+        $items = explode(' ', trim($value), 2);
+        if (count($items) == 2) {
+          $title = $items[1];
+        }
+        else {
+          $title = $items[0];
+        }
+        $retValue = CRM_Utils_System::href($title, $items[0], NULL, FALSE);
         break;
 
       case 'File':
