@@ -53,7 +53,7 @@ function civicrm_api3_case_getrelations(array $params) {
 
   $relationships = Relationship::get(FALSE)
     ->addSelect('relationship_type_id', 'contact_id_a', 'contact_id_b')
-    ->addWhere('relationship_type.is_active', '=', TRUE)
+    ->addWhere('relationship_type_id.is_active', '=', TRUE)
     ->addWhere('is_active', '=', TRUE)
     ->addWhere('case_id', 'IS NULL');
 

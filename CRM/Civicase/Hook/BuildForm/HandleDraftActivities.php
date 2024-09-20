@@ -149,6 +149,10 @@ class CRM_Civicase_Hook_BuildForm_HandleDraftActivities {
         $form->setDefaults($draft);
       }
     }
+    $caseId = CRM_Utils_Request::retrieve('caseid', 'String');
+    if ($formName === self::PDF_LETTER_FORM_NAME && !empty($caseId)) {
+      $form->addElement('hidden', 'caseid', $caseId);
+    }
   }
 
   /**
