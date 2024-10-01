@@ -229,7 +229,7 @@ class CRM_Civicase_Hook_ValidateForm_SendBulkEmail {
    * @param array|int[] $contactIds
    *   Array with contact Ids.
    */
-  private function sendEmailForCase(CRM_Case_Form_Task_Email $form, int $caseId, array $contactIds) {
+  private function sendEmailForCase(CRM_Case_Form_Task_Email &$form, int $caseId, array $contactIds) {
     $_GET['caseid'] = $_REQUEST['caseid'] = $caseId;
     $form->_caseId = $caseId;
     $form->_contactIds = $contactIds;
@@ -246,7 +246,7 @@ class CRM_Civicase_Hook_ValidateForm_SendBulkEmail {
       }
     }
 
-    $data['values']['Email']['to'] = implode(',', $toContactEmails);
+    $data['values']['Email']['to'] = $form->_submitValues['to'] = implode(',', $toContactEmails);
 
     $form->submit($form->exportValues());
   }
