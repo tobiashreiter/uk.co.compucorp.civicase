@@ -52,7 +52,8 @@
 
         if ($('.civicase__features-filters-clear').length) {
           // Handle clear filter button.
-          $('.civicase__features-filters-clear').click(event => {
+          $('.civicase__features-filters-clear').off('click').click(event => {
+            CRM.$("input[id*='id']").select2('data', null)
             CRM.$('.civicase__features input, .civicase__features textarea').val('').change();
           });
         }
