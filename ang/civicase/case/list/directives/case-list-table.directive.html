@@ -62,11 +62,14 @@
                 >
                 </div>
               </span>
-              <span
+              <span 
                 ng-switch-when="status_badge" class="crm_notification-badge"
                 title="{{item.status}}"
                 style="background-color: {{ item.color }};">
-                {{ item.status }}
+                
+                <a href="#/case/list?cf=%7B%22status_id%22:[{{ item.status_id }}],%22case_type_category%22:%221%22%7D">
+                    {{ item.status }}
+                </a>
               </span>
               <span ng-switch-when="contact_reference">
               
