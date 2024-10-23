@@ -43,11 +43,11 @@
         $(`<input type="hidden" value="${salesOrderStatusId}" name="sales_order_status_id" />`).insertBefore('#source');
         $(' #totalAmountORaddLineitem, #totalAmountORPriceSet, #price_set_id, #choose-manual').hide();
 
-        if ($('#customData')) {
+        if ($('#customData_Contribution')) {
           CRM.$(`[name^=${caseCustomField}_]`).val(caseSalesOrder.case_id).trigger('change');
           CRM.$(`[name^=${quotationCustomField}_]`).val(caseSalesOrder.id).trigger('change');
         }
-        waitForElement($, '#customData', function ($, elem) {
+        waitForElement($, '#customData_Contribution', function ($, elem) {
           CRM.$(`[name^=${caseCustomField}_]`).val(caseSalesOrder.case_id).trigger('change');
           CRM.$(`[name^=${quotationCustomField}_]`).val(caseSalesOrder.id).trigger('change');
         });
