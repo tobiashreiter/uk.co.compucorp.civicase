@@ -28,15 +28,17 @@ class CRM_Civicase_Hook_BuildForm_AddStyleFieldToCaseCustomGroups {
       return;
     }
 
-    $contactTypes = json_decode($form->get_template_vars('contactTypes'));
+    $multipleTypes = $form->get_template_vars('allowMultiple');
     $caseEntityNames = CaseType::buildOptions('case_type_category', 'validate');
 
     // This is the generic entity for all cases.
     $caseEntityNames[] = 'Case';
 
-    $contactTypes = array_merge($contactTypes, $caseEntityNames);
+    foreach ($caseEntityNames as $caseEntityName) {
+      $multipleTypes[$caseEntityName] = TRUE;
+    }
 
-    $form->assign('contactTypes', json_encode($contactTypes));
+    $form->assign('allowMultiple', $multipleTypes);
     CRM_Core_Resources::singleton()->addSetting([
       'caseEntityNames' => $caseEntityNames,
     ]);

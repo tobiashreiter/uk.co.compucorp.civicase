@@ -42,11 +42,17 @@ class CRM_Civicase_Hook_Post_CreateSalesOrderContribution {
 
     $salesOrderStatusId = CRM_Utils_Request::retrieve('sales_order_status_id', 'Integer');
     if (empty($salesOrderStatusId)) {
-      $salesOrder = $salesOrder['status_id'];
+      $salesOrderStatusId = $salesOrder['status_id'];
     }
 
     $transaction = CRM_Core_Transaction::create();
     try {
+      Contribution::update(FALSE)
+        ->addWhere('id', '=', $objectId)
+        ->addValue('Opportunity_Details.Case_Opportunity', $salesOrder['case_id'] ?? NULL)
+        ->addValue('Opportunity_Details.Quotation', $salesOrderId)
+        ->execute();
+
       $caseSaleOrderContributionService = new CRM_Civicase_Service_CaseSalesOrderContributionCalculator($salesOrderId);
       $paymentStatusID = $caseSaleOrderContributionService->calculatePaymentStatus();
       $invoicingStatusID = $caseSaleOrderContributionService->calculateInvoicingStatus();

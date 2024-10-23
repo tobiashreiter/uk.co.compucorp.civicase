@@ -16,7 +16,7 @@ class CRM_Civicase_Event_Listener_AssetBuilder {
    */
   public static function addWordReplacements(GenericHookEvent $event) {
     if ($event->asset == 'angular-modules.json') {
-      $caseCategoryName = \Civi::cache('metadata')->get('current_case_category');
+      $caseCategoryName = CRM_Core_Session::singleton()->get('current_case_category');
       CRM_Civicase_Hook_Helper_CaseTypeCategory::addWordReplacements($caseCategoryName);
 
       // Rebuild the asset if it has been built.

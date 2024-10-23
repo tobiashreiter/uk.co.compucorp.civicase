@@ -17,7 +17,7 @@
 
     <div class="af-container row civicase__case-filter-form-elements" ng-show="expanded">
       <af-field name="status_id" defn="{input_attrs: {multiple: true}}" class="col-md-2" />
-      <af-field name="quotation_date" defn="{input_attrs: {time: false}, search_range: true, label: 'Date'}" class="col-md-4 civicase__ui-range" />
+      <af-field name="DATE_quotation_date" defn="{search_range: true, time: false, input_attrs: {}, label: 'Date'}" class="col-md-4 civicase__ui-range" />
       <div class="col-md-1">
         <button type="button" class="btn btn-link civicase__features-filters-clear" style="margin-top: 2em;">Clear All</button>
       </div>
@@ -25,4 +25,10 @@
   </div>
   <crm-search-display-table search-name="Civicase_Quotations" display-name="Civicase_Quotations_Table" filters="{case_id: routeParams.caseId}"></crm-search-display-table>
 </div>
+
+<style>
+  af-field[name="DATE_quotation_date"] input.form-control.hasTimeEntry {
+    display: none !important;
+  }
+</style>
 
