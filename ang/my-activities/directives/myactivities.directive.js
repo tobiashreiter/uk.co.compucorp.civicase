@@ -1,12 +1,13 @@
-(function (angular, _) {
+(function ($, _, angular) {
   var module = angular.module('my-activities');
 
   module.directive('civicaseMyActivities', function () {
     return {
-      restrict: 'EA',
+      scope: {
+      },
       controller: 'CivicaseMyActivitiesController',
       templateUrl: '~/my-activities/directives/myactivities.directive.html',
-      scope: {}
+      restrict: 'EA'
     };
   });
 
@@ -45,4 +46,4 @@
       });
     }
   }
-})(angular, CRM._);
+})(CRM.$, CRM._, angular);

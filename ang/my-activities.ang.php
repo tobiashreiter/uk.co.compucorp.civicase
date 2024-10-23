@@ -29,8 +29,14 @@ function get_my_activities_js_files() {
 }
 
 $requires = [
-  'civicase',
+  'crmUi',
+  'crmCaseType',
+		'ngRoute',
+  'dialogService',
+		'civicase-base',
 ];
+
+$requires = CRM_Workflow_Hook_addDependentAngularModules::invoke($requires);
 
 return [
   'css' => [
