@@ -27,26 +27,34 @@
 
             function affixElementExtras() {
                 $('th', $element).each(function() {
-                    $(this).css('min-width', $(this).outerWidth() + 'px');
+                    $(this).data('originalMinWidth', $(this).outerWidth());
+                    $(this).css('min-width', $(this).outerWidth() + 5 + 'px');
                 });
+                
+                // When the row is made static, it's also set to the left, and loses its left offset; so add this back to the first element
+                var extraWidthFromLeft = $element.data('originalOffsetLeft');
+                $element.find('th:first').css('min-width', ($element.find('th:first').outerWidth() + extraWidthFromLeft) + 'px');
                 $element.find('th:first').css('position', 'static');
             }
 
             function unAffixElementExtras() {
+                $('th', $element).each(function() {
+                    $(this).css('min-width', $(this).data('originalMinWidth') + 'px');
+                });
                 // $element.find('th:first').css('position', 'absolute');
             }
 
             function affixElement() {
                 if (!$element.data('affixed')) {
+                    $element.data('originalOffsetLeft', $element.offset().left);
+                    $element.data('originalZIndex', $element.css("z-index"));
                     $element.data('affixed', true);
+                    affixElementExtras();
                     var bodyPadding = parseInt($('body').css('padding-top'), 10); // to see the space for fixed menus
                     $element.css('position', 'fixed');
                     $element.css('top', bodyPadding + 'px');
-                    $element.data('originalOffsetLeft', $element.offset().left);
                     $element.css('left', 0);
-                    $element.data('originalZIndex', $element.css("z-index"));
                     $element.css('z-index', 10000);
-                    affixElementExtras();
                 }
             }
 
