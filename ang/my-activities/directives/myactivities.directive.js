@@ -3,11 +3,10 @@
 
   module.directive('civicaseMyActivities', function () {
     return {
-      scope: {
-      },
+      restrict: 'EA',
       controller: 'CivicaseMyActivitiesController',
       templateUrl: '~/my-activities/directives/myactivities.directive.html',
-      restrict: 'EA'
+      scope: {}
     };
   });
 

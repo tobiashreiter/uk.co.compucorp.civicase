@@ -31,9 +31,9 @@ function get_my_activities_js_files() {
 $requires = [
   'crmUi',
   'crmCaseType',
-		'ngRoute',
+  'ngRoute',
   'dialogService',
-		'civicase-base',
+  'civicase-base',
 ];
 
 $requires = CRM_Workflow_Hook_addDependentAngularModules::invoke($requires);
