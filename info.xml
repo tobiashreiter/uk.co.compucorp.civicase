@@ -43,5 +43,4 @@
     <mixin>entity-types-php@1.0.0</mixin>
   </mixins>
   <upgrader>CRM_Civicase_Upgrader</upgrader>
->>>>>>> eaefbbdf9984c377db93553999496e849c2cad09
 </extension>
