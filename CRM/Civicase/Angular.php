@@ -49,15 +49,6 @@ class CRM_Civicase_Angular {
    */
   public static function load_resources() {
     Civi::resources()
-      ->addPermissions([
-        'administer CiviCase',
-        'administer CiviCRM',
-        'access all cases and activities',
-        'add cases',
-        'basic case information',
-        'access CiviCRM',
-        'access my cases and activities',
-      ])
       ->addScriptFile('org.civicrm.shoreditch', 'base/js/affix.js', 1000, 'html-header')
       ->addSetting([
         'config' => [

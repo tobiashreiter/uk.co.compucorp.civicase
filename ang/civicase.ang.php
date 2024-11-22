@@ -36,4 +36,13 @@ return [
   'settingsFactory' => ['CRM_Civicase_Angular', 'getOptions'],
   'requires' => $requires,
   'basePages' => [],
+  'permissions' => [
+    'administer CiviCase',
+    'administer CiviCRM',
+    'access all cases and activities',
+    'add cases',
+    'basic case information',
+    'access CiviCRM',
+    'access my cases and activities',
+  ],
 ];
