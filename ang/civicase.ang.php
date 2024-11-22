@@ -27,7 +27,7 @@ return [
   'css' => [
     // At the moment, it's safe to include this multiple times.
     // deduped by resource manager.
-    'assetBuilder://visual-bundle.css',
+    Civi::service('asset_builder')->getUrl('visual-bundle.css'),
     'css/*.css',
   ],
   'partials' => [

@@ -85,7 +85,7 @@ class CRM_Civicase_Angular {
       [
         // At the moment, it's safe to include this multiple times.
         // deduped by resource manager.
-        'assetBuilder://visual-bundle.js',
+        Civi::service('asset_builder')->getUrl('visual-bundle.css'),
         'ang/civicase.js',
       ],
       CRM_Civicase_Helper_GlobRecursive::getRelativeToExtension(

@@ -232,7 +232,7 @@ class CRM_Civicase_BaseAngular {
   public static function get_js_files() {
     return array_merge(
     [
-      'assetBuilder://visual-bundle.js',
+      Civi::service('asset_builder')->getUrl('visual-bundle.css'),
       'ang/civicase-base.js',
     ],
     CRM_Civicase_Helper_GlobRecursive::getRelativeToExtension(
