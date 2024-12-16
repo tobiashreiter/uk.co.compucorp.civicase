@@ -27,12 +27,15 @@ return [
   'css' => [
     // At the moment, it's safe to include this multiple times.
     // deduped by resource manager.
-    'assetBuilder://visual-bundle.css',
+    Civi::service('asset_builder')->getUrl('visual-bundle.css'),
     'css/*.css',
   ],
   'partials' => [
     'ang/civicase',
   ],
+  'settingsFactory' => ['CRM_Civicase_Angular', 'getOptions'],
+  'requires' => $requires,
+  'basePages' => [],
   'permissions' => [
     'administer CiviCase',
     'administer CiviCRM',
@@ -42,7 +45,4 @@ return [
     'access CiviCRM',
     'access my cases and activities',
   ],
-  'settingsFactory' => ['CRM_Civicase_Angular', 'getOptions'],
-  'requires' => $requires,
-  'basePages' => [],
 ];
