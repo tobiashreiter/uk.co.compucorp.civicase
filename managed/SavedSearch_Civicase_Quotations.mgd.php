@@ -2,14 +2,10 @@
 
 /**
  * @file
+ * Exported quotations saved search.
  */
 
 use CRM_Civicase_ExtensionUtil as E;
-
-/**
- * @file
- * Exported quotations saved search.
- */
 
 $mgd = [
     [
