@@ -293,6 +293,7 @@ function civicase_civicrm_post($op, $objectName, $objectId, &$objectRef) {
 function civicase_civicrm_pre($op, $objectName, $id, &$params) {
   $hooks = [
     new CRM_Civicase_Hook_Pre_DeleteSalesOrderContribution(),
+    new CRM_Civicase_Hook_Pre_HandleCaseEmailActivity(),
   ];
 
   foreach ($hooks as $hook) {
@@ -573,7 +574,7 @@ function _civicase_add_case_category_case_type_entity(array &$entityTypes) {
  */
 function civicase_civicrm_alterMailParams(&$params, $context) {
   $hooks = [
-    new CRM_Civicase_Hook_alterMailParams_SubjectCaseTypeCategoryProcessor(),
+    new CRM_Civicase_Hook_alterMailParams_SubjectProcessor(),
     new CRM_Civicase_Hook_alterMailParams_AttachQuotation(),
   ];
 
@@ -659,4 +660,12 @@ function civicase_civicrm_alterContent(&$content, $context, $tplName, &$object) 
   foreach ($hooks as $hook) {
     $hook->run();
   }
+}
+
+/**
+ * Implements hook_civicrm_caseEmailSubjectPatterns().
+ */
+function civicase_civicrm_caseEmailSubjectPatterns(&$subjectPatterns) {
+  $subjectPatterns[] = '/\[[a-z0-9\s]*#([0-9a-f]{7})\]/i';
+  $subjectPatterns[] = '/\[[a-z0-9\s]*#(\d+)\]/i';
 }
