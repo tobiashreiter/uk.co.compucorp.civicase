@@ -1,6 +1,7 @@
 <?php
 
 use Civi\Api4\CaseSalesOrder;
+use Civi\Api4\CaseSalesOrderLine;
 use Civi\Api4\Contribution;
 use Civi\Api4\OptionValue;
 use CRM_Certificate_ExtensionUtil as E;
@@ -46,11 +47,22 @@ class CRM_Civicase_Form_CaseSalesOrderContributionCreate extends CRM_Core_Form {
       'min' => 1,
     ], FALSE);
 
+    $caseSalesOrderLines = CaseSalesOrderLine::get(FALSE)
+      ->addWhere('sales_order_id', '=', $this->id)
+      ->execute();
+    $productIds = [];
+    foreach ($caseSalesOrderLines as $line) {
+      if (!empty($line['product_id'])) {
+        array_push($productIds, $line['product_id']);
+      }
+    }
+
     $this->addEntityRef('products', ts('All Products'), [
       'entity' => 'Product',
       'placeholder' => 'All Products',
       'class' => 'form-control',
       'select' => ['minimumInputLength' => 0],
+      'api' => ['params' => ['id' => ['IN' => $productIds]]],
     ]);
 
     if ($this->hasRemainingBalance()) {
