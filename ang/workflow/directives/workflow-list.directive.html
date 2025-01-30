@@ -54,6 +54,7 @@
               </ng-include>
             </td>
             <td>
+            <!--
               <div
               class="btn-group btn-group-md"
               uib-dropdown
@@ -78,6 +79,20 @@
                   </li>
                 </ul>
               </div>
+             -->
+          <a class="action-item crm-hover-button ng-binding" ng-href="/civicrm/a#/caseType/{{ workflow.id }}">Edit</a>
+
+          <!-- The variables used in ng-show below can take on any of the values from the set {0, 1, "0", "1", undefined}, so use explicit ==1 or !=1 to cover all possibilities properly. -->
+          <span class="more-panel btn-slide crm-hover-button ng-binding" ng-show="caseType.is_reserved!=1 || (caseType.is_active!=1 || caseType.is_forked==1)">
+            more
+            <ul class="panel" style="display: none;">
+                  <li  ng-repeat="actionItem in actionItems">
+                    <ng-include
+                      civicase-include-replace src="actionItem.templateUrl">
+                    </ng-include>
+                  </li>
+            </ul>
+          </span>
             </td>
           </tr>
           <tr>

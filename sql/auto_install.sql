@@ -29,7 +29,6 @@ CREATE TABLE IF NOT EXISTS `civicrm_case_category_instance` (
   PRIMARY KEY (`id`),
   UNIQUE INDEX `unique_category`(category_id)
  ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
 -- /*******************************************************
 -- *
 -- * civicrm_case_category_features

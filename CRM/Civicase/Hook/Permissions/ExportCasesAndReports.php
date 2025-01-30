@@ -44,7 +44,6 @@ class CRM_Civicase_Hook_Permissions_ExportCasesAndReports {
     		'label' => 'CiviCase: ' . self::PERMISSION_NAME,
     		'description' => ts('Access export action in manage cases and reports'),
     ];
-
   }
 
 }
