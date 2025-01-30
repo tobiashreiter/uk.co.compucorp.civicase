@@ -111,6 +111,10 @@
         delete $scope.activity.activity_date_time;
       }
 
+      _.each($scope.uploader.getNotUploadedItems(), function (item) {
+        validateFileSize(item);
+      });
+
       var promise = civicaseCrmApi('Activity', 'create', $scope.activity)
         .then(function (activity) {
           saveTags(activity.id);
@@ -121,7 +125,6 @@
             item.formData = [
               _.extend({ crm_attachment_token: CRM.crmAttachment.token }, target, item.crmData)
             ];
-            validateFileSize(item);
           });
           return $scope.uploader.uploadAllWithPromise();
         }).then(function () {
@@ -137,14 +140,7 @@
 
       return $scope.block(crmStatus({
         start: $scope.ts('Uploading...'),
-        success: $scope.ts('Uploaded'),
-        error: function (error) {
-          let msg = 'Sorry an error occurred while uploading file';
-          if (error && error.cause && error.cause === 'Invalid size') {
-            msg = error.message;
-          }
-          CRM.alert(msg, $scope.ts('Attachment failed'), 'error');
-        }
+        success: $scope.ts('Uploaded')
       }, promise));
     }
 
@@ -158,6 +154,7 @@
     function validateFileSize (item) {
       if (item.file.size <= 0) {
         const msg = 'Your file(s) cannot be uploaded because one or more of your files is empty. Your file(s) will not be uploaded. Check the contents of your file(s) and then try again.';
+        CRM.alert(msg, $scope.ts('Attachment failed'), 'error');
         throw new Error(msg, { cause: 'Invalid size' });
       }
       return true;

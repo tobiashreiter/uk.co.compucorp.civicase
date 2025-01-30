@@ -13,10 +13,7 @@ class CRM_Civicase_BaseAngular {
    * @return string[]
    */
   public static function getOptions(): array {
-    [
-      $caseCategoryId,
-      $caseCategoryName,
-    ] = CRM_Civicase_Helper_CaseUrl::getCategoryParamsFromUrl();
+    [$caseCategoryId, $caseCategoryName] = CRM_Civicase_Helper_CaseUrl::getCategoryParamsFromUrl();
 
     $caseCategorySetting = new CRM_Civicase_Service_CaseCategorySetting();
 
@@ -247,7 +244,7 @@ class CRM_Civicase_BaseAngular {
   public static function get_js_files() {
     return array_merge(
     [
-      'assetBuilder://visual-bundle.js',
+      Civi::service('asset_builder')->getUrl('visual-bundle.css'),
       'ang/civicase-base.js',
     ],
     CRM_Civicase_Helper_GlobRecursive::getRelativeToExtension(

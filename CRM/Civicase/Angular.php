@@ -4,7 +4,7 @@
  * Option factory class for Civicase AngularJS module
  */
 class CRM_Civicase_Angular {
-  /** @var array */
+
   private static $options = [];
   private static $case_category_permissions;
 
@@ -14,10 +14,7 @@ class CRM_Civicase_Angular {
    */
   public static function getOptions(): array {
     self::load_resources();
-    [
-      $caseCategoryId,
-      $caseCategoryName,
-    ] = CRM_Civicase_Helper_CaseUrl::getCategoryParamsFromUrl();
+    [$caseCategoryId, $caseCategoryName] = CRM_Civicase_Helper_CaseUrl::getCategoryParamsFromUrl();
 
     // Word replacements are already loaded for the contact tab ContactCaseTab.
     if (CRM_Utils_System::currentPath() !== 'civicrm/case/contact-case-tab') {
@@ -88,13 +85,13 @@ class CRM_Civicase_Angular {
       [
         // At the moment, it's safe to include this multiple times.
         // deduped by resource manager.
-        'assetBuilder://visual-bundle.js',
+        Civi::service('asset_builder')->getUrl('visual-bundle.css'),
         'ang/civicase.js',
       ],
       CRM_Civicase_Helper_GlobRecursive::getRelativeToExtension(
         'uk.co.compucorp.civicase',
         'ang/civicase/*.js'
-      )
+    )
     );
   }
 
