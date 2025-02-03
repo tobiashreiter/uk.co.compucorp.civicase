@@ -99,7 +99,7 @@ $mgd = [
                 'type' => 'field',
                 'key' => 'quotation_date',
                 'dataType' => 'Date',
-                'label' => E::ts('Date'),
+                'label' => E::ts('Quotation Date'),
                 'sortable' => TRUE,
                 'alignment' => '',
                 'rewrite' => '{capture assign=my_date}[quotation_date]{/capture}
@@ -316,7 +316,7 @@ $mgd = [
                 'type' => 'field',
                 'key' => 'quotation_date',
                 'dataType' => 'Date',
-                'label' => E::ts('Date'),
+                'label' => E::ts('Quotation Date'),
                 'sortable' => TRUE,
                 'alignment' => '',
                 'rewrite' => '{capture assign=my_date}[quotation_date]{/capture}
