@@ -57,11 +57,11 @@ class CRM_Civicase_Form_CaseSalesOrderContributionCreate extends CRM_Core_Form {
       }
     }
 
-    $this->addEntityRef('products', ts('All Products'), [
+    $this->addEntityRef('products', ts('Products'), [
       'entity' => 'Product',
       'placeholder' => 'All Products',
       'class' => 'form-control',
-      'select' => ['minimumInputLength' => 0],
+      'select' => ['minimumInputLength' => 0, 'multiple' => TRUE],
       'api' => ['params' => ['id' => ['IN' => $productIds]]],
     ]);
 
