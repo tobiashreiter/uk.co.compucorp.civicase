@@ -15,23 +15,23 @@ class CRM_Civicase_Hook_Post_LinkCase {
    *   The operation being performed.
    * @param string $objectName
    *   Object name.
-   * @param int $objectId
+   * @param null|int|string $objectId
    *   Object ID.
    * @param object $objectRef
    *   Object reference.
    */
-  public function run(string $op, string $objectName, ?int $objectId, &$objectRef) {
+  public function run(string $op, string $objectName, $objectId, &$objectRef) {
     if (!$this->shouldRun($op, $objectName)) {
       return;
     }
 
     $linkToCaseId = (int) CRM_Utils_Request::retrieve('linkToCaseId', 'Positive');
     $linkedToCaseDetails = $this->getLinkedToCaseDetails($linkToCaseId);
-    $caseDetails = $this->getCaseDetails($objectId);
+    $caseDetails = $this->getCaseDetails((int) $objectId);
 
     $params = [
       'case_id' => $linkToCaseId,
-      'link_to_case_id' => $objectId,
+      'link_to_case_id' => (int) $objectId,
       'activity_type_id' => CRM_Core_PseudoConstant::getKey('CRM_Activity_BAO_Activity', 'activity_type_id', 'Link Cases'),
       'medium_id' => CRM_Core_OptionGroup::values('encounter_medium', FALSE, FALSE, FALSE, 'AND is_default = 1'),
       'activity_date_time' => date('YmdHis'),
@@ -44,7 +44,7 @@ class CRM_Civicase_Hook_Post_LinkCase {
     $activity = CRM_Activity_BAO_Activity::create($params);
 
     $caseParams = [
-      'case_id' => $objectId,
+      'case_id' => (int) $objectId,
       'activity_id' => $activity->id,
     ];
     CRM_Case_BAO_Case::processCaseActivity($caseParams);
