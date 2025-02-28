@@ -1,6 +1,6 @@
 <?php
 
-use CRM_Civicase_Hook_alterMailParams_SubjectCaseTypeCategoryProcessor as SubjectCaseTypeCategoryProcessor;
+use CRM_Civicase_Hook_alterMailParams_SubjectProcessor as SubjectProcessor;
 use CRM_Civicase_Test_Fabricator_CaseCategoryInstance as CaseCategoryInstanceFabricator;
 use CRM_Civicase_Test_Fabricator_CaseCategory as CaseCategoryFabricator;
 use CRM_Civicase_Test_Fabricator_CaseCategoryInstanceType as CaseCategoryInstanceTypeFabricator;
@@ -19,7 +19,7 @@ class CRM_Civicase_Hook_alterMailParams_SubjectCaseTypeCategoryProcessorTest ext
   /**
    * Test first instance of case is replaced.
    */
-  public function testRunReplacesTheFirstInstanceOfCaseInMailSubjectCorrectly() {
+  public function testRunRemovesTheFirstInstanceOfCaseInMailSubjectCorrectly() {
     $categoryInstanceTypeOne = CaseCategoryInstanceTypeFabricator::fabricate();
     $categoryParams = ['label' => 'Awards', 'singular_label' => 'Award'];
     $caseCategory = $this->createCaseTypeCategory($categoryParams);
@@ -30,12 +30,11 @@ class CRM_Civicase_Hook_alterMailParams_SubjectCaseTypeCategoryProcessorTest ext
       ]
     );
 
-    $emailSubjectProcessor = new SubjectCaseTypeCategoryProcessor();
+    $emailSubjectProcessor = new SubjectProcessor();
     $_REQUEST['caseid'] = $this->getCase($caseCategory['value'])['id'];
     $params['subject'] = "[case ] This is a test email subject case";
     $emailSubjectProcessor->run($params, $context = '');
-    $replacedValue = strtolower($categoryParams['singular_label']);
-    $expectedSubject = "[{$replacedValue} ] This is a test email subject case";
+    $expectedSubject = "[] This is a test email subject case";
     $this->assertEquals($expectedSubject, $params['subject']);
   }
 
