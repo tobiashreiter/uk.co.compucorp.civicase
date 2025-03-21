@@ -25,6 +25,9 @@ class CRM_Civicase_Hook_alterMailParams_AttachQuotation {
 
     $contributionId = $params['tokenContext']['contributionId'] ?? $params['tplParams']['id'];
     $rendered = $this->getContributionQuotationInvoice($contributionId);
+    if (empty($rendered)) {
+      return;
+    }
 
     $attachment = CRM_Utils_Mail::appendPDF('quotation_invoice.pdf', $rendered['html'], $rendered['format']);
 
@@ -40,15 +43,20 @@ class CRM_Civicase_Hook_alterMailParams_AttachQuotation {
    *   The contribution ID.
    */
   private function getContributionQuotationInvoice($contributionId) {
-    $salesOrder = Contribution::get(FALSE)
-      ->addSelect('Opportunity_Details.Quotation')
-      ->addWhere('Opportunity_Details.Quotation', 'IS NOT EMPTY')
-      ->addWhere('id', '=', $contributionId)
-      ->addChain('salesOrder', CaseSalesOrder::get(FALSE)
-        ->addWhere('id', '=', '$Opportunity_Details.Quotation')
-      )
-      ->execute()
-      ->first()['salesOrder'];
+    try {
+      $salesOrder = Contribution::get(FALSE)
+        ->addSelect('Opportunity_Details.Quotation')
+        ->addWhere('Opportunity_Details.Quotation', 'IS NOT EMPTY')
+        ->addWhere('id', '=', $contributionId)
+        ->addChain('salesOrder', CaseSalesOrder::get(FALSE)
+          ->addWhere('id', '=', '$Opportunity_Details.Quotation')
+        )
+        ->execute()
+        ->first()['salesOrder'];
+    }
+    catch (\Throwable $th) {
+      return;
+    }
 
     if (empty($salesOrder)) {
       return;
