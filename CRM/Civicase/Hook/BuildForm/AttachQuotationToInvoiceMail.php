@@ -22,15 +22,20 @@ class CRM_Civicase_Hook_BuildForm_AttachQuotationToInvoiceMail {
     }
 
     $contributionId = CRM_Utils_Request::retrieve('id', 'Positive', $form, FALSE);
-    $salesOrder = Contribution::get()
-      ->addSelect('Opportunity_Details.Quotation')
-      ->addWhere('Opportunity_Details.Quotation', 'IS NOT EMPTY')
-      ->addWhere('id', 'IN', explode(',', $contributionId))
-      ->addChain('salesOrder', CaseSalesOrder::get()
-        ->addWhere('id', '=', '$Opportunity_Details.Quotation')
-      )
-      ->execute()
-      ->getArrayCopy();
+    try {
+      $salesOrder = Contribution::get(FALSE)
+        ->addSelect('Opportunity_Details.Quotation')
+        ->addWhere('Opportunity_Details.Quotation', 'IS NOT EMPTY')
+        ->addWhere('id', 'IN', explode(',', $contributionId))
+        ->addChain('salesOrder', CaseSalesOrder::get()
+          ->addWhere('id', '=', '$Opportunity_Details.Quotation')
+        )
+        ->execute()
+        ->getArrayCopy();
+    }
+    catch (Exception $e) {
+      return;
+    }
 
     if (!empty($salesOrder)) {
       $form->add('checkbox', 'attach_quote', ts('Attach Quotation'));
