@@ -374,10 +374,14 @@
         pageNum.down = 0;
       }
 
+      const formatActivityCallback = function (activity, index, list) {
+        return formatActivity(activity, null);
+      };
+
       return crmThrottle(function () {
         return loadActivities(mode);
       }).then(function (result) {
-        var newActivities = _.each(result[0].acts.values, formatActivity);
+        var newActivities = _.each(result[0].acts.values, formatActivityCallback);
 
         buildActivitiesArray(mode, newActivities);
 
