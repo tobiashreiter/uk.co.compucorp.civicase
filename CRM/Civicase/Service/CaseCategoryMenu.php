@@ -224,8 +224,6 @@ class CRM_Civicase_Service_CaseCategoryMenu {
 
     $categoryCustomFields = (new CaseCategoryCustomFieldsSetting())->get($caseTypeCategory['value']);
     $caseTypeCategory['singular_label'] = $categoryCustomFields['singular_label'] ?? NULL;
-
-    $this->resetCaseCategorySubmenusUrl($caseTypeCategory);
   }
 
   /**
