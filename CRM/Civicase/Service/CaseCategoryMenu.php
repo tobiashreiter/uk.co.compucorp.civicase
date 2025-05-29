@@ -1,7 +1,8 @@
 <?php
 
-use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
 use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
+use CRM_Civicase_Service_CaseCategoryCustomFieldsSetting as CaseCategoryCustomFieldsSetting;
+use CRM_Civicase_Service_CaseCategoryPermission as CaseCategoryPermission;
 
 /**
  * Create/Delete Case Type Category Menu items.
@@ -82,6 +83,7 @@ class CRM_Civicase_Service_CaseCategoryMenu {
         'api.Navigation.create' => [
           'id' => '$value.id',
           'url' => $item['url'],
+          'label' => $item['label'],
         ],
       ]);
     }
@@ -98,7 +100,7 @@ class CRM_Civicase_Service_CaseCategoryMenu {
    * @return array[]
    *   Array with the submenus info.
    */
-  public function getSubmenus(array $caseTypeCategory, array $permissions = NULL) {
+  public function getSubmenus(array $caseTypeCategory, array|null $permissions = NULL) {
     $labelForMenu = ucfirst(strtolower($caseTypeCategory['label']));
     $singularLabelForMenu = ucfirst(strtolower($caseTypeCategory['singular_label']));
     $caseTypeCategoryName = $caseTypeCategory['name'];
@@ -208,16 +210,20 @@ class CRM_Civicase_Service_CaseCategoryMenu {
    *   Case category name.
    */
   public function updateItems($caseCategoryId, array $menuParams) {
-    $caseCategoryOptionDetails = CaseCategoryHelper::getById($caseCategoryId);
+    $caseTypeCategory = CaseCategoryHelper::getById($caseCategoryId);
 
-    $parentMenu = civicrm_api3('Navigation', 'get', ['name' => $caseCategoryOptionDetails['name']]);
+    $parentMenu = civicrm_api3('Navigation', 'get', ['name' => $caseTypeCategory['name']]);
 
     if ($parentMenu['count'] == 0) {
       return;
     }
 
     $menuParams['id'] = $parentMenu['id'];
+    $menuParams['label'] = ucfirst(strtolower($caseTypeCategory['label']));
     civicrm_api3('Navigation', 'create', $menuParams);
+
+    $categoryCustomFields = (new CaseCategoryCustomFieldsSetting())->get($caseTypeCategory['value']);
+    $caseTypeCategory['singular_label'] = $categoryCustomFields['singular_label'] ?? NULL;
   }
 
   /**

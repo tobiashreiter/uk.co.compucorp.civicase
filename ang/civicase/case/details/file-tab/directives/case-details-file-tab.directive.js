@@ -32,7 +32,8 @@
     $scope.fileFilterParams = {
       case_id: $scope.item.id,
       text: '',
-      options: { xref: 1, limit: 0 }
+      options: { xref: 1, limit: 0 },
+      is_file: true
     };
 
     $scope.findActivityById = findActivityById;

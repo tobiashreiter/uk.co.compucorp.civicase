@@ -74,4 +74,35 @@ class CRM_Civicase_APIHelpers_ActivityQueryApi {
     });
   }
 
+  /**
+   * Retirns all file activities for a case.
+   *
+   * @param int $caseId
+   *   Case id.
+   *
+   * @return array
+   *   Id of all file activities.
+   *
+   * @throws \Civi\Core\Exception\DBQueryException
+   */
+  public function getFileActivities(int $caseId): array {
+    $query = '
+           SELECT
+               ca.id AS id
+           FROM
+               civicrm_case_activity cca
+           INNER JOIN civicrm_activity ca
+               ON ca.id = cca.activity_id
+           INNER JOIN civicrm_entity_file cef
+               ON (cef.entity_table = "civicrm_activity" AND cef.entity_id = ca.id)
+           WHERE
+               cca.case_id= %1
+       ';
+
+    $queryParams = [1 => [$caseId, 'Integer']];
+    $dao = CRM_Core_DAO::executeQuery($query, $queryParams);
+
+    return $dao->fetchAll();
+  }
+
 }

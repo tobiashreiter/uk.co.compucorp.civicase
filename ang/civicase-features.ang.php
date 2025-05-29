@@ -10,7 +10,6 @@
 
 use CRM_Civicase_Helper_GlobRecursive as GlobRecursive;
 
-
 /**
  * Get a list of JS files.
  *
@@ -28,7 +27,6 @@ function getFeaturesJsFiles() {
     )
   );
 }
-
 
 $requires = [
   'api4',
@@ -48,7 +46,7 @@ return [
     'css/*.css',
   ],
   'js' => getFeaturesJsFiles(),
-  'settingsFactory' => ['CRM_Civicase_FeaturesAngular', 'getOptions'],
+  'settingsFactory' => ['CRM_Civicase_Settings', 'getFeaturesSettings'],
   'requires' => $requires,
   'partials' => [
     'ang/civicase-features',

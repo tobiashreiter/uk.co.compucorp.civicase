@@ -75,7 +75,7 @@ class CRM_Civicase_Hook_Pre_DeleteSalesOrderContribution {
    * Gets quotation ID by contribution ID.
    */
   private function getQuotationId($id) {
-    return Contribution::get()
+    return Contribution::get(FALSE)
       ->addSelect('Opportunity_Details.Quotation')
       ->addWhere('id', '=', $id)
       ->execute()
