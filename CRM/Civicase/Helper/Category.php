@@ -13,7 +13,7 @@ class CRM_Civicase_Helper_Category {
    * @param string $categoryName
    *   Category name.
    *
-   * @return int|null
+   * @return array|null
    *   Case category data.
    */
   public static function get(string $categoryName) {

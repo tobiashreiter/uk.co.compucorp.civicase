@@ -1,5 +1,6 @@
 <?php
 
+use CRM_Civicase_Helper_CaseCategory as CaseCategoryHelper;
 use CRM_Civicase_Service_CaseCategoryCustomFieldsSetting as CaseCategoryCustomFieldsSetting;
 
 /**
@@ -33,6 +34,12 @@ class CRM_Civicase_Hook_PostProcess_SaveCaseCategoryCustomFields extends CRM_Civ
         'singular_label' => $caseCategoryValues['singular_label'],
       ]);
     }
+
+    $caseTypeCategory = CaseCategoryHelper::getById($form->getVar('_id'));
+    $categoryMenu = new CRM_Civicase_Service_CaseCategoryMenu();
+
+    $caseTypeCategory['singular_label'] = $caseCategoryValues['singular_label'] ?? NULL;
+    $categoryMenu->resetCaseCategorySubmenusUrl($caseTypeCategory);
   }
 
   /**
