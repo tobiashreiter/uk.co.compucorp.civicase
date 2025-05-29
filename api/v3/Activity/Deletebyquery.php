@@ -48,6 +48,11 @@ function civicrm_api3_activity_deletebyquery(array $params) {
   else {
     $activityApiParams = $activityQueryApiHelper->getActivityGetRequestApiParams($params);
     $activities = array_column($genericApiHelper->getEntityValues('Activity', $activityApiParams, ['id']), 'id');
+
+    if (!empty($params['params']['is_file']) && !empty($params['params']['case_id'])) {
+      $fileActivities = array_column($activityQueryApiHelper->getFileActivities((int) $params['params']['case_id']), 'id');
+      $activities = array_intersect($activities, $fileActivities);
+    }
   }
 
   $activityIds = [];
