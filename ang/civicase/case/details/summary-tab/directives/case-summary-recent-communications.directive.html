@@ -1,6 +1,7 @@
 <div ng-if="isMainContentVisible()" class="panel-heading clearfix">
   <h3 class="panel-title pull-left">{{ ts('Recent Communications') }}</h3>
   <a class="pull-right"
+    aria-label="View All Activities"
      ng-href="{{getActivityFeedUrl({ caseId: item.id, category: 'communication' })}}"
      ng-if="item.category_count.communication.completed"
      title="{{ ts('View All') }}"

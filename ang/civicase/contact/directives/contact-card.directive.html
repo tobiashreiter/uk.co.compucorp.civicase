@@ -10,12 +10,13 @@
     </span>
     <!-- End - Contact Icons -->
     <!-- Contact Name -->
-    <a
+    <a ng-if="contacts[0].display_name"
       class="civicase__contact-name"
       target="_blank"
       href="{{ url('civicrm/contact/view', {cid: contacts[0].contact_id} ) }}"
       title="{{ ts('View Contact') }}">{{ contacts[0].display_name }}
     </a>
+    <span ng-if="!contacts[0].display_name">(Collector Not Assigned)</span>
     <!-- End - Contact Name -->
   </span>
   <span ng-if="isAvatar">
