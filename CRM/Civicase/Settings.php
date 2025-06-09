@@ -49,6 +49,7 @@ class CRM_Civicase_Settings {
     self::setTagsToJsVars($options);
     self::addCaseTypeCategoriesToOptions($options);
     self::exposeSettings($options, ['caseCategoryId' => $caseCategoryId]);
+    self::setCollectorsToJsVars($options);
 
     return $options;
   }
@@ -240,6 +241,17 @@ class CRM_Civicase_Settings {
       'options' => ['limit' => 0],
     ])['values'];
     $options['caseCategoryInstanceMapping'] = $result;
+  }
+
+  /**
+   * Sets the tags and tagsets to javascript global variable.
+   */
+  public static function setCollectorsToJsVars(array &$options): void {
+    $result = civicrm_api3('Contact', 'get', [
+        'contact_sub_type' => 'Collector',
+        'options' => ['limit' => 0],
+    ]);
+    $options['collectors'] = $result['values'];
   }
 
   /**
