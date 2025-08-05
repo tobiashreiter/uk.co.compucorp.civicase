@@ -13,18 +13,29 @@
         <p ng-if="item['case_type_id.is_active'] === '0'" ng-bind-html="item.subject"></p>
       </div>
       <div class="civicase__summary-tab__description">
-        <p
-          ng-if="item['case_type_id.is_active'] !== '0'"
-          crm-editable="item"
-          data-field="details"
-          data-type="textarea"
-          data-placeholder="{{ ts('This case doesn\'t currently have a description. Click here to add now.') }}">
-        </p>
+        <!-- View Mode -->
+        <div 
+          ng-if="!item._editingDetails" 
+          ng-click="item._editingDetails = true"
+          ng-bind-html="trustAsHtml(item.details)" 
+          class="crm-editable-display"
+          title="{{ ts('Click to edit') }}">
+        </div>
+        <!-- Edit Mode -->
+        <textarea 
+          ng-if="item._editingDetails" 
+          ng-model="item.details"
+          ng-blur="item._editingDetails = false" 
+          class="form-control" 
+          rows="5"
+          placeholder="{{ ts('This case doesn\'t currently have a description. Click here to add now.') }}">
+        </textarea>
         <div
           ng-if="item['case_type_id.is_active'] === '0'"
           ng-bind-html="trustAsHtml(item.details)"
         ></div>
       </div>
+
       <div class="civicase__summary-tab__last-updated">
         <span class="civicase__summary-tab__last-updated__label">{{ts("Case last updated: ")}}</span>
         <span>{{formatDate(item.modified_date, "MMMM DD, YYYY")}}</span>
