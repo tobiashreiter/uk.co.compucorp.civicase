@@ -31,7 +31,6 @@
   </civix>
   <requires>
     <ext>org.civicrm.shoreditch</ext>
-    <ext>uk.co.compucorp.usermenu</ext>
     <ext>org.civicrm.afform</ext>
   </requires>
   <mixins>
