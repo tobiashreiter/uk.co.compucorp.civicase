@@ -1,6 +1,7 @@
 <span class="civicase__contact-card" ng-class="{'civicase__contact-card__with-more-fields': displayMoreFields.length > 0}">
   <span ng-if="!isAvatar" class="civicase__contact-name-container">
     <!-- Contact Icons -->
+  <!-- Disabling for now, for accessibility
     <span ng-if="!noIcon">
       <civicase-contact-icon
         case-id="caseId"
@@ -8,11 +9,13 @@
         contact-id="contacts[0].contact_id"
       ></civicase-contact-icon>
     </span>
+    -->
     <!-- End - Contact Icons -->
     <!-- Contact Name -->
     <a ng-if="contacts[0].display_name"
       class="civicase__contact-name"
       target="_blank"
+       aria-label="View Contact (opens in a new tab)"
       href="{{ url('civicrm/contact/view', {cid: contacts[0].contact_id} ) }}"
       title="{{ ts('View Contact') }}">{{ contacts[0].display_name }}
     </a>
@@ -23,6 +26,7 @@
     <!-- Contact Avatar -->
     <a
       target="_blank"
+       aria-label="View Contact (opens in a new tab)"
       href="{{ url('civicrm/contact/view', {cid: contacts[0].contact_id}) }}"
       class="civicase__contact-avatar crm_notification-badge"
       ng-class="{

@@ -2,33 +2,54 @@
   class="panel panel-default civicase__case-filter-panel clearfix"
   ng-class="{'case-is-focused': $parent.caseIsFocused}">
   <div class="panel-header">
-    <h3 class="civicase__case-filter-panel__title" title="{{ pageTitle }}">
+    <h2 class="civicase__case-filter-panel__title" title="{{ pageTitle }}">
       {{ pageTitle }}
-    </h3>
+    </h2>
     <form class="form-inline civicase__case-filters-container">
+      <label class="sr-only" for="civicase__case-filter__keyword">
+        {{ ts('Collection Title Search Field') }}
+      </label>
       <input
         class="form-control civicase__case-filter__input"
         ng-model="keyword"
         ng-change="doSearchIfNotExpanded()"
-        aria-label="Enter keyword to search collection titles"
-        placeholder="Enter collection title..."
-      />
+        id="civicase__case-filter__keyword"
+        type="text"
+        placeholder="Enter keyword to search collection titles"
+        aria-describedby="collectionTitleSearchHelp" />
+      <span
+        id="collectionTitleSearchHelp"
+        class="sr-only">
+        {{ ts('Enter keyword to search collection titles') }}
+      </span>
+      <label id="caseTypeLabel" class="sr-only" for="civicase__case-filter__case-type">
+        {{ ts('Case Type Drop Down') }}
+      </label>
       <input
+        id="civicase__case-filter__case-type"
         class="form-control civicase__case-filter__input"
         ng-list
-        aria-label="Press spacebar to choose collection type"
+        aria-label="Press down arrow to choose collection type"
         crm-ui-select="{
-          allowClear: true,
-          multiple: true,
+                  allowClear: true,
+                  multiple: true,
           placeholder: ts('Case Type: Any'),
-          data: caseTypeOptions
-        }"
+                  data: caseTypeOptions
+                }"
         ng-model="filters.case_type_id"
         ng-change="doSearchIfNotExpanded()"
       />
+      <span
+        id="caseTypeHelp"
+        class="sr-only">
+        {{ ts('Select a case type from the drop down') }}
+      </span>
+      <label id="caseStatusLabel" class="sr-only" for="civicase__case-filter__status">
+        {{ ts('Collection Status Drop Down') }}
+      </label>
       <input
         class="form-control civicase__case-filter__input"
-        aria-label="Press spacebar to choose collection status"
+        aria-label="Press down arrow to choose collection status"
         ng-list crm-ui-select="{
           allowClear: true,
           multiple: true,
@@ -38,21 +59,36 @@
         ng-model="filters.status_id"
         ng-change="doSearchIfNotExpanded()"
       />
+      <span
+        id="caseStatusHelp"
+        class="sr-only">
+        {{ ts('Press down arrow to choose status') }}
+      </span>
+      <label id="caseCollectorLabel" class="sr-only" for="civicase__case-filter__collector">
+        {{ ts('Collector Search Drop Down') }}
+      </label>
       <input
+        id="civicase__case-filter__collector"
         class="form-control civicase__case-filter__input"
-        aria-label="Press spacebar to choose collector"
+        aria-label="Collector Search Down"
         ng-list
         crm-ui-select="{
           allowClear: true,
           multiple: false,
-          placeholder: ts('Collector: All'),
+          placeholder: ts('Select Collector'),
           data: caseCollectorOptions
         }"
         ng-model="filters.case_manager"
         ng-change="doSearchIfNotExpanded()"
-      />
+        aria-describedby="caseCollectorHelp"
+        />
+      <span
+        id="caseCollectorHelp"
+        class="sr-only">
+        {{ ts('Press down arrow to choose collector') }}
+      </span>
 	  <!-- Disable this until such a time as extra searching has been requested -->
-	  <!-- 
+	  <!--
       <button
         class="btn btn-primary btn-sm pull-right civicase__case-filter-panel__button"
         ng-click="expanded = true" ng-show="!expanded">
@@ -61,7 +97,7 @@
       </button>
       -->
       <!-- This button is a bit of a misnomer: it doesn't perform a search, it just shows hides the other criteria button -->
-      <!-- 
+      <!--
       <button
         class="btn btn-primary btn-sm pull-right civicase__case-filter-panel__button"
         ng-click="handleSearchSubmit()" ng-show="expanded">
@@ -71,7 +107,7 @@
     </form>
   </div>
   <!-- Disable this until such a time as extra searching has been requested -->
-  <!-- 
+  <!--
   <form
     class="panel-body form-horizontal civicase__case-filter-panel__form"
     ng-show="expanded">
@@ -152,7 +188,7 @@
   </form>
   --->
   <!-- We want to hide this as well, which may be permanent, even if filtering is desired -->
-  <!-- 
+  <!--
   <div
     class="panel-body civicase__case-filter-panel__description"
     ng-if="!expanded && filterDescription.length">

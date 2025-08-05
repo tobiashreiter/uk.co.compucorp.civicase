@@ -40,14 +40,16 @@
       { text: ts('Cases I am involved in'), id: 'is_involved' },
       { text: ts('All Cases'), id: 'all' }
     ];
-        
+
     var DEFAULT_CASE_FILTERS = {
       case_type_category: currentCaseCategory
     };
 
     $scope.caseRelationshipOptions = caseRelationshipConfig;
     $scope.caseStatusOptions = _.map(caseStatuses, mapSelectOptions);
+    $scope.caseStatusOptions.sort((a, b) => a.text.localeCompare(b.text));
     $scope.caseCollectorOptions = _.map(collectors, mapCollectors);
+    $scope.caseCollectorOptions.sort((a, b) => a.text.localeCompare(b.text));
     var allCollectorsOption = {id: '', text: 'All Collectors'};
     $scope.caseCollectorOptions.unshift(allCollectorsOption);
     $scope.caseTypeOptions = [];
@@ -61,11 +63,11 @@
       selectedContacts: null,
       selectedContactRoles: ['all-case-roles']
     };
-    $scope.contactRoles = [ 
+    $scope.contactRoles = [
       { id: 'all-case-roles', text: ts('All Case Roles') },
       { id: 'client', text: ts('Client') }
     ];
-    
+
     $scope.caseManagerIsMe = caseManagerIsMe;
     $scope.clearSearch = clearSearch;
     $scope.doSearchIfNotExpanded = doSearchIfNotExpanded;
@@ -149,14 +151,14 @@
       _.each($scope.filters, function (val, key) {
         var field = allSearchFields[key];
         if (field) {
-            
+
           var d = { label: field.label };
           if (key === 'status_id') {
               $scope.caseStatusOptions.forEach( function(caseStatusOption){
                   if (val.indexOf(caseStatusOption.id) > -1) {
                       d.text = ts(caseStatusOption.text);
                   }
-              });              
+              });
           }
           else if (field.options) {
             var text = [];
@@ -195,7 +197,7 @@
           des.push(d);
         }
       });
-      
+
       return des;
     }
 
@@ -475,7 +477,7 @@
     function keywordWatcher () {
        if ($scope.keyword && $scope.keyword.length) {
           $scope.filters.subject = $scope.keyword;
-       } else if (!$scope.keyword && $scope.filters.subject && $scope.filters.subject.length) {
+       } else if ($scope.keyword == undefined && $scope.filters.subject && $scope.filters.subject.length) {
           $scope.keyword = $scope.filters.subject;
        }
     }

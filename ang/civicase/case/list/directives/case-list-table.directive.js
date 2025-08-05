@@ -285,6 +285,7 @@
       allCases = [];
       $scope.isLoading = true;
       setPageTitle();
+      $scope.announcement = 'Loading table...';
 
       crmThrottle(makeApiCallToLoadCases)
         .then(function (result) {
@@ -319,6 +320,7 @@
           $scope.page.total = Math.ceil(result[1] / $scope.page.size);
           setPageTitle();
           firstLoad = $scope.isLoading = false;
+          $scope.announcement = 'Table has been filtered/sorted';
 
           $($window).scrollTop(0); // Scrolls the window to top once new data loads
         });

@@ -30,7 +30,14 @@
         if (scope.sort.sortable && attrs.civicaseCaseListSortHeader !== '') {
           element
             .addClass('civicase__case-list-sortable-header')
-            .on('click', headerClickEventHandler);
+            .on('click', headerClickEventHandler)
+            // Adding keydown handling to support keyboard access to sorting
+            .on('keydown', function (event) {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  headerClickEventHandler(event);
+                }
+            });
         }
       }
 
@@ -39,7 +46,9 @@
        * If the Clicked field is already selected, change the direction
        * Otherwise, set the new field and direction as ascending
        */
-      function headerClickEventHandler () {
+      function headerClickEventHandler ($event) {
+        // Disable submission of the form
+        $event.preventDefault();
         scope.$apply(function () {
           if (scope.sort.field === attrs.civicaseCaseListSortHeader) {
             scope.changeSortDir();
@@ -59,7 +68,9 @@
 
         if (attrs.civicaseCaseListSortHeader === scope.sort.field) {
           var direction = scope.sort.dir === 'ASC' ? 'up' : 'down';
-          var sortIcon = '<i class="civicase__case-list__header-toggle-sort material-icons">arrow_' + direction + 'ward</i>';
+          // Adding Sort Label to be used for aria label
+          var sortLabel = scope.sort.dir === 'ASC' ? 'ascending' : 'descending';
+          var sortIcon = '<i class="civicase__case-list__header-toggle-sort material-icons" aria-label="Sort ' + sortLabel + '">arrow_' + direction + 'ward</i>';
           element.append(sortIcon);
         }
       }

@@ -1,6 +1,6 @@
 <div crm-ui-debug="selectedCases"></div>
-<div class="civicase__case-list" ng-class="{'civicase__case-list--summary': viewingCase}">
-  <!-- 
+<div id="civicase-case-list" class="civicase__case-list" ng-class="{'civicase__case-list--summary': viewingCase}">
+   <!-- 
   <civicase-bulk-actions-message
     selected-items="selectedCases.length" total-count="totalCount"
     show-checkboxes="showCheckboxes"
@@ -21,22 +21,13 @@
           <th
             ng-if="!viewingCase"
             class="civicase__case-list-table__column civicase__case-list-table__column--contact"
-            civicase-case-list-sort-header="contact_id.sort_name">Contact</th>        
+            civicase-case-list-sort-header="contact_id.sort_name" aria-label="Hit enter to sort results by contact" tabindex="0">Contact</th>        
           <th
             ng-if="!viewingCase"
             ng-repeat="header in headers"
             class="civicase__case-list-table__column civicase__case-list-table__column--{{header.display_type}}"
-            civicase-case-list-sort-header="{{ header.sort }}">
-            <span ng-switch on="header.label">
-                <span ng-switch-when="Subject">
-                    Collection Title
-                </span>
-                <span ng-switch-default>
-                    {{ ts(header.label) }}
-                </span>
-                
-            </span>
-            
+            civicase-case-list-sort-header="{{ header.sort }}"  aria-label="{{ (header.label != 'Subject') ? header.label : 'Collection Title' }} (hit enter to sort by this column)" tabindex="0">
+                    {{ (header.label != 'Subject') ? header.label : 'Collection Title' }} 
           </th>
         </tr>
         </thead>
@@ -72,9 +63,7 @@
                 </a>
               </span>
               <span ng-switch-when="contact_reference">
-              
-              
-                <a href="#/case/list?cf=%7B%22case_manager%22:{{ item[header.name].contact_id }},%22case_type_category%22:%221%22%7D">
+                <a ng-if="item[header.name].contact_id" href="#/case/list?cf=%7B%22case_manager%22:{{ item[header.name].contact_id }},%22case_type_category%22:%221%22%7D">
                     {{ item[header.name].display_name }}
                 </a>
               </span>
@@ -84,7 +73,7 @@
                 <span ng-switch on="header.name">
 	              <span ng-switch-when="subject">
 	              
-	                 <a href="/civicrm/case/a/?case_type_category=1#/case/list?caseId={{item['id']}}&keyword={{filters.subject}}&case_manager={{filters.case_manager}}&case_type_id={{filters.case_type_id}}&status_id={{filters.status_id}}&focus=1&cf=%7B%22id%22:{{item['id']}},%22case_type_category%22:1%7D" target="_blank">{{ item[header.name] }}</a>
+	                 <a href="/civicrm/case/a/?case_type_category=1#/case/list?caseId={{item['id']}}&keyword={{filters.subject}}&case_manager={{filters.case_manager}}&case_type_id={{filters.case_type_id}}&status_id={{filters.status_id}}&focus=1&cf=%7B%22id%22:{{item['id']}},%22case_type_category%22:1%7D" target="_blank" aria-label="View Case (opens in a new tab)">{{ item[header.name] }}</a>
 	              </span>
                   <span ng-switch-default>
                      {{ item[header.name] }}
@@ -152,6 +141,7 @@
     civicase-focused="caseIsFocused"
     case-type-category="filters.case_type_category">
   </div>
+  
 </div>
 <style>
   #select2-drop.select2-with-searchbox {
