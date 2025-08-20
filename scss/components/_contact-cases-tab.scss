@@ -175,6 +175,9 @@
 .civicase__contact-cases-tab__panel-fields--inline {
   align-items: center;
   display: flex;
+  &.pull-right {
+    display: flex // This gets overrided by another ruleset, so we need to re-asset it here with a more specific selector
+  }
 }
 
 .civicase__contact-cases-tab__panel-field-emphasis {

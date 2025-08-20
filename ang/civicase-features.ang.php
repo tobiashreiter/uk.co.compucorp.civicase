@@ -37,8 +37,7 @@ $requires = [
   'dialogService',
   'civicase-base',
   'afsearchQuotations',
-  'afsearchContactQuotations',
-  'afsearchQuotationInvoices',
+  'afsearchContactQuotations'
 ];
 
 return [
